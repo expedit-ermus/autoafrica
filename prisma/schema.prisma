@@ -1,0 +1,1309 @@
+// ============================================================
+// AutoAfrique SaaS ERP — Complete Prisma Schema
+// Platform: PostgreSQL (Production) / SQLite (Local Dev)
+// Architecture: Multi-tenant, Multi-warehouse, Multi-currency
+// ============================================================
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ============================================================
+// 1. IDENTITY & ACCESS
+// ============================================================
+
+model Tenant {
+  id            String   @id @default(cuid())
+  name          String
+  slug          String   @unique
+  logo          String?
+  domain        String?  @unique
+  plan          Plan     @default(FREE)
+  country       String
+  currency      String   @default("XOF")
+  timezone      String   @default("Africa/Abidjan")
+  language      String   @default("fr")
+  active        Boolean  @default(true)
+  settings      Json?
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  users         User[]
+  warehouses    Warehouse[]
+  products      Product[]
+  orders        Order[]
+  subscriptions Subscription[]
+  auditLogs     AuditLog[]
+
+  @@index([country])
+  @@index([slug])
+}
+
+enum Plan {
+  FREE
+  STARTER    // 15,000 FCFA/month
+  PRO        // 45,000 FCFA/month
+  ENTERPRISE // 120,000 FCFA/month
+}
+
+model User {
+  id            String   @id @default(cuid())
+  tenantId      String?
+  tenant        Tenant?  @relation(fields: [tenantId], references: [id])
+  email         String   @unique
+  password      String
+  firstName     String
+  lastName      String
+  phone         String?
+  avatar        String?
+  role          Role     @default(BUYER)
+  status        UserStatus @default(ACTIVE)
+  country       String?
+  city          String?
+  address       String?
+  shopName      String?
+  specialties   Json?    // ["Toyota", "Peugeot", ...]
+  mfaEnabled    Boolean  @default(false)
+  mfaSecret     String?
+  lastLoginAt   DateTime?
+  emailVerified Boolean  @default(false)
+  phoneVerified Boolean  @default(false)
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sellerProfile   SellerProfile?
+  buyerProfile    BuyerProfile?
+  products        Product[]        @relation("Seller")
+  orders          Order[]          @relation("Buyer")
+  payments        Payment[]
+  sentMessages    Message[]        @relation("SentMessages")
+  receivedMessages Message[]       @relation("ReceivedMessages")
+  notifications   Notification[]
+  refreshTokens   RefreshToken[]
+  auditLogs       AuditLog[]
+  addresses       UserAddress[]
+
+  @@index([tenantId])
+  @@index([role])
+  @@index([country])
+  @@index([email])
+}
+
+enum Role {
+  SUPER_ADMIN
+  TENANT_ADMIN
+  SELLER
+  BUYER
+  WAREHOUSE_MANAGER
+  DELIVERY_AGENT
+  ACCOUNTANT
+  SUPPORT
+  MODERATOR
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+  PENDING_VERIFICATION
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([token])
+}
+
+model RolePermission {
+  id         String   @id @default(cuid())
+  role       Role
+  resource   String   // e.g., "products", "orders", "users"
+  action     String   // e.g., "create", "read", "update", "delete"
+  conditions Json?    // ABAC conditions
+  createdAt  DateTime @default(now())
+
+  @@unique([role, resource, action])
+}
+
+model UserAddress {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label     String   // "Home", "Work", "Warehouse"
+  name      String
+  phone     String
+  address   String
+  city      String
+  country   String
+  latitude  Float?
+  longitude Float?
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+// ============================================================
+// 2. SELLER & BUYER PROFILES
+// ============================================================
+
+model SellerProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id])
+  businessName    String
+  businessType    String?  // "garage", "casse", "revendeur", "distributeur"
+  rcNumber        String?  // Registre du Commerce
+  taxId           String?  // Numéro fiscal
+  rating          Float    @default(0)
+  reviewCount     Int      @default(0)
+  verified        Boolean  @default(false)
+  verifiedAt      DateTime?
+  totalSales      Int      @default(0)
+  totalRevenue    Int      @default(0)
+  responseTime    Float?   // Average response time in hours
+  shippingRate    Float?   // Default shipping rate
+  policies        Json?    // Return policy, warranty, etc.
+  operatingHours  Json?    // Business hours
+  certifications  Json?
+  metadata        Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model BuyerProfile {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id])
+  companyName  String?
+  garageName   String?
+  garageType   String?  // "mecanique", "carrosserie", "electricite", "pneumatique"
+  vehicleCount Int?     // Number of vehicles managed
+  preferredBrands Json? // ["Toyota", "Peugeot"]
+  totalOrders  Int      @default(0)
+  totalSpent   Int      @default(0)
+  loyaltyPoints Int     @default(0)
+  creditLimit  Int?     // Credit limit in FCFA
+  metadata     Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ============================================================
+// 3. PRODUCT CATALOG
+// ============================================================
+
+model Brand {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  logo      String?
+  country   String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  models    CarModel[]
+  products  Product[]
+}
+
+model CarModel {
+  id        String   @id @default(cuid())
+  brandId   String
+  brand     Brand    @relation(fields: [brandId], references: [id])
+  name      String   // e.g., "Hilux", "Corolla"
+  slug      String
+  yearStart Int
+  yearEnd   Int
+  bodyType  String?  // "pickup", "sedan", "suv"
+  engine    String?  // "2.4 D-4D", "1.6 VVT-i"
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  products  Product[]
+  compatibleProducts ProductCompat[]
+
+  @@unique([brandId, name, yearStart])
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  parentId  String?
+  parent    Category? @relation("CategoryTree", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryTree")
+  name      String
+  slug      String   @unique
+  icon      String?
+  image     String?
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  attributes Json?   // Dynamic attribute definitions
+  createdAt DateTime @default(now())
+
+  products  Product[]
+}
+
+model Product {
+  id            String   @id @default(cuid())
+  tenantId      String?
+  tenant        Tenant?  @relation(fields: [tenantId], references: [id])
+  sellerId      String
+  seller        User     @relation("Seller", fields: [sellerId], references: [id])
+  brandId       String?
+  brand         Brand?   @relation(fields: [brandId], references: [id])
+  categoryId    String?
+  category      Category? @relation(fields: [categoryId], references: [id])
+  carModelId    String?
+  carModel      CarModel? @relation(fields: [carModelId], references: [id])
+  title         String
+  slug          String   @unique
+  description   String?
+  reference     String?  // OEM reference number
+  crossRefs     Json?    // Cross-reference numbers
+  sku           String?
+  price         Int      // Price in smallest currency unit (centimes FCFA)
+  comparePrice  Int?     // Original/list price
+  costPrice     Int?     // Cost price for profit calc
+  currency      String   @default("XOF")
+  stock         Int      @default(0)
+  lowStockAlert Int      @default(5)
+  condition     ProductCondition @default(USED)
+  quality       String?  // "A+", "A", "B", "C"
+  weight        Float?   // in grams
+  dimensions    Json?    // {length, width, height}
+  images        Json?    // Array of image URLs
+  attributes    Json?    // Dynamic attributes per category
+  active        Boolean  @default(true)
+  featured      Boolean  @default(false)
+  views         Int      @default(0)
+  salesCount    Int      @default(0)
+  rating        Float    @default(0)
+  reviewCount   Int      @default(0)
+  tags          Json?    // ["moteur", "frein", "urgent"]
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  compatible    ProductCompat[]
+  inventory     Inventory[]
+  stockMovements StockMovement[]
+  orderItems    OrderItem[]
+  cartItems     CartItem[]
+  reviews       Review[]
+
+  @@index([tenantId])
+  @@index([sellerId])
+  @@index([brandId])
+  @@index([categoryId])
+  @@index([carModelId])
+  @@index([reference])
+  @@index([price])
+  @@index([active])
+}
+
+enum ProductCondition {
+  NEW
+  USED
+  REFURBISHED
+  OEM_AFTERMARKET
+}
+
+model ProductCompat {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  carModelId  String?
+  carModel    CarModel? @relation(fields: [carModelId], references: [id])
+  yearStart   Int?
+  yearEnd     Int?
+  engine      String?
+  trim        String?
+  note        String?
+
+  @@unique([productId, carModelId, yearStart])
+}
+
+// ============================================================
+// 4. INVENTORY & WAREHOUSES
+// ============================================================
+
+model Warehouse {
+  id          String   @id @default(cuid())
+  tenantId    String?
+  tenant      Tenant?  @relation(fields: [tenantId], references: [id])
+  name        String
+  code        String?
+  type        WarehouseType @default(STANDARD)
+  country     String
+  city        String
+  address     String?
+  latitude    Float?
+  longitude   Float?
+  capacity    Int?     // Max items
+  managerId   String?
+  active      Boolean  @default(true)
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  inventories     Inventory[]
+  fromMovements   StockMovement[] @relation("FromWarehouse")
+  toMovements     StockMovement[] @relation("ToWarehouse")
+  purchaseOrders  PurchaseOrder[]
+
+  @@index([tenantId])
+  @@index([country])
+}
+
+enum WarehouseType {
+  STANDARD
+  COLD_STORAGE
+  HAZMAT
+  BULK
+  CROSS_DOCK
+}
+
+model Inventory {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  warehouseId String
+  warehouse   Warehouse @relation(fields: [warehouseId], references: [id])
+  quantity    Int      @default(0)
+  reserved    Int      @default(0) // Reserved for pending orders
+  available   Int      @default(0) // quantity - reserved
+  binLocation String?  // Shelf/bin location in warehouse
+  lotNumber   String?
+  expiryDate  DateTime?
+  costBasis   Int?     // Cost per unit at this warehouse
+  updatedAt   DateTime @updatedAt
+
+  movements   StockMovement[]
+
+  @@unique([productId, warehouseId])
+  @@index([warehouseId])
+}
+
+model StockMovement {
+  id              String   @id @default(cuid())
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id])
+  fromWarehouseId String?
+  fromWarehouse   Warehouse? @relation("FromWarehouse", fields: [fromWarehouseId], references: [id])
+  toWarehouseId   String?
+  toWarehouse     Warehouse? @relation("ToWarehouse", fields: [toWarehouseId], references: [id])
+  inventoryId     String?
+  inventory       Inventory? @relation(fields: [inventoryId], references: [id])
+  type            MovementType
+  quantity        Int
+  reference       String?  // PO number, order number
+  notes           String?
+  createdBy       String?
+  createdAt       DateTime @default(now())
+
+  @@index([productId])
+  @@index([fromWarehouseId])
+  @@index([toWarehouseId])
+  @@index([inventoryId])
+  @@index([type])
+}
+
+enum MovementType {
+  RECEIVED       // Goods received from supplier
+  TRANSFERRED    // Inter-warehouse transfer
+  SOLD           // Sold to customer
+  RETURNED       // Customer return
+  ADJUSTED       // Manual stock adjustment
+  DAMAGED        // Damaged/expired
+  RESERVED       // Reserved for order
+  UNRESERVED     // Release reservation
+}
+
+// ============================================================
+// 5. PROCUREMENT & SUPPLY CHAIN
+// ============================================================
+
+model Supplier {
+  id            String   @id @default(cuid())
+  name          String
+  companyName   String?
+  country       String   // CN, TW, JP, KR, DE, etc.
+  city          String?
+  address       String?
+  contactPerson String?
+  email         String?
+  phone         String?
+  whatsapp      String?
+  website       String?
+  rating        Float    @default(0)
+  leadTimeDays  Int?     // Average lead time
+  paymentTerms  String?  // "NET30", "LC", "TT"
+  moq           Int?     // Minimum Order Quantity
+  verified      Boolean  @default(false)
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  purchaseOrders PurchaseOrder[]
+  products       SupplierProduct[]
+
+  @@index([country])
+}
+
+model SupplierProduct {
+  id            String   @id @default(cuid())
+  supplierId    String
+  supplier      Supplier @relation(fields: [supplierId], references: [id])
+  productName   String
+  reference     String?
+  moq           Int?
+  unitPrice     Int
+  currency      String   @default("USD")
+  leadTimeDays  Int?
+  sampleAvailable Boolean @default(false)
+  metadata      Json?
+  createdAt     DateTime @default(now())
+
+  @@index([supplierId])
+}
+
+model PurchaseOrder {
+  id              String   @id @default(cuid())
+  poNumber        String   @unique
+  supplierId      String
+  supplier        Supplier @relation(fields: [supplierId], references: [id])
+  warehouseId     String?
+  warehouse       Warehouse? @relation(fields: [warehouseId], references: [id])
+  status          POStatus @default(DRAFT)
+  totalAmount     Int
+  currency        String   @default("USD")
+  paymentTerms    String?
+  expectedDate    DateTime?
+  actualDate      DateTime?
+  shippingMethod  String?  // "sea", "air", "road"
+  trackingNumber  String?
+  notes           String?
+  approvedBy      String?
+  approvedAt      DateTime?
+  createdBy       String?
+  metadata        Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  items           PurchaseOrderItem[]
+  container       Container?
+
+  @@index([supplierId])
+  @@index([status])
+}
+
+enum POStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  ORDERED
+  SHIPPED
+  IN_TRANSIT
+  CUSTOMS
+  DELIVERED
+  COMPLETED
+  CANCELLED
+}
+
+model PurchaseOrderItem {
+  id              String        @id @default(cuid())
+  purchaseOrderId String
+  purchaseOrder   PurchaseOrder @relation(fields: [purchaseOrderId], references: [id], onDelete: Cascade)
+  productName     String
+  reference       String?
+  quantity        Int
+  unitPrice       Int
+  totalPrice      Int
+  receivedQty     Int           @default(0)
+  notes           String?
+
+  @@index([purchaseOrderId])
+}
+
+model Container {
+  id              String   @id @default(cuid())
+  containerNumber String   @unique
+  purchaseOrderId String? @unique
+  purchaseOrder   PurchaseOrder? @relation(fields: [purchaseOrderId], references: [id])
+  size            String   // "20ft", "40ft", "40hq"
+  status          ContainerStatus @default(LOADING)
+  originPort      String
+  destinationPort String
+  shippingLine    String?
+  vesselName      String?
+  etaOrigin       DateTime?
+  etaDestination  DateTime?
+  departedAt      DateTime?
+  arrivedAt       DateTime?
+  clearedAt       DateTime?
+  shippingDocs    Json?    // Bill of lading, packing list, etc.
+  metadata        Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  customsRecord   CustomsRecord?
+
+  @@index([status])
+}
+
+enum ContainerStatus {
+  LOADING
+  SHIPPED
+  IN_TRANSIT
+  ARRIVED_PORT
+  CUSTOMS_PROCESSING
+  CUSTOMS_CLEARED
+  DELIVERED_TO_WAREHOUSE
+  COMPLETED
+}
+
+model CustomsRecord {
+  id              String    @id @default(cuid())
+  containerId     String    @unique
+  container       Container @relation(fields: [containerId], references: [id])
+  declarationNumber String?
+  hsCode          String?   // Harmonized System code
+  cifValue        Int?      // Cost, Insurance, Freight
+  duties          Int?
+  taxes           Int?
+  fees            Int?
+  totalDuty       Int?
+  status          CustomsStatus @default(PENDING)
+  broker          String?
+  brokerContact   String?
+  documents       Json?     // [{name, url, type}]
+  releasedAt      DateTime?
+  notes           String?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([status])
+}
+
+enum CustomsStatus {
+  PENDING
+  DOCUMENTS_REQUIRED
+  UNDER_REVIEW
+  DUTY_ASSESSED
+  DUTY_PAID
+  INSPECTION
+  RELEASED
+  HELD
+}
+
+// ============================================================
+// 6. COMMERCE — ORDERS & MARKETPLACE
+// ============================================================
+
+model Order {
+  id              String    @id @default(cuid())
+  orderNumber     String    @unique
+  tenantId        String?
+  tenant          Tenant?   @relation(fields: [tenantId], references: [id])
+  buyerId         String
+  buyer           User      @relation("Buyer", fields: [buyerId], references: [id])
+  status          OrderStatus @default(PENDING)
+  paymentStatus   PaymentStatus @default(UNPAID)
+  fulfillmentStatus FulfillmentStatus @default(UNFULFILLED)
+  subtotal        Int
+  taxAmount       Int       @default(0)
+  shippingAmount  Int       @default(0)
+  discountAmount  Int       @default(0)
+  totalAmount     Int
+  currency        String    @default("XOF")
+  paymentMethod   String?   // "orange_money", "mtn_momo", "wave", "card", "cash"
+  shippingMethod  String?   // "standard", "express", "pickup"
+  shippingAddress Json?     // {name, phone, address, city, country, lat, lng}
+  billingAddress  Json?
+  notes           String?
+  specialInstructions String?
+  estimatedDelivery DateTime?
+  actualDelivery  DateTime?
+  deliveredAt     DateTime?
+  cancelledAt     DateTime?
+  cancelReason    String?
+  metadata        Json?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  items           OrderItem[]
+  payment         Payment?
+  shipment        Shipment?
+  invoice         Invoice?
+  timeline        OrderTimeline[]
+  messages        Message[]
+
+  @@index([tenantId])
+  @@index([buyerId])
+  @@index([status])
+  @@index([orderNumber])
+  @@index([createdAt])
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PAID
+  PROCESSING
+  READY_TO_SHIP
+  SHIPPED
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  COMPLETED
+  CANCELLED
+  REFUNDED
+  DISPUTED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PARTIALLY_PAID
+  PAID
+  PARTIALLY_REFUNDED
+  REFUNDED
+  FAILED
+}
+
+enum FulfillmentStatus {
+  UNFULFILLED
+  PARTIALLY_FULFILLED
+  FULFILLED
+  SHIPPED
+  DELIVERED
+  RETURNED
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  sellerId    String
+  quantity    Int      @default(1)
+  unitPrice   Int
+  totalPrice  Int
+  discount    Int      @default(0)
+  fulfilled   Boolean  @default(false)
+  notes       String?
+
+  @@index([orderId])
+  @@index([sellerId])
+}
+
+model OrderTimeline {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    String
+  message   String?
+  actor     String?  // userId or system
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int      @default(1)
+  addedAt   DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@index([userId])
+}
+
+model Coupon {
+  id            String   @id @default(cuid())
+  code          String   @unique
+  description   String?
+  discountType  String   // "percentage", "fixed"
+  discountValue Int
+  minOrder      Int?
+  maxDiscount   Int?
+  usageLimit    Int?
+  usedCount     Int      @default(0)
+  tenantId      String?
+  active        Boolean  @default(true)
+  expiresAt     DateTime?
+  createdAt     DateTime @default(now())
+
+  @@index([code])
+}
+
+// ============================================================
+// 7. PAYMENTS
+// ============================================================
+
+model Payment {
+  id              String   @id @default(cuid())
+  orderId         String   @unique
+  order           Order    @relation(fields: [orderId], references: [id])
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  method          PaymentMethod
+  amount          Int
+  currency        String   @default("XOF")
+  status          PaymentTransactionStatus @default(PENDING)
+  transactionId   String?
+  providerRef     String?  // Provider reference
+  phone           String?  // Mobile money phone
+  cardLast4       String?
+  cardBrand       String?
+  metadata        Json?    // Provider response data
+  refundedAmount  Int      @default(0)
+  refundedAt      DateTime?
+  failureReason   String?
+  processedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  refund          Refund?
+
+  @@index([orderId])
+  @@index([userId])
+  @@index([status])
+  @@index([transactionId])
+}
+
+enum PaymentMethod {
+  ORANGE_MONEY
+  MTN_MOMO
+  WAVE
+  MOOV_MONEY
+  CARD
+  BANK_TRANSFER
+  CASH_ON_DELIVERY
+  CASH
+}
+
+enum PaymentTransactionStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+  REFUNDED
+}
+
+model Refund {
+  id          String   @id @default(cuid())
+  paymentId   String   @unique
+  payment     Payment  @relation(fields: [paymentId], references: [id])
+  amount      Int
+  reason      String?
+  status      String   @default("pending") // pending, approved, completed
+  processedBy String?
+  processedAt DateTime?
+  createdAt   DateTime @default(now())
+}
+
+// ============================================================
+// 8. INVOICING
+// ============================================================
+
+model Invoice {
+  id            String   @id @default(cuid())
+  invoiceNumber String   @unique
+  orderId       String?  @unique
+  order         Order?   @relation(fields: [orderId], references: [id])
+  tenantId      String?
+  sellerId      String
+  buyerId       String
+  status        InvoiceStatus @default(DRAFT)
+  subtotal      Int
+  taxRate       Float    @default(18.0) // TVA 18%
+  taxAmount     Int
+  totalAmount   Int
+  currency      String   @default("XOF")
+  dueDate       DateTime?
+  paidAt        DateTime?
+  notes         String?
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([sellerId])
+  @@index([buyerId])
+  @@index([status])
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  VIEWED
+  PAID
+  PARTIALLY_PAID
+  OVERDUE
+  CANCELLED
+}
+
+// ============================================================
+// 9. DELIVERY & LOGISTICS
+// ============================================================
+
+model Shipment {
+  id              String   @id @default(cuid())
+  orderId         String   @unique
+  order           Order    @relation(fields: [orderId], references: [id])
+  trackingNumber  String?  @unique
+  carrier         String?  // "dhl", "ups", "local", "gabriel"
+  method          String?  // "standard", "express", "pickup"
+  status          ShipmentStatus @default(PENDING)
+  currentLocation String?
+  latitude        Float?
+  longitude       Float?
+  estimatedDelivery DateTime?
+  actualDelivery  DateTime?
+  signedBy        String?
+  signatureUrl    String?
+  photos          Json?    // Delivery photos
+  events          Json?    // Tracking events [{time, location, status}]
+  metadata        Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([trackingNumber])
+  @@index([status])
+}
+
+enum ShipmentStatus {
+  PENDING
+  PICKED_UP
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  FAILED_DELIVERY
+  RETURNED
+}
+
+model DeliveryRoute {
+  id          String   @id @default(cuid())
+  name        String
+  driverId    String?
+  vehicleId   String?
+  country     String
+  city        String?
+  date        DateTime
+  status      String   @default("planned") // planned, active, completed
+  stops       Json?    // [{orderId, address, lat, lng, status}]
+  distance    Float?   // km
+  duration    Int?     // minutes
+  completedAt DateTime?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model FleetVehicle {
+  id          String   @id @default(cuid())
+  plateNumber String   @unique
+  type        String   // "moto", "voiture", "camion", "van"
+  brand       String?
+  model       String?
+  year        Int?
+  capacity    Int?     // kg
+  driverId    String?
+  status      String   @default("active")
+  insurance   Json?
+  maintenance Json?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ============================================================
+// 10. CRM
+// ============================================================
+
+model Customer {
+  id            String   @id @default(cuid())
+  userId        String?
+  name          String
+  phone         String?
+  email         String?
+  type          String   // "garage", "revendeur", "particulier", "flotte"
+  country       String
+  city          String?
+  segment       String?  // "vip", "regular", "new"
+  tags          Json?
+  totalOrders   Int      @default(0)
+  totalSpent    Int      @default(0)
+  lastOrderAt   DateTime?
+  notes         String?
+  assignedTo    String?  // Sales rep
+  source        String?  // "web", "referral", "marketplace", "offline"
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  interactions  CustomerInteraction[]
+  leads         Lead[]
+
+  @@index([phone])
+  @@index([country])
+  @@index([type])
+}
+
+model CustomerInteraction {
+  id          String   @id @default(cuid())
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
+  type        String   // "call", "email", "whatsapp", "meeting", "note"
+  subject     String?
+  content     String?
+  outcome     String?
+  nextAction  String?
+  nextDate    DateTime?
+  userId      String?  // Staff who made interaction
+  createdAt   DateTime @default(now())
+
+  @@index([customerId])
+}
+
+model Lead {
+  id          String   @id @default(cuid())
+  customerId  String?
+  customer    Customer? @relation(fields: [customerId], references: [id])
+  name        String
+  phone       String
+  email       String?
+  source      String?  // "web", "referral", "ad", "exhibition"
+  status      String   @default("new") // new, contacted, qualified, converted, lost
+  value       Int?
+  assignedTo  String?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status])
+  @@index([assignedTo])
+}
+
+// ============================================================
+// 11. MESSAGING & NOTIFICATIONS
+// ============================================================
+
+model Message {
+  id          String   @id @default(cuid())
+  senderId    String
+  sender      User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId  String
+  receiver    User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  orderId     String?
+  order       Order?   @relation(fields: [orderId], references: [id])
+  content     String
+  type        MessageType @default(TEXT)
+  attachment  String?
+  read        Boolean  @default(false)
+  readAt      DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([senderId])
+  @@index([receiverId])
+  @@index([orderId])
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  FILE
+  SYSTEM
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  title     String
+  message   String
+  type      String   // "order", "payment", "stock", "promo", "system"
+  link      String?
+  read      Boolean  @default(false)
+  readAt    DateTime?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([read])
+}
+
+// ============================================================
+// 12. MARKETING & PROMOTIONS
+// ============================================================
+
+model Campaign {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   // "sms", "email", "whatsapp", "push", "social"
+  status      String   @default("draft") // draft, scheduled, active, completed
+  audience    Json?    // Target audience criteria
+  content     Json?    // Campaign content
+  scheduleAt  DateTime?
+  startedAt   DateTime?
+  endedAt     DateTime?
+  metrics     Json?    // {sent, delivered, opened, clicked, converted}
+  budget      Int?
+  spent       Int      @default(0)
+  tenantId    String?
+  createdBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Promotion {
+  id            String   @id @default(cuid())
+  name          String
+  type          String   // "flash", "seasonal", "clearance", "bundle"
+  discountType  String   // "percentage", "fixed", "bogo"
+  discountValue Int
+  minOrder      Int?
+  maxDiscount   Int?
+  applicableTo  Json?    // {brands, categories, products}
+  startDate     DateTime
+  endDate       DateTime
+  active        Boolean  @default(true)
+  usageLimit    Int?
+  usedCount     Int      @default(0)
+  tenantId      String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ============================================================
+// 13. FINANCE & ACCOUNTING
+// ============================================================
+
+model Account {
+  id          String   @id @default(cuid())
+  code        String
+  name        String
+  type        String   // "asset", "liability", "equity", "revenue", "expense"
+  parentId    String?
+  parent      Account? @relation("AccountTree", fields: [parentId], references: [id])
+  children    Account[] @relation("AccountTree")
+  balance     Int      @default(0)
+  currency    String   @default("XOF")
+  tenantId    String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  transactions Transaction[]
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  accountId   String
+  account     Account  @relation(fields: [accountId], references: [id])
+  type        String   // "debit", "credit"
+  amount      Int
+  balance     Int      // Running balance
+  description String?
+  reference   String?  // PO number, invoice number
+  date        DateTime @default(now())
+  metadata    Json?
+
+  @@index([accountId])
+  @@index([date])
+}
+
+// ============================================================
+// 14. CONTENT & CMS
+// ============================================================
+
+model Page {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  content     String
+  metaTitle   String?
+  metaDesc    String?
+  published   Boolean  @default(false)
+  tenantId    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Media {
+  id          String   @id @default(cuid())
+  filename    String
+  originalName String
+  mimeType    String
+  size        Int
+  url         String
+  alt         String?
+  tenantId    String?
+  uploadedBy  String?
+  createdAt   DateTime @default(now())
+}
+
+// ============================================================
+// 15. AUDIT & ANALYTICS
+// ============================================================
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  tenantId  String?
+  tenant    Tenant?  @relation(fields: [tenantId], references: [id])
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  action    String   // "create", "update", "delete", "login", "export"
+  entity    String   // "product", "order", "user", etc.
+  entityId  String?
+  oldValues Json?
+  newValues Json?
+  ip        String?
+  userAgent String?
+  createdAt DateTime @default(now())
+
+  @@index([tenantId])
+  @@index([userId])
+  @@index([entity, entityId])
+  @@index([createdAt])
+}
+
+model AnalyticsEvent {
+  id          String   @id @default(cuid())
+  event       String   // "page_view", "product_view", "search", "add_to_cart"
+  userId      String?
+  sessionId   String?
+  entity      String?
+  entityId    String?
+  properties  Json?
+  country     String?
+  city        String?
+  device      String?
+  browser     String?
+  ip          String?
+  createdAt   DateTime @default(now())
+
+  @@index([event])
+  @@index([userId])
+  @@index([entity, entityId])
+  @@index([createdAt])
+}
+
+// ============================================================
+// 16. REVIEWS & RATINGS
+// ============================================================
+
+model Review {
+  id          String   @id @default(cuid())
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  userId      String
+  rating      Int      // 1-5
+  title       String?
+  content     String?
+  images      Json?
+  verified    Boolean  @default(false) // Verified purchase
+  helpful     Int      @default(0)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([productId, userId])
+  @@index([productId])
+}
+
+// ============================================================
+// 17. SEARCH & AI
+// ============================================================
+
+model SearchIndex {
+  id          String   @id @default(cuid())
+  entityType  String   // "product", "supplier", "article"
+  entityId    String
+  title       String
+  description String?
+  keywords    Json?
+  vector      String?  // Embedding vector (stored as JSON)
+  metadata    Json?
+  updatedAt   DateTime @updatedAt
+
+  @@unique([entityType, entityId])
+  @@index([entityType])
+}
+
+// ============================================================
+// 18. SUBSCRIPTIONS & BILLING
+// ============================================================
+
+model Subscription {
+  id          String   @id @default(cuid())
+  tenantId    String
+  tenant      Tenant   @relation(fields: [tenantId], references: [id])
+  plan        Plan
+  status      SubscriptionStatus @default(ACTIVE)
+  amount      Int
+  currency    String   @default("XOF")
+  billingCycle String  @default("monthly")
+  startDate   DateTime
+  endDate     DateTime?
+  nextBilling DateTime?
+  paymentMethod String?
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([tenantId])
+  @@index([status])
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  SUSPENDED
+}
+
+// ============================================================
+// 19. LEADERSHIP / LOYALTY
+// ============================================================
+
+model LoyaltyProgram {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   // "points", "cashback", "tier"
+  rules       Json     // Earning & redemption rules
+  active      Boolean  @default(true)
+  tenantId    String?
+  createdAt   DateTime @default(now())
+}
+
+model LoyaltyTransaction {
+  id          String   @id @default(cuid())
+  userId      String
+  orderId     String?
+  type        String   // "earn", "redeem", "expire", "adjust"
+  points      Int
+  balance     Int
+  description String?
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+}
