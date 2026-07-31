@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --color-primary: #E85D04;
-  --color-primary-dark: #D00000;
-  --color-primary-light: #FF8C00;
-  --color-secondary: #1a1a2e;
+  --color-primary: #FF6B35;
+  --color-primary-dark: #E85D04;
+  --color-primary-light: #FF8F65;
+  --color-secondary: #1E3A5F;
   --color-accent: #FFBA08;
   --color-success: #059669;
   --color-warning: #F59E0B;
@@ -17,7 +17,7 @@
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08);
   --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.1);
-  --shadow-glow: 0 0 20px rgba(232, 93, 4, 0.15);
+  --shadow-glow: 0 0 20px rgba(255, 107, 53, 0.15);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
@@ -52,11 +52,11 @@ button, a, input, select, textarea, [role="button"] {
    ════════════════════════════════════════════════════════ */
 
 .gradient-primary {
-  background: linear-gradient(135deg, #E85D04 0%, #D00000 100%);
+  background: linear-gradient(135deg, #FF6B35 0%, #E85D04 100%);
 }
 
 .gradient-hero {
-  background: linear-gradient(160deg, #0f0f23 0%, #1a1a2e 40%, #2d1b3d 70%, #D00000 100%);
+  background: linear-gradient(160deg, #0f0f23 0%, #1a1a2e 40%, #2d1b3d 70%, #E85D04 100%);
 }
 
 .gradient-card {
@@ -64,13 +64,19 @@ button, a, input, select, textarea, [role="button"] {
 }
 
 .gradient-glass {
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+@supports (backdrop-filter: blur(20px)) {
+  .gradient-glass {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #E85D04, #D00000);
+  background: linear-gradient(135deg, #FF6B35, #E85D04);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -86,7 +92,7 @@ button, a, input, select, textarea, [role="button"] {
   top: 0;
   width: 72px;
   height: 100vh;
-  background: linear-gradient(180deg, #0f0f23 0%, #1a1a2e 100%);
+  background: linear-gradient(180deg, #0f0f23 0%, #1E3A5F 100%);
   z-index: 50;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow-y: auto;
@@ -114,9 +120,7 @@ button, a, input, select, textarea, [role="button"] {
   left: 0;
   right: 0;
   height: 64px;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(255, 255, 255, 0.95);
   border-top: 1px solid rgba(0, 0, 0, 0.06);
   padding-bottom: max(0px, env(safe-area-inset-bottom));
   z-index: 50;
@@ -124,6 +128,14 @@ button, a, input, select, textarea, [role="button"] {
   justify-content: space-around;
   align-items: center;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.04);
+}
+
+@supports (backdrop-filter: blur(20px)) {
+  .bottom-nav {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
 }
 
 @media (min-width: 1024px) {
@@ -151,7 +163,7 @@ button, a, input, select, textarea, [role="button"] {
 }
 
 .bottom-nav-item.active {
-  color: #E85D04;
+  color: #FF6B35;
   font-weight: 700;
 }
 
@@ -164,7 +176,7 @@ button, a, input, select, textarea, [role="button"] {
   width: 20px;
   height: 3px;
   border-radius: 0 0 4px 4px;
-  background: linear-gradient(135deg, #E85D04, #D00000);
+  background: linear-gradient(135deg, #FF6B35, #E85D04);
 }
 
 /* ════════════════════════════════════════════════════════
@@ -175,11 +187,17 @@ button, a, input, select, textarea, [role="button"] {
   position: sticky;
   top: 0;
   height: 56px;
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(255, 255, 255, 0.95);
   border-bottom: 1px solid rgba(0, 0, 0, 0.04);
   z-index: 30;
+}
+
+@supports (backdrop-filter: blur(20px)) {
+  .topbar {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
 }
 
 @media (min-width: 1024px) {
@@ -202,7 +220,7 @@ button, a, input, select, textarea, [role="button"] {
 .card-shadow-hover:hover {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
   transform: translateY(-2px);
-  border-color: rgba(232, 93, 4, 0.1);
+  border-color: rgba(255, 107, 53, 0.1);
 }
 
 .stat-card {
@@ -219,12 +237,18 @@ button, a, input, select, textarea, [role="button"] {
 }
 
 .glass-card {
-  background: var(--color-surface-glass);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
+}
+
+@supports (backdrop-filter: blur(20px)) {
+  .glass-card {
+    background: var(--color-surface-glass);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+  }
 }
 
 /* ════════════════════════════════════════════════════════
@@ -232,16 +256,16 @@ button, a, input, select, textarea, [role="button"] {
    ════════════════════════════════════════════════════════ */
 
 .btn-primary {
-  background: linear-gradient(135deg, #E85D04 0%, #D00000 100%);
+  background: linear-gradient(135deg, #FF6B35 0%, #E85D04 100%);
   color: #fff;
-  padding: 10px 20px;
+  padding: 12px 28px;
   border-radius: var(--radius-md);
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   border: none;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 8px rgba(232, 93, 4, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   position: relative;
   overflow: hidden;
 }
@@ -257,7 +281,7 @@ button, a, input, select, textarea, [role="button"] {
 
 .btn-primary:hover::before { opacity: 1; }
 .btn-primary:hover {
-  box-shadow: 0 4px 16px rgba(232, 93, 4, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 16px rgba(255, 107, 53, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transform: translateY(-1px);
 }
 .btn-primary:active { transform: scale(0.97); }
@@ -267,21 +291,21 @@ button, a, input, select, textarea, [role="button"] {
 }
 
 .btn-outline {
-  border: 2px solid #E85D04;
-  color: #E85D04;
+  border: 2px solid #FF6B35;
+  color: #FF6B35;
   background: transparent;
-  padding: 10px 20px;
+  padding: 12px 28px;
   border-radius: var(--radius-md);
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-outline:hover {
-  background: #E85D04;
+  background: #FF6B35;
   color: white;
-  box-shadow: 0 4px 12px rgba(232, 93, 4, 0.25);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.25);
   transform: translateY(-1px);
 }
 
@@ -344,7 +368,7 @@ button, a, input, select, textarea, [role="button"] {
 
 .sidebar-item.active {
   color: #fff;
-  background: rgba(232, 93, 4, 0.15);
+  background: rgba(255, 107, 53, 0.15);
 }
 
 .sidebar-item.active::before {
@@ -356,7 +380,7 @@ button, a, input, select, textarea, [role="button"] {
   width: 3px;
   height: 20px;
   border-radius: 0 4px 4px 0;
-  background: linear-gradient(180deg, #E85D04, #D00000);
+  background: linear-gradient(180deg, #FF6B35, #E85D04);
 }
 
 /* ════════════════════════════════════════════════════════
@@ -381,8 +405,8 @@ button, a, input, select, textarea, [role="button"] {
 }
 
 .input-field:focus {
-  border-color: #E85D04;
-  box-shadow: 0 0 0 3px rgba(232, 93, 4, 0.08), 0 1px 2px rgba(232, 93, 4, 0.06);
+  border-color: #FF6B35;
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.08), 0 1px 2px rgba(255, 107, 53, 0.06);
 }
 
 .input-field:hover:not(:focus) {
@@ -902,7 +926,7 @@ button, a, input, select, textarea, [role="button"], [role="tab"], [role="menuit
   width: 56px;
   height: 56px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #FF6B35, #FF8F65);
+  background: linear-gradient(135deg, #FF6B35, #E85D04);
   color: white;
   display: flex;
   align-items: center;
@@ -923,6 +947,12 @@ button, a, input, select, textarea, [role="button"], [role="tab"], [role="menuit
 :focus-visible {
   outline: 2px solid #FF6B35;
   outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Remove default outline for mouse users */
+:focus:not(:focus-visible) {
+  outline: none;
 }
 
 /* Reduced motion preference */
