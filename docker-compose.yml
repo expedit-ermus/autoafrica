@@ -7,7 +7,7 @@ services:
       - "3000:3000"
     environment:
       - DATABASE_URL=file:./dev.db
-      - JWT_SECRET=${JWT_SECRET:-autoafrique-secret-key-change-in-production}
+      - JWT_SECRET=${JWT_SECRET:?JWT_SECRET must be set (see .env.example)}
       - NEXTAUTH_URL=${NEXTAUTH_URL:-http://localhost:3000}
     depends_on:
       - redis

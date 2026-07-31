@@ -1,7 +1,15 @@
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'autoafrique-secret-key-change-in-production'
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET
+  if (!secret) {
+    throw new Error('JWT_SECRET is not set. Define JWT_SECRET in your environment (see .env.example).')
+  }
+  return secret
+}
+
+const JWT_SECRET = getJwtSecret()
 
 export async function hashPassword(password: string): Promise<string> {
   return bcrypt.hash(password, 12)

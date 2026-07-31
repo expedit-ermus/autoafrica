@@ -138,3 +138,22 @@
 - Partenariats paiement en V2
 
 **Impact** : UX checkout incomplete, a valider avec utilisateurs reels.
+
+---
+
+## D8 : Secret JWT obligatoire (pas de fallback)
+
+**Contexte** : Le secret JWT disposait d'un fallback hardcode (`autoafrique-secret-key-change-in-production`) dans `src/lib/auth.ts` et `docker-compose.yml`, rendant les signatures predictibles en production.
+
+**Decision** : Supprimer tout fallback. L'application echoue au demarrage avec un message explicite si `JWT_SECRET` est absent. Un fichier `.env.example` documente les variables requises.
+
+**Alternatives envisagees** :
+- Generer un secret aleatoire au demarrage : invalide tous les tokens a chaque redemarrage
+- Conserver un fallback : signature predictible, risque de forgery de token
+
+**Justification** :
+- Aligne le code sur `docs/19-SECURITY.md` (Secret : variable d'environnement JWT_SECRET)
+- Fail-fast : pas d'etat de production securise par un secret connu
+- `.env.example` guide la configuration locale
+
+**Impact** : Le build et le runtime exigent `JWT_SECRET` ; la base de donnees SQLite (`*.db`) n'est plus versionnee.
