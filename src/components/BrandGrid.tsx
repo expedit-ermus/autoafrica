@@ -22,9 +22,9 @@ export default function BrandGrid() {
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
   return (
-    <section className="py-12 bg-gray-50">
+    <section className="py-14 bg-[#FEF3E2]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-8">
+        <h2 className="text-2xl md:text-3xl font-extrabold text-[#2D1B0E] mb-10">
           {L('Marques populaires', 'Popular brands')}
         </h2>
 
@@ -33,9 +33,9 @@ export default function BrandGrid() {
             <Link
               key={brand.name}
               href="/dashboard/marketplace"
-              className="group bg-white rounded-xl border border-gray-100 hover:border-[#FF6B35]/30 hover:shadow-lg p-6 flex flex-col items-center justify-center transition-all duration-300"
+              className="group bg-white rounded-2xl border border-[#E8DDD0] hover:border-[#FF6B35]/40 hover:shadow-xl hover:shadow-[#FF6B35]/10 p-6 flex flex-col items-center justify-center transition-all duration-300"
             >
-              <div className="w-16 h-16 mb-3 flex items-center justify-center">
+              <div className="w-18 h-18 mb-3 flex items-center justify-center">
                 <img
                   src={brand.logo}
                   alt={brand.name}
@@ -43,22 +43,22 @@ export default function BrandGrid() {
                   loading="lazy"
                 />
               </div>
-              <div className="text-sm font-semibold text-gray-700 group-hover:text-[#FF6B35] transition-colors text-center">
+              <div className="text-sm font-bold text-[#2D1B0E] group-hover:text-[#FF6B35] transition-colors text-center">
                 {brand.name}
               </div>
-              <div className="text-xs text-gray-400 mt-1">{brand.count} {L('pièces', 'parts')}</div>
+              <div className="text-xs text-[#6B5B4E] mt-1 font-medium">{brand.count} {L('pièces', 'parts')}</div>
             </Link>
           ))}
         </div>
 
-        <div className="text-center mt-8">
+        <div className="text-center mt-10">
           <Link
             href="/dashboard/marketplace"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 hover:bg-[#FF6B35] hover:text-white text-gray-700 font-semibold rounded-lg transition-all duration-300"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-[#FF6B35] hover:text-white text-[#2D1B0E] font-bold rounded-xl transition-all duration-300 border border-[#E8DDD0] shadow-sm"
           >
             {L('Plus de constructeurs automobiles', 'More car manufacturers')}
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
             </svg>
           </Link>
         </div>

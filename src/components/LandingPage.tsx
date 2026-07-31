@@ -126,8 +126,8 @@ export default function LandingPage() {
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
   return (
-    <div className="overflow-x-hidden bg-white">
-      <section className="bg-gray-50 py-6">
+    <div className="overflow-x-hidden bg-[#FFF8F0]">
+      <section className="bg-gradient-to-b from-[#FEF3E2] to-[#FFF8F0] py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-5 gap-6">
             <div className="lg:col-span-2">
@@ -144,17 +144,19 @@ export default function LandingPage() {
 
       <BrandGrid />
 
-      <section className="py-6 bg-white border-y border-gray-100">
+      <section className="py-8 bg-white border-y border-[#E8DDD0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {trustFeatures.map((feat, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <div className="shrink-0">{feat.icon}</div>
+              <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-[#FEF3E2] transition-colors">
+                <div className="shrink-0 w-12 h-12 bg-[#FEF3E2] rounded-xl flex items-center justify-center">
+                  {feat.icon}
+                </div>
                 <div>
-                  <div className="text-sm font-semibold text-gray-800">
+                  <div className="text-sm font-bold text-[#2D1B0E]">
                     {feat.title[locale as 'fr' | 'en']}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-[#6B5B4E] font-medium">
                     {feat.desc[locale as 'fr' | 'en']}
                   </div>
                 </div>
@@ -164,9 +166,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-12 bg-white">
+      <section className="py-14 bg-[#FFF8F0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-8">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[#2D1B0E] mb-10">
             {L('Meilleures ventes', 'Bestsellers')}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -177,13 +179,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-12 bg-gray-50">
+      <section className="py-14 bg-[#FEF3E2]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-2xl p-8 border border-gray-100">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">
+          <div className="bg-white rounded-3xl p-8 md:p-10 border border-[#E8DDD0] shadow-lg shadow-[#8B4513]/5">
+            <h2 className="text-xl md:text-2xl font-extrabold text-[#2D1B0E] mb-5">
               {L('AutoAfrique — La marketplace n°1 des pièces automobiles en Afrique de l\'Ouest', 'AutoAfrique — #1 auto parts marketplace in West Africa')}
             </h2>
-            <div className="text-sm text-gray-600 leading-relaxed space-y-3">
+            <div className="text-base text-[#4A3728] leading-relaxed space-y-4">
               <p>
                 {L(
                   'AutoAfrique est la première plateforme e-commerce dédiée aux pièces détachées automobile en Afrique de l\'Ouest. Avec plus de 85 000 pièces référencées pour Toyota, Hyundai, Kia, Peugeot, Mercedes et Renault, nous connectons les vendeurs et les acheteurs dans 10 pays : Côte d\'Ivoire, Sénégal, Mali, Burkina Faso, Niger, Bénin, Togo, Guinée-Bissau, Nigeria et Ghana.',
@@ -196,7 +198,7 @@ export default function LandingPage() {
                   'Whether you\'re a mechanic, dealer or individual, find the parts you need at the best price. Pay with Orange Money, MTN MoMo, Wave or credit card. Fast delivery in 24-72h across West Africa.'
                 )}
               </p>
-              <button className="text-[#FF6B35] font-semibold text-sm hover:underline">
+              <button className="text-[#FF6B35] font-bold text-base hover:underline">
                 {L('Lire la suite', 'Read more')} ↓
               </button>
             </div>
