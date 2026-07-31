@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useApp } from '@/contexts/AppContext';
 
 const categories = [
@@ -95,12 +96,13 @@ export default function PartsCatalog() {
               href="/dashboard/marketplace"
               className="group relative bg-white rounded-2xl border border-[#E8DDD0] hover:border-[#FF6B35]/40 hover:shadow-xl hover:shadow-[#FF6B35]/10 transition-all duration-300 overflow-hidden"
             >
-              <div className="aspect-square overflow-hidden bg-[#FEF3E2]">
-                <img
+              <div className="relative aspect-square overflow-hidden bg-[#FEF3E2]">
+                <Image
                   src={cat.image}
                   alt={cat.name[locale as 'fr' | 'en']}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  loading="lazy"
+                  fill
+                  sizes="(max-width: 640px) 50vw, 16vw"
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
                 />
               </div>
               <div className="p-4 text-center">

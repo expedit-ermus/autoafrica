@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useApp } from '@/contexts/AppContext';
@@ -198,11 +199,12 @@ export default function MarketplacePage() {
         onClick={() => openDetail(p)}
       >
         <div className="relative h-48 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-          <img
+          <Image
             src={imgs[0]}
             alt={p.title}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-            loading="lazy"
+            fill
+            sizes="(max-width: 640px) 50vw, 33vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           <span className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-white/90 backdrop-blur-sm text-[11px] font-semibold text-gray-700 shadow-sm">
@@ -290,7 +292,7 @@ export default function MarketplacePage() {
         onClick={() => openDetail(p)}
       >
         <div className="relative w-48 min-h-[140px] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden flex-shrink-0">
-          <img src={imgs[0]} alt={p.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
+          <Image src={imgs[0]} alt={p.title} fill sizes="192px" className="object-cover transition-transform duration-500 group-hover:scale-105" />
           <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-white/90 backdrop-blur-sm text-[10px] font-semibold text-gray-700">
             {p.brand?.name || 'Pièce'}
           </span>
@@ -749,12 +751,13 @@ export default function MarketplacePage() {
                         className="bg-white rounded-xl border border-gray-100/80 p-3 cursor-pointer hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group"
                         onClick={() => openDetail(p)}
                       >
-                        <div className="overflow-hidden rounded-lg mb-2">
-                          <img
+                        <div className="relative h-20 overflow-hidden rounded-lg mb-2">
+                          <Image
                             src={getImages(p)[0]}
                             alt={p.title}
-                            className="w-full h-20 object-cover group-hover:scale-105 transition-transform duration-300"
-                            loading="lazy"
+                            fill
+                            sizes="(max-width: 640px) 50vw, 16vw"
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         </div>
                         <p className="text-xs font-bold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors">{p.title}</p>
@@ -774,8 +777,8 @@ export default function MarketplacePage() {
               const related = relatedSuggestions[detailProduct.category?.name || ''] || [];
               return (
                 <div className="space-y-4">
-                  <div className="relative rounded-xl overflow-hidden bg-gray-100">
-                    <img src={imgs[detailImageIdx]} alt={detailProduct.title} className="w-full h-64 object-cover" />
+                  <div className="relative h-64 rounded-xl overflow-hidden bg-gray-100">
+                    <Image src={imgs[detailImageIdx]} alt={detailProduct.title} fill sizes="100vw" className="object-cover" />
                     {imgs.length > 1 && (
                       <>
                         <button onClick={() => setDetailImageIdx(i => (i - 1 + imgs.length) % imgs.length)}

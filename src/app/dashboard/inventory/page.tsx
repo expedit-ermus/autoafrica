@@ -1,5 +1,6 @@
 ﻿'use client';
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useApp } from '@/contexts/AppContext';
@@ -422,11 +423,12 @@ export default function InventoryPage() {
                           </td>
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-3">
-                              <img
+                              <Image
                                 src={p.images?.[0] || partImages[p.category?.name || 'default']}
                                 alt=""
+                                width={40}
+                                height={40}
                                 className="w-10 h-10 rounded-xl object-cover border border-gray-100 hidden sm:block"
-                                loading="lazy"
                               />
                               <div className="min-w-0">
                                 <p className="font-semibold text-gray-900 text-sm truncate max-w-[220px]">{p.title}</p>
@@ -515,12 +517,13 @@ export default function InventoryPage() {
                       selected.has(p.id) ? 'border-orange-300 ring-2 ring-orange-100' : 'border-gray-100 hover:border-gray-200'
                     }`}
                   >
-                    <div className="relative">
-                      <img
+                    <div className="relative h-36">
+                      <Image
                         src={p.images?.[0] || partImages[p.category?.name || 'default']}
                         alt={p.title}
-                        className="w-full h-36 object-cover"
-                        loading="lazy"
+                        fill
+                        sizes="(max-width: 768px) 50vw, 25vw"
+                        className="object-cover"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                       <input

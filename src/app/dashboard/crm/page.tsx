@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
+import Image from 'next/image';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useApp } from '@/contexts/AppContext';
@@ -586,7 +587,7 @@ export default function CRMPage() {
                             </span>
                             {COUNTRY_FLAGS[c.country] && (
                               <span className="flex items-center gap-1 text-[10px] text-gray-500">
-                                <img src={`https://flagcdn.com/w20/${c.country.toLowerCase()}.png`} alt={c.country} className="w-3.5 h-2.5 rounded-sm" />
+                                <Image src={`https://flagcdn.com/w20/${c.country.toLowerCase()}.png`} alt={c.country} width={20} height={14} className="w-3.5 h-2.5 rounded-sm" />
                                 {t.countries[c.country as keyof typeof t.countries] || c.country}
                               </span>
                             )}
@@ -1026,7 +1027,7 @@ export default function CRMPage() {
                       )}
                       {detailType === 'customer' && COUNTRY_FLAGS[(showDetail as Customer).country] && (
                         <span className="flex items-center gap-1 text-xs text-gray-500">
-                          <img src={`https://flagcdn.com/w20/${(showDetail as Customer).country.toLowerCase()}.png`} alt={(showDetail as Customer).country} className="w-4 h-3 rounded-sm" />
+                          <Image src={`https://flagcdn.com/w20/${(showDetail as Customer).country.toLowerCase()}.png`} alt={(showDetail as Customer).country} width={20} height={14} className="w-4 h-3 rounded-sm" />
                           {t.countries[(showDetail as Customer).country as keyof typeof t.countries] || (showDetail as Customer).country}
                         </span>
                       )}
@@ -1072,7 +1073,7 @@ export default function CRMPage() {
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-500">Pays</span>
                         <span className="text-sm font-semibold text-gray-900 flex items-center gap-1.5">
-                          <img src={`https://flagcdn.com/w20/${(showDetail as Customer).country.toLowerCase()}.png`} alt={(showDetail as Customer).country} className="w-4 h-3 rounded-sm" />
+                          <Image src={`https://flagcdn.com/w20/${(showDetail as Customer).country.toLowerCase()}.png`} alt={(showDetail as Customer).country} width={20} height={14} className="w-4 h-3 rounded-sm" />
                           {t.countries[(showDetail as Customer).country as keyof typeof t.countries] || (showDetail as Customer).country}
                         </span>
                       </div>

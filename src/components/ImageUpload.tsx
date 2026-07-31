@@ -1,5 +1,6 @@
 'use client';
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 import { useToast } from '@/contexts/ToastContext';
 
 interface Props {
@@ -65,7 +66,7 @@ export default function ImageUpload({ images, onChange, maxImages = 5, disabled 
       <div className="grid grid-cols-3 gap-3 mb-3">
         {images.map((url, i) => (
           <div key={i} className="relative group rounded-xl overflow-hidden border border-gray-200 aspect-square bg-gray-50">
-            <img src={url} alt={`Photo ${i + 1}`} className="w-full h-full object-cover" />
+            <Image src={url} alt={`Photo ${i + 1}`} fill sizes="33vw" className="object-cover" />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100">
               {i > 0 && (
                 <button type="button" onClick={() => moveImage(i, i - 1)}

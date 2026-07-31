@@ -1,4 +1,5 @@
 'use client';
+import Image from 'next/image';
 import { useApp } from '@/contexts/AppContext';
 
 interface ProductCardProps {
@@ -38,11 +39,12 @@ export default function ProductCard({
   return (
     <div className="group bg-white rounded-2xl border border-[#E8DDD0] hover:border-[#FF6B35]/40 hover:shadow-xl hover:shadow-[#FF6B35]/10 transition-all duration-300 overflow-hidden flex flex-col">
       <div className="relative aspect-square bg-[#FEF3E2] overflow-hidden">
-        <img
+        <Image
           src={image}
           alt={name}
-          className="w-full h-full object-contain p-4 group-hover:scale-105 transition-transform duration-500"
-          loading="lazy"
+          fill
+          sizes="(max-width: 640px) 50vw, 33vw"
+          className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
         />
         {discount && discount > 0 && (
           <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-md">

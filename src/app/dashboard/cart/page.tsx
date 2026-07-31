@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import Image from 'next/image';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useToast } from '@/contexts/ToastContext';
@@ -133,10 +134,12 @@ export default function CartPage() {
                     <div className="flex items-stretch">
                       {/* Image */}
                       <div className="relative w-28 h-28 sm:w-36 sm:h-36 flex-shrink-0 bg-gray-100">
-                        <img
+                        <Image
                           src={item.image}
                           alt={item.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          fill
+                          sizes="144px"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
                         />
                       </div>
 

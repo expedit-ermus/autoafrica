@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useApp } from '@/contexts/AppContext';
 
 const banners = [
@@ -79,11 +80,12 @@ export default function PromoBanner() {
                 </Link>
               </div>
               <div className="hidden md:block flex-1">
-                <img
+                <Image
                   src={banner.image}
                   alt={banner.title[locale as 'fr' | 'en']}
+                  width={800}
+                  height={192}
                   className="w-full h-48 object-cover rounded-xl"
-                  loading="lazy"
                 />
               </div>
             </div>

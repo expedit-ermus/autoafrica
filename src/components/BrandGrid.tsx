@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useApp } from '@/contexts/AppContext';
 
 const brands = [
@@ -35,12 +36,13 @@ export default function BrandGrid() {
               href="/dashboard/marketplace"
               className="group bg-white rounded-2xl border border-[#E8DDD0] hover:border-[#FF6B35]/40 hover:shadow-xl hover:shadow-[#FF6B35]/10 p-6 flex flex-col items-center justify-center transition-all duration-300"
             >
-              <div className="w-18 h-18 mb-3 flex items-center justify-center">
-                <img
+              <div className="relative w-18 h-18 mb-3 flex items-center justify-center">
+                <Image
                   src={brand.logo}
                   alt={brand.name}
-                  className="max-w-full max-h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
-                  loading="lazy"
+                  fill
+                  sizes="72px"
+                  className="object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
                 />
               </div>
               <div className="text-sm font-bold text-[#2D1B0E] group-hover:text-[#FF6B35] transition-colors text-center">
