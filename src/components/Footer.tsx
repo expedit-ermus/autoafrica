@@ -62,7 +62,7 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             <div>
-              <h4 className="text-white font-semibold mb-4 text-sm">{L('À PROPOS D\'AUTODOC', 'ABOUT AUTODOC')}</h4>
+              <h4 className="text-white font-semibold mb-4 text-sm">{L('À PROPOS D\'AUTOFRIQUE', 'ABOUT AUTAFRIQUE')}</h4>
               <ul className="space-y-2.5 text-sm text-white/60">
                 <li><a href="#" className="hover:text-white transition-colors">{L('Qui sommes-nous ?', 'About us?')}</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">{L('Programme Bonus', 'Bonus Program')}</a></li>

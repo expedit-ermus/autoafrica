@@ -97,8 +97,8 @@ export default function PromoBanner() {
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-              i === current ? 'bg-white w-6' : 'bg-white/40 hover:bg-white/60'
+            className={`h-2.5 rounded-full transition-all duration-300 ${
+              i === current ? 'bg-white w-6' : 'bg-white/40 hover:bg-white/60 w-2.5'
             }`}
           />
         ))}
