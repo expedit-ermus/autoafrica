@@ -5,7 +5,7 @@ import { successResponse, handleApiError } from '@/shared/utils/response'
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const auth = await requireAuth(request)
+    await requireAuth(request)
     const { id } = await params
     const body = await request.json()
     const result = await paymentsService.refund(id, body.reason || 'Refund requested')

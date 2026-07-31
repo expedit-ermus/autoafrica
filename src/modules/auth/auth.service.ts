@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { hashPassword, verifyPassword, generateToken, verifyToken } from '@/lib/auth'
+import { hashPassword, verifyPassword, generateToken } from '@/lib/auth'
 import { ConflictError, UnauthorizedError, NotFoundError } from '@/shared/errors'
 import { generateRefreshToken, generateOtp } from './auth.utils'
 
@@ -65,7 +65,8 @@ export class AuthService {
     const token = generateToken(user.id, user.role)
     const refreshToken = await generateRefreshToken(user.id)
 
-    const { password: _, ...userWithoutPassword } = user
+    const { password, ...userWithoutPassword } = user
+    void password
     return { user: userWithoutPassword, token, refreshToken }
   }
 

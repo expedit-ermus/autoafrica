@@ -34,11 +34,11 @@ export class ConflictError extends AppError {
 }
 
 export class ValidationError extends AppError {
-  constructor(message: string, details?: any) {
+  constructor(message: string, details?: unknown) {
     super(message, 400, 'VALIDATION_ERROR');
     this.details = details;
   }
-  details?: any;
+  details?: unknown;
 }
 
 export class PaymentError extends AppError {

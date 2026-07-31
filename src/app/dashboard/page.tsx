@@ -1,11 +1,11 @@
-'use client';
-import { useState, useEffect, useCallback } from 'react';
+﻿'use client';
+import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useApp } from '@/contexts/AppContext';
-import { useToast } from '@/contexts/ToastContext';
 import Link from 'next/link';
 import BarChart, { DonutChart, SparkLine } from '@/components/Charts';
+import { Product, Order, Payment } from '@/shared/types';
 
 const partImages: Record<string, string> = {
   'Moteur': 'https://images.unsplash.com/photo-1763848843613-f8c2ca3a31a1?w=200&h=150&fit=crop',
@@ -17,10 +17,9 @@ const partImages: Record<string, string> = {
 
 export default function DashboardPage() {
   const { t, user } = useApp();
-  const { addToast } = useToast();
-  const [products, setProducts] = useState<any[]>([]);
-  const [orders, setOrders] = useState<any[]>([]);
-  const [payments, setPayments] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
@@ -37,9 +36,9 @@ export default function DashboardPage() {
         const orderData = await orderRes.json();
         const payData = await payRes.json();
         if (!cancelled) {
-          if (prodData.success) setProducts(prodData.data.data);
-          if (orderData.success) setOrders(orderData.data.data);
-          if (payData.success) setPayments(payData.data.data);
+          if (prodData.success) setProducts(prodData.data.data as Product[]);
+          if (orderData.success) setOrders(orderData.data.data as Order[]);
+          if (payData.success) setPayments(payData.data.data as Payment[]);
         }
       } catch (err) { console.error(err); } finally {
         if (!cancelled) setLoading(false);
@@ -50,16 +49,16 @@ export default function DashboardPage() {
 
   const totalProducts = products.length;
   const totalOrders = orders.length;
-  const pendingOrders = orders.filter((o: any) => o.status === 'PENDING').length;
-  const deliveredOrders = orders.filter((o: any) => o.status === 'DELIVERED' || o.status === 'COMPLETED').length;
-  const totalRevenue = payments.filter((p: any) => p.status === 'COMPLETED').reduce((s: number, p: any) => s + (p.amount || 0), 0);
-  const escrowAmount = payments.filter((p: any) => p.status === 'HELD').reduce((s: number, p: any) => s + (p.amount || 0), 0);
-  const lowStockProducts = products.filter((p: any) => p.stock <= 3 && p.stock > 0);
-  const outOfStock = products.filter((p: any) => p.stock === 0);
+  const pendingOrders = orders.filter(o => o.status === 'PENDING').length;
+  const deliveredOrders = orders.filter(o => o.status === 'DELIVERED' || o.status === 'COMPLETED').length;
+  const totalRevenue = payments.filter(p => p.status === 'COMPLETED').reduce((s, p) => s + (p.amount || 0), 0);
+  const escrowAmount = payments.filter(p => p.status === 'HELD').reduce((s, p) => s + (p.amount || 0), 0);
+  const lowStockProducts = products.filter(p => p.stock <= 3 && p.stock > 0);
+  const outOfStock = products.filter(p => p.stock === 0);
   const recentOrders = orders.slice(0, 5);
 
   const statusLabels: Record<string, string> = {
-    PENDING: 'En attente', CONFIRMED: 'Confirmée', PAID: 'Payée', SHIPPED: 'Expédiée', DELIVERED: 'Livrée', COMPLETED: 'Terminée', CANCELLED: 'Annulée',
+    PENDING: 'En attente', CONFIRMED: 'ConfirmÃ©e', PAID: 'PayÃ©e', SHIPPED: 'ExpÃ©diÃ©e', DELIVERED: 'LivrÃ©e', COMPLETED: 'TerminÃ©e', CANCELLED: 'AnnulÃ©e',
   };
   const statusColors: Record<string, string> = {
     PENDING: 'bg-yellow-100 text-yellow-700', CONFIRMED: 'bg-blue-100 text-blue-700', PAID: 'bg-green-100 text-green-700',
@@ -74,12 +73,12 @@ export default function DashboardPage() {
   const orderStatusColors = ['#EAB308', '#3B82F6', '#A855F7', '#22C55E', '#EF4444'];
   const statusDistribution = orderStatuses.map((s, i) => ({
     label: statusLabels[s] || s,
-    value: orders.filter((o: any) => o.status === s).length,
+    value: orders.filter(o => o.status === s).length,
     color: orderStatusColors[i],
   })).filter(s => s.value > 0);
 
   const categoryCounts: Record<string, number> = {};
-  products.forEach((p: any) => {
+  products.forEach((p) => {
     const cat = p.category?.name || 'Autre';
     categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
   });
@@ -88,11 +87,11 @@ export default function DashboardPage() {
     .slice(0, 6)
     .map(([label, value]) => ({ label, value, color: 'bg-orange-400' }));
 
-  const recentPayments = payments.filter((p: any) => p.status === 'COMPLETED').slice(0, 7);
-  const revenueSparkline = recentPayments.map((p: any) => p.amount || 0);
+  const recentPayments = payments.filter(p => p.status === 'COMPLETED').slice(0, 7);
+  const revenueSparkline = recentPayments.map(p => p.amount || 0);
 
   const methodCounts: Record<string, number> = {};
-  payments.forEach((p: any) => { if (p.status === 'COMPLETED') methodCounts[p.method || 'N/A'] = (methodCounts[p.method || 'N/A'] || 0) + 1; });
+  payments.forEach((p) => { if (p.status === 'COMPLETED') methodCounts[p.method || 'N/A'] = (methodCounts[p.method || 'N/A'] || 0) + 1; });
   const methodColors: Record<string, string> = { ORANGE_MONEY: '#FF6600', MTN_MOMO: '#FFCC00', WAVE: '#00B4D8', MOOV_MONEY: '#0066CC' };
   const methodLabels: Record<string, string> = { ORANGE_MONEY: 'Orange Money', MTN_MOMO: 'MTN MoMo', WAVE: 'Wave', MOOV_MONEY: 'Moov' };
   const methodDistribution = Object.entries(methodCounts).map(([key, value]) => ({
@@ -108,20 +107,20 @@ export default function DashboardPage() {
   ];
   const priceData = priceRanges.map(r => ({
     label: r.label,
-    value: products.filter((p: any) => p.price >= r.min && p.price < r.max).length,
+    value: products.filter(p => p.price >= r.min && p.price < r.max).length,
     color: 'bg-blue-400',
   }));
 
   const getGreeting = () => {
     const h = new Date().getHours();
     if (h < 12) return 'Bonjour';
-    if (h < 18) return 'Bon après-midi';
+    if (h < 18) return 'Bon aprÃ¨s-midi';
     return 'Bonsoir';
   };
 
   const statsCards = [
     {
-      label: 'Pièces',
+      label: 'PiÃ¨ces',
       value: String(totalProducts),
       icon: (
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
@@ -158,13 +157,13 @@ export default function DashboardPage() {
       iconBg: 'bg-orange-500/10',
       iconColor: 'text-orange-600',
       spark: revenueSparkline,
-      sub: `${formatCFA(escrowAmount)} séquestre`,
+      sub: `${formatCFA(escrowAmount)} sÃ©questre`,
       subColor: 'text-blue-600',
       isCurrency: true,
     },
     {
-      label: 'Taux succès',
-      value: totalOrders > 0 ? `${((deliveredOrders / totalOrders) * 100).toFixed(0)}%` : '—',
+      label: 'Taux succÃ¨s',
+      value: totalOrders > 0 ? `${((deliveredOrders / totalOrders) * 100).toFixed(0)}%` : 'â€”',
       icon: (
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
       ),
@@ -172,7 +171,7 @@ export default function DashboardPage() {
       iconBg: 'bg-violet-500/10',
       iconColor: 'text-violet-600',
       spark: [],
-      sub: `${deliveredOrders}/${totalOrders} livrées`,
+      sub: `${deliveredOrders}/${totalOrders} livrÃ©es`,
       subColor: 'text-green-600',
       isCurrency: false,
     },
@@ -205,7 +204,7 @@ export default function DashboardPage() {
         <DashboardTopBar />
         <main className="p-4 lg:p-8 pb-24 lg:pb-8 max-w-[1400px] mx-auto">
 
-          {/* ═══════════════════ HERO BANNER ═══════════════════ */}
+          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• HERO BANNER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
           <div className="relative rounded-3xl overflow-hidden mb-8" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
             <div className="absolute inset-0 bg-gradient-to-br from-[#0f0f23] via-[#1a1a2e] via-50% to-[#D00000]" />
             <div className="absolute inset-0 opacity-[0.07]">
@@ -224,11 +223,11 @@ export default function DashboardPage() {
                   <h1 className="text-3xl lg:text-4xl font-extrabold text-white mb-2 tracking-tight">
                     {user?.firstName || 'Vendeur'}
                   </h1>
-                  <p className="text-gray-400 text-sm max-w-md leading-relaxed">{t.dashboard.welcome} — voici un aperçu de votre activité en temps réel.</p>
+                  <p className="text-gray-400 text-sm max-w-md leading-relaxed">{t.dashboard.welcome} â€” voici un aperÃ§u de votre activitÃ© en temps rÃ©el.</p>
                   {(!user?.firstName) && (
                     <Link href="/dashboard/settings" className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm font-medium transition-all duration-200 backdrop-blur-sm border border-white/10 hover:border-white/20">
                       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                      Compléter mon profil
+                      ComplÃ©ter mon profil
                     </Link>
                   )}
                 </div>
@@ -245,16 +244,16 @@ export default function DashboardPage() {
                   <div className="w-px h-12 bg-white/10" />
                   <div className="text-center">
                     <p className="text-3xl lg:text-4xl font-extrabold text-emerald-400 tracking-tight">
-                      {totalOrders > 0 ? `${((deliveredOrders / totalOrders) * 100).toFixed(0)}%` : '—'}
+                      {totalOrders > 0 ? `${((deliveredOrders / totalOrders) * 100).toFixed(0)}%` : 'â€”'}
                     </p>
-                    <p className="text-xs text-gray-400 mt-1 font-medium">Succès</p>
+                    <p className="text-xs text-gray-400 mt-1 font-medium">SuccÃ¨s</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* ═══════════════════ STATS CARDS ═══════════════════ */}
+          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• STATS CARDS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
             {statsCards.map((s, i) => (
               <div
@@ -281,15 +280,15 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          {/* ═══════════════════ CHARTS ROW ═══════════════════ */}
+          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• CHARTS ROW â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
           <div className="grid lg:grid-cols-3 gap-5 mb-8" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both' }}>
             <div className="glass-card p-6">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Stock par catégorie</h3>
-                  <p className="text-xs text-gray-400 mt-0.5">Répartition de votre inventaire</p>
+                  <h3 className="font-bold text-gray-900 text-sm">Stock par catÃ©gorie</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">RÃ©partition de votre inventaire</p>
                 </div>
-                <Link href="/dashboard/inventory" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout →</Link>
+                <Link href="/dashboard/inventory" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout â†’</Link>
               </div>
               <BarChart data={categoryData} height={160} />
             </div>
@@ -299,7 +298,7 @@ export default function DashboardPage() {
                   <h3 className="font-bold text-gray-900 text-sm">Statut des commandes</h3>
                   <p className="text-xs text-gray-400 mt-0.5">Distribution des statuts</p>
                 </div>
-                <Link href="/dashboard/orders" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout →</Link>
+                <Link href="/dashboard/orders" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout â†’</Link>
               </div>
               {statusDistribution.length > 0 ? (
                 <DonutChart segments={statusDistribution} />
@@ -313,24 +312,24 @@ export default function DashboardPage() {
             <div className="glass-card p-6">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Répartition des prix</h3>
+                  <h3 className="font-bold text-gray-900 text-sm">RÃ©partition des prix</h3>
                   <p className="text-xs text-gray-400 mt-0.5">Fourchettes de prix</p>
                 </div>
-                <Link href="/dashboard/inventory" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout →</Link>
+                <Link href="/dashboard/inventory" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout â†’</Link>
               </div>
-              <BarChart data={priceData} height={160} format={(n) => `${n} pièce${n > 1 ? 's' : ''}`} />
+              <BarChart data={priceData} height={160} format={(n) => `${n} piÃ¨ce${n > 1 ? 's' : ''}`} />
             </div>
           </div>
 
-          {/* ═══════════════════ RECENT ACTIVITY + PAYMENT METHODS ═══════════════════ */}
+          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• RECENT ACTIVITY + PAYMENT METHODS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
           <div className="grid lg:grid-cols-3 gap-5 mb-8" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both' }}>
             <div className="glass-card p-6">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Méthodes de paiement</h3>
-                  <p className="text-xs text-gray-400 mt-0.5">Moyens utilisés</p>
+                  <h3 className="font-bold text-gray-900 text-sm">MÃ©thodes de paiement</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">Moyens utilisÃ©s</p>
                 </div>
-                <Link href="/dashboard/orders" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout →</Link>
+                <Link href="/dashboard/orders" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout â†’</Link>
               </div>
               {methodDistribution.length > 0 ? (
                 <DonutChart segments={methodDistribution} />
@@ -345,10 +344,10 @@ export default function DashboardPage() {
             <div className="lg:col-span-2 glass-card p-6">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Commandes récentes</h3>
-                  <p className="text-xs text-gray-400 mt-0.5">Dernières activités</p>
+                  <h3 className="font-bold text-gray-900 text-sm">Commandes rÃ©centes</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">DerniÃ¨res activitÃ©s</p>
                 </div>
-                <Link href="/dashboard/orders" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout →</Link>
+                <Link href="/dashboard/orders" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout â†’</Link>
               </div>
               {recentOrders.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-10 text-gray-400">
@@ -357,7 +356,7 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div className="space-y-1">
-                  {recentOrders.map((o: any) => (
+                  {recentOrders.map((o) => (
                     <Link
                       key={o.id}
                       href={`/dashboard/orders`}
@@ -368,7 +367,7 @@ export default function DashboardPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-gray-900 text-sm truncate group-hover:text-orange-600 transition-colors">{o.orderNumber || o.id?.slice(0, 8)}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">{o.buyer?.firstName} {o.buyer?.lastName} • {o.createdAt ? new Date(o.createdAt).toLocaleDateString('fr-FR') : ''}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{o.buyer?.firstName} {o.buyer?.lastName} â€¢ {o.createdAt ? new Date(o.createdAt).toLocaleDateString('fr-FR') : ''}</p>
                       </div>
                       <div className="text-right shrink-0">
                         <p className="font-bold text-orange-600 text-sm">{formatCFA(o.total || 0)} <span className="text-xs font-medium text-gray-400">FCFA</span></p>
@@ -381,15 +380,15 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* ═══════════════════ QUICK ACTIONS ═══════════════════ */}
+          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• QUICK ACTIONS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
           <div className="mb-8" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.6s both' }}>
             <div className="mb-4">
               <h2 className="section-title text-xl text-gray-900">Actions rapides</h2>
-              <p className="section-subtitle text-sm mt-0.5">Accédez rapidement aux fonctionnalités clés</p>
+              <p className="section-subtitle text-sm mt-0.5">AccÃ©dez rapidement aux fonctionnalitÃ©s clÃ©s</p>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
               {[
-                { href: '/dashboard/inventory', icon: <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>, label: 'Ajouter une pièce', bg: 'from-orange-500 to-amber-500', lightBg: 'bg-orange-50', textColor: 'text-orange-600' },
+                { href: '/dashboard/inventory', icon: <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>, label: 'Ajouter une piÃ¨ce', bg: 'from-orange-500 to-amber-500', lightBg: 'bg-orange-50', textColor: 'text-orange-600' },
                 { href: '/dashboard/marketplace', icon: <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>, label: 'Marketplace', bg: 'from-blue-500 to-blue-600', lightBg: 'bg-blue-50', textColor: 'text-blue-600' },
                 { href: '/dashboard/orders', icon: <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>, label: `${pendingOrders} commandes`, bg: 'from-emerald-500 to-emerald-600', lightBg: 'bg-emerald-50', textColor: 'text-emerald-600' },
                 { href: '/dashboard/cart', icon: <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>, label: 'Mon panier', bg: 'from-violet-500 to-purple-600', lightBg: 'bg-violet-50', textColor: 'text-violet-600' },
@@ -409,30 +408,30 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* ═══════════════════ PRODUCTS + STOCK ALERTS ═══════════════════ */}
+          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• PRODUCTS + STOCK ALERTS â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
           <div className="grid lg:grid-cols-3 gap-5 mb-8" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both' }}>
             <div className="lg:col-span-2 card-modern p-6">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h2 className="font-bold text-gray-900 text-sm">Dernières pièces</h2>
-                  <p className="text-xs text-gray-400 mt-0.5">Produits les plus récents</p>
+                  <h2 className="font-bold text-gray-900 text-sm">DerniÃ¨res piÃ¨ces</h2>
+                  <p className="text-xs text-gray-400 mt-0.5">Produits les plus rÃ©cents</p>
                 </div>
-                <Link href="/dashboard/inventory" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout →</Link>
+                <Link href="/dashboard/inventory" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout â†’</Link>
               </div>
               {products.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-12 text-gray-400">
                   <svg width="48" height="48" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" className="mb-3 opacity-30"><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
-                  <p className="text-sm font-medium">Aucune pièce</p>
-                  <p className="text-xs text-gray-400 mt-1">Ajoutez votre première pièce pour commencer</p>
+                  <p className="text-sm font-medium">Aucune piÃ¨ce</p>
+                  <p className="text-xs text-gray-400 mt-1">Ajoutez votre premiÃ¨re piÃ¨ce pour commencer</p>
                 </div>
               ) : (
                 <div className="space-y-1">
-                  {products.slice(0, 5).map((p: any) => (
+                  {products.slice(0, 5).map((p) => (
                     <div key={p.id} className="flex items-center gap-4 p-3.5 rounded-2xl hover:bg-gray-50 hover:shadow-sm transition-all duration-200 group cursor-pointer">
-                      <img src={partImages[p.category?.name] || partImages.default} alt={p.title} className="w-12 h-12 rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow" loading="lazy" />
+                      <img src={partImages[p.category?.name || 'default']} alt={p.title} className="w-12 h-12 rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow" loading="lazy" />
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-gray-900 text-sm truncate group-hover:text-orange-600 transition-colors">{p.title}</p>
-                        <p className="text-xs text-gray-500 mt-0.5">{p.brand?.name || ''} • {p.reference || 'N/A'}</p>
+                        <p className="text-xs text-gray-500 mt-0.5">{p.brand?.name || ''} â€¢ {p.reference || 'N/A'}</p>
                       </div>
                       <div className="text-right shrink-0">
                         <p className="font-bold text-orange-600 text-sm">{formatCFA(p.price)} <span className="text-xs font-medium text-gray-400">FCFA</span></p>
@@ -455,14 +454,14 @@ export default function DashboardPage() {
                     <h2 className="font-bold text-gray-900 text-sm">Alertes stock</h2>
                   </div>
                   <div className="space-y-2">
-                    {outOfStock.slice(0, 3).map((p: any) => (
+                    {outOfStock.slice(0, 3).map((p) => (
                       <div key={p.id} className="flex items-center gap-3 p-3 rounded-xl bg-red-50/80 border border-red-100 border-l-4 border-l-red-400">
                         <div className="w-2 h-2 rounded-full bg-red-500 shrink-0" />
                         <span className="text-xs font-semibold text-red-700 truncate flex-1">{p.title}</span>
                         <span className="text-[10px] font-bold text-red-600 bg-red-100 px-2.5 py-1 rounded-full shrink-0">Rupture</span>
                       </div>
                     ))}
-                    {lowStockProducts.slice(0, 3).map((p: any) => (
+                    {lowStockProducts.slice(0, 3).map((p) => (
                       <div key={p.id} className="flex items-center gap-3 p-3 rounded-xl bg-amber-50/80 border border-amber-100 border-l-4 border-l-amber-400">
                         <div className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
                         <span className="text-xs font-semibold text-amber-700 truncate flex-1">{p.title}</span>
@@ -479,11 +478,11 @@ export default function DashboardPage() {
                   <div className="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
                     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#3B82F6" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   </div>
-                  <h2 className="font-bold text-gray-900 text-sm">Marchés Actifs</h2>
+                  <h2 className="font-bold text-gray-900 text-sm">MarchÃ©s Actifs</h2>
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   {[
-                    { name: 'Côte d\'Ivoire', code: 'CI' }, { name: 'Sénégal', code: 'SN' }, { name: 'Mali', code: 'ML' }, { name: 'Burkina', code: 'BF' }, { name: 'Nigeria', code: 'NG' },
+                    { name: 'CÃ´te d\'Ivoire', code: 'CI' }, { name: 'SÃ©nÃ©gal', code: 'SN' }, { name: 'Mali', code: 'ML' }, { name: 'Burkina', code: 'BF' }, { name: 'Nigeria', code: 'NG' },
                   ].map(m => (
                     <div key={m.code} className="text-center p-3 rounded-xl bg-gray-50 hover:bg-orange-50 transition-all duration-200 cursor-pointer hover:shadow-sm group">
                       <img src={`https://flagcdn.com/w80/${m.code.toLowerCase()}.png`} alt={m.name} className="w-10 h-7 object-cover rounded-md mx-auto mb-1.5 shadow-sm group-hover:shadow-md transition-shadow" loading="lazy" />
@@ -500,3 +499,4 @@ export default function DashboardPage() {
     </div>
   );
 }
+

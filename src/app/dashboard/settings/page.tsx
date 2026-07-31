@@ -1,8 +1,7 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
-import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
 
 function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
@@ -24,36 +23,21 @@ function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: b
 }
 
 export default function SettingsPage() {
-  const { t, locale, setLocale, user } = useApp();
   const { addToast } = useToast();
   const [saving, setSaving] = useState(false);
-  const [form, setForm] = useState({ firstName: '', lastName: '', phone: '', shopName: '', city: '', country: '' });
 
   const [general, setGeneral] = useState({ language: 'fr', currency: 'XOF', timezone: 'Africa/Dakar' });
   const [notifications, setNotifications] = useState({ email: true, sms: false, orderAlerts: true, stockAlerts: true });
   const [appearance, setAppearance] = useState({ theme: 'light' as 'light' | 'dark', compact: false });
   const [security, setSecurity] = useState({ twoFactor: false, loginAlerts: true });
 
-  const [prevUserId, setPrevUserId] = useState(user?.id);
-  if (user && user.id !== prevUserId) {
-    setPrevUserId(user.id);
-    setForm({
-      firstName: user.firstName || '',
-      lastName: user.lastName || '',
-      phone: user.phone || '',
-      shopName: user.shopName || '',
-      city: user.city || '',
-      country: user.country || '',
-    });
-  }
-
   const handleSave = async (section: string) => {
     setSaving(true);
     try {
       await new Promise(r => setTimeout(r, 500));
       addToast('success', `${section} mis à jour avec succès`);
-    } catch (err: any) {
-      addToast('error', err.message || 'Erreur lors de la mise à jour');
+    } catch (err) {
+      addToast('error', err instanceof Error ? err.message : 'Erreur lors de la mise à jour');
     } finally {
       setSaving(false);
     }
@@ -67,8 +51,6 @@ export default function SettingsPage() {
       window.location.href = '/auth/login';
     }
   };
-
-  const initials = user ? `${(user.firstName || '')[0] || ''}${(user.lastName || '')[0] || ''}` : 'U';
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -242,7 +224,7 @@ export default function SettingsPage() {
               <div className="flex items-center justify-between py-3.5 px-3 rounded-xl hover:bg-gray-50 transition-colors">
                 <div>
                   <p className="text-sm font-semibold text-gray-900">Mode compact</p>
-                  <p className="text-xs text-gray-400 mt-0.5">Afficher plus d'éléments à l'écran</p>
+                  <p className="text-xs text-gray-400 mt-0.5">Afficher plus d&apos;éléments à l&apos;écran</p>
                 </div>
                 <ToggleSwitch checked={appearance.compact} onChange={v => setAppearance({ ...appearance, compact: v })} />
               </div>

@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { useRouter } from 'next/navigation';
 
@@ -12,15 +12,47 @@ interface Notification {
   time: string;
 }
 
+interface SearchProduct {
+  id: string;
+  title: string;
+  price: number;
+  brand?: { name?: string } | null;
+}
+
+interface ApiNotification {
+  id: string;
+  title: string;
+  message: string;
+  type?: string;
+  read?: boolean;
+  createdAt?: string;
+}
+
+interface PendingOrder {
+  id: string;
+  status?: string;
+  orderNumber?: string;
+  totalAmount?: number;
+  total?: number;
+  createdAt?: string;
+  buyer?: { firstName?: string };
+}
+
+interface LowStockProduct {
+  id: string;
+  title: string;
+  stock: number;
+}
+
 const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
 export default function DashboardTopBar() {
-  const { t, locale, setLocale, sidebarOpen, setSidebarOpen, user } = useApp();
+  const { locale, setLocale, sidebarOpen, setSidebarOpen, user } = useApp();
   const router = useRouter();
   const [showNotif, setShowNotif] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [search, setSearch] = useState('');
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
   const [showSearch, setShowSearch] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -35,13 +67,6 @@ export default function DashboardTopBar() {
       mobileSearchInputRef.current.focus();
     }
   }, [showMobileSearch]);
-
-  const closeAll = useCallback(() => {
-    setShowNotif(false);
-    setShowUserMenu(false);
-    setShowSearch(false);
-    setShowMobileSearch(false);
-  }, []);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -67,8 +92,8 @@ export default function DashboardTopBar() {
         const notifs: Notification[] = [];
         if (ordersData.success) {
           const pending =
-            ordersData.data.data?.filter((o: any) => o.status === 'PENDING') || [];
-          pending.slice(0, 2).forEach((o: any) => {
+            ordersData.data.data?.filter((o: PendingOrder) => o.status === 'PENDING') || [];
+          pending.slice(0, 2).forEach((o: PendingOrder) => {
             notifs.push({
               id: `order-${o.id}`,
               title: 'Nouvelle commande',
@@ -84,9 +109,9 @@ export default function DashboardTopBar() {
         if (prodData.success) {
           const lowStock =
             prodData.data.data?.filter(
-              (p: any) => p.stock <= 3 && p.stock > 0
+              (p: LowStockProduct) => p.stock <= 3 && p.stock > 0
             ) || [];
-          lowStock.slice(0, 2).forEach((p: any) => {
+          lowStock.slice(0, 2).forEach((p: LowStockProduct) => {
             notifs.push({
               id: `stock-${p.id}`,
               title: 'Stock bas',
@@ -121,7 +146,7 @@ export default function DashboardTopBar() {
         }
         const data = await res.json();
         if (data.success && data.data.notifications) {
-          const mapped: Notification[] = data.data.notifications.map((n: any) => ({
+          const mapped: Notification[] = data.data.notifications.map((n: ApiNotification) => ({
             id: n.id,
             title: n.title,
             message: n.message,
@@ -175,7 +200,7 @@ export default function DashboardTopBar() {
       );
       const data = await res.json();
       if (data.success) {
-        setSearchResults(data.data.data);
+        setSearchResults(data.data.data as SearchProduct[]);
         setShowSearch(true);
       }
     } catch {}
@@ -331,7 +356,7 @@ export default function DashboardTopBar() {
                   <p className="text-[10px] text-gray-400 px-3 py-1.5 uppercase font-bold tracking-wider">
                     Produits
                   </p>
-                  {searchResults.map((p: any) => (
+                  {searchResults.map((p: SearchProduct) => (
                     <button
                       key={p.id}
                       onClick={() => {
@@ -600,7 +625,7 @@ export default function DashboardTopBar() {
                 <p className="text-[10px] text-gray-400 px-3 py-1.5 uppercase font-bold tracking-wider">
                   Produits
                 </p>
-                {searchResults.map((p: any) => (
+                {searchResults.map((p: SearchProduct) => (
                   <button
                     key={p.id}
                     onClick={() => {

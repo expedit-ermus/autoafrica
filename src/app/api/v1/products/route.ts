@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { productsService } from '@/modules/products/products.service'
 import { requireAuth } from '@/modules/auth/auth.guard'
 import { successResponse, handleApiError } from '@/shared/utils/response'

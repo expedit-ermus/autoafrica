@@ -1,13 +1,14 @@
 import { prisma } from '@/lib/prisma'
+import { Prisma, OrderStatus, PaymentStatus } from '@/generated/prisma/client'
 import { NotFoundError, ValidationError, ForbiddenError } from '@/shared/errors'
 import { getPaginationParams, buildPaginatedResponse } from '@/shared/utils/pagination'
-import { PaginationParams, RequestContext } from '@/shared/types'
+import { PaginationParams } from '@/shared/types'
 import { generateOrderNumber } from '../auth/auth.utils'
 
 interface CreateOrderInput {
   items: Array<{ productId: string; quantity: number }>
-  shippingAddress?: any
-  billingAddress?: any
+  shippingAddress?: Prisma.InputJsonValue
+  billingAddress?: Prisma.InputJsonValue
   notes?: string
   shippingMethod?: string
 }
@@ -22,20 +23,21 @@ interface OrderFilters {
 }
 
 export class OrdersService {
-  async list(filters: OrderFilters, pagination: PaginationParams, ctx: RequestContext) {
+  async list(filters: OrderFilters, pagination: PaginationParams) {
     const { page, pageSize, skip, orderBy } = getPaginationParams(pagination)
-    const where: any = {}
+    const where: Prisma.OrderWhereInput = {}
 
     if (filters.buyerId) where.buyerId = filters.buyerId
     if (filters.sellerId) {
       where.items = { some: { sellerId: filters.sellerId } }
     }
-    if (filters.status) where.status = filters.status
-    if (filters.paymentStatus) where.paymentStatus = filters.paymentStatus
+    if (filters.status) where.status = filters.status as OrderStatus
+    if (filters.paymentStatus) where.paymentStatus = filters.paymentStatus as PaymentStatus
     if (filters.dateFrom || filters.dateTo) {
-      where.createdAt = {}
-      if (filters.dateFrom) where.createdAt.gte = new Date(filters.dateFrom)
-      if (filters.dateTo) where.createdAt.lte = new Date(filters.dateTo)
+      where.createdAt = {
+        ...(filters.dateFrom ? { gte: new Date(filters.dateFrom) } : {}),
+        ...(filters.dateTo ? { lte: new Date(filters.dateTo) } : {}),
+      }
     }
 
     const [orders, total] = await Promise.all([
@@ -87,7 +89,7 @@ export class OrdersService {
 
   async create(data: CreateOrderInput, buyerId: string) {
     let totalAmount = 0
-    const orderItems = []
+    const orderItems: Prisma.OrderItemUncheckedCreateWithoutOrderInput[] = []
 
     for (const item of data.items) {
       const product = await prisma.product.findUnique({ where: { id: item.productId } })
@@ -143,7 +145,7 @@ export class OrdersService {
 
     const updated = await prisma.order.update({
       where: { id },
-      data: { status: status as any },
+      data: { status: status as OrderStatus },
       include: { items: true },
     })
 
@@ -176,11 +178,11 @@ export class OrdersService {
   }
 
   async getSellerOrders(sellerId: string, pagination: PaginationParams) {
-    return this.list({ sellerId }, pagination, { userId: sellerId })
+    return this.list({ sellerId }, pagination)
   }
 
   async getBuyerOrders(buyerId: string, pagination: PaginationParams) {
-    return this.list({ buyerId }, pagination, { userId: buyerId })
+    return this.list({ buyerId }, pagination)
   }
 }
 

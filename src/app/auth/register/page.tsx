@@ -24,11 +24,8 @@ export default function RegisterPage() {
   const router = useRouter();
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', shopName: '', country: 'CI', password: '', confirmPassword: '', role: 'SELLER' });
   const [loading, setLoading] = useState(false);
-  const [touchedFields, setTouchedFields] = useState<Record<string, boolean>>({});
 
   const selectedCountry = COUNTRIES.find(c => c.code === form.country);
-
-  const markTouched = (field: string) => setTouchedFields(prev => ({ ...prev, [field]: true }));
 
   const getPasswordStrength = (password: string): { label: string; color: string; width: string; textColor: string } => {
     if (password.length === 0) return { label: '', color: 'bg-gray-200', width: 'w-0', textColor: 'text-gray-400' };
@@ -70,8 +67,8 @@ export default function RegisterPage() {
       setUser(data.data.user);
       addToast('success', 'Compte créé avec succès ! Bienvenue sur AutoAfrique');
       router.push('/dashboard');
-    } catch (err: any) {
-      addToast('error', err.message || 'Erreur lors de l\'inscription');
+    } catch (err) {
+      addToast('error', err instanceof Error ? err.message : 'Erreur lors de l\'inscription');
     } finally {
       setLoading(false);
     }
@@ -177,7 +174,7 @@ export default function RegisterPage() {
               { icon: (
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
                 ), label: 'Paiements Sécurisés', desc: 'système escrow' },
-            ].map((item, i) => (
+            ].map((item) => (
               <div key={item.label} className="flex items-center gap-4 group">
                 <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110" style={{ background: 'rgba(232, 93, 4, 0.1)', border: '1px solid rgba(232, 93, 4, 0.15)' }}>
                   <div className="text-orange-400">{item.icon}</div>

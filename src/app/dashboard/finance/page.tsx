@@ -7,8 +7,19 @@ import { useToast } from '@/contexts/ToastContext';
 import QRCodeDisplay from '@/components/QRCodeDisplay';
 import Modal from '@/components/Modal';
 import { DonutChart } from '@/components/Charts';
+import { Order, Payment } from '@/shared/types';
 
-function paymentDate(p: any): Date {
+interface Invoice {
+  id: string;
+  client: string;
+  amount: number;
+  status: string;
+  date: string;
+  method: string;
+  raw: Order;
+}
+
+function paymentDate(p: Payment): Date {
   const ts = p.createdAt || p.updatedAt;
   return ts ? new Date(ts) : new Date(0);
 }
@@ -16,12 +27,11 @@ function paymentDate(p: any): Date {
 export default function FinancePage() {
   const { t } = useApp();
   const { addToast } = useToast();
-  const [period, setPeriod] = useState('month');
   const [chartView, setChartView] = useState<'daily' | 'weekly' | 'monthly'>('daily');
   const [dateRange, setDateRange] = useState({ from: '', to: '' });
-  const [showInvoiceQR, setShowInvoiceQR] = useState<any>(null);
-  const [orders, setOrders] = useState<any[]>([]);
-  const [payments, setPayments] = useState<any[]>([]);
+  const [showInvoiceQR, setShowInvoiceQR] = useState<Invoice | null>(null);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -51,22 +61,14 @@ export default function FinancePage() {
   }, [refreshKey]);
 
   const totalRevenue = payments
-    .filter((p: any) => p.status === 'COMPLETED')
-    .reduce((s: number, p: any) => s + (p.amount || 0), 0);
+    .filter(p => p.status === 'COMPLETED')
+    .reduce((s, p) => s + (p.amount || 0), 0);
 
-  const pendingAmount = orders
-    .filter((o: any) => o.status === 'PENDING' || o.status === 'CONFIRMED')
-    .reduce((s: number, o: any) => s + (o.total || 0), 0);
-
-  const escrowAmount = payments
-    .filter((p: any) => p.status === 'HELD')
-    .reduce((s: number, p: any) => s + (p.amount || 0), 0);
-
-  const completedOrders = orders.filter((o: any) => o.status === 'DELIVERED' || o.status === 'COMPLETED');
-  const cancelledOrders = orders.filter((o: any) => o.status === 'CANCELLED');
+  const completedOrders = orders.filter(o => o.status === 'DELIVERED' || o.status === 'COMPLETED');
+  const cancelledOrders = orders.filter(o => o.status === 'CANCELLED');
   const totalOrderCount = orders.length;
   const avgOrderValue = completedOrders.length > 0 ? totalRevenue / completedOrders.length : 0;
-  const profitMargin = totalRevenue > 0 ? ((totalRevenue - cancelledOrders.reduce((s: number, o: any) => s + (o.total || 0), 0)) / totalRevenue * 100) : 0;
+  const profitMargin = totalRevenue > 0 ? ((totalRevenue - cancelledOrders.reduce((s, o) => s + (o.total || 0), 0)) / totalRevenue * 100) : 0;
 
   const paymentMethods = [
     { name: 'Orange Money', color: '#FF6600', key: 'ORANGE_MONEY' },
@@ -77,15 +79,15 @@ export default function FinancePage() {
 
   const methodAmounts = paymentMethods.map(pm => ({
     ...pm,
-    amount: payments.filter((p: any) => p.method === pm.key && p.status === 'COMPLETED').reduce((s: number, p: any) => s + (p.amount || 0), 0),
-    count: payments.filter((p: any) => p.method === pm.key && p.status === 'COMPLETED').length,
+    amount: payments.filter(p => p.method === pm.key && p.status === 'COMPLETED').reduce((s, p) => s + (p.amount || 0), 0),
+    count: payments.filter(p => p.method === pm.key && p.status === 'COMPLETED').length,
   }));
 
   const donutData = methodAmounts
     .filter(m => m.amount > 0)
     .map(m => ({ label: m.name, value: m.amount, color: m.color }));
 
-  const invoices = useMemo(() => orders.map((o: any) => ({
+  const invoices = useMemo(() => orders.map((o): Invoice => ({
     id: o.orderNumber || o.id?.slice(0, 8),
     client: o.buyer?.firstName ? `${o.buyer.firstName} ${o.buyer.lastName || ''}` : o.buyer?.shopName || 'Client',
     amount: o.total || 0,
@@ -96,10 +98,10 @@ export default function FinancePage() {
   })), [orders]);
 
   const chartData = useMemo(() => {
-    const completed = payments.filter((p: any) => p.status === 'COMPLETED');
+    const completed = payments.filter(p => p.status === 'COMPLETED');
     const grouped: Record<string, number> = {};
 
-    completed.forEach((p: any) => {
+    completed.forEach((p) => {
       const d = paymentDate(p);
       let key = '';
       if (chartView === 'daily') {
@@ -184,7 +186,7 @@ export default function FinancePage() {
     {
       label: 'Marge brute',
       value: profitMargin.toFixed(1) + '%',
-      change: formatCFA(totalRevenue - cancelledOrders.reduce((s: number, o: any) => s + (o.total || 0), 0)) + ' FCFA',
+      change: formatCFA(totalRevenue - cancelledOrders.reduce((s, o) => s + (o.total || 0), 0)) + ' FCFA',
       up: profitMargin >= 50,
       icon: (
         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

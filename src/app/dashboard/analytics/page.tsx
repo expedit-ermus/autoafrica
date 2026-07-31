@@ -2,15 +2,13 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
-import { useApp } from '@/contexts/AppContext';
 import BarChart, { DonutChart, SparkLine } from '@/components/Charts';
+import { Order, Payment, Product } from '@/shared/types';
 
 export default function AnalyticsPage() {
-  const { t } = useApp();
-  const [products, setProducts] = useState<any[]>([]);
-  const [orders, setOrders] = useState<any[]>([]);
-  const [payments, setPayments] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [period, setPeriod] = useState('month');
 
   const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
@@ -30,15 +28,15 @@ export default function AnalyticsPage() {
           if (od.success) setOrders(od.data.data);
           if (payd.success) setPayments(payd.data.data);
         }
-      } catch {} finally { if (!cancelled) setLoading(false); }
+      } catch {}
     })();
     return () => { cancelled = true; };
   }, []);
 
-  const totalRevenue = payments.filter((p: any) => p.status === 'COMPLETED').reduce((s: number, p: any) => s + (p.amount || 0), 0);
+  const totalRevenue = payments.filter(p => p.status === 'COMPLETED').reduce((s, p) => s + (p.amount || 0), 0);
   const totalOrders = orders.length;
-  const completedOrders = orders.filter((o: any) => o.status === 'DELIVERED' || o.status === 'COMPLETED');
-  const cancelledOrders = orders.filter((o: any) => o.status === 'CANCELLED');
+  const completedOrders = orders.filter(o => o.status === 'DELIVERED' || o.status === 'COMPLETED');
+  const cancelledOrders = orders.filter(o => o.status === 'CANCELLED');
   const avgOrderValue = completedOrders.length > 0 ? totalRevenue / completedOrders.length : 0;
   const conversionRate = totalOrders > 0 ? ((completedOrders.length / totalOrders) * 100).toFixed(1) : '0.0';
   const avgRating = 4.7;
@@ -46,7 +44,7 @@ export default function AnalyticsPage() {
 
   // Revenue by payment method
   const methodRevenues: Record<string, number> = {};
-  payments.filter((p: any) => p.status === 'COMPLETED').forEach((p: any) => {
+  payments.filter(p => p.status === 'COMPLETED').forEach(p => {
     const m = p.method || 'N/A';
     methodRevenues[m] = (methodRevenues[m] || 0) + (p.amount || 0);
   });
@@ -56,8 +54,8 @@ export default function AnalyticsPage() {
 
   // Top products by order count
   const productOrderCount: Record<string, { count: number; revenue: number; title: string }> = {};
-  orders.forEach((o: any) => {
-    o.items?.forEach((item: any) => {
+  orders.forEach(o => {
+    o.items?.forEach(item => {
       const pid = item.productId || item.product?.id;
       if (pid) {
         if (!productOrderCount[pid]) productOrderCount[pid] = { count: 0, revenue: 0, title: item.product?.title || 'Pièce' };
@@ -73,7 +71,7 @@ export default function AnalyticsPage() {
 
   // Order status distribution
   const statusCounts: Record<string, number> = {};
-  orders.forEach((o: any) => { statusCounts[o.status] = (statusCounts[o.status] || 0) + 1; });
+  orders.forEach(o => { statusCounts[o.status] = (statusCounts[o.status] || 0) + 1; });
   const statusLabels: Record<string, string> = { PENDING: 'En attente', CONFIRMED: 'Confirmée', PAID: 'Payée', SHIPPED: 'Expédiée', DELIVERED: 'Livrée', COMPLETED: 'Terminée', CANCELLED: 'Annulée' };
   const statusColors: Record<string, string> = { PENDING: '#EAB308', CONFIRMED: '#3B82F6', PAID: '#22C55E', SHIPPED: '#A855F7', DELIVERED: '#22C55E', COMPLETED: '#22C55E', CANCELLED: '#EF4444' };
   const statusData = Object.entries(statusCounts).map(([k, v]) => ({ label: statusLabels[k] || k, value: v, color: statusColors[k] || '#6B7280' }));
@@ -91,8 +89,8 @@ export default function AnalyticsPage() {
   // Category performance
   const catRevenues: Record<string, number> = {};
   const catCounts: Record<string, number> = {};
-  orders.forEach((o: any) => {
-    o.items?.forEach((item: any) => {
+  orders.forEach(o => {
+    o.items?.forEach(item => {
       const cat = products.find(p => p.id === item.productId)?.category?.name || 'Autre';
       catRevenues[cat] = (catRevenues[cat] || 0) + (item.totalPrice || 0);
       catCounts[cat] = (catCounts[cat] || 0) + (item.quantity || 1);
@@ -104,12 +102,12 @@ export default function AnalyticsPage() {
     .map(([label, value]) => ({ label: label.substring(0, 6), value, color: 'bg-orange-400' }));
 
   // Revenue sparkline
-  const recentPayments = payments.filter((p: any) => p.status === 'COMPLETED').slice(0, 14);
-  const sparkData = recentPayments.map((p: any) => p.amount || 0);
+  const recentPayments = payments.filter(p => p.status === 'COMPLETED').slice(0, 14);
+  const sparkData = recentPayments.map(p => p.amount || 0);
 
   // Country distribution
   const countryOrders: Record<string, number> = {};
-  orders.forEach((o: any) => {
+  orders.forEach(o => {
     const c = o.buyer?.country || 'N/A';
     countryOrders[c] = (countryOrders[c] || 0) + 1;
   });
@@ -358,7 +356,7 @@ export default function AnalyticsPage() {
               </div>
               {countryData.length > 0 ? (
                 <div className="space-y-3">
-                  {countryData.slice(0, 6).map((c, i) => {
+                  {countryData.slice(0, 6).map((c) => {
                     const maxVal = countryData[0]?.value || 1;
                     const pct = (c.value / maxVal) * 100;
                     return (
@@ -503,7 +501,7 @@ export default function AnalyticsPage() {
                               <p className="text-sm font-semibold text-gray-900 truncate max-w-[200px]">{p.title}</p>
                             </td>
                             <td className="py-3.5 pr-4">
-                              <span className="text-xs text-gray-500">{product?.brand || '—'}</span>
+                              <span className="text-xs text-gray-500">{product?.brand?.name || '—'}</span>
                             </td>
                             <td className="py-3.5 pr-4 text-right">
                               <span className="text-sm font-bold text-gray-900">{formatCFA(p.revenue)}</span>

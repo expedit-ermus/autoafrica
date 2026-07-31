@@ -1,9 +1,10 @@
-const Database = require('better-sqlite3')
-const bcryptjs = require('bcryptjs')
-const path = require('path')
-const crypto = require('crypto')
+import Database from 'better-sqlite3'
+import bcryptjs from 'bcryptjs'
+import path from 'path'
+import crypto from 'crypto'
+import { fileURLToPath } from 'url'
 
-const dbPath = path.join(__dirname, '..', 'dev.db')
+const dbPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'dev.db')
 const db = new Database(dbPath)
 
 function cuid() {

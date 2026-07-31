@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { Prisma } from '@/generated/prisma/client'
 import { NotFoundError } from '@/shared/errors'
 
 interface CreateCustomerInput {
@@ -41,15 +42,16 @@ export class CrmService {
     const { page, pageSize } = pagination
     const skip = (page - 1) * pageSize
 
-    const where: any = {}
+    const where: Prisma.CustomerWhereInput = {}
     if (filters.type) where.type = filters.type
     if (filters.country) where.country = filters.country
     if (filters.segment) where.segment = filters.segment
     if (filters.search) {
+      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
       where.OR = [
-        { name: { contains: filters.search, mode: 'insensitive' } },
-        { phone: { contains: filters.search } },
-        { email: { contains: filters.search, mode: 'insensitive' } },
+        { name: searchFilter },
+        { phone: searchFilter },
+        { email: searchFilter },
       ]
     }
 
@@ -86,14 +88,14 @@ export class CrmService {
         tags: data.tags || [],
         notes: data.notes,
         source: data.source || 'web',
-      } as any,
+      } satisfies Prisma.CustomerCreateInput,
     })
   }
 
   async updateCustomer(id: string, data: Partial<CreateCustomerInput>) {
     const customer = await prisma.customer.findUnique({ where: { id } })
     if (!customer) throw new NotFoundError('Customer', id)
-    return prisma.customer.update({ where: { id }, data: data as any })
+    return prisma.customer.update({ where: { id }, data: data as Prisma.CustomerUpdateInput })
   }
 
   async deleteCustomer(id: string) {
@@ -126,7 +128,7 @@ export class CrmService {
         nextAction: data.nextAction,
         nextDate: data.nextDate ? new Date(data.nextDate) : undefined,
         userId,
-      } as any,
+      } satisfies Prisma.CustomerInteractionUncheckedCreateInput,
     })
 
     await prisma.customer.update({
@@ -143,13 +145,14 @@ export class CrmService {
     const { page, pageSize } = pagination
     const skip = (page - 1) * pageSize
 
-    const where: any = {}
+    const where: Prisma.LeadWhereInput = {}
     if (filters.status) where.status = filters.status
     if (filters.search) {
+      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
       where.OR = [
-        { name: { contains: filters.search, mode: 'insensitive' } },
-        { phone: { contains: filters.search } },
-        { email: { contains: filters.search, mode: 'insensitive' } },
+        { name: searchFilter },
+        { phone: searchFilter },
+        { email: searchFilter },
       ]
     }
 
@@ -174,7 +177,7 @@ export class CrmService {
         value: data.value,
         notes: data.notes,
         customerId: data.customerId,
-      } as any,
+      } satisfies Prisma.LeadUncheckedCreateInput,
     })
   }
 
@@ -193,7 +196,7 @@ export class CrmService {
 
   // ── Stats ──
 
-  async getStats(userId: string) {
+  async getStats() {
     const [totalCustomers, totalLeads, newLeads, activeLeads, convertedLeads] = await Promise.all([
       prisma.customer.count(),
       prisma.lead.count(),

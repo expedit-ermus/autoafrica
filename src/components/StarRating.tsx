@@ -38,12 +38,22 @@ export default function StarRating({ rating, maxStars = 5, size = 'md', interact
   );
 }
 
+interface Review {
+  id: string;
+  rating: number;
+  title?: string | null;
+  content?: string | null;
+  comment?: string;
+  createdAt?: string;
+  author?: { firstName?: string; lastName?: string };
+}
+
 interface ReviewsProps {
   productId: string;
 }
 
 export function ProductReviews({ productId }: ReviewsProps) {
-  const [reviews, setReviews] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [avgRating, setAvgRating] = useState(0);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -82,13 +92,13 @@ export function ProductReviews({ productId }: ReviewsProps) {
       setShowForm(false);
       setForm({ rating: 5, title: '', comment: '' });
       setRefreshKey(k => k + 1);
-    } catch (err: any) { alert(err.message || 'Erreur'); } finally { setSubmitting(false); }
+    } catch (err) { alert(err instanceof Error ? err.message : 'Erreur'); } finally { setSubmitting(false); }
   };
 
   const ratingDist = [5, 4, 3, 2, 1].map(r => ({
     stars: r,
-    count: reviews.filter((rev: any) => rev.rating === r).length,
-    pct: total > 0 ? (reviews.filter((rev: any) => rev.rating === r).length / total) * 100 : 0,
+    count: reviews.filter(rev => rev.rating === r).length,
+    pct: total > 0 ? (reviews.filter(rev => rev.rating === r).length / total) * 100 : 0,
   }));
 
   return (
@@ -129,7 +139,7 @@ export function ProductReviews({ productId }: ReviewsProps) {
 
       {reviews.length > 0 && (
         <div className="space-y-3">
-          {reviews.map((rev: any) => (
+          {reviews.map(rev => (
             <div key={rev.id} className="bg-white rounded-xl border border-gray-100 p-4">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-xs font-bold text-orange-700">

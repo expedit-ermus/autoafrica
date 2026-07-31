@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { Prisma } from '@/generated/prisma/client'
 import { requireAuth } from '@/modules/auth/auth.guard'
 import { successResponse, handleApiError } from '@/shared/utils/response'
 
@@ -9,7 +10,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const unreadOnly = searchParams.get('unread') === 'true'
 
-    const where: any = { userId: auth.userId }
+    const where: Prisma.NotificationWhereInput = { userId: auth.userId }
     if (unreadOnly) where.read = false
 
     const [notifications, unreadCount] = await Promise.all([

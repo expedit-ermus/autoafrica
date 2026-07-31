@@ -2,7 +2,6 @@
 import { useState, useMemo } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
-import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
 
 const faq = [
@@ -40,7 +39,6 @@ const categoryColors: Record<string, string> = {
 };
 
 export default function HelpPage() {
-  const { t } = useApp();
   const { addToast } = useToast();
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [faqFilter, setFaqFilter] = useState('all');

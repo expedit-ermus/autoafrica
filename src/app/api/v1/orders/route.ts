@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
 
     const result = auth.role === 'SELLER'
       ? await ordersService.getSellerOrders(auth.userId, pagination)
-      : await ordersService.list(filters, pagination, auth)
+      : await ordersService.list(filters, pagination)
     const response = successResponse(result)
     response.headers.set('Cache-Control', 'private, s-maxage=30, stale-while-revalidate=120')
     return response

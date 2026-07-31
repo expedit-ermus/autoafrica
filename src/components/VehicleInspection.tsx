@@ -105,7 +105,7 @@ export default function VehicleInspection({ vehicleName, vehicleId }: Props) {
         <div className="mt-5 bg-emerald-50 rounded-xl p-4">
           <p className="text-xs font-bold text-emerald-800 mb-2">📋 Résumé de l&apos;inspection</p>
           <div className="grid grid-cols-5 gap-2 text-center">
-            {inspectionPoints.map((cat, i) => {
+            {inspectionPoints.map((cat) => {
               const catItems = cat.items.map(item => ratings[`${cat.category}-${item}`] || 0);
               const catAvg = catItems.some(v => v > 0)
                 ? (catItems.filter(v => v > 0).reduce((s, v) => s + v, 0) / catItems.filter(v => v > 0).length).toFixed(1)

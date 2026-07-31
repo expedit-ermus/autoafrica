@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
@@ -7,6 +7,7 @@ import { useToast } from '@/contexts/ToastContext';
 import Modal from '@/components/Modal';
 import BarChart from '@/components/Charts';
 import ImageUpload from '@/components/ImageUpload';
+import { Product } from '@/shared/types';
 
 const partImages: Record<string, string> = {
   'Moteur': 'https://images.unsplash.com/photo-1763848843613-f8c2ca3a31a1?w=200&h=150&fit=crop',
@@ -19,14 +20,14 @@ const partImages: Record<string, string> = {
 export default function InventoryPage() {
   const { t } = useApp();
   const { addToast } = useToast();
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
   const [brandFilter, setBrandFilter] = useState('all');
   const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
   const [showAdd, setShowAdd] = useState(false);
-  const [editProduct, setEditProduct] = useState<any>(null);
+  const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [showBulk, setShowBulk] = useState(false);
   const [bulkValue, setBulkValue] = useState('');
@@ -41,7 +42,7 @@ export default function InventoryPage() {
   const ITEMS_PER_PAGE = 12;
 
   const brands = ['Toyota', 'Peugeot', 'Hyundai', 'Kia', 'Mercedes', 'Renault', 'Nissan', 'Volkswagen'];
-  const categories = ['Moteur', 'Frein', 'Suspension', 'Carrosserie', 'Électrique', 'Transmission', 'Échappement', 'Pneumatique', 'Refroidissement', 'Direction'];
+  const categories = ['Moteur', 'Frein', 'Suspension', 'Carrosserie', 'Ã‰lectrique', 'Transmission', 'Ã‰chappement', 'Pneumatique', 'Refroidissement', 'Direction'];
 
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -51,7 +52,7 @@ export default function InventoryPage() {
       try {
         const res = await fetch('/api/v1/products?pageSize=200', { credentials: 'include' });
         const data = await res.json();
-        if (!cancelled && data.success) setProducts(data.data.data);
+        if (!cancelled && data.success) setProducts(data.data.data as Product[]);
       } catch (err) { console.error(err); } finally { if (!cancelled) setLoading(false); }
     })();
     return () => { cancelled = true; };
@@ -76,7 +77,7 @@ export default function InventoryPage() {
     return { label: 'En stock', color: 'text-emerald-600', bg: 'bg-emerald-50', dot: 'bg-emerald-500' };
   };
 
-  const getConditionBadge = (condition: string) => {
+  const getConditionBadge = (condition: string | null | undefined) => {
     switch (condition) {
       case 'NEW': return { label: 'Neuf', bg: 'bg-blue-50 text-blue-700 border-blue-200' };
       case 'USED': return { label: 'Occasion', bg: 'bg-amber-50 text-amber-700 border-amber-200' };
@@ -96,24 +97,24 @@ export default function InventoryPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Save failed');
-      addToast('success', editProduct ? 'Produit modifié !' : 'Produit ajouté !');
+      addToast('success', editProduct ? 'Produit modifiÃ© !' : 'Produit ajoutÃ© !');
       setShowAdd(false); setEditProduct(null);
       setForm({ title: '', description: '', reference: '', brand: 'Toyota', model: '', category: 'Moteur', price: 0, stock: 0, condition: 'USED', yearStart: 2015, yearEnd: 2024, images: [] });
       setRefreshKey(k => k + 1);
-    } catch (err: any) { addToast('error', err.message); } finally { setSaving(false); }
+    } catch (err) { addToast('error', err instanceof Error ? err.message : 'Erreur'); } finally { setSaving(false); }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm('Supprimer ce produit ?')) return;
     try {
       const res = await fetch(`/api/v1/products/${id}`, { method: 'DELETE', credentials: 'include' });
-      if (res.ok) { addToast('success', 'Produit supprimé'); setRefreshKey(k => k + 1); }
-    } catch (err) { addToast('error', 'Erreur suppression'); }
+      if (res.ok) { addToast('success', 'Produit supprimÃ©'); setRefreshKey(k => k + 1); }
+    } catch { addToast('error', 'Erreur suppression'); }
   };
 
   const toggleSelect = (id: string) => {
     const next = new Set(selected);
-    next.has(id) ? next.delete(id) : next.add(id);
+    if (next.has(id)) { next.delete(id); } else { next.add(id); }
     setSelected(next);
   };
 
@@ -133,7 +134,7 @@ export default function InventoryPage() {
         count++;
       } catch {}
     }
-    addToast('success', `${count} produit${count > 1 ? 's' : ''} mis à jour`);
+    addToast('success', `${count} produit${count > 1 ? 's' : ''} mis Ã  jour`);
     setSelected(new Set()); setShowBulk(false); setBulkValue('');
     setRefreshKey(k => k + 1);
   };
@@ -147,25 +148,25 @@ export default function InventoryPage() {
         if (res.ok) count++;
       } catch {}
     }
-    addToast('success', `${count} produit${count > 1 ? 's' : ''} supprimé${count > 1 ? 's' : ''}`);
+    addToast('success', `${count} produit${count > 1 ? 's' : ''} supprimÃ©${count > 1 ? 's' : ''}`);
     setSelected(new Set());
     setRefreshKey(k => k + 1);
   };
 
   const exportCSV = () => {
-    const headers = ['Titre', 'Marque', 'Référence', 'Catégorie', 'Prix', 'Stock', 'Condition'];
+    const headers = ['Titre', 'Marque', 'RÃ©fÃ©rence', 'CatÃ©gorie', 'Prix', 'Stock', 'Condition'];
     const rows = filtered.map(p => [p.title, p.brand?.name || '', p.reference || '', p.category?.name || '', p.price, p.stock, p.condition]);
     const csv = [headers, ...rows].map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = `inventaire_${new Date().toISOString().split('T')[0]}.csv`;
     a.click(); URL.revokeObjectURL(url);
-    addToast('success', 'CSV exporté');
+    addToast('success', 'CSV exportÃ©');
   };
 
-  const openEdit = (p: any) => {
+  const openEdit = (p: Product) => {
     setEditProduct(p);
-    setForm({ title: p.title, description: p.description || '', reference: p.reference || '', brand: p.brand?.name || 'Toyota', model: p.model || '', category: p.category?.slug || 'Moteur', price: p.price, stock: p.stock, condition: p.condition?.toLowerCase() || 'used', yearStart: p.yearStart || 2015, yearEnd: p.yearEnd || 2024, images: p.images || [] });
+    setForm({ title: p.title, description: p.description || '', reference: p.reference || '', brand: p.brand?.name || 'Toyota', model: p.model || '', category: p.category?.slug || 'Moteur', price: p.price, stock: p.stock, condition: p.condition?.toLowerCase() || 'used', yearStart: p.yearStart || 2015, yearEnd: p.yearEnd || 2024, images: Array.isArray(p.images) ? p.images : [] });
     setShowAdd(true);
   };
 
@@ -199,7 +200,7 @@ export default function InventoryPage() {
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 tracking-tight">{t.inventory.title}</h1>
                 <p className="text-sm text-gray-500 mt-1">
-                  <span className="font-semibold text-gray-700">{products.length}</span> pièces dans votre inventaire
+                  <span className="font-semibold text-gray-700">{products.length}</span> piÃ¨ces dans votre inventaire
                 </p>
               </div>
               <div className="flex items-center gap-2">
@@ -237,7 +238,7 @@ export default function InventoryPage() {
           {/* Category Chart */}
           {categoryStats.length > 0 && (
             <div className="bg-white rounded-2xl border border-gray-100 p-5 mb-6 shadow-sm">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3">Répartition par catégorie</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-3">RÃ©partition par catÃ©gorie</h3>
               <BarChart data={categoryStats} height={100} format={(n) => `${n}`} />
             </div>
           )}
@@ -254,7 +255,7 @@ export default function InventoryPage() {
                   value={search}
                   onChange={(e) => { setSearch(e.target.value); setCurrentPage(1); }}
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
-                  placeholder="Rechercher par nom, marque ou référence..."
+                  placeholder="Rechercher par nom, marque ou rÃ©fÃ©rence..."
                 />
               </div>
 
@@ -285,7 +286,7 @@ export default function InventoryPage() {
                   onChange={(e) => { setCategoryFilter(e.target.value); setCurrentPage(1); }}
                   className="px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all cursor-pointer"
                 >
-                  <option value="all">Toutes catégories</option>
+                  <option value="all">Toutes catÃ©gories</option>
                   {categories.map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
 
@@ -343,7 +344,7 @@ export default function InventoryPage() {
                   {selected.size}
                 </div>
                 <span className="text-sm font-semibold text-orange-800">
-                  produit{selected.size > 1 ? 's' : ''} sélectionné{selected.size > 1 ? 's' : ''}
+                  produit{selected.size > 1 ? 's' : ''} sÃ©lectionnÃ©{selected.size > 1 ? 's' : ''}
                 </span>
               </div>
               <div className="flex gap-2">
@@ -393,8 +394,8 @@ export default function InventoryPage() {
                         />
                       </th>
                       <th className="text-left px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Produit</th>
-                      <th className="text-left px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden lg:table-cell">Réf</th>
-                      <th className="text-left px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden xl:table-cell">Catégorie</th>
+                      <th className="text-left px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden lg:table-cell">RÃ©f</th>
+                      <th className="text-left px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden xl:table-cell">CatÃ©gorie</th>
                       <th className="text-left px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider hidden sm:table-cell">Marque</th>
                       <th className="text-right px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Prix</th>
                       <th className="text-center px-4 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wider">Stock</th>
@@ -422,7 +423,7 @@ export default function InventoryPage() {
                           <td className="px-4 py-3">
                             <div className="flex items-center gap-3">
                               <img
-                                src={p.images?.[0] || partImages[p.category?.name] || partImages.default}
+                                src={p.images?.[0] || partImages[p.category?.name || 'default']}
                                 alt=""
                                 className="w-10 h-10 rounded-xl object-cover border border-gray-100 hidden sm:block"
                                 loading="lazy"
@@ -434,14 +435,14 @@ export default function InventoryPage() {
                             </div>
                           </td>
                           <td className="px-4 py-3 text-xs text-gray-500 font-mono hidden lg:table-cell">
-                            {p.reference || <span className="text-gray-300">—</span>}
+                            {p.reference || <span className="text-gray-300">â€”</span>}
                           </td>
                           <td className="px-4 py-3 hidden xl:table-cell">
                             <span className="inline-flex items-center px-2.5 py-1 rounded-lg bg-gray-100 text-xs font-medium text-gray-600">
-                              {p.category?.name || '—'}
+                              {p.category?.name || 'â€”'}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-sm text-gray-700 hidden sm:table-cell">{p.brand?.name || '—'}</td>
+                          <td className="px-4 py-3 text-sm text-gray-700 hidden sm:table-cell">{p.brand?.name || 'â€”'}</td>
                           <td className="px-4 py-3 text-right">
                             <span className="text-sm font-bold text-gray-900">{formatCFA(p.price)}</span>
                             <span className="text-xs text-gray-400 ml-0.5">FCFA</span>
@@ -489,7 +490,7 @@ export default function InventoryPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">Aucune pièce trouvée</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">Aucune piÃ¨ce trouvÃ©e</h3>
                   <p className="text-sm text-gray-500 mb-4">Essayez de modifier vos filtres ou ajoutez un nouveau produit.</p>
                   <button
                     onClick={() => { setEditProduct(null); setShowAdd(true); }}
@@ -516,7 +517,7 @@ export default function InventoryPage() {
                   >
                     <div className="relative">
                       <img
-                        src={p.images?.[0] || partImages[p.category?.name] || partImages.default}
+                        src={p.images?.[0] || partImages[p.category?.name || 'default']}
                         alt={p.title}
                         className="w-full h-36 object-cover"
                         loading="lazy"
@@ -581,7 +582,7 @@ export default function InventoryPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">Aucune pièce trouvée</h3>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-1">Aucune piÃ¨ce trouvÃ©e</h3>
                   <p className="text-sm text-gray-500 mb-4">Essayez de modifier vos filtres ou ajoutez un nouveau produit.</p>
                   <button
                     onClick={() => { setEditProduct(null); setShowAdd(true); }}
@@ -599,7 +600,7 @@ export default function InventoryPage() {
           {filtered.length > ITEMS_PER_PAGE && (
             <div className="mt-6 flex items-center justify-between">
               <p className="text-xs text-gray-500">
-                {(currentPage - 1) * ITEMS_PER_PAGE + 1}–{Math.min(currentPage * ITEMS_PER_PAGE, filtered.length)} sur {filtered.length}
+                {(currentPage - 1) * ITEMS_PER_PAGE + 1}â€“{Math.min(currentPage * ITEMS_PER_PAGE, filtered.length)} sur {filtered.length}
               </p>
               <div className="flex items-center gap-1">
                 <button
@@ -656,11 +657,11 @@ export default function InventoryPage() {
           </div>
 
           {/* Add/Edit Modal */}
-          <Modal isOpen={showAdd} onClose={() => { setShowAdd(false); setEditProduct(null); }} title={editProduct ? 'Modifier la pièce' : 'Ajouter une pièce'}>
+          <Modal isOpen={showAdd} onClose={() => { setShowAdd(false); setEditProduct(null); }} title={editProduct ? 'Modifier la piÃ¨ce' : 'Ajouter une piÃ¨ce'}>
             <div className="space-y-5">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Titre *</label>
-                <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" placeholder="Filtre à huile Toyota Hilux" />
+                <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" placeholder="Filtre Ã  huile Toyota Hilux" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -670,14 +671,14 @@ export default function InventoryPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Catégorie</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">CatÃ©gorie</label>
                   <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all cursor-pointer">
                     {categories.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Référence OEM</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">RÃ©fÃ©rence OEM</label>
                 <input value={form.reference} onChange={(e) => setForm({ ...form, reference: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" placeholder="04152-YZZA1" />
               </div>
               <div className="grid grid-cols-3 gap-4">
@@ -700,11 +701,11 @@ export default function InventoryPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Année début</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">AnnÃ©e dÃ©but</label>
                   <input type="number" value={form.yearStart} onChange={(e) => setForm({ ...form, yearStart: Number(e.target.value) })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" min="1990" max="2030" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Année fin</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5">AnnÃ©e fin</label>
                   <input type="number" value={form.yearEnd} onChange={(e) => setForm({ ...form, yearEnd: Number(e.target.value) })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" min="1990" max="2030" />
                 </div>
               </div>
@@ -728,7 +729,7 @@ export default function InventoryPage() {
           {/* Bulk Update Modal */}
           <Modal isOpen={showBulk} onClose={() => setShowBulk(false)} title={`Ajuster le stock (${selected.size} produits)`}>
             <div className="space-y-4">
-              <p className="text-sm text-gray-500">Définir le stock pour {selected.size} produit{selected.size > 1 ? 's' : ''} sélectionné{selected.size > 1 ? 's' : ''}</p>
+              <p className="text-sm text-gray-500">DÃ©finir le stock pour {selected.size} produit{selected.size > 1 ? 's' : ''} sÃ©lectionnÃ©{selected.size > 1 ? 's' : ''}</p>
               <input
                 type="number"
                 value={bulkValue}
@@ -752,3 +753,4 @@ export default function InventoryPage() {
     </div>
   );
 }
+

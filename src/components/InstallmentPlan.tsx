@@ -1,10 +1,17 @@
 'use client';
 import { useState } from 'react';
 
+interface InstallmentPlan {
+  duration: number;
+  downPayment: number;
+  monthly: number;
+  provider: string;
+}
+
 interface Props {
   vehicleName: string;
   vehiclePrice: number;
-  onPlanSelected: (plan: any) => void;
+  onPlanSelected: (plan: InstallmentPlan) => void;
 }
 
 export default function InstallmentPlan({ vehicleName, vehiclePrice, onPlanSelected }: Props) {

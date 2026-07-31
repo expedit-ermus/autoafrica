@@ -14,15 +14,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [emailTouched, setEmailTouched] = useState(false);
-  const [passwordTouched, setPasswordTouched] = useState(false);
 
   const emailValid = email.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  const passwordValid = password.length > 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setEmailTouched(true);
-    setPasswordTouched(true);
     if (!email || !password) { addToast('error', 'Veuillez remplir tous les champs'); return; }
     setLoading(true);
     try {
@@ -36,8 +33,8 @@ export default function LoginPage() {
       setUser(data.data.user);
       addToast('success', 'Connexion réussie !');
       router.push('/dashboard');
-    } catch (err: any) {
-      addToast('error', err.message || 'Email ou mot de passe incorrect');
+    } catch (err) {
+      addToast('error', err instanceof Error ? err.message : 'Email ou mot de passe incorrect');
     } finally {
       setLoading(false);
     }
@@ -199,7 +196,6 @@ export default function LoginPage() {
                   <input
                     type="password" value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    onBlur={() => setPasswordTouched(true)}
                     className="input-field" placeholder="••••••••" required
                   />
                 </div>

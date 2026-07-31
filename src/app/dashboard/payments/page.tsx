@@ -3,22 +3,19 @@ import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useApp } from '@/contexts/AppContext';
-import { useToast } from '@/contexts/ToastContext';
-import Modal from '@/components/Modal';
 import UssdPaymentFlow from '@/components/UssdPaymentFlow';
 import AgentNetwork from '@/components/AgentNetwork';
 import InstallmentPlan from '@/components/InstallmentPlan';
 import CrossBorderPayments from '@/components/CrossBorderPayments';
 import WhatsAppIntegration from '@/components/WhatsAppIntegration';
 import VehicleInspection from '@/components/VehicleInspection';
+import { Payment } from '@/shared/types';
 
 export default function PaymentsPage() {
   const { t } = useApp();
-  const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState<'history' | 'escrow' | 'ussd' | 'agents' | 'installments' | 'crossborder' | 'whatsapp' | 'inspection'>('history');
-  const [payments, setPayments] = useState<any[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [showNewPayment, setShowNewPayment] = useState(false);
   const [methodFilter, setMethodFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateFrom, setDateFrom] = useState('');
@@ -38,19 +35,18 @@ export default function PaymentsPage() {
     return () => { cancelled = true; };
   }, []);
 
-  const completed = payments.filter((p: any) => p.status === 'COMPLETED');
-  const held = payments.filter((p: any) => p.status === 'HELD');
-  const pending = payments.filter((p: any) => p.status === 'PENDING');
-  const failed = payments.filter((p: any) => p.status === 'FAILED');
-  const refunded = payments.filter((p: any) => p.status === 'REFUNDED');
+  const completed = payments.filter(p => p.status === 'COMPLETED');
+  const held = payments.filter(p => p.status === 'HELD');
+  const pending = payments.filter(p => p.status === 'PENDING');
+  const refunded = payments.filter(p => p.status === 'REFUNDED');
 
-  const totalVolume = completed.reduce((s: number, p: any) => s + (p.amount || 0), 0);
-  const escrowVolume = held.reduce((s: number, p: any) => s + (p.amount || 0), 0);
-  const pendingVolume = pending.reduce((s: number, p: any) => s + (p.amount || 0), 0);
-  const refundedVolume = refunded.reduce((s: number, p: any) => s + (p.amount || 0), 0);
+  const totalVolume = completed.reduce((s, p) => s + (p.amount || 0), 0);
+  const escrowVolume = held.reduce((s, p) => s + (p.amount || 0), 0);
+  const pendingVolume = pending.reduce((s, p) => s + (p.amount || 0), 0);
+  const refundedVolume = refunded.reduce((s, p) => s + (p.amount || 0), 0);
   const successRate = payments.length > 0 ? ((completed.length / payments.length) * 100).toFixed(1) : '0.0';
 
-  const filtered = payments.filter((p: any) => {
+  const filtered = payments.filter(p => {
     const matchMethod = methodFilter === 'all' || p.method === methodFilter;
     const matchStatus = statusFilter === 'all' || p.status === statusFilter;
     let matchDate = true;
@@ -67,9 +63,9 @@ export default function PaymentsPage() {
   };
 
   const getMethodStats = (method: string) => {
-    const methodPayments = payments.filter((p: any) => p.method === method);
-    const methodCompleted = methodPayments.filter((p: any) => p.status === 'COMPLETED');
-    const total = methodCompleted.reduce((s: number, p: any) => s + (p.amount || 0), 0);
+    const methodPayments = payments.filter(p => p.method === method);
+    const methodCompleted = methodPayments.filter(p => p.status === 'COMPLETED');
+    const total = methodCompleted.reduce((s, p) => s + (p.amount || 0), 0);
     return { count: methodPayments.length, total };
   };
 
@@ -299,7 +295,7 @@ export default function PaymentsPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
-                        {filtered.map((p: any) => {
+                        {filtered.map(p => {
                           const mi = methodConfig[p.method] || { color: '#6B7280', bgColor: 'bg-slate-500', label: 'Inconnu', icon: '?' };
                           return (
                             <tr key={p.id} className="hover:bg-slate-50 transition-colors">
@@ -381,7 +377,7 @@ export default function PaymentsPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
-                      {held.map((p: any) => (
+                      {held.map(p => (
                         <tr key={p.id} className="hover:bg-slate-50 transition-colors">
                           <td className="px-6 py-4">
                             <span className="text-sm font-mono text-slate-700 bg-slate-100 px-2 py-1 rounded">{p.id?.slice(0, 8)}</span>

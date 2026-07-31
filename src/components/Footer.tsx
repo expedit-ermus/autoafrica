@@ -1,9 +1,8 @@
 'use client';
-import Link from 'next/link';
 import { useApp } from '@/contexts/AppContext';
 
 export default function Footer() {
-  const { t, locale } = useApp();
+  const { locale } = useApp();
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
   const countries = [

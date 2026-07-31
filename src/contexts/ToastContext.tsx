@@ -10,7 +10,7 @@ interface Toast {
 
 interface ToastContextType {
   toasts: Toast[];
-  addToast: (type: Toast['type'], message: string | ((t: any) => string)) => void;
+  addToast: (type: Toast['type'], message: string) => void;
   removeToast: (id: string) => void;
 }
 
@@ -140,10 +140,9 @@ function ToastItem({ toast, onRemove }: { toast: Toast; onRemove: (id: string) =
 export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  const addToast = useCallback((type: Toast['type'], message: string | ((t: any) => string)) => {
+  const addToast = useCallback((type: Toast['type'], message: string) => {
     const id = Date.now().toString() + Math.random().toString(36).slice(2, 8);
-    const resolvedMessage = typeof message === 'function' ? message({}) : message;
-    setToasts(prev => [...prev, { id, type, message: resolvedMessage }]);
+    setToasts(prev => [...prev, { id, type, message }]);
   }, []);
 
   const removeToast = useCallback((id: string) => {

@@ -1,8 +1,21 @@
 import { prisma } from '@/lib/prisma'
-import { Prisma } from '../../generated/prisma/client'
-import { NotFoundError, ValidationError, ForbiddenError } from '@/shared/errors'
+import { Prisma, ProductCondition } from '@/generated/prisma/client'
+import { NotFoundError, ForbiddenError } from '@/shared/errors'
 import { getPaginationParams, buildPaginatedResponse } from '@/shared/utils/pagination'
 import { PaginationParams } from '@/shared/types'
+
+interface CompatInput {
+  carModelId?: string
+  yearStart?: number
+  yearEnd?: number
+  engine?: string
+  trim?: string
+  note?: string
+}
+
+interface ProductListWhere extends Prisma.ProductWhereInput {
+  model?: { contains: string; mode: 'insensitive' }
+}
 
 interface CreateProductInput {
   title: string
@@ -17,9 +30,7 @@ interface CreateProductInput {
   condition?: string
   quality?: string
   images?: string[]
-  compatible?: any[]
-  yearStart?: number
-  yearEnd?: number
+  compatible?: CompatInput[]
 }
 
 interface ProductFilters {
@@ -38,20 +49,28 @@ export class ProductsService {
   async list(filters: ProductFilters, pagination: PaginationParams) {
     const { page, pageSize, skip, orderBy } = getPaginationParams(pagination)
 
-    const where: any = { active: true }
+    const where: Prisma.ProductWhereInput = { active: true }
     if (filters.brand) where.brand = { name: filters.brand }
-    if (filters.model) where.model = { contains: filters.model, mode: 'insensitive' }
+    if (filters.model) {
+      const searchFilter = { contains: filters.model, mode: 'insensitive' as const }
+      ;(where as ProductListWhere).model = searchFilter
+    }
     if (filters.category) where.category = { slug: filters.category }
     if (filters.sellerId) where.sellerId = filters.sellerId
-    if (filters.condition) where.condition = filters.condition
+    if (filters.condition) where.condition = filters.condition as ProductCondition
     if (filters.country) where.seller = { country: filters.country }
-    if (filters.minPrice) where.price = { ...where.price, gte: filters.minPrice }
-    if (filters.maxPrice) where.price = { ...where.price, lte: filters.maxPrice }
+    if (filters.minPrice || filters.maxPrice) {
+      const priceFilter: Prisma.IntFilter = {}
+      if (filters.minPrice) priceFilter.gte = filters.minPrice
+      if (filters.maxPrice) priceFilter.lte = filters.maxPrice
+      where.price = priceFilter
+    }
     if (filters.search) {
+      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
       where.OR = [
-        { title: { contains: filters.search, mode: 'insensitive' } },
-        { reference: { contains: filters.search, mode: 'insensitive' } },
-        { description: { contains: filters.search, mode: 'insensitive' } },
+        { title: searchFilter },
+        { reference: searchFilter },
+        { description: searchFilter },
       ]
     }
 
@@ -121,13 +140,11 @@ export class ProductsService {
         price: data.price,
         currency: data.currency || 'XOF',
         stock: data.stock || 0,
-        condition: (data.condition as any) || 'USED',
+        condition: (data.condition as ProductCondition) || 'USED',
         quality: data.quality,
         images: data.images ? JSON.stringify(data.images) : Prisma.DbNull,
         sellerId,
-        yearStart: data.yearStart,
-        yearEnd: data.yearEnd,
-      } as any,
+      } satisfies Prisma.ProductUncheckedCreateInput,
     })
 
     return product
@@ -141,9 +158,16 @@ export class ProductsService {
     const updated = await prisma.product.update({
       where: { id },
       data: {
-        ...data,
+        title: data.title,
+        description: data.description,
+        reference: data.reference,
+        price: data.price,
+        currency: data.currency,
+        stock: data.stock,
+        condition: data.condition ? (data.condition as ProductCondition) : undefined,
+        quality: data.quality,
         images: data.images ? JSON.stringify(data.images) : undefined,
-      } as any,
+      },
     })
 
     return updated

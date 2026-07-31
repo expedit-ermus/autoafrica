@@ -40,7 +40,6 @@ const banners = [
 
 export default function PromoBanner() {
   const { locale } = useApp();
-  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {

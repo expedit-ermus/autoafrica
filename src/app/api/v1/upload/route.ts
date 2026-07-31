@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
 
     const url = `/uploads/${filename}`
     return NextResponse.json({ success: true, url, filename })
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: 'Erreur upload' }, { status: 500 })
   }
 }

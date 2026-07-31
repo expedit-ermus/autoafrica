@@ -14,19 +14,19 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' },
     })
 
-    const userIds = [...new Set(reviews.map((r: any) => r.userId))]
+    const userIds = [...new Set(reviews.map(r => r.userId))]
     const users = userIds.length > 0 ? await prisma.user.findMany({
       where: { id: { in: userIds } },
       select: { id: true, firstName: true, lastName: true, shopName: true },
     }) : []
-    const userMap = new Map(users.map((u: any) => [u.id, u]))
+    const userMap = new Map(users.map(u => [u.id, u]))
 
-    const enriched = reviews.map((r: any) => ({
+    const enriched = reviews.map(r => ({
       ...r,
       author: userMap.get(r.userId) || { firstName: 'Utilisateur', lastName: '' },
     }))
 
-    const avg = reviews.length > 0 ? reviews.reduce((s: number, r: any) => s + r.rating, 0) / reviews.length : 0
+    const avg = reviews.length > 0 ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0
 
     return successResponse({ data: enriched, total: reviews.length, averageRating: Math.round(avg * 10) / 10 })
   } catch (error) {

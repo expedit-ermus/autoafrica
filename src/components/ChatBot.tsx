@@ -10,7 +10,7 @@ interface Message {
   options?: { label: string; action: string; icon?: string; color?: string }[];
   card?: VehicleCard | AgentCard | TxCard;
   isComparison?: boolean;
-  comparisonData?: any[];
+  comparisonData?: VehicleCard[];
 }
 
 interface VehicleCard {
@@ -64,7 +64,7 @@ const vehicleDB: VehicleCard[] = [
 const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
 export default function ChatBot() {
-  const { t, locale } = useApp();
+  const { locale } = useApp();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
@@ -149,7 +149,7 @@ export default function ChatBot() {
     if (action === 'open_payments') { window.open('/dashboard/payments', '_blank'); addBotMessage(action); return; }
     if (action.startsWith('compare_')) { handleCompare(action); return; }
     if (action.startsWith('book_testdrive_')) { handleBookTestDrive(action); return; }
-    if (action.startsWith('set_alert_')) { handleSetAlert(action); return; }
+    if (action.startsWith('set_alert_')) { handleSetAlert(); return; }
     if (action.startsWith('buy_')) { handleBuy(action); return; }
     if (action.startsWith('call_seller_')) { handleCallSeller(action); return; }
     if (action.startsWith('whatsapp_seller_')) { handleWhatsAppSeller(action); return; }
@@ -221,7 +221,7 @@ export default function ChatBot() {
     }]);
   };
 
-  const handleSetAlert = (action: string) => {
+  const handleSetAlert = () => {
     setMessages(prev => [...prev, {
       id: Date.now().toString(), from: 'bot',
       text: locale === 'fr'
@@ -315,14 +315,38 @@ export default function ChatBot() {
       }]);
       return;
     }
-    const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
-    const recognition = new SpeechRecognition();
+    interface SpeechRecognitionResultEvent {
+      results: ArrayLike<ArrayLike<{ transcript: string }>>;
+    }
+    interface SpeechRecognitionCtor {
+      new (): SpeechRecognitionLike;
+    }
+    interface SpeechRecognitionLike {
+      lang: string;
+      interimResults: boolean;
+      maxAlternatives: number;
+      onresult: (event: SpeechRecognitionResultEvent) => void;
+      onerror: () => void;
+      onend: () => void;
+      start: () => void;
+    }
+    const SpeechRecognitionCtor =
+      (window as unknown as {
+        webkitSpeechRecognition?: SpeechRecognitionCtor;
+        SpeechRecognition?: SpeechRecognitionCtor;
+      }).webkitSpeechRecognition ||
+      (window as unknown as {
+        webkitSpeechRecognition?: SpeechRecognitionCtor;
+        SpeechRecognition?: SpeechRecognitionCtor;
+      }).SpeechRecognition;
+    if (!SpeechRecognitionCtor) return;
+    const recognition = new SpeechRecognitionCtor();
     recognition.lang = locale === 'fr' ? 'fr-FR' : 'en-US';
     recognition.interimResults = false;
     recognition.maxAlternatives = 1;
 
     setIsListening(true);
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionResultEvent) => {
       const transcript = event.results[0][0].transcript;
       setInput(transcript);
       setIsListening(false);
@@ -418,18 +442,18 @@ export default function ChatBot() {
                             <thead>
                               <tr className="border-b border-gray-200">
                                 <th className="text-left py-1 text-gray-500"></th>
-                                {msg.comparisonData!.map((v: any, i: number) => (
+                                {msg.comparisonData.map((v, i) => (
                                   <th key={i} className="text-center py-1 px-2 font-bold text-orange-600">{v.make}<br/>{v.model}</th>
                                 ))}
                               </tr>
                             </thead>
                             <tbody>
-                              {['price', 'year', 'mileage', 'fuel', 'condition', 'location'].map(field => (
+                              {(['price', 'year', 'mileage', 'fuel', 'condition', 'location'] as const).map(field => (
                                 <tr key={field} className="border-b border-gray-50">
                                   <td className="py-1 text-gray-500 capitalize">{field === 'price' ? 'Prix' : field === 'year' ? 'Année' : field === 'mileage' ? 'Km' : field === 'fuel' ? 'Carburant' : field === 'condition' ? 'État' : 'Lieu'}</td>
-                                  {msg.comparisonData!.map((v: any, i: number) => (
+                                  {msg.comparisonData!.map((v, i) => (
                                     <td key={i} className="text-center py-1 px-2 font-medium">
-                                      {field === 'price' ? `${formatCFA(v[field])}F` : field === 'mileage' ? `${(v[field]/1000).toFixed(0)}k` : v[field]}
+                                      {field === 'price' ? `${formatCFA(v[field] as number)}F` : field === 'mileage' ? `${((v[field] as number)/1000).toFixed(0)}k` : v[field]}
                                     </td>
                                   ))}
                                 </tr>
@@ -437,7 +461,7 @@ export default function ChatBot() {
                             </tbody>
                           </table>
                           <div className="flex gap-1 mt-2">
-                            {msg.comparisonData!.map((v: any) => (
+                            {msg.comparisonData!.map((v) => (
                               <button key={v.id} onClick={() => handleOptionClick(`buy_${v.id}`)}
                                 className="flex-1 py-1.5 rounded-lg bg-orange-500 text-white text-[10px] font-semibold">
                                 {locale === 'fr' ? 'Acheter' : 'Buy'} {v.model}
@@ -575,7 +599,7 @@ interface FlowResult {
   card?: VehicleCard;
   quickReplies?: string[];
   isComparison?: boolean;
-  comparisonData?: any[];
+  comparisonData?: VehicleCard[];
 }
 
 function getFlow(action: string, locale: string, db: VehicleCard[]): FlowResult {

@@ -1,8 +1,7 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
-import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
 
 interface CartItem {
@@ -17,7 +16,6 @@ interface CartItem {
 }
 
 export default function CartPage() {
-  const { t } = useApp();
   const { addToast } = useToast();
   const [cart, setCart] = useState<CartItem[]>(() => {
     if (typeof window === 'undefined') return [];
@@ -64,7 +62,7 @@ export default function CartPage() {
       setCart([]);
       addToast('success', 'Commande passée avec succès !');
       window.location.href = '/dashboard/orders';
-    } catch (err: any) {
+    } catch {
       addToast('error', 'Erreur lors de la commande');
     } finally {
       setChecking(false);

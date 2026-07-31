@@ -1,11 +1,23 @@
 'use client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
 import Modal from '@/components/Modal';
 import StarRating, { ProductReviews } from '@/components/StarRating';
+import { Product } from '@/shared/types';
+
+interface CartItem {
+  id: string;
+  productId: string;
+  title: string;
+  brand: string;
+  reference: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
 
 const partImages: Record<string, string[]> = {
   'Moteur': [
@@ -47,7 +59,7 @@ const relatedSuggestions: Record<string, string[]> = {
 export default function MarketplacePage() {
   const { t } = useApp();
   const { addToast } = useToast();
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [brandFilter, setBrandFilter] = useState('all');
@@ -56,15 +68,15 @@ export default function MarketplacePage() {
   const [sortBy, setSortBy] = useState('newest');
   const [minPrice, setMinPrice] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
-  const [showBuy, setShowBuy] = useState<any>(null);
+  const [showBuy, setShowBuy] = useState<Product | null>(null);
   const [buying, setBuying] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
-  const [detailProduct, setDetailProduct] = useState<any>(null);
+  const [detailProduct, setDetailProduct] = useState<Product | null>(null);
   const [detailImageIdx, setDetailImageIdx] = useState(0);
-  const [recentlyViewed, setRecentlyViewed] = useState<any[]>(() => {
+  const [recentlyViewed, setRecentlyViewed] = useState<Product[]>(() => {
     if (typeof window === 'undefined') return [];
     const saved = localStorage.getItem('recentlyViewed');
     return saved ? JSON.parse(saved) : [];
@@ -113,24 +125,24 @@ export default function MarketplacePage() {
 
   const handleSearch = () => { setPage(1); };
 
-  const getImages = (p: any) => {
-    if (p.images && p.images.length > 0) return p.images;
-    return partImages[p.category?.name] || partImages.default;
+  const getImages = (p: Product): string[] => {
+    if (Array.isArray(p.images) && p.images.length > 0) return p.images;
+    return partImages[p.category?.name || 'default'];
   };
 
-  const openDetail = (p: any) => {
+  const openDetail = (p: Product) => {
     setDetailProduct(p);
     setDetailImageIdx(0);
     setQuantity(1);
-    const viewed = [p, ...recentlyViewed.filter((v: any) => v.id !== p.id)].slice(0, 6);
+    const viewed = [p, ...recentlyViewed.filter(v => v.id !== p.id)].slice(0, 6);
     setRecentlyViewed(viewed);
     localStorage.setItem('recentlyViewed', JSON.stringify(viewed));
   };
 
-  const addToCart = (product: any, qty: number = 1) => {
+  const addToCart = (product: Product, qty: number = 1) => {
     const saved = localStorage.getItem('cart');
-    const cart = saved ? JSON.parse(saved) : [];
-    const existing = cart.find((item: any) => item.productId === product.id);
+    const cart: CartItem[] = saved ? JSON.parse(saved) : [];
+    const existing = cart.find(item => item.productId === product.id);
     if (existing) { existing.quantity += qty; } else {
       cart.push({
         id: Date.now().toString(), productId: product.id, title: product.title,
@@ -157,7 +169,7 @@ export default function MarketplacePage() {
       setShowBuy(null);
       setDetailProduct(null);
       setRefreshKey(k => k + 1);
-    } catch (err: any) { addToast('error', err.message || 'Erreur'); } finally { setBuying(false); }
+    } catch (err) { addToast('error', err instanceof Error ? err.message : 'Erreur'); } finally { setBuying(false); }
   };
 
   const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
@@ -178,15 +190,12 @@ export default function MarketplacePage() {
     return chips;
   };
 
-  const ProductCard = ({ p }: { p: any }) => {
+  const ProductCard = ({ p }: { p: Product }) => {
     const imgs = getImages(p);
-    const [hover, setHover] = useState(false);
     return (
       <div
         className="group bg-white rounded-2xl border border-gray-100/80 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col"
         onClick={() => openDetail(p)}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
       >
         <div className="relative h-48 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
           <img
@@ -208,7 +217,7 @@ export default function MarketplacePage() {
           </span>
           {imgs.length > 1 && (
             <div className="absolute bottom-3 right-3 flex gap-1">
-              {imgs.map((_: any, i: number) => (
+              {imgs.map((_, i) => (
                 <div key={i} className={`w-1.5 h-1.5 rounded-full transition-colors ${i === 0 ? 'bg-white' : 'bg-white/40'}`} />
               ))}
             </div>
@@ -235,14 +244,14 @@ export default function MarketplacePage() {
                 {p.stock > 5 ? 'En stock' : p.stock > 0 ? `${p.stock} restant${p.stock > 1 ? 's' : ''}` : 'Rupture'}
               </span>
             </div>
-            {p.views > 0 && (
+            {(p.views || 0) > 0 && (
               <span className="text-[10px] text-gray-400">{p.views} vues</span>
             )}
           </div>
 
-          {p._avgRating > 0 && (
+          {(p._avgRating || 0) > 0 && (
             <div className="flex items-center gap-1.5 mb-3">
-              <StarRating rating={p._avgRating} size="sm" />
+              <StarRating rating={p._avgRating || 0} size="sm" />
               <span className="text-[10px] text-gray-400">({p._reviewCount || 0})</span>
             </div>
           )}
@@ -273,7 +282,7 @@ export default function MarketplacePage() {
     );
   };
 
-  const ProductListCard = ({ p }: { p: any }) => {
+  const ProductListCard = ({ p }: { p: Product }) => {
     const imgs = getImages(p);
     return (
       <div
@@ -301,7 +310,7 @@ export default function MarketplacePage() {
             <span className={`text-[11px] font-medium ${p.stock > 5 ? 'text-emerald-600' : p.stock > 0 ? 'text-amber-600' : 'text-red-500'}`}>
               {p.stock > 5 ? 'En stock' : p.stock > 0 ? `${p.stock} restant${p.stock > 1 ? 's' : ''}` : 'Rupture'}
             </span>
-            {p._avgRating > 0 && <div className="ml-2"><StarRating rating={p._avgRating} size="sm" /></div>}
+            {(p._avgRating || 0) > 0 && <div className="ml-2"><StarRating rating={p._avgRating || 0} size="sm" /></div>}
           </div>
           <div className="flex items-center justify-between mt-auto pt-2">
             <p className="text-lg font-extrabold text-gray-900">{formatCFA(p.price)} <span className="text-xs font-normal text-gray-400">FCFA</span></p>
@@ -682,7 +691,7 @@ export default function MarketplacePage() {
                     ? 'grid sm:grid-cols-2 xl:grid-cols-3 gap-5'
                     : 'space-y-4'
                   }>
-                    {products.map((p: any) =>
+                    {products.map(p =>
                       viewMode === 'grid'
                         ? <ProductCard key={p.id} p={p} />
                         : <ProductListCard key={p.id} p={p} />
@@ -734,7 +743,7 @@ export default function MarketplacePage() {
                 <div className="mt-12">
                   <h2 className="font-bold text-gray-900 mb-4 text-sm uppercase tracking-wider">Récemment consulté</h2>
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                    {recentlyViewed.map((p: any) => (
+                    {recentlyViewed.map(p => (
                       <div
                         key={p.id}
                         className="bg-white rounded-xl border border-gray-100/80 p-3 cursor-pointer hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 group"
@@ -762,7 +771,7 @@ export default function MarketplacePage() {
           <Modal isOpen={!!detailProduct} onClose={() => setDetailProduct(null)} title="">
             {detailProduct && (() => {
               const imgs = getImages(detailProduct);
-              const related = relatedSuggestions[detailProduct.category?.name] || [];
+              const related = relatedSuggestions[detailProduct.category?.name || ''] || [];
               return (
                 <div className="space-y-4">
                   <div className="relative rounded-xl overflow-hidden bg-gray-100">
@@ -774,7 +783,7 @@ export default function MarketplacePage() {
                         <button onClick={() => setDetailImageIdx(i => (i + 1) % imgs.length)}
                           className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/40 text-white flex items-center justify-center hover:bg-black/60 transition">→</button>
                         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
-                          {imgs.map((_: any, i: number) => <div key={i} className={`w-2 h-2 rounded-full transition ${i === detailImageIdx ? 'bg-white' : 'bg-white/40'}`}></div>)}
+                          {imgs.map((_, i) => <div key={i} className={`w-2 h-2 rounded-full transition ${i === detailImageIdx ? 'bg-white' : 'bg-white/40'}`}></div>)}
                         </div>
                       </>
                     )}
@@ -806,9 +815,9 @@ export default function MarketplacePage() {
                         <p className="text-xs text-gray-500">📍 {detailProduct.seller.country}</p>
                       </div>
                       <div className="flex gap-1">
-                        <button onClick={() => { const phone = detailProduct.seller.phone || '+22507080910'; window.open(`tel:${phone}`, '_self'); }}
+                        <button onClick={() => { const phone = detailProduct.seller?.phone || '+22507080910'; window.open(`tel:${phone}`, '_self'); }}
                           className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm">📞</button>
-                        <button onClick={() => { const phone = detailProduct.seller.phone || '+22507080910'; const msg = encodeURIComponent(`Bonjour, je suis intéressé par ${detailProduct.title}`); window.open(`https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${msg}`, '_blank'); }}
+                        <button onClick={() => { const phone = detailProduct.seller?.phone || '+22507080910'; const msg = encodeURIComponent(`Bonjour, je suis intéressé par ${detailProduct.title}`); window.open(`https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${msg}`, '_blank'); }}
                           className="w-8 h-8 rounded-lg bg-green-50 text-green-600 flex items-center justify-center text-sm">💬</button>
                       </div>
                     </div>
@@ -846,7 +855,7 @@ export default function MarketplacePage() {
                     <div>
                       <p className="text-xs font-medium text-gray-500 mb-2">Pièces similaires</p>
                       <div className="flex flex-wrap gap-2">
-                        {related.map(r => (
+                        {related.map((r: string) => (
                           <span key={r} className="px-3 py-1.5 rounded-full bg-gray-100 text-xs text-gray-600 hover:bg-orange-50 hover:text-orange-600 cursor-pointer transition">{r}</span>
                         ))}
                       </div>

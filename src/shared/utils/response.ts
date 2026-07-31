@@ -7,7 +7,7 @@ export function successResponse<T>(data: T, message?: string, status = 200) {
   return NextResponse.json(body, { status });
 }
 
-export function errorResponse(error: string, status = 500, details?: any) {
+export function errorResponse(error: string, status = 500, details?: unknown) {
   const body: ApiResponse = { success: false, error, details };
   return NextResponse.json(body, { status });
 }

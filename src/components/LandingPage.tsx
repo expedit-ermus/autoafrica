@@ -1,5 +1,4 @@
 'use client';
-import Link from 'next/link';
 import { useApp } from '@/contexts/AppContext';
 import CarSelector from '@/components/CarSelector';
 import PromoBanner from '@/components/PromoBanner';
@@ -122,7 +121,7 @@ const trustFeatures = [
 ];
 
 export default function LandingPage() {
-  const { t, locale } = useApp();
+  const { locale } = useApp();
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
   return (

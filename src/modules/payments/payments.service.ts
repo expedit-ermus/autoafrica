@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma'
+import { PaymentMethod } from '@/generated/prisma/client'
 import { NotFoundError, ValidationError, PaymentError } from '@/shared/errors'
-import { RequestContext } from '@/shared/types'
 
 interface ProcessPaymentInput {
   orderId: string
@@ -16,7 +16,7 @@ export class PaymentsService {
     if (order.buyerId !== userId) throw new ValidationError('Not your order')
     if (order.status === 'PAID') throw new ValidationError('Order already paid')
 
-    const result = await this.processMobileMoney(input.method, input.phone, input.amount)
+    const result = await this.processMobileMoney(input.method)
 
     if (!result.success) throw new PaymentError(result.error || 'Payment failed')
 
@@ -24,7 +24,7 @@ export class PaymentsService {
       data: {
         orderId: input.orderId,
         userId,
-        method: input.method as any,
+        method: input.method as PaymentMethod,
         amount: input.amount,
         currency: order.currency,
         status: 'COMPLETED',
@@ -46,7 +46,7 @@ export class PaymentsService {
     return { success: true, payment, transactionId: result.transactionId }
   }
 
-  private async processMobileMoney(method: string, phone: string, amount: number) {
+  private async processMobileMoney(method: string) {
     await new Promise(resolve => setTimeout(resolve, 1000))
 
     const success = Math.random() > 0.05

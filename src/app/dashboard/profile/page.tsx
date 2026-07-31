@@ -4,6 +4,7 @@ import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
+import { Order } from '@/shared/types';
 
 export default function ProfilePage() {
   const { t, user } = useApp();
@@ -45,7 +46,7 @@ export default function ProfilePage() {
           if (pd.success) setStats(s => ({ ...s, products: pd.data.total || pd.data.data?.length || 0 }));
           if (od.success) {
             const orders = od.data.data || [];
-            const revenue = orders.filter((o: any) => o.status === 'DELIVERED' || o.status === 'COMPLETED').reduce((s: number, o: any) => s + (o.totalAmount || o.total || 0), 0);
+            const revenue = orders.filter((o: Order) => o.status === 'DELIVERED' || o.status === 'COMPLETED').reduce((s: number, o: Order) => s + (o.totalAmount || o.total || 0), 0);
             setStats(s => ({ ...s, orders: orders.length, revenue }));
           }
         }
