@@ -51,20 +51,23 @@ export function ProductReviews({ productId }: ReviewsProps) {
   const [form, setForm] = useState({ rating: 5, title: '', comment: '' });
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => { fetchReviews(); }, [productId]);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const fetchReviews = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch(`/api/v1/reviews?productId=${productId}`);
-      const data = await res.json();
-      if (data.success) {
-        setReviews(data.data.data);
-        setAvgRating(data.data.averageRating || 0);
-        setTotal(data.data.total);
-      }
-    } catch {} finally { setLoading(false); }
-  };
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/v1/reviews?productId=${productId}`);
+        const data = await res.json();
+        if (!cancelled && data.success) {
+          setReviews(data.data.data);
+          setAvgRating(data.data.averageRating || 0);
+          setTotal(data.data.total);
+        }
+      } catch {} finally { if (!cancelled) setLoading(false); }
+    })();
+    return () => { cancelled = true; };
+  }, [productId, refreshKey]);
 
   const handleSubmit = async () => {
     if (!form.comment) return;
@@ -78,7 +81,7 @@ export function ProductReviews({ productId }: ReviewsProps) {
       if (!res.ok) throw new Error(data.error);
       setShowForm(false);
       setForm({ rating: 5, title: '', comment: '' });
-      fetchReviews();
+      setRefreshKey(k => k + 1);
     } catch (err: any) { alert(err.message || 'Erreur'); } finally { setSubmitting(false); }
   };
 

@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useApp } from '@/contexts/AppContext';
@@ -24,24 +24,29 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
-  useEffect(() => { fetchDashboard(); }, []);
-
-  const fetchDashboard = async () => {
-    setLoading(true);
-    try {
-      const [prodRes, orderRes, payRes] = await Promise.all([
-        fetch('/api/v1/products?pageSize=100', { credentials: 'include' }),
-        fetch('/api/v1/orders?pageSize=100', { credentials: 'include' }),
-        fetch('/api/v1/payments?pageSize=100', { credentials: 'include' }),
-      ]);
-      const prodData = await prodRes.json();
-      const orderData = await orderRes.json();
-      const payData = await payRes.json();
-      if (prodData.success) setProducts(prodData.data.data);
-      if (orderData.success) setOrders(orderData.data.data);
-      if (payData.success) setPayments(payData.data.data);
-    } catch (err) { console.error(err); } finally { setLoading(false); }
-  };
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const [prodRes, orderRes, payRes] = await Promise.all([
+          fetch('/api/v1/products?pageSize=100', { credentials: 'include' }),
+          fetch('/api/v1/orders?pageSize=100', { credentials: 'include' }),
+          fetch('/api/v1/payments?pageSize=100', { credentials: 'include' }),
+        ]);
+        const prodData = await prodRes.json();
+        const orderData = await orderRes.json();
+        const payData = await payRes.json();
+        if (!cancelled) {
+          if (prodData.success) setProducts(prodData.data.data);
+          if (orderData.success) setOrders(orderData.data.data);
+          if (payData.success) setPayments(payData.data.data);
+        }
+      } catch (err) { console.error(err); } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const totalProducts = products.length;
   const totalOrders = orders.length;

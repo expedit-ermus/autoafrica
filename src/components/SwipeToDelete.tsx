@@ -25,21 +25,21 @@ export default function SwipeToDelete({
 }: SwipeToDeleteProps) {
   const [offsetX, setOffsetX] = useState(0);
   const [isConfirming, setIsConfirming] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const startX = useRef(0);
-  const isDragging = useRef(false);
 
   const handleTouchStart = useCallback(
     (e: TouchEvent) => {
       if (disabled) return;
       startX.current = e.touches[0].clientX;
-      isDragging.current = true;
+      setIsDragging(true);
     },
     [disabled]
   );
 
   const handleTouchMove = useCallback(
     (e: TouchEvent) => {
-      if (disabled || !isDragging.current) return;
+      if (disabled || !isDragging) return;
       const currentX = e.touches[0].clientX;
       const diff = startX.current - currentX;
 
@@ -48,12 +48,12 @@ export default function SwipeToDelete({
         setOffsetX(-dampedOffset);
       }
     },
-    [disabled, swipeThreshold]
+    [disabled, isDragging, swipeThreshold]
   );
 
   const handleTouchEnd = useCallback(() => {
     if (disabled) return;
-    isDragging.current = false;
+    setIsDragging(false);
 
     if (Math.abs(offsetX) >= swipeThreshold) {
       setOffsetX(-swipeThreshold);
@@ -107,7 +107,7 @@ export default function SwipeToDelete({
         className="relative bg-white rounded-xl touch-pan-y"
         style={{
           transform: `translateX(${offsetX}px)`,
-          transition: isDragging.current ? 'none' : 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
+          transition: isDragging ? 'none' : 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)',
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}

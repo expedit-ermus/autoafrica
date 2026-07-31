@@ -67,6 +67,10 @@ const ussdMenus = [
   },
 ];
 
+function makeTxRef(prefix: string): string {
+  return `${prefix}-${Date.now()}`;
+}
+
 export default function UssdPaymentFlow() {
   const [currentMenu, setCurrentMenu] = useState('home');
   const [history, setHistory] = useState<string[]>(['home']);
@@ -90,13 +94,13 @@ export default function UssdPaymentFlow() {
       setShowPhoneInput(true);
     } else if (action === 'brand' || action === 'city' || action === 'price' || action === 'featured') {
       setTxComplete(true);
-      setTxRef(`SEARCH-${Date.now()}`);
+      setTxRef(makeTxRef('SEARCH'));
     } else if (action === 'last_tx' || action === 'history' || action === 'receipt') {
       setTxComplete(true);
-      setTxRef(`TX-${Date.now()}`);
+      setTxRef(makeTxRef('TX'));
     } else if (action === 'balance') {
       setTxComplete(true);
-      setTxRef(`BAL-${Date.now()}`);
+      setTxRef(makeTxRef('BAL'));
     } else if (action === 'how_to_pay' || action === 'escrow_info' || action === 'support') {
       setTxComplete(true);
     }

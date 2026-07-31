@@ -20,33 +20,39 @@ export default function ProfilePage() {
 
   const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
-  useEffect(() => {
-    if (user) setForm({
+  const [prevUserId, setPrevUserId] = useState(user?.id);
+  if (user && user.id !== prevUserId) {
+    setPrevUserId(user.id);
+    setForm({
       firstName: user.firstName || '', lastName: user.lastName || '',
       phone: user.phone || '', shopName: user.shopName || '',
       city: user.city || '', country: user.country || 'CI',
       description: user.description || '',
     });
-  }, [user]);
+  }
 
-  useEffect(() => { fetchStats(); }, []);
-
-  const fetchStats = async () => {
-    try {
-      const [p, o] = await Promise.all([
-        fetch('/api/v1/products?pageSize=100', { credentials: 'include' }),
-        fetch('/api/v1/orders?pageSize=100', { credentials: 'include' }),
-      ]);
-      const pd = await p.json();
-      const od = await o.json();
-      if (pd.success) setStats(s => ({ ...s, products: pd.data.total || pd.data.data?.length || 0 }));
-      if (od.success) {
-        const orders = od.data.data || [];
-        const revenue = orders.filter((o: any) => o.status === 'DELIVERED' || o.status === 'COMPLETED').reduce((s: number, o: any) => s + (o.totalAmount || o.total || 0), 0);
-        setStats(s => ({ ...s, orders: orders.length, revenue }));
-      }
-    } catch {}
-  };
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const [p, o] = await Promise.all([
+          fetch('/api/v1/products?pageSize=100', { credentials: 'include' }),
+          fetch('/api/v1/orders?pageSize=100', { credentials: 'include' }),
+        ]);
+        const pd = await p.json();
+        const od = await o.json();
+        if (!cancelled) {
+          if (pd.success) setStats(s => ({ ...s, products: pd.data.total || pd.data.data?.length || 0 }));
+          if (od.success) {
+            const orders = od.data.data || [];
+            const revenue = orders.filter((o: any) => o.status === 'DELIVERED' || o.status === 'COMPLETED').reduce((s: number, o: any) => s + (o.totalAmount || o.total || 0), 0);
+            setStats(s => ({ ...s, orders: orders.length, revenue }));
+          }
+        }
+      } catch {}
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const handleSaveProfile = async () => {
     setSaving(true);

@@ -15,22 +15,25 @@ export default function AnalyticsPage() {
 
   const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
-  useEffect(() => { fetchAll(); }, []);
-
-  const fetchAll = async () => {
-    setLoading(true);
-    try {
-      const [p, o, pay] = await Promise.all([
-        fetch('/api/v1/products?pageSize=200', { credentials: 'include' }),
-        fetch('/api/v1/orders?pageSize=200', { credentials: 'include' }),
-        fetch('/api/v1/payments?pageSize=200', { credentials: 'include' }),
-      ]);
-      const pd = await p.json(); const od = await o.json(); const payd = await pay.json();
-      if (pd.success) setProducts(pd.data.data);
-      if (od.success) setOrders(od.data.data);
-      if (payd.success) setPayments(payd.data.data);
-    } catch {} finally { setLoading(false); }
-  };
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const [p, o, pay] = await Promise.all([
+          fetch('/api/v1/products?pageSize=200', { credentials: 'include' }),
+          fetch('/api/v1/orders?pageSize=200', { credentials: 'include' }),
+          fetch('/api/v1/payments?pageSize=200', { credentials: 'include' }),
+        ]);
+        const pd = await p.json(); const od = await o.json(); const payd = await pay.json();
+        if (!cancelled) {
+          if (pd.success) setProducts(pd.data.data);
+          if (od.success) setOrders(od.data.data);
+          if (payd.success) setPayments(payd.data.data);
+        }
+      } catch {} finally { if (!cancelled) setLoading(false); }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const totalRevenue = payments.filter((p: any) => p.status === 'COMPLETED').reduce((s: number, p: any) => s + (p.amount || 0), 0);
   const totalOrders = orders.length;

@@ -19,13 +19,12 @@ interface CartItem {
 export default function CartPage() {
   const { t } = useApp();
   const { addToast } = useToast();
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [checking, setChecking] = useState(false);
-
-  useEffect(() => {
+  const [cart, setCart] = useState<CartItem[]>(() => {
+    if (typeof window === 'undefined') return [];
     const saved = localStorage.getItem('cart');
-    if (saved) setCart(JSON.parse(saved));
-  }, []);
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [checking, setChecking] = useState(false);
 
   const updateCart = (newCart: CartItem[]) => {
     setCart(newCart);

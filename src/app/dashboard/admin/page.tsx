@@ -42,44 +42,47 @@ export default function AdminPage() {
 
   const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
+  const [refreshKey, setRefreshKey] = useState(0);
+
   useEffect(() => {
-    fetchAdminData();
-  }, []);
+    let cancelled = false;
+    (async () => {
+      try {
+        const [usersRes, tenantsRes] = await Promise.all([
+          fetch('/api/v1/users?pageSize=100', { credentials: 'include' }),
+          fetch('/api/v1/tenants?pageSize=100', { credentials: 'include' }),
+        ]);
 
-  const fetchAdminData = async () => {
-    setLoading(true);
-    try {
-      const [usersRes, tenantsRes] = await Promise.all([
-        fetch('/api/v1/users?pageSize=100', { credentials: 'include' }),
-        fetch('/api/v1/tenants?pageSize=100', { credentials: 'include' }),
-      ]);
+        const usersData = await usersRes.json();
+        const tenantsData = await tenantsRes.json();
 
-      const usersData = await usersRes.json();
-      const tenantsData = await tenantsRes.json();
+        if (!cancelled) {
+          if (usersData.success) {
+            setUsers(usersData.data.data);
+            setStats(prev => ({
+              ...prev,
+              totalUsers: usersData.data.data.length,
+              pendingUsers: usersData.data.data.filter((u: User) => u.status === 'PENDING_VERIFICATION').length,
+            }));
+          }
 
-      if (usersData.success) {
-        setUsers(usersData.data.data);
-        setStats(prev => ({
-          ...prev,
-          totalUsers: usersData.data.data.length,
-          pendingUsers: usersData.data.data.filter((u: User) => u.status === 'PENDING_VERIFICATION').length,
-        }));
+          if (tenantsData.success) {
+            setTenants(tenantsData.data.data);
+            setStats(prev => ({
+              ...prev,
+              totalTenants: tenantsData.data.data.length,
+              activeTenants: tenantsData.data.data.filter((t: Tenant) => t.active).length,
+            }));
+          }
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-
-      if (tenantsData.success) {
-        setTenants(tenantsData.data.data);
-        setStats(prev => ({
-          ...prev,
-          totalTenants: tenantsData.data.data.length,
-          activeTenants: tenantsData.data.data.filter((t: Tenant) => t.active).length,
-        }));
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    })();
+    return () => { cancelled = true; };
+  }, [refreshKey]);
 
   const handleUserAction = async (userId: string, action: 'activate' | 'suspend' | 'delete') => {
     try {
@@ -91,7 +94,7 @@ export default function AdminPage() {
       });
 
       if (res.ok) {
-        fetchAdminData();
+        setRefreshKey(k => k + 1);
       }
     } catch (err) {
       console.error(err);
@@ -108,7 +111,7 @@ export default function AdminPage() {
       });
 
       if (res.ok) {
-        fetchAdminData();
+        setRefreshKey(k => k + 1);
       }
     } catch (err) {
       console.error(err);

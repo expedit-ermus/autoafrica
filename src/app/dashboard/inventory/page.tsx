@@ -43,16 +43,19 @@ export default function InventoryPage() {
   const brands = ['Toyota', 'Peugeot', 'Hyundai', 'Kia', 'Mercedes', 'Renault', 'Nissan', 'Volkswagen'];
   const categories = ['Moteur', 'Frein', 'Suspension', 'Carrosserie', 'Électrique', 'Transmission', 'Échappement', 'Pneumatique', 'Refroidissement', 'Direction'];
 
-  useEffect(() => { fetchProducts(); }, []);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/v1/products?pageSize=200', { credentials: 'include' });
-      const data = await res.json();
-      if (data.success) setProducts(data.data.data);
-    } catch (err) { console.error(err); } finally { setLoading(false); }
-  };
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/v1/products?pageSize=200', { credentials: 'include' });
+        const data = await res.json();
+        if (!cancelled && data.success) setProducts(data.data.data);
+      } catch (err) { console.error(err); } finally { if (!cancelled) setLoading(false); }
+    })();
+    return () => { cancelled = true; };
+  }, [refreshKey]);
 
   const filtered = products.filter(p => {
     const matchSearch = `${p.title} ${p.brand?.name || ''} ${p.reference || ''}`.toLowerCase().includes(search.toLowerCase());
@@ -96,7 +99,7 @@ export default function InventoryPage() {
       addToast('success', editProduct ? 'Produit modifié !' : 'Produit ajouté !');
       setShowAdd(false); setEditProduct(null);
       setForm({ title: '', description: '', reference: '', brand: 'Toyota', model: '', category: 'Moteur', price: 0, stock: 0, condition: 'USED', yearStart: 2015, yearEnd: 2024, images: [] });
-      fetchProducts();
+      setRefreshKey(k => k + 1);
     } catch (err: any) { addToast('error', err.message); } finally { setSaving(false); }
   };
 
@@ -104,7 +107,7 @@ export default function InventoryPage() {
     if (!confirm('Supprimer ce produit ?')) return;
     try {
       const res = await fetch(`/api/v1/products/${id}`, { method: 'DELETE', credentials: 'include' });
-      if (res.ok) { addToast('success', 'Produit supprimé'); fetchProducts(); }
+      if (res.ok) { addToast('success', 'Produit supprimé'); setRefreshKey(k => k + 1); }
     } catch (err) { addToast('error', 'Erreur suppression'); }
   };
 
@@ -132,7 +135,7 @@ export default function InventoryPage() {
     }
     addToast('success', `${count} produit${count > 1 ? 's' : ''} mis à jour`);
     setSelected(new Set()); setShowBulk(false); setBulkValue('');
-    fetchProducts();
+    setRefreshKey(k => k + 1);
   };
 
   const handleBulkDelete = async () => {
@@ -146,7 +149,7 @@ export default function InventoryPage() {
     }
     addToast('success', `${count} produit${count > 1 ? 's' : ''} supprimé${count > 1 ? 's' : ''}`);
     setSelected(new Set());
-    fetchProducts();
+    setRefreshKey(k => k + 1);
   };
 
   const exportCSV = () => {

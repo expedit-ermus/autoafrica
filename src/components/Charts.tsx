@@ -50,22 +50,21 @@ export function DonutChart({ segments, size = 120, thickness = 16 }: DonutChartP
   const total = segments.reduce((s, seg) => s + seg.value, 0) || 1;
   const radius = (size - thickness) / 2;
   const circumference = 2 * Math.PI * radius;
-  let offset = 0;
+  const rendered = segments.reduce<{ pct: number; dashOffset: number; color: string }[]>((acc, seg) => {
+    const pct = (seg.value / total) * circumference;
+    const prevTotal = acc.reduce((s, a) => s + a.pct, 0);
+    acc.push({ pct, dashOffset: -prevTotal, color: seg.color });
+    return acc;
+  }, []);
 
   return (
     <div className="flex items-center gap-4">
       <svg width={size} height={size} className="transform -rotate-90">
-        {segments.map((seg, i) => {
-          const pct = (seg.value / total) * circumference;
-          const dashArray = `${pct} ${circumference - pct}`;
-          const dashOffset = -offset;
-          offset += pct;
-          return (
-            <circle key={i} cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={seg.color}
-              strokeWidth={thickness} strokeDasharray={dashArray} strokeDashoffset={dashOffset}
-              className="transition-all duration-700" />
-          );
-        })}
+        {rendered.map((seg, i) => (
+          <circle key={i} cx={size / 2} cy={size / 2} r={radius} fill="none" stroke={seg.color}
+            strokeWidth={thickness} strokeDasharray={`${seg.pct} ${circumference - seg.pct}`} strokeDashoffset={seg.dashOffset}
+            className="transition-all duration-700" />
+        ))}
       </svg>
       <div className="space-y-1.5">
         {segments.map((seg, i) => (

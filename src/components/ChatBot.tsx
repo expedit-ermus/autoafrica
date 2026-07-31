@@ -77,22 +77,8 @@ export default function ChatBot() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (isOpen && messages.length === 0) {
-      addBotMessage('welcome');
-      setUnread(0);
-    }
-  }, [isOpen]);
-
-  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
-
-  useEffect(() => {
-    if (!isOpen && messages.length > 0) {
-      const lastMsg = messages[messages.length - 1];
-      if (lastMsg.from === 'bot') setUnread(prev => prev + 1);
-    }
-  }, [messages, isOpen]);
 
   const getNow = () => new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
@@ -133,6 +119,20 @@ export default function ChatBot() {
       if (flow.quickReplies) setQuickReplies(flow.quickReplies);
     }, delay);
   }, [locale]);
+
+  const openChat = () => {
+    setIsOpen(true);
+    setUnread(0);
+    if (messages.length === 0) addBotMessage('welcome');
+  };
+
+  const closeChat = () => {
+    if (messages.length > 0) {
+      const lastMsg = messages[messages.length - 1];
+      if (lastMsg.from === 'bot') setUnread(prev => prev + 1);
+    }
+    setIsOpen(false);
+  };
 
   const handleOptionClick = (action: string) => {
     const label = getLabel(action, locale);
@@ -356,7 +356,7 @@ export default function ChatBot() {
   return (
     <>
       {!isOpen && (
-        <button onClick={() => setIsOpen(true)}
+        <button onClick={openChat}
           className="fixed bottom-24 lg:bottom-6 right-4 lg:right-6 z-[80] w-14 h-14 rounded-full gradient-primary flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-110">
           <span className="text-white text-xl">💬</span>
           {unread > 0 && (
@@ -387,7 +387,7 @@ export default function ChatBot() {
               {viewHistory.length > 1 && (
                 <button onClick={goBack} className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white hover:bg-white/30 transition text-sm">←</button>
               )}
-              <button onClick={() => setIsOpen(false)} className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white hover:bg-white/30 transition">✕</button>
+              <button onClick={closeChat} className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white hover:bg-white/30 transition">✕</button>
             </div>
           </div>
 

@@ -26,16 +26,17 @@ export default function PaymentsPage() {
 
   const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
-  useEffect(() => { fetchPayments(); }, []);
-
-  const fetchPayments = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch('/api/v1/payments?pageSize=100', { credentials: 'include' });
-      const data = await res.json();
-      if (data.success) setPayments(data.data.data);
-    } catch (err) { console.error(err); } finally { setLoading(false); }
-  };
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/v1/payments?pageSize=100', { credentials: 'include' });
+        const data = await res.json();
+        if (!cancelled && data.success) setPayments(data.data.data);
+      } catch (err) { console.error(err); } finally { if (!cancelled) setLoading(false); }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const completed = payments.filter((p: any) => p.status === 'COMPLETED');
   const held = payments.filter((p: any) => p.status === 'HELD');

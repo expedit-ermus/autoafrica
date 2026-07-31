@@ -8,6 +8,11 @@ import QRCodeDisplay from '@/components/QRCodeDisplay';
 import Modal from '@/components/Modal';
 import { DonutChart } from '@/components/Charts';
 
+function paymentDate(p: any): Date {
+  const ts = p.createdAt || p.updatedAt;
+  return ts ? new Date(ts) : new Date(0);
+}
+
 export default function FinancePage() {
   const { t } = useApp();
   const { addToast } = useToast();
@@ -18,30 +23,32 @@ export default function FinancePage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [payments, setPayments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
   useEffect(() => {
-    fetchFinanceData();
-  }, []);
-
-  const fetchFinanceData = async () => {
-    setLoading(true);
-    try {
-      const [ordersRes, paymentsRes] = await Promise.all([
-        fetch('/api/v1/orders?pageSize=100', { credentials: 'include' }),
-        fetch('/api/v1/payments?pageSize=100', { credentials: 'include' }),
-      ]);
-      const ordersData = await ordersRes.json();
-      const paymentsData = await paymentsRes.json();
-      if (ordersData.success) setOrders(ordersData.data.data);
-      if (paymentsData.success) setPayments(paymentsData.data.data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    let cancelled = false;
+    (async () => {
+      try {
+        const [ordersRes, paymentsRes] = await Promise.all([
+          fetch('/api/v1/orders?pageSize=100', { credentials: 'include' }),
+          fetch('/api/v1/payments?pageSize=100', { credentials: 'include' }),
+        ]);
+        const ordersData = await ordersRes.json();
+        const paymentsData = await paymentsRes.json();
+        if (!cancelled) {
+          if (ordersData.success) setOrders(ordersData.data.data);
+          if (paymentsData.success) setPayments(paymentsData.data.data);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [refreshKey]);
 
   const totalRevenue = payments
     .filter((p: any) => p.status === 'COMPLETED')
@@ -93,7 +100,7 @@ export default function FinancePage() {
     const grouped: Record<string, number> = {};
 
     completed.forEach((p: any) => {
-      const d = new Date(p.createdAt || p.updatedAt || Date.now());
+      const d = paymentDate(p);
       let key = '';
       if (chartView === 'daily') {
         key = d.toISOString().split('T')[0];
@@ -385,7 +392,7 @@ export default function FinancePage() {
                 <h3 className="text-sm font-bold text-gray-900">Transactions récentes</h3>
                 <p className="text-[11px] text-gray-400 mt-0.5">{invoices.length} facture{invoices.length !== 1 ? 's' : ''}</p>
               </div>
-              <button onClick={fetchFinanceData} className="text-[11px] text-orange-600 font-semibold hover:text-orange-700 transition-colors flex items-center gap-1">
+              <button onClick={() => setRefreshKey(k => k + 1)} className="text-[11px] text-orange-600 font-semibold hover:text-orange-700 transition-colors flex items-center gap-1">
                 <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>

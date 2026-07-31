@@ -64,52 +64,54 @@ export default function MarketplacePage() {
   const [total, setTotal] = useState(0);
   const [detailProduct, setDetailProduct] = useState<any>(null);
   const [detailImageIdx, setDetailImageIdx] = useState(0);
-  const [recentlyViewed, setRecentlyViewed] = useState<any[]>([]);
+  const [recentlyViewed, setRecentlyViewed] = useState<any[]>(() => {
+    if (typeof window === 'undefined') return [];
+    const saved = localStorage.getItem('recentlyViewed');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [quantity, setQuantity] = useState(1);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   const brands = ['Toyota', 'Peugeot', 'Hyundai', 'Kia', 'Mercedes', 'Renault', 'Nissan', 'Volkswagen'];
   const categories = ['Moteur', 'Frein', 'Suspension', 'Carrosserie', 'Électrique', 'Transmission', 'Échappement', 'Pneumatique', 'Refroidissement', 'Direction'];
 
-  useEffect(() => { fetchProducts(); }, [brandFilter, categoryFilter, conditionFilter, sortBy, page]);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
-    const saved = localStorage.getItem('recentlyViewed');
-    if (saved) setRecentlyViewed(JSON.parse(saved));
-  }, []);
+    let cancelled = false;
+    (async () => {
+      try {
+        const params = new URLSearchParams();
+        if (brandFilter !== 'all') params.set('brand', brandFilter);
+        if (categoryFilter !== 'all') params.set('category', categoryFilter);
+        if (conditionFilter !== 'all') params.set('condition', conditionFilter);
+        if (search) params.set('search', search);
+        if (minPrice) params.set('minPrice', minPrice);
+        if (maxPrice) params.set('maxPrice', maxPrice);
+        params.set('page', String(page));
+        params.set('pageSize', '12');
+        const sortMap: Record<string, { sortBy: string; sortOrder: string }> = {
+          newest: { sortBy: 'createdAt', sortOrder: 'desc' },
+          price_asc: { sortBy: 'price', sortOrder: 'asc' },
+          price_desc: { sortBy: 'price', sortOrder: 'desc' },
+          popular: { sortBy: 'views', sortOrder: 'desc' },
+        };
+        const sort = sortMap[sortBy] || sortMap.newest;
+        params.set('sortBy', sort.sortBy);
+        params.set('sortOrder', sort.sortOrder);
+        const res = await fetch(`/api/v1/products?${params}`);
+        const data = await res.json();
+        if (!cancelled && data.success) {
+          setProducts(data.data.data);
+          setTotalPages(data.data.pagination.totalPages);
+          setTotal(data.data.pagination.total);
+        }
+      } catch (err) { console.error(err); } finally { if (!cancelled) setLoading(false); }
+    })();
+    return () => { cancelled = true; };
+  }, [brandFilter, categoryFilter, conditionFilter, sortBy, page, search, minPrice, maxPrice, refreshKey]);
 
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      if (brandFilter !== 'all') params.set('brand', brandFilter);
-      if (categoryFilter !== 'all') params.set('category', categoryFilter);
-      if (conditionFilter !== 'all') params.set('condition', conditionFilter);
-      if (search) params.set('search', search);
-      if (minPrice) params.set('minPrice', minPrice);
-      if (maxPrice) params.set('maxPrice', maxPrice);
-      params.set('page', String(page));
-      params.set('pageSize', '12');
-      const sortMap: Record<string, { sortBy: string; sortOrder: string }> = {
-        newest: { sortBy: 'createdAt', sortOrder: 'desc' },
-        price_asc: { sortBy: 'price', sortOrder: 'asc' },
-        price_desc: { sortBy: 'price', sortOrder: 'desc' },
-        popular: { sortBy: 'views', sortOrder: 'desc' },
-      };
-      const sort = sortMap[sortBy] || sortMap.newest;
-      params.set('sortBy', sort.sortBy);
-      params.set('sortOrder', sort.sortOrder);
-      const res = await fetch(`/api/v1/products?${params}`);
-      const data = await res.json();
-      if (data.success) {
-        setProducts(data.data.data);
-        setTotalPages(data.data.pagination.totalPages);
-        setTotal(data.data.pagination.total);
-      }
-    } catch (err) { console.error(err); } finally { setLoading(false); }
-  };
-
-  const handleSearch = () => { setPage(1); fetchProducts(); };
+  const handleSearch = () => { setPage(1); };
 
   const getImages = (p: any) => {
     if (p.images && p.images.length > 0) return p.images;
@@ -154,7 +156,7 @@ export default function MarketplacePage() {
       addToast('success', `Commande ${data.data.orderNumber} créée !`);
       setShowBuy(null);
       setDetailProduct(null);
-      fetchProducts();
+      setRefreshKey(k => k + 1);
     } catch (err: any) { addToast('error', err.message || 'Erreur'); } finally { setBuying(false); }
   };
 
@@ -540,7 +542,7 @@ export default function MarketplacePage() {
                       className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
                     />
                     <button
-                      onClick={() => { setPage(1); fetchProducts(); }}
+                      onClick={() => setPage(1)}
                       className="w-full px-4 py-2.5 rounded-xl bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 transition-colors"
                     >
                       Appliquer le prix
@@ -602,7 +604,7 @@ export default function MarketplacePage() {
                       className="px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20" />
                     <input type="number" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} placeholder="Prix max"
                       className="px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20" />
-                    <button onClick={() => { setPage(1); fetchProducts(); setShowFilters(false); }}
+                    <button onClick={() => { setPage(1); setShowFilters(false); }}
                       className="px-4 py-2.5 rounded-xl bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 transition-colors">
                       Appliquer
                     </button>

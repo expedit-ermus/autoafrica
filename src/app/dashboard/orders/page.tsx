@@ -50,18 +50,21 @@ export default function OrdersPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  useEffect(() => { fetchOrders(); }, [filter]);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const fetchOrders = async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      if (filter !== 'all') params.set('status', filter);
-      const res = await fetch(`/api/v1/orders?${params}`, { credentials: 'include' });
-      const data = await res.json();
-      if (data.success) setOrders(data.data.data);
-    } catch (err) { console.error(err); } finally { setLoading(false); }
-  };
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const params = new URLSearchParams();
+        if (filter !== 'all') params.set('status', filter);
+        const res = await fetch(`/api/v1/orders?${params}`, { credentials: 'include' });
+        const data = await res.json();
+        if (!cancelled && data.success) setOrders(data.data.data);
+      } catch (err) { console.error(err); } finally { if (!cancelled) setLoading(false); }
+    })();
+    return () => { cancelled = true; };
+  }, [filter, refreshKey]);
 
   const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
@@ -74,7 +77,7 @@ export default function OrdersPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       addToast('success', `Commande mise à jour: ${STATUS_CONFIG[status]?.label || status}`);
-      fetchOrders();
+      setRefreshKey(k => k + 1);
     } catch (err: any) { addToast('error', err.message); }
   };
 
@@ -133,7 +136,12 @@ export default function OrdersPage() {
   const showingTo = Math.min(currentPage * itemsPerPage, filteredOrders.length);
 
   // Reset to page 1 when filters change
-  useEffect(() => { setCurrentPage(1); }, [searchQuery, dateFrom, dateTo, filter, itemsPerPage]);
+  const filtersKey = `${searchQuery}|${dateFrom}|${dateTo}|${filter}|${itemsPerPage}`;
+  const [prevFiltersKey, setPrevFiltersKey] = useState(filtersKey);
+  if (filtersKey !== prevFiltersKey) {
+    setPrevFiltersKey(filtersKey);
+    setCurrentPage(1);
+  }
 
   // Status filter counts
   const statusCounts = useMemo(() => {

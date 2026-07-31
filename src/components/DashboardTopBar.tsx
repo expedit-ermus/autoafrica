@@ -12,6 +12,8 @@ interface Notification {
   time: string;
 }
 
+const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
+
 export default function DashboardTopBar() {
   const { t, locale, setLocale, sidebarOpen, setSidebarOpen, user } = useApp();
   const router = useRouter();
@@ -27,12 +29,6 @@ export default function DashboardTopBar() {
   const userRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    fetchNotifications();
-    const interval = setInterval(fetchNotifications, 30000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     if (showMobileSearch && mobileSearchInputRef.current) {
@@ -57,91 +53,103 @@ export default function DashboardTopBar() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  const fetchNotifications = async () => {
-    try {
-      const res = await fetch('/api/v1/notificaciones', { credentials: 'include' });
-      if (!res.ok) {
-        generateFallbackNotifications();
-        return;
-      }
-      const data = await res.json();
-      if (data.success && data.data.notifications) {
-        const mapped: Notification[] = data.data.notifications.map((n: any) => ({
-          id: n.id,
-          title: n.title,
-          message: n.message,
-          type: n.type || 'system',
-          read: n.read,
-          time: n.createdAt
-            ? new Date(n.createdAt).toLocaleDateString('fr-FR', {
-                hour: '2-digit',
-                minute: '2-digit',
-              })
-            : '',
-        }));
-        setNotifications(mapped);
-        setUnreadCount(data.data.unreadCount || 0);
-      } else {
-        generateFallbackNotifications();
-      }
-    } catch {
-      generateFallbackNotifications();
-    }
-  };
+  useEffect(() => {
+    let cancelled = false;
 
-  const generateFallbackNotifications = async () => {
-    try {
-      const [ordersRes, prodRes] = await Promise.all([
-        fetch('/api/v1/orders?pageSize=5', { credentials: 'include' }),
-        fetch('/api/v1/products?pageSize=100', { credentials: 'include' }),
-      ]);
-      const ordersData = await ordersRes.json();
-      const prodData = await prodRes.json();
-      const notifs: Notification[] = [];
-      if (ordersData.success) {
-        const pending =
-          ordersData.data.data?.filter((o: any) => o.status === 'PENDING') || [];
-        pending.slice(0, 2).forEach((o: any) => {
-          notifs.push({
-            id: `order-${o.id}`,
-            title: 'Nouvelle commande',
-            message: `#${o.orderNumber} de ${o.buyer?.firstName || 'Client'} — ${formatCFA(o.totalAmount || o.total || 0)} FCFA`,
-            type: 'order',
-            read: false,
-            time: o.createdAt
-              ? new Date(o.createdAt).toLocaleDateString('fr-FR')
+    const generateFallbackNotifications = async () => {
+      try {
+        const [ordersRes, prodRes] = await Promise.all([
+          fetch('/api/v1/orders?pageSize=5', { credentials: 'include' }),
+          fetch('/api/v1/products?pageSize=100', { credentials: 'include' }),
+        ]);
+        const ordersData = await ordersRes.json();
+        const prodData = await prodRes.json();
+        const notifs: Notification[] = [];
+        if (ordersData.success) {
+          const pending =
+            ordersData.data.data?.filter((o: any) => o.status === 'PENDING') || [];
+          pending.slice(0, 2).forEach((o: any) => {
+            notifs.push({
+              id: `order-${o.id}`,
+              title: 'Nouvelle commande',
+              message: `#${o.orderNumber} de ${o.buyer?.firstName || 'Client'} — ${formatCFA(o.totalAmount || o.total || 0)} FCFA`,
+              type: 'order',
+              read: false,
+              time: o.createdAt
+                ? new Date(o.createdAt).toLocaleDateString('fr-FR')
+                : '',
+            });
+          });
+        }
+        if (prodData.success) {
+          const lowStock =
+            prodData.data.data?.filter(
+              (p: any) => p.stock <= 3 && p.stock > 0
+            ) || [];
+          lowStock.slice(0, 2).forEach((p: any) => {
+            notifs.push({
+              id: `stock-${p.id}`,
+              title: 'Stock bas',
+              message: `${p.title} — ${p.stock} restant${p.stock > 1 ? 's' : ''}`,
+              type: 'stock',
+              read: false,
+              time: 'Maintenant',
+            });
+          });
+        }
+        notifs.push({
+          id: 'system-1',
+          title: 'Bienvenue sur AutoAfrique',
+          message: 'Votre plateforme ERP pièces détachées est opérationnelle.',
+          type: 'system',
+          read: true,
+          time: "Aujourd'hui",
+        });
+        if (!cancelled) {
+          setNotifications(notifs);
+          setUnreadCount(notifs.filter((n) => !n.read).length);
+        }
+      } catch {}
+    };
+
+    const fetchNotifications = async () => {
+      try {
+        const res = await fetch('/api/v1/notificaciones', { credentials: 'include' });
+        if (!res.ok) {
+          await generateFallbackNotifications();
+          return;
+        }
+        const data = await res.json();
+        if (data.success && data.data.notifications) {
+          const mapped: Notification[] = data.data.notifications.map((n: any) => ({
+            id: n.id,
+            title: n.title,
+            message: n.message,
+            type: n.type || 'system',
+            read: n.read,
+            time: n.createdAt
+              ? new Date(n.createdAt).toLocaleDateString('fr-FR', {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                })
               : '',
-          });
-        });
+          }));
+          if (!cancelled) {
+            setNotifications(mapped);
+            setUnreadCount(data.data.unreadCount || 0);
+          }
+        } else {
+          await generateFallbackNotifications();
+        }
+      } catch {
+        await generateFallbackNotifications();
       }
-      if (prodData.success) {
-        const lowStock =
-          prodData.data.data?.filter(
-            (p: any) => p.stock <= 3 && p.stock > 0
-          ) || [];
-        lowStock.slice(0, 2).forEach((p: any) => {
-          notifs.push({
-            id: `stock-${p.id}`,
-            title: 'Stock bas',
-            message: `${p.title} — ${p.stock} restant${p.stock > 1 ? 's' : ''}`,
-            type: 'stock',
-            read: false,
-            time: 'Maintenant',
-          });
-        });
-      }
-      notifs.push({
-        id: 'system-1',
-        title: 'Bienvenue sur AutoAfrique',
-        message: 'Votre plateforme ERP pièces détachées est opérationnelle.',
-        type: 'system',
-        read: true,
-        time: "Aujourd'hui",
-      });
-      setNotifications(notifs);
-      setUnreadCount(notifs.filter((n) => !n.read).length);
-    } catch {}
-  };
+    };
+
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => { cancelled = true; clearInterval(interval); };
+  }, []);
 
   const handleMarkAllRead = async () => {
     setNotifications((n) => n.map((n) => ({ ...n, read: true })));
@@ -180,8 +188,6 @@ export default function DashboardTopBar() {
     system: { icon: '🔔', color: 'bg-gray-400', border: 'border-l-gray-400' },
   };
 
-  const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
-
   const handleLogout = async () => {
     try {
       await fetch('/api/v1/auth/logout', { method: 'POST' });
@@ -193,7 +199,7 @@ export default function DashboardTopBar() {
     ? `${(user.firstName || '')[0] || ''}${(user.lastName || '')[0] || ''}`
     : 'U';
 
-  const NotificationDropdown = ({ className = '' }: { className?: string }) => (
+  const renderNotificationDropdown = (className = '') => (
     <div className={`bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl shadow-black/8 border border-white/60 z-50 overflow-hidden ${className}`}>
       <div className="flex items-center justify-between p-4 border-b border-gray-100/80">
         <div className="flex items-center gap-2">
@@ -403,7 +409,7 @@ export default function DashboardTopBar() {
               {/* Desktop notification dropdown */}
               {showNotif && (
                 <div className="hidden lg:block absolute right-0 top-full mt-2 w-80">
-                  <NotificationDropdown />
+                  {renderNotificationDropdown()}
                 </div>
               )}
             </div>
@@ -534,7 +540,7 @@ export default function DashboardTopBar() {
       {/* Mobile notification dropdown - full width */}
       {showNotif && (
         <div className="lg:hidden fixed inset-x-0 top-14 z-40 px-4">
-          <NotificationDropdown className="rounded-b-2xl" />
+          {renderNotificationDropdown('rounded-b-2xl')}
         </div>
       )}
 

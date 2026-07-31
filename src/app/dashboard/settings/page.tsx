@@ -34,18 +34,18 @@ export default function SettingsPage() {
   const [appearance, setAppearance] = useState({ theme: 'light' as 'light' | 'dark', compact: false });
   const [security, setSecurity] = useState({ twoFactor: false, loginAlerts: true });
 
-  useEffect(() => {
-    if (user) {
-      setForm({
-        firstName: user.firstName || '',
-        lastName: user.lastName || '',
-        phone: user.phone || '',
-        shopName: user.shopName || '',
-        city: user.city || '',
-        country: user.country || '',
-      });
-    }
-  }, [user]);
+  const [prevUserId, setPrevUserId] = useState(user?.id);
+  if (user && user.id !== prevUserId) {
+    setPrevUserId(user.id);
+    setForm({
+      firstName: user.firstName || '',
+      lastName: user.lastName || '',
+      phone: user.phone || '',
+      shopName: user.shopName || '',
+      city: user.city || '',
+      country: user.country || '',
+    });
+  }
 
   const handleSave = async (section: string) => {
     setSaving(true);
