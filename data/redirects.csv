@@ -1,0 +1,14 @@
+source,target,type,status,notes
+/auth/login,/dashboard,302,temp,Redirect after login
+/auth/register,/auth/login,302,temp,Redirect after register
+/dashboard/cart,/auth/login,302,temp,Redirect if not authenticated
+/dashboard/orders,/auth/login,302,temp,Redirect if not authenticated
+/dashboard/inventory,/auth/login,302,temp,Redirect if not authenticated
+/dashboard/crm,/auth/login,302,temp,Redirect if not authenticated
+/dashboard/payments,/auth/login,302,temp,Redirect if not authenticated
+/dashboard/finance,/auth/login,302,temp,Redirect if not authenticated
+/dashboard/analytics,/auth/login,302,temp,Redirect if not authenticated
+/dashboard/admin,/auth/login,302,temp,Redirect if not authenticated
+/dashboard/settings,/auth/login,302,temp,Redirect if not authenticated
+/dashboard/profile,/auth/login,302,temp,Redirect if not authenticated
+/old-landing,/,301,permanent,Migrated from old SaaS landing

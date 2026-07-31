@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AutoAfrique — SaaS ERP Marketplace Pièces Automobiles
 
-## Getting Started
+## Présentation
 
-First, run the development server:
+AutoAfrique est la première plateforme ERP Marketplace dédiée aux pièces détachées automobile en Afrique de l'Ouest. Elle connecte vendeurs, acheteurs et garagistes dans 10 pays avec paiements Mobile Money.
+
+## Objectifs
+
+1. Gérer l'inventaire de pièces automobiles en temps réel
+2. Permettre la vente en ligne avec paiements sécurisés (Orange Money, MTN MoMo, Wave)
+3. Offrir un CRM intégré pour la gestion client
+4. Gérer la chaîne d'approvisionnement (fournisseurs, conteneurs, douanes)
+5. Fournir des analytics et rapports financiers
+
+## Stack
+
+- **Framework** : Next.js 16.2.9
+- **Langage** : TypeScript 5
+- **CSS** : Tailwind CSS 4
+- **Base de données** : SQLite (via libSQL)
+- **ORM** : Prisma 7.8.0
+- **Authentification** : JWT (jsonwebtoken) + httpOnly cookies
+- **Hébergement** : Vercel
+- **Tracking** : Google Analytics 4 (à configurer)
+- **CMP** : À définir
+
+## Installation
 
 ```bash
+git clone https://github.com/expedit-ermus/autoafrica.git
+cd autoafrique-saas
+npm install
+cp .env.example .env.local
+npx prisma generate
+npx prisma db push
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Variables d'environnement
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Copier `.env.example` vers `.env.local`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Ne jamais versionner les valeurs réelles.
 
-## Learn More
+## Commandes
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run dev        # Développement
+npm run lint       # Lint
+npm run build      # Build production
+npm run start      # Démarrer en production
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Documentation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Lire `AGENTS.md` avant toute modification.
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+La documentation détaillée est disponible dans `/docs`.

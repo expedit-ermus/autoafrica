@@ -1,0 +1,34 @@
+id,location,type,usage,alt_required,status
+img-hero-car-selector,landing/hero,illustration,Hero background,non,done
+img-promo-1,landing/promo,photo,Promotion banner 1,oui,a_faire
+img-promo-2,landing/promo,photo,Promotion banner 2,oui,a_faire
+img-promo-3,landing/promo,photo,Promotion banner 3,oui,a_faire
+img-category-pneus,landing/catalog,icon,Category Pneus et Jantes,oui,a_faire
+img-category-frein,landing/catalog,icon,Category Frein,oui,a_faire
+img-category-moteur,landing/catalog,icon,Category Moteur,oui,a_faire
+img-category-courroies,landing/catalog,icon,Category Courroies,oui,a_faire
+img-category-embrayage,landing/catalog,icon,Category Embrayage,oui,a_faire
+img-category-amortissement,landing/catalog,icon,Category Amortissement,oui,a_faire
+img-category-suspension,landing/catalog,icon,Category Suspension,oui,a_faire
+img-category-filtres,landing/catalog,icon,Category Filtres,oui,a_faire
+img-category-carrosserie,landing/catalog,icon,Category Carrosserie,oui,a_faire
+img-category-huiles,landing/catalog,icon,Category Huiles et Fluides,oui,a_faire
+img-category-electricite,landing/catalog,icon,Category Electricite,oui,a_faire
+img-category-accessoires,landing/catalog,icon,Category Accessoires,oui,a_faire
+img-brand-toyota,landing/brands,logo,Toyota logo,oui,a_faire
+img-brand-hyundai,landing/brands,logo,Hyundai logo,oui,a_faire
+img-brand-kia,landing/brands,logo,Kia logo,oui,a_faire
+img-brand-peugeot,landing/brands,logo,Peugeot logo,oui,a_faire
+img-brand-mercedes,landing/brands,logo,Mercedes logo,oui,a_faire
+img-brand-renault,landing/brands,logo,Renault logo,oui,a_faire
+img-brand-nissan,landing/brands,logo,Nissan logo,oui,a_faire
+img-brand-ford,landing/brands,logo,Ford logo,oui,a_faire
+img-brand-volkswagen,landing/brands,logo,Volkswagen logo,oui,a_faire
+img-brand-bmw,landing/brands,logo,BMW logo,oui,a_faire
+img-brand-honda,landing/brands,logo,Honda logo,oui,a_faire
+img-brand-mazda,landing/brands,logo,Mazda logo,oui,a_faire
+logo-main,global,logo,AutoAfrique main logo,oui,done
+logo-white,header,logo,AutoAfrique white logo,oui,done
+favicon,global,logo,Favicon,non,done
+og-image,global,illustration,Open Graph image,oui,a_faire
+img-placeholder,global,illustration,Product placeholder,non,done

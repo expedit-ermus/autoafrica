@@ -1,0 +1,187 @@
+{
+  "routes": [
+    {
+      "id": "R001",
+      "path": "/",
+      "type": "landing",
+      "title": "AutoAfrique : Pieces detachees auto & Marketplace Afrique de l'Ouest",
+      "description": "85,000+ pieces pour Toyota, Hyundai, Kia, Peugeot. Paiement Mobile Money. Livraison 24-72h en Afrique de l'Ouest.",
+      "h1": "AutoAfrique — Pieces Auto Marketplace Afrique de l'Ouest",
+      "index": true,
+      "sitemap": true,
+      "auth": false,
+      "priority": 1.0,
+      "changefreq": "weekly"
+    },
+    {
+      "id": "R002",
+      "path": "/auth/login",
+      "type": "auth",
+      "title": "Connexion — AutoAfrique",
+      "h1": "Connexion a AutoAfrique",
+      "index": false,
+      "sitemap": false,
+      "auth": false
+    },
+    {
+      "id": "R003",
+      "path": "/auth/register",
+      "type": "auth",
+      "title": "Inscription — AutoAfrique",
+      "h1": "Inscription sur AutoAfrique",
+      "index": false,
+      "sitemap": false,
+      "auth": false
+    },
+    {
+      "id": "R004",
+      "path": "/dashboard",
+      "type": "app",
+      "title": "Tableau de bord — AutoAfrique",
+      "h1": "Tableau de bord",
+      "index": false,
+      "sitemap": false,
+      "auth": true
+    },
+    {
+      "id": "R005",
+      "path": "/dashboard/marketplace",
+      "type": "app",
+      "title": "Marketplace — Pieces detachees automobile — AutoAfrique",
+      "description": "Parcourez notre catalogue de 85,000+ pieces auto. Filtrez par marque, modele et prix. Paiement Mobile Money.",
+      "h1": "Marketplace — Pieces detachees automobile",
+      "index": true,
+      "sitemap": true,
+      "auth": false,
+      "priority": 0.9,
+      "changefreq": "daily"
+    },
+    {
+      "id": "R006",
+      "path": "/dashboard/inventory",
+      "type": "app",
+      "title": "Gestion d'inventaire — AutoAfrique",
+      "h1": "Gestion d'inventaire",
+      "index": false,
+      "sitemap": false,
+      "auth": true
+    },
+    {
+      "id": "R007",
+      "path": "/dashboard/cart",
+      "type": "app",
+      "title": "Mon panier — AutoAfrique",
+      "h1": "Mon panier",
+      "index": false,
+      "sitemap": false,
+      "auth": true
+    },
+    {
+      "id": "R008",
+      "path": "/dashboard/orders",
+      "type": "app",
+      "title": "Mes commandes — AutoAfrique",
+      "h1": "Mes commandes",
+      "index": false,
+      "sitemap": false,
+      "auth": true
+    },
+    {
+      "id": "R009",
+      "path": "/dashboard/crm",
+      "type": "app",
+      "title": "CRM — Gestion client — AutoAfrique",
+      "h1": "CRM — Gestion client",
+      "index": false,
+      "sitemap": false,
+      "auth": true
+    },
+    {
+      "id": "R010",
+      "path": "/dashboard/payments",
+      "type": "app",
+      "title": "Paiements — AutoAfrique",
+      "h1": "Paiements",
+      "index": false,
+      "sitemap": false,
+      "auth": true
+    },
+    {
+      "id": "R011",
+      "path": "/dashboard/finance",
+      "type": "app",
+      "title": "Finance — AutoAfrique",
+      "h1": "Finance",
+      "index": false,
+      "sitemap": false,
+      "auth": true
+    },
+    {
+      "id": "R012",
+      "path": "/dashboard/analytics",
+      "type": "app",
+      "title": "Analytics — AutoAfrique",
+      "h1": "Analytics",
+      "index": false,
+      "sitemap": false,
+      "auth": true
+    },
+    {
+      "id": "R013",
+      "path": "/dashboard/admin",
+      "type": "app",
+      "title": "Administration — AutoAfrique",
+      "h1": "Administration",
+      "index": false,
+      "sitemap": false,
+      "auth": true
+    },
+    {
+      "id": "R014",
+      "path": "/dashboard/settings",
+      "type": "app",
+      "title": "Parametres — AutoAfrique",
+      "h1": "Parametres",
+      "index": false,
+      "sitemap": false,
+      "auth": true
+    },
+    {
+      "id": "R015",
+      "path": "/dashboard/profile",
+      "type": "app",
+      "title": "Mon profil — AutoAfrique",
+      "h1": "Mon profil",
+      "index": false,
+      "sitemap": false,
+      "auth": true
+    },
+    {
+      "id": "R016",
+      "path": "/dashboard/help",
+      "type": "app",
+      "title": "Aide — AutoAfrique",
+      "h1": "Aide",
+      "index": false,
+      "sitemap": true,
+      "auth": true,
+      "priority": 0.5
+    },
+    {
+      "id": "R200",
+      "path": "/robots.txt",
+      "type": "static",
+      "index": false,
+      "sitemap": false,
+      "auth": false
+    },
+    {
+      "id": "R201",
+      "path": "/sitemap.xml",
+      "type": "static",
+      "index": false,
+      "sitemap": false,
+      "auth": false
+    }
+  ]
+}
