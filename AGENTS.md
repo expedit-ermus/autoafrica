@@ -14,35 +14,40 @@ L'agent ne doit pas improviser une architecture, une route, une fonctionnalité,
 4. `docs/03-ROUTES-MATRIX.md`
 5. `docs/04-PAGE-SPECS.md`
 6. `docs/05-DESIGN-SYSTEM.md`
-7. `docs/06-UX-ACCESSIBILITY.md`
-8. `docs/07-SEO-CONTENT.md`
-9. `docs/08-CRAWL-INDEXATION.md`
-10. `docs/09-STRUCTURED-DATA.md`
-11. `docs/10-TRACKING-PLAN.md`
-12. `docs/11-PRIVACY-CONSENT.md`
-13. `docs/12-PERFORMANCE-BUDGET.md`
-14. `docs/13-SECURITY.md`
-15. `docs/14-TECHNICAL-ARCHITECTURE.md`
-16. `docs/15-TESTS-ACCEPTANCE.md`
-17. `docs/16-DEPLOYMENT-MONITORING.md`
-18. `docs/17-IMAGES-MEDIA.md`
-19. `docs/DECISIONS.md`
+7. `docs/06-COMPONENTS-LAYOUT.md`
+8. `docs/07-TEMPLATES.md`
+9. `docs/08-CONTENT-COPYWRITING.md`
+10. `docs/09-SEO-SPECS.md`
+11. `docs/10-FORMS.md`
+12. `docs/11-DATA-MODELS.md`
+13. `docs/12-API-SPECS.md`
+14. `docs/13-I18N.md`
+15. `docs/14-ANALYTICS.md`
+16. `docs/15-PERFORMANCE.md`
+17. `docs/16-TESTING.md`
+18. `docs/17-ACCESSIBILITY.md`
+19. `docs/18-ERROR-HANDLING.md`
+20. `docs/19-SECURITY.md`
+21. `docs/20-DEPLOYMENT.md`
+22. `docs/DECISIONS.md`
 
 ## Sources de vérité
 
 - Les routes sont définies exclusivement dans `03-ROUTES-MATRIX.md`.
 - Les modèles de pages sont définis dans `04-PAGE-SPECS.md`.
 - Les composants visuels sont définis dans `05-DESIGN-SYSTEM.md`.
-- Les règles d'accessibilité sont définies dans `06-UX-ACCESSIBILITY.md`.
-- Les règles SEO éditoriales sont définies dans `07-SEO-CONTENT.md`.
-- Les règles de crawl et d'indexation sont définies dans `08-CRAWL-INDEXATION.md`.
-- Les schémas JSON-LD sont définis dans `09-STRUCTURED-DATA.md`.
-- Les événements sont définis exclusivement dans `10-TRACKING-PLAN.md`.
-- Les règles de consentement sont définies dans `11-PRIVACY-CONSENT.md`.
-- Les budgets de performance sont définis dans `12-PERFORMANCE-BUDGET.md`.
-- Les règles de sécurité sont définies dans `13-SECURITY.md`.
-- Les critères de validation sont définis dans `15-TESTS-ACCEPTANCE.md`.
-- Les règles applicables aux images sont définies dans `17-IMAGES-MEDIA.md`.
+- Les composants et le layout sont définis dans `06-COMPONENTS-LAYOUT.md`.
+- Les règles d'accessibilité sont définies dans `17-ACCESSIBILITY.md`.
+- Les règles SEO, de crawl et d'indexation sont définies dans `09-SEO-SPECS.md`.
+- Les modèles de données sont définis dans `11-DATA-MODELS.md`.
+- Les API sont définies exclusivement dans `12-API-SPECS.md`.
+- Les règles d'internationalisation sont définies dans `13-I18N.md`.
+- Les événements de tracking sont définis dans `14-ANALYTICS.md`.
+- Les budgets de performance sont définis dans `15-PERFORMANCE.md`.
+- Les critères de validation sont définis dans `16-TESTING.md`.
+- Les règles de gestion des erreurs sont définies dans `18-ERROR-HANDLING.md`.
+- Les règles de sécurité sont définies dans `19-SECURITY.md`.
+- Les règles de déploiement sont définies dans `20-DEPLOYMENT.md`.
 
 ## Interdictions
 
@@ -103,7 +108,7 @@ Après la modification :
 
 ## Images
 
-Avant d'ajouter une image, lire `docs/17-IMAGES-MEDIA.md`.
+Avant d'ajouter une image, lire `docs/15-PERFORMANCE.md` (budgets, optimisation) et `docs/17-ACCESSIBILITY.md` (texte alternatif).
 
 L'agent doit :
 
