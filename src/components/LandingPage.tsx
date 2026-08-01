@@ -128,6 +128,9 @@ export default function LandingPage() {
     <div className="overflow-x-hidden bg-[#FFF8F0]">
       <section className="bg-gradient-to-b from-[#FEF3E2] to-[#FFF8F0] py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-[#2D1B0E] text-center mb-8">
+            {L('AutoAfrique — Pièces Auto Marketplace Afrique de l\'Ouest', 'AutoAfrique — Auto Parts Marketplace West Africa')}
+          </h1>
           <div className="grid lg:grid-cols-5 gap-6">
             <div className="lg:col-span-2">
               <CarSelector />

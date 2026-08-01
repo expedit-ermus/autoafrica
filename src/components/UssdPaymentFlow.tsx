@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 const ussdMenus = [
   {
@@ -85,10 +85,10 @@ export default function UssdPaymentFlow() {
 
   const menu = ussdMenus.find(m => m.id === currentMenu);
 
-  const handleOption = (action: string) => {
+  const handleOption = useCallback((action: string) => {
     if (action === 'home' || action === 'search' || action === 'pay' || action === 'transactions' || action === 'account' || action === 'help') {
       setCurrentMenu(action);
-      setHistory([...history, action]);
+      setHistory((prev) => [...prev, action]);
     } else if (action.startsWith('pay_')) {
       setSelectedProvider(action.replace('pay_', '').toUpperCase());
       setShowPhoneInput(true);
@@ -104,7 +104,7 @@ export default function UssdPaymentFlow() {
     } else if (action === 'how_to_pay' || action === 'escrow_info' || action === 'support') {
       setTxComplete(true);
     }
-  };
+  }, []);
 
   const handlePhoneSubmit = () => {
     setShowPhoneInput(false);
