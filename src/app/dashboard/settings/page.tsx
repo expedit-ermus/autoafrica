@@ -26,7 +26,7 @@ export default function SettingsPage() {
   const { addToast } = useToast();
   const [saving, setSaving] = useState(false);
 
-  const [general, setGeneral] = useState({ language: 'fr', currency: 'XOF', timezone: 'Africa/Dakar' });
+  const [general, setGeneral] = useState({ language: 'fr', currency: 'XOF', timezone: 'Africa/Abidjan' });
   const [notifications, setNotifications] = useState({ email: true, sms: false, orderAlerts: true, stockAlerts: true });
   const [appearance, setAppearance] = useState({ theme: 'light' as 'light' | 'dark', compact: false });
   const [security, setSecurity] = useState({ twoFactor: false, loginAlerts: true });
