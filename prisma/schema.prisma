@@ -89,6 +89,7 @@ model User {
   refreshTokens   RefreshToken[]
   auditLogs       AuditLog[]
   addresses       UserAddress[]
+  vehicleListings VehicleListing[]
 
   @@index([tenantId])
   @@index([role])
@@ -218,6 +219,7 @@ model Brand {
 
   models    CarModel[]
   products  Product[]
+  vehicles  Vehicle[]
 }
 
 model CarModel {
@@ -235,6 +237,7 @@ model CarModel {
 
   products  Product[]
   compatibleProducts ProductCompat[]
+  vehicles  Vehicle[]
 
   @@unique([brandId, name, yearStart])
 }
@@ -334,6 +337,93 @@ model ProductCompat {
   note        String?
 
   @@unique([productId, carModelId, yearStart])
+}
+
+// ============================================================
+// VEHICLES & LISTINGS (marché véhicules Côte d'Ivoire)
+// ============================================================
+
+model Vehicle {
+  id          String   @id @default(cuid())
+  brandId     String
+  brand       Brand    @relation(fields: [brandId], references: [id])
+  carModelId  String?
+  carModel    CarModel? @relation(fields: [carModelId], references: [id])
+  name        String
+  slug        String   @unique
+  year        Int
+  price       Int
+  currency    String   @default("XOF")
+  mileage     Int?
+  fuel        VehicleFuel?
+  gearbox     VehicleGearbox?
+  condition   VehicleCondition @default(USED)
+  bodyType    String?
+  color       String?
+  city        String?
+  country     String   @default("CI")
+  description String?
+  images      Json?
+  active      Boolean  @default(true)
+  featured    Boolean  @default(false)
+  views       Int      @default(0)
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  listings    VehicleListing[]
+
+  @@index([brandId])
+  @@index([active])
+  @@index([country])
+  @@index([city])
+  @@index([price])
+  @@index([fuel])
+  @@index([gearbox])
+}
+
+enum VehicleFuel {
+  DIESEL
+  GASOLINE
+  HYBRID
+  ELECTRIC
+  LPG
+}
+
+enum VehicleGearbox {
+  MANUAL
+  AUTOMATIC
+}
+
+enum VehicleCondition {
+  NEW
+  USED
+  CERTIFIED
+}
+
+model VehicleListing {
+  id          String   @id @default(cuid())
+  vehicleId   String
+  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  sellerId    String
+  seller      User     @relation(fields: [sellerId], references: [id])
+  status      VehicleListingStatus @default(DRAFT)
+  price       Int
+  currency    String   @default("XOF")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([vehicleId])
+  @@index([sellerId])
+  @@index([status])
+}
+
+enum VehicleListingStatus {
+  DRAFT
+  ACTIVE
+  RESERVED
+  SOLD
+  CANCELLED
 }
 
 // ============================================================

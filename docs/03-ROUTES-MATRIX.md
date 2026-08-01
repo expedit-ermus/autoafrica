@@ -20,6 +20,7 @@
 | R014 | `/dashboard/settings` | App | Settings | Paramètres | Rétention | Navigationnelle | Paramètres | noindex | non | aucun | privée |
 | R015 | `/dashboard/profile` | App | Profile | Profil | Rétention | Navigationnelle | Mon profil | noindex | non | aucun | privée |
 | R016 | `/dashboard/help` | App | Help | Aide | Support | Informationnelle | Aide | noindex | non | FAQPage | privée |
+| R017 | `/dashboard/vehicles` | App | Vehicles | Voir annonces véhicules | Vente | Commerciale | Véhicules — Annonces Côte d'Ivoire | index | oui | Vehicle, ItemList | publique |
 
 ## Routes API
 
@@ -56,6 +57,11 @@
 | R128 | `/api/v1/reviews` | GET | Public | Avis produits |
 | R129 | `/api/v1/reviews` | POST | Required | Créer avis |
 | R130 | `/api/v1/upload` | POST | Required | Upload image |
+| R131 | `/api/v1/vehicles` | GET | Public | Liste annonces véhicules |
+| R132 | `/api/v1/vehicles` | POST | Required | Créer annonce véhicule |
+| R133 | `/api/v1/vehicles/[id]` | GET | Public | Détail véhicule |
+| R134 | `/api/v1/vehicles/[id]` | PUT | Required | Modifier annonce véhicule |
+| R135 | `/api/v1/vehicles/[id]` | DELETE | Required | Supprimer annonce véhicule |
 
 ## Routes techniques
 

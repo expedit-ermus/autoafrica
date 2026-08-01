@@ -204,6 +204,54 @@ model Lead {
 }
 ```
 
+### Vehicle
+```
+model Vehicle {
+  id          String   @id @default(cuid())
+  brandId     String
+  brand       Brand    @relation(fields: [brandId], references: [id])
+  carModelId  String?
+  carModel    CarModel? @relation(fields: [carModelId], references: [id])
+  name        String
+  slug        String   @unique
+  year        Int
+  price       Int
+  currency    String   @default("XOF")
+  mileage     Int?     // km
+  fuel        VehicleFuel?
+  gearbox     VehicleGearbox?
+  condition   VehicleCondition
+  bodyType    String?
+  color       String?
+  city        String?
+  country     String   @default("CI")
+  description String?
+  images      Json?
+  active      Boolean  @default(true)
+  featured    Boolean  @default(false)
+  views       Int      @default(0)
+  metadata    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+```
+
+### VehicleListing
+```
+model VehicleListing {
+  id          String   @id @default(cuid())
+  vehicleId   String
+  vehicle     Vehicle  @relation(fields: [vehicleId], references: [id])
+  sellerId    String
+  seller      User     @relation(fields: [sellerId], references: [id])
+  status      VehicleListingStatus @default(DRAFT)
+  price       Int
+  currency    String   @default("XOF")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+```
+
 ## Enums
 
 ### Role
@@ -227,6 +275,18 @@ MANUAL, WEBSITE, REFERRAL, CAMPAIGN, PHONE
 ### LeadStatus
 NEW, CONTACTED, QUALIFIED, CONVERTED, LOST
 
+### VehicleCondition
+NEW, USED, CERTIFIED
+
+### VehicleFuel
+DIESEL, GASOLINE, HYBRID, ELECTRIC, LPG
+
+### VehicleGearbox
+MANUAL, AUTOMATIC
+
+### VehicleListingStatus
+DRAFT, ACTIVE, RESERVED, SOLD, CANCELLED
+
 ## Indexes
 
 | Model | Index | Type |
@@ -239,3 +299,7 @@ NEW, CONTACTED, QUALIFIED, CONVERTED, LOST
 | Order | buyerId | index |
 | Payment | tenantId + status | index |
 | Lead | tenantId + status | index |
+| Vehicle | brandId | index |
+| Vehicle | active + country + city | index |
+| Vehicle | price | index |
+| VehicleListing | sellerId + status | index |

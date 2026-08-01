@@ -31,6 +31,10 @@ export default function Header() {
             <Link href="/dashboard" className="hover:text-[#FF6B35] transition-colors font-medium">
               {L('CLUB', 'CLUB')}
             </Link>
+            <span className="text-white/30">|</span>
+            <Link href="/dashboard/vehicles" className="hover:text-[#FF6B35] transition-colors font-medium">
+              {L('VÉHICULES', 'VEHICLES')}
+            </Link>
           </div>
           <div className="hidden md:flex items-center gap-4 text-white/70">
             <span className="flex items-center gap-1.5">
