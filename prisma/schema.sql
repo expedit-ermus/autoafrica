@@ -617,6 +617,50 @@ CREATE TABLE "FleetVehicle" (
 );
 
 -- CreateTable
+CREATE TABLE "Vehicle" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "brandId" TEXT NOT NULL,
+    "carModelId" TEXT,
+    "name" TEXT NOT NULL,
+    "slug" TEXT NOT NULL,
+    "year" INTEGER NOT NULL,
+    "price" INTEGER NOT NULL,
+    "currency" TEXT NOT NULL DEFAULT 'XOF',
+    "mileage" INTEGER,
+    "fuel" TEXT,
+    "gearbox" TEXT,
+    "condition" TEXT NOT NULL DEFAULT 'USED',
+    "bodyType" TEXT,
+    "color" TEXT,
+    "city" TEXT,
+    "country" TEXT NOT NULL DEFAULT 'CI',
+    "description" TEXT,
+    "images" JSONB,
+    "active" BOOLEAN NOT NULL DEFAULT true,
+    "featured" BOOLEAN NOT NULL DEFAULT false,
+    "views" INTEGER NOT NULL DEFAULT 0,
+    "metadata" JSONB,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "Vehicle_brandId_fkey" FOREIGN KEY ("brandId") REFERENCES "Brand" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "Vehicle_carModelId_fkey" FOREIGN KEY ("carModelId") REFERENCES "CarModel" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "VehicleListing" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "vehicleId" TEXT NOT NULL,
+    "sellerId" TEXT NOT NULL,
+    "status" TEXT NOT NULL DEFAULT 'DRAFT',
+    "price" INTEGER NOT NULL,
+    "currency" TEXT NOT NULL DEFAULT 'XOF',
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL,
+    CONSTRAINT "VehicleListing_vehicleId_fkey" FOREIGN KEY ("vehicleId") REFERENCES "Vehicle" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT "VehicleListing_sellerId_fkey" FOREIGN KEY ("sellerId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
 CREATE TABLE "Customer" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "userId" TEXT,
@@ -1233,4 +1277,37 @@ CREATE INDEX "Subscription_status_idx" ON "Subscription"("status");
 
 -- CreateIndex
 CREATE INDEX "LoyaltyTransaction_userId_idx" ON "LoyaltyTransaction"("userId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Vehicle_slug_key" ON "Vehicle"("slug");
+
+-- CreateIndex
+CREATE INDEX "Vehicle_brandId_idx" ON "Vehicle"("brandId");
+
+-- CreateIndex
+CREATE INDEX "Vehicle_active_idx" ON "Vehicle"("active");
+
+-- CreateIndex
+CREATE INDEX "Vehicle_country_idx" ON "Vehicle"("country");
+
+-- CreateIndex
+CREATE INDEX "Vehicle_city_idx" ON "Vehicle"("city");
+
+-- CreateIndex
+CREATE INDEX "Vehicle_price_idx" ON "Vehicle"("price");
+
+-- CreateIndex
+CREATE INDEX "Vehicle_fuel_idx" ON "Vehicle"("fuel");
+
+-- CreateIndex
+CREATE INDEX "Vehicle_gearbox_idx" ON "Vehicle"("gearbox");
+
+-- CreateIndex
+CREATE INDEX "VehicleListing_vehicleId_idx" ON "VehicleListing"("vehicleId");
+
+-- CreateIndex
+CREATE INDEX "VehicleListing_sellerId_idx" ON "VehicleListing"("sellerId");
+
+-- CreateIndex
+CREATE INDEX "VehicleListing_status_idx" ON "VehicleListing"("status");
 
