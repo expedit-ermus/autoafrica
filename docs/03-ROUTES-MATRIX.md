@@ -101,6 +101,19 @@
 | R168 | `/api/v1/inventory/[id]` | DELETE | Required | Supprimer ligne stock |
 | R169 | `/api/v1/inventory/movements` | GET | Public | Liste mouvements de stock |
 | R170 | `/api/v1/inventory/transfer` | POST | Required | Transférer du stock entre entrepôts |
+| R171 | `/api/v1/invoices` | GET | Public | Liste factures |
+| R172 | `/api/v1/invoices` | POST | Required | Créer facture |
+| R173 | `/api/v1/invoices/[id]` | GET | Public | Détail facture |
+| R174 | `/api/v1/invoices/[id]` | PUT | Required | Modifier facture |
+| R175 | `/api/v1/invoices/[id]` | PATCH | Required | Changer statut facture |
+| R176 | `/api/v1/invoices/[id]` | DELETE | Required | Supprimer facture |
+| R177 | `/api/v1/accounts` | GET | Public | Liste comptes comptables |
+| R178 | `/api/v1/accounts` | POST | Required | Créer compte comptable |
+| R179 | `/api/v1/accounts/[id]` | GET | Public | Détail compte comptable |
+| R180 | `/api/v1/accounts/[id]` | PUT | Required | Modifier compte comptable |
+| R181 | `/api/v1/accounts/[id]` | DELETE | Required | Supprimer compte comptable |
+| R182 | `/api/v1/finance/transactions` | GET | Public | Liste écritures comptables |
+| R183 | `/api/v1/finance/transactions` | POST | Required | Enregistrer une écriture comptable |
 
 ## Routes techniques
 

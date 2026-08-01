@@ -231,3 +231,20 @@
 
 **Impact** : Nouvelles routes `/api/v1/warehouses` (R159-R163) et `/api/v1/inventory` (R164-R170) documentees dans `03-ROUTES-MATRIX.md`. Service `src/modules/inventory/inventory.service.ts`, routes API associees, page `/dashboard/inventory` refondue. Seed : 3 entrepots (Abidjan, port Abidjan, Bouake) + 8 lignes de stock + mouvements de reception. Tests : 17 tests unitaires.
 
+## D13 : Module finance (factures, comptes comptables, ecritures)
+
+**Contexte** : Les modeles Prisma `Invoice`, `Account` et `Transaction` existent dans le schema sans surface applicative. La page `/dashboard/finance` existante etait un tableau de bord de KPIs base sur les commandes et paiements (chart de revenus, donut par methode de paiement, export CSV), sans gestion reelle de la facturation ni de la comptabilite. Le module finance est la cloture logique du cycle commercial : commande -> paiement -> facture -> comptabilite (plan comptable et ecritures de journal).
+
+**Decision** : Construire le module finance en une iteration : service `src/modules/finance/finance.service.ts` (factures, comptes comptables, ecritures de journal), routes `/api/v1/invoices` (+`[id]`), `/api/v1/accounts` (+`[id]`) et `/api/v1/finance/transactions`, refonte de la page `/dashboard/finance` en vue multi-onglets (Factures / Comptes / Ecritures) avec creation de factures, comptes et ecritures via modales et changement de statut de facture. La facture calcule TVA 18% par defaut (`taxAmount = subtotal * taxRate/100`, `totalAmount = subtotal + taxAmount`) ; le passage a PAID horodate `paidAt` ; une ecriture de journal met a jour le solde courant du compte (`debit` augmente le solde, `credit` le diminue) et stocke le running balance sur l'ecriture.
+
+**Alternatives envisagees** :
+- Conserver la page KPI et ajouter la comptabilite comme page separee : surface UI deja utilisee pour la finance, double source de verite des revenus
+- Ne pas construire le plan comptable (Account/Transaction) : les factures sans comptabilite ne closent pas le cycle financier
+
+**Justification** :
+- La page multi-onglets centralise toute la finance (factures, plan comptable, journal) sans dupliquer le tableau de bord
+- Les modeles existants evitent toute migration schema
+- `InvoiceStatus` et le calcul TVA standard 18% sont directement portes par le schema Prisma existant
+
+**Impact** : Nouvelles routes `/api/v1/invoices` (R171-R176), `/api/v1/accounts` (R177-R181) et `/api/v1/finance/transactions` (R182-R183) documentees dans `03-ROUTES-MATRIX.md`. Service `src/modules/finance/finance.service.ts`, routes API associees, page `/dashboard/finance` refondue. Seed : 9 comptes comptables + 4 ecritures de journal + 4 factures. Tests : 20 tests unitaires (102 au total).
+

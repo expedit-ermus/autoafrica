@@ -4,35 +4,106 @@ import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
-import QRCodeDisplay from '@/components/QRCodeDisplay';
 import Modal from '@/components/Modal';
-import { DonutChart } from '@/components/Charts';
-import { Order, Payment } from '@/shared/types';
 
-interface Invoice {
+type Invoice = {
   id: string;
-  client: string;
-  amount: number;
+  invoiceNumber: string;
+  orderId?: string | null;
+  sellerId: string;
+  buyerId: string;
   status: string;
-  date: string;
-  method: string;
-  raw: Order;
-}
+  subtotal: number;
+  taxRate: number;
+  taxAmount: number;
+  totalAmount: number;
+  currency: string;
+  dueDate?: string | null;
+  paidAt?: string | null;
+  notes?: string | null;
+  createdAt: string;
+  order?: { id: string; total: number; currency: string; status: string } | null;
+};
 
-function paymentDate(p: Payment): Date {
-  const ts = p.createdAt || p.updatedAt;
-  return ts ? new Date(ts) : new Date(0);
-}
+type Account = {
+  id: string;
+  code: string;
+  name: string;
+  type: string;
+  parentId?: string | null;
+  balance: number;
+  currency: string;
+  active: boolean;
+  createdAt: string;
+  parent?: { id: string; code: string; name: string } | null;
+  _count?: { children: number; transactions: number };
+};
+
+type Txn = {
+  id: string;
+  accountId: string;
+  type: string;
+  amount: number;
+  balance: number;
+  description?: string | null;
+  reference?: string | null;
+  date: string;
+  account?: { id: string; code: string; name: string; type: string; currency: string } | null;
+};
+
+const INVOICE_STATUS: Record<string, string> = {
+  DRAFT: 'Brouillon', SENT: 'Envoyée', VIEWED: 'Consultée', PAID: 'Payée',
+  PARTIALLY_PAID: 'Partiellement payée', OVERDUE: 'En retard', CANCELLED: 'Annulée',
+};
+const INVOICE_COLORS: Record<string, string> = {
+  DRAFT: 'bg-gray-100 text-gray-600 border-gray-200',
+  SENT: 'bg-blue-50 text-blue-600 border-blue-200',
+  VIEWED: 'bg-cyan-50 text-cyan-600 border-cyan-200',
+  PAID: 'bg-emerald-50 text-emerald-600 border-emerald-200',
+  PARTIALLY_PAID: 'bg-amber-50 text-amber-600 border-amber-200',
+  OVERDUE: 'bg-red-50 text-red-600 border-red-200',
+  CANCELLED: 'bg-gray-100 text-gray-400 border-gray-200',
+};
+const ACCOUNT_TYPES: Record<string, string> = {
+  asset: 'Actif', liability: 'Passif', equity: 'Capitaux propres', revenue: 'Produit', expense: 'Charge',
+};
+const ACCOUNT_COLORS: Record<string, string> = {
+  asset: 'bg-emerald-50 text-emerald-600 border-emerald-200',
+  liability: 'bg-amber-50 text-amber-600 border-amber-200',
+  equity: 'bg-violet-50 text-violet-600 border-violet-200',
+  revenue: 'bg-blue-50 text-blue-600 border-blue-200',
+  expense: 'bg-red-50 text-red-600 border-red-200',
+};
 
 export default function FinancePage() {
   const { t } = useApp();
   const { addToast } = useToast();
-  const [chartView, setChartView] = useState<'daily' | 'weekly' | 'monthly'>('daily');
-  const [dateRange, setDateRange] = useState({ from: '', to: '' });
-  const [showInvoiceQR, setShowInvoiceQR] = useState<Invoice | null>(null);
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [payments, setPayments] = useState<Payment[]>([]);
+
+  const [tab, setTab] = useState<'invoices' | 'accounts' | 'transactions'>('invoices');
+
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [accounts, setAccounts] = useState<Account[]>([]);
+  const [transactions, setTransactions] = useState<Txn[]>([]);
+
+  const [invSearch, setInvSearch] = useState('');
+  const [invStatus, setInvStatus] = useState('all');
+  const [accSearch, setAccSearch] = useState('');
+  const [accType, setAccType] = useState('all');
+  const [txSearch, setTxSearch] = useState('');
+  const [txType, setTxType] = useState('all');
+
   const [loading, setLoading] = useState(true);
+
+  const [showAddInvoice, setShowAddInvoice] = useState(false);
+  const [showAddAccount, setShowAddAccount] = useState(false);
+  const [showAddTxn, setShowAddTxn] = useState(false);
+  const [showStatus, setShowStatus] = useState<Invoice | null>(null);
+
+  const [invForm, setInvForm] = useState({ buyerId: '', sellerId: '', subtotal: '', taxRate: '18', dueDate: '', notes: '' });
+  const [accForm, setAccForm] = useState({ code: '', name: '', type: 'asset', parentId: '', balance: '0', currency: 'XOF' });
+  const [txForm, setTxForm] = useState({ accountId: '', type: 'debit', amount: '', description: '', reference: '', date: '' });
+  const [statusForm, setStatusForm] = useState('');
+
   const [refreshKey, setRefreshKey] = useState(0);
 
   const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
@@ -41,162 +112,198 @@ export default function FinancePage() {
     let cancelled = false;
     (async () => {
       try {
-        const [ordersRes, paymentsRes] = await Promise.all([
-          fetch('/api/v1/orders?pageSize=100', { credentials: 'include' }),
-          fetch('/api/v1/payments?pageSize=100', { credentials: 'include' }),
+        const [invRes, accRes, txRes] = await Promise.all([
+          fetch('/api/v1/invoices?pageSize=100', { credentials: 'include' }),
+          fetch('/api/v1/accounts?pageSize=100', { credentials: 'include' }),
+          fetch('/api/v1/finance/transactions?pageSize=100', { credentials: 'include' }),
         ]);
-        const ordersData = await ordersRes.json();
-        const paymentsData = await paymentsRes.json();
+        const invData = await invRes.json();
+        const accData = await accRes.json();
+        const txData = await txRes.json();
         if (!cancelled) {
-          if (ordersData.success) setOrders(ordersData.data.data);
-          if (paymentsData.success) setPayments(paymentsData.data.data);
+          if (invData.success) setInvoices(invData.data?.data || invData.data || []);
+          if (accData.success) setAccounts(accData.data?.data || accData.data || []);
+          if (txData.success) setTransactions(txData.data?.data || txData.data || []);
         }
       } catch (err) {
-        console.error(err);
+        console.error('Failed to fetch finance data', err);
+        if (!cancelled) addToast('error', 'Erreur lors du chargement des données financières');
       } finally {
         if (!cancelled) setLoading(false);
       }
     })();
     return () => { cancelled = true; };
-  }, [refreshKey]);
+  }, [refreshKey, addToast]);
 
-  const totalRevenue = payments
-    .filter(p => p.status === 'COMPLETED')
-    .reduce((s, p) => s + (p.amount || 0), 0);
+  const filteredInvoices = useMemo(() => {
+    let list = invoices;
+    if (invStatus !== 'all') list = list.filter(i => i.status === invStatus);
+    if (invSearch) {
+      const q = invSearch.toLowerCase();
+      list = list.filter(i =>
+        i.invoiceNumber.toLowerCase().includes(q) ||
+        (i.notes || '').toLowerCase().includes(q) ||
+        (i.order?.id || '').toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }, [invoices, invSearch, invStatus]);
 
-  const completedOrders = orders.filter(o => o.status === 'DELIVERED' || o.status === 'COMPLETED');
-  const cancelledOrders = orders.filter(o => o.status === 'CANCELLED');
-  const totalOrderCount = orders.length;
-  const avgOrderValue = completedOrders.length > 0 ? totalRevenue / completedOrders.length : 0;
-  const profitMargin = totalRevenue > 0 ? ((totalRevenue - cancelledOrders.reduce((s, o) => s + (o.total || 0), 0)) / totalRevenue * 100) : 0;
+  const filteredAccounts = useMemo(() => {
+    let list = accounts;
+    if (accType !== 'all') list = list.filter(a => a.type === accType);
+    if (accSearch) {
+      const q = accSearch.toLowerCase();
+      list = list.filter(a => a.code.toLowerCase().includes(q) || a.name.toLowerCase().includes(q));
+    }
+    return list;
+  }, [accounts, accSearch, accType]);
 
-  const paymentMethods = [
-    { name: 'Orange Money', color: '#FF6600', key: 'ORANGE_MONEY' },
-    { name: 'Wave', color: '#00B4D8', key: 'WAVE' },
-    { name: 'MTN MoMo', color: '#FFCC00', key: 'MTN_MOMO' },
-    { name: 'Moov Money', color: '#0066CC', key: 'MOOV_MONEY' },
-  ];
+  const filteredTransactions = useMemo(() => {
+    let list = transactions;
+    if (txType !== 'all') list = list.filter(t => t.type === txType);
+    if (txSearch) {
+      const q = txSearch.toLowerCase();
+      list = list.filter(t =>
+        (t.description || '').toLowerCase().includes(q) ||
+        (t.reference || '').toLowerCase().includes(q) ||
+        (t.account?.name || '').toLowerCase().includes(q) ||
+        (t.account?.code || '').toLowerCase().includes(q)
+      );
+    }
+    return list;
+  }, [transactions, txSearch, txType]);
 
-  const methodAmounts = paymentMethods.map(pm => ({
-    ...pm,
-    amount: payments.filter(p => p.method === pm.key && p.status === 'COMPLETED').reduce((s, p) => s + (p.amount || 0), 0),
-    count: payments.filter(p => p.method === pm.key && p.status === 'COMPLETED').length,
-  }));
-
-  const donutData = methodAmounts
-    .filter(m => m.amount > 0)
-    .map(m => ({ label: m.name, value: m.amount, color: m.color }));
-
-  const invoices = useMemo(() => orders.map((o): Invoice => ({
-    id: o.orderNumber || o.id?.slice(0, 8),
-    client: o.buyer?.firstName ? `${o.buyer.firstName} ${o.buyer.lastName || ''}` : o.buyer?.shopName || 'Client',
-    amount: o.total || 0,
-    status: o.status === 'DELIVERED' || o.status === 'COMPLETED' ? 'paid' : o.status === 'CANCELLED' ? 'cancelled' : o.status === 'SHIPPED' ? 'escrow' : 'pending',
-    date: o.createdAt ? new Date(o.createdAt).toISOString().split('T')[0] : '',
-    method: o.payments?.[0]?.method || 'N/A',
-    raw: o,
-  })), [orders]);
-
-  const chartData = useMemo(() => {
-    const completed = payments.filter(p => p.status === 'COMPLETED');
-    const grouped: Record<string, number> = {};
-
-    completed.forEach((p) => {
-      const d = paymentDate(p);
-      let key = '';
-      if (chartView === 'daily') {
-        key = d.toISOString().split('T')[0];
-      } else if (chartView === 'weekly') {
-        const startOfWeek = new Date(d);
-        startOfWeek.setDate(d.getDate() - d.getDay());
-        key = startOfWeek.toISOString().split('T')[0];
+  const handleAddInvoice = async () => {
+    if (!invForm.buyerId || !invForm.sellerId || !invForm.subtotal) {
+      addToast('error', 'Acheteur, vendeur et sous-total sont requis');
+      return;
+    }
+    try {
+      const res = await fetch('/api/v1/invoices', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          buyerId: invForm.buyerId,
+          sellerId: invForm.sellerId,
+          subtotal: Number(invForm.subtotal),
+          taxRate: Number(invForm.taxRate) || 18,
+          dueDate: invForm.dueDate || undefined,
+          notes: invForm.notes || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast('success', 'Facture créée');
+        setShowAddInvoice(false);
+        setInvForm({ buyerId: '', sellerId: '', subtotal: '', taxRate: '18', dueDate: '', notes: '' });
+        setRefreshKey(k => k + 1);
       } else {
-        key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+        addToast('error', data.message || 'Erreur lors de la création');
       }
-      grouped[key] = (grouped[key] || 0) + (p.amount || 0);
-    });
-
-    return Object.entries(grouped)
-      .sort(([a], [b]) => a.localeCompare(b))
-      .slice(chartView === 'daily' ? -14 : chartView === 'weekly' ? -8 : -12);
-  }, [payments, chartView]);
-
-  const chartMax = chartData.length > 0 ? Math.max(...chartData.map(([, v]) => v)) : 1;
-
-  const handleExportCSV = () => {
-    const headers = ['Facture', 'Client', 'Montant (FCFA)', 'Date', 'Méthode', 'Statut'];
-    const rows = invoices.map(inv => [
-      inv.id, inv.client, String(inv.amount), inv.date, inv.method,
-      inv.status === 'paid' ? 'Payé' : inv.status === 'escrow' ? 'En route' : inv.status === 'cancelled' ? 'Annulé' : 'En attente',
-    ]);
-    const csv = [headers, ...rows].map(r => r.join(',')).join('\n');
-    const blob = new Blob([csv], { type: 'text/csv' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `finance_export_${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    addToast('success', 'Export CSV téléchargé');
+    } catch (err) {
+      console.error(err);
+      addToast('error', 'Erreur lors de la création de la facture');
+    }
   };
 
-  const metricCards = [
-    {
-      label: 'Revenus',
-      value: formatCFA(totalRevenue) + ' FCFA',
-      change: '+' + (completedOrders.length > 0 ? ((completedOrders.length / Math.max(totalOrderCount, 1)) * 100).toFixed(0) : '0') + '%',
-      up: completedOrders.length > 0,
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      ),
-      color: 'from-emerald-500 to-emerald-600',
-      bgLight: 'bg-emerald-50',
-      textColor: 'text-emerald-600',
-    },
-    {
-      label: 'Commandes',
-      value: String(totalOrderCount),
-      change: completedOrders.length + ' livrées',
-      up: true,
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-        </svg>
-      ),
-      color: 'from-blue-500 to-blue-600',
-      bgLight: 'bg-blue-50',
-      textColor: 'text-blue-600',
-    },
-    {
-      label: 'Panier moyen',
-      value: formatCFA(avgOrderValue) + ' FCFA',
-      change: totalOrderCount > 0 ? 'sur ' + totalOrderCount + ' cmd' : 'Aucune',
-      up: true,
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-        </svg>
-      ),
-      color: 'from-violet-500 to-violet-600',
-      bgLight: 'bg-violet-50',
-      textColor: 'text-violet-600',
-    },
-    {
-      label: 'Marge brute',
-      value: profitMargin.toFixed(1) + '%',
-      change: formatCFA(totalRevenue - cancelledOrders.reduce((s, o) => s + (o.total || 0), 0)) + ' FCFA',
-      up: profitMargin >= 50,
-      icon: (
-        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-        </svg>
-      ),
-      color: 'from-amber-500 to-orange-500',
-      bgLight: 'bg-amber-50',
-      textColor: 'text-amber-600',
-    },
+  const handleAddAccount = async () => {
+    if (!accForm.code || !accForm.name || !accForm.type) {
+      addToast('error', 'Code, nom et type sont requis');
+      return;
+    }
+    try {
+      const res = await fetch('/api/v1/accounts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          code: accForm.code,
+          name: accForm.name,
+          type: accForm.type,
+          parentId: accForm.parentId || undefined,
+          balance: Number(accForm.balance) || 0,
+          currency: accForm.currency || 'XOF',
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast('success', 'Compte créé');
+        setShowAddAccount(false);
+        setAccForm({ code: '', name: '', type: 'asset', parentId: '', balance: '0', currency: 'XOF' });
+        setRefreshKey(k => k + 1);
+      } else {
+        addToast('error', data.message || 'Erreur lors de la création');
+      }
+    } catch (err) {
+      console.error(err);
+      addToast('error', 'Erreur lors de la création du compte');
+    }
+  };
+
+  const handleAddTxn = async () => {
+    if (!txForm.accountId || !txForm.amount) {
+      addToast('error', 'Compte et montant sont requis');
+      return;
+    }
+    try {
+      const res = await fetch('/api/v1/finance/transactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          accountId: txForm.accountId,
+          type: txForm.type,
+          amount: Number(txForm.amount),
+          description: txForm.description || undefined,
+          reference: txForm.reference || undefined,
+          date: txForm.date || undefined,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast('success', 'Écriture enregistrée');
+        setShowAddTxn(false);
+        setTxForm({ accountId: '', type: 'debit', amount: '', description: '', reference: '', date: '' });
+        setRefreshKey(k => k + 1);
+      } else {
+        addToast('error', data.message || 'Erreur lors de l\'enregistrement');
+      }
+    } catch (err) {
+      console.error(err);
+      addToast('error', 'Erreur lors de l\'enregistrement de l\'écriture');
+    }
+  };
+
+  const handleStatus = async () => {
+    if (!showStatus || !statusForm) return;
+    try {
+      const res = await fetch(`/api/v1/invoices/${showStatus.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ status: statusForm }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast('success', 'Statut mis à jour');
+        setShowStatus(null);
+        setStatusForm('');
+        setRefreshKey(k => k + 1);
+      } else {
+        addToast('error', data.message || 'Erreur lors du changement de statut');
+      }
+    } catch (err) {
+      console.error(err);
+      addToast('error', 'Erreur lors du changement de statut');
+    }
+  };
+
+  const tabs = [
+    { key: 'invoices' as const, label: 'Factures', count: invoices.length },
+    { key: 'accounts' as const, label: 'Comptes', count: accounts.length },
+    { key: 'transactions' as const, label: 'Écritures', count: transactions.length },
   ];
 
   return (
@@ -206,354 +313,581 @@ export default function FinancePage() {
         <DashboardTopBar />
         <main className="p-4 lg:p-8 pb-24 lg:pb-8 max-w-[1400px] mx-auto">
 
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 animate-fade-in">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 animate-fade-in">
             <div>
               <h1 className="text-2xl lg:text-3xl font-extrabold text-gray-900 tracking-tight">{t.nav.finance}</h1>
               <p className="text-sm text-gray-500 mt-1">
-                Suivez vos revenus et transactions
+                Facturation, plan comptable et écritures comptables
               </p>
             </div>
-            <div className="flex items-center gap-3">
-              <input
-                type="date"
-                value={dateRange.from}
-                onChange={e => setDateRange(r => ({ ...r, from: e.target.value }))}
-                className="input-field !min-h-[40px] !py-2 !text-xs w-[140px]"
-              />
-              <span className="text-gray-400 text-xs">→</span>
-              <input
-                type="date"
-                value={dateRange.to}
-                onChange={e => setDateRange(r => ({ ...r, to: e.target.value }))}
-                className="input-field !min-h-[40px] !py-2 !text-xs w-[140px]"
-              />
-              <button
-                onClick={handleExportCSV}
-                className="btn-primary !py-2 !px-4 !text-xs flex items-center gap-1.5"
-              >
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Export CSV
-              </button>
+            <div className="flex items-center gap-2">
+              {tab === 'invoices' && (
+                <button onClick={() => setShowAddInvoice(true)} className="btn-primary !py-2 !px-4 !text-xs">
+                  + Nouvelle facture
+                </button>
+              )}
+              {tab === 'accounts' && (
+                <button onClick={() => setShowAddAccount(true)} className="btn-primary !py-2 !px-4 !text-xs">
+                  + Nouveau compte
+                </button>
+              )}
+              {tab === 'transactions' && (
+                <button onClick={() => setShowAddTxn(true)} className="btn-primary !py-2 !px-4 !text-xs">
+                  + Nouvelle écriture
+                </button>
+              )}
             </div>
           </div>
 
-          {/* Key Metrics */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            {metricCards.map((m, i) => (
-              <div
-                key={m.label}
-                className="glass-card p-5 card-shadow-hover animate-fade-in"
-                style={{ animationDelay: `${i * 60}ms` }}
+          <div className="flex gap-1 bg-white rounded-2xl p-1.5 shadow-sm border border-gray-100 mb-6 w-fit animate-fade-in">
+            {tabs.map(tb => (
+              <button
+                key={tb.key}
+                onClick={() => setTab(tb.key)}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                  tab === tb.key ? 'bg-[#0F172A] text-white shadow-sm' : 'text-gray-500 hover:text-gray-800'
+                }`}
               >
-                <div className="flex items-center justify-between mb-3">
-                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${m.color} flex items-center justify-center text-white shadow-sm`}>
-                    {m.icon}
-                  </div>
-                  <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${m.up ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'}`}>
-                    {m.up ? '↑' : '↓'} {m.change}
-                  </span>
-                </div>
-                <p className="text-xl lg:text-2xl font-extrabold text-gray-900 tracking-tight">{m.value}</p>
-                <p className="text-xs text-gray-500 mt-1 font-medium">{m.label}</p>
-              </div>
+                {tb.label}
+                <span className={`ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] ${tab === tb.key ? 'bg-white/20' : 'bg-gray-100'}`}>
+                  {tb.count}
+                </span>
+              </button>
             ))}
           </div>
 
-          {/* Revenue Chart + Payment Donut */}
-          <div className="grid lg:grid-cols-3 gap-6 mb-8">
-
-            {/* Revenue Chart */}
-            <div className="lg:col-span-2 glass-card p-6 animate-fade-in" style={{ animationDelay: '120ms' }}>
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="text-sm font-bold text-gray-900">Revenus</h3>
-                <div className="flex gap-1 bg-gray-100 rounded-xl p-0.5">
-                  {(['daily', 'weekly', 'monthly'] as const).map(v => (
+          {loading ? (
+            <div className="space-y-3">
+              {[1, 2, 3, 4].map(i => <div key={i} className="h-14 rounded-xl skeleton" />)}
+            </div>
+          ) : (
+            <>
+              {tab === 'invoices' && (
+                <div className="glass-card animate-fade-in">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-6 pb-4 border-b border-gray-100">
+                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                      <input
+                        value={invSearch}
+                        onChange={e => setInvSearch(e.target.value)}
+                        placeholder="Rechercher facture..."
+                        className="input-field !min-h-[38px] !py-2 !text-xs w-full sm:w-64"
+                      />
+                      <select
+                        value={invStatus}
+                        onChange={e => setInvStatus(e.target.value)}
+                        className="input-field !min-h-[38px] !py-2 !text-xs"
+                      >
+                        <option value="all">Tous les statuts</option>
+                        {Object.entries(INVOICE_STATUS).map(([k, v]) => (
+                          <option key={k} value={k}>{v}</option>
+                        ))}
+                      </select>
+                    </div>
                     <button
-                      key={v}
-                      onClick={() => setChartView(v)}
-                      className={`px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all ${
-                        chartView === v ? 'bg-white text-orange-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                      }`}
+                      onClick={() => setRefreshKey(k => k + 1)}
+                      className="text-[11px] text-orange-600 font-semibold hover:text-orange-700 transition-colors flex items-center gap-1"
                     >
-                      {v === 'daily' ? 'Jour' : v === 'weekly' ? 'Semaine' : 'Mois'}
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      Actualiser
                     </button>
-                  ))}
-                </div>
-              </div>
-
-              {chartData.length === 0 ? (
-                <div className="h-[200px] flex items-center justify-center text-gray-400 text-sm">
-                  Aucune donnée de revenu
-                </div>
-              ) : (
-                <div className="relative h-[220px]">
-                  {/* Y-axis labels */}
-                  <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[10px] text-gray-400 font-medium">
-                    <span>{formatCFA(chartMax)}</span>
-                    <span>{formatCFA(Math.round(chartMax * 0.75))}</span>
-                    <span>{formatCFA(Math.round(chartMax * 0.5))}</span>
-                    <span>{formatCFA(Math.round(chartMax * 0.25))}</span>
-                    <span>0</span>
                   </div>
 
-                  {/* Chart area */}
-                  <div className="ml-12 h-full relative">
-                    <svg viewBox={`0 0 ${chartData.length * 44} 200`} className="w-full h-full" preserveAspectRatio="none">
-                      <defs>
-                        <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                          <stop offset="0%" stopColor="#E85D04" stopOpacity="0.3" />
-                          <stop offset="100%" stopColor="#E85D04" stopOpacity="0.02" />
-                        </linearGradient>
-                      </defs>
-                      {/* Grid lines */}
-                      {[0, 50, 100, 150, 200].map(y => (
-                        <line key={y} x1="0" y1={y} x2={chartData.length * 44} y2={y} stroke="#E2E8F0" strokeWidth="0.5" strokeDasharray="4 4" />
-                      ))}
-                      {/* Area fill */}
-                      <path
-                        d={`M0,${200 - (chartData[0][1] / chartMax) * 180} ` +
-                          chartData.map(([, v], i) => `L${i * 44 + 22},${200 - (v / chartMax) * 180}`).join(' ') +
-                          ` L${(chartData.length - 1) * 44 + 22},200 L0,200 Z`}
-                        fill="url(#chartGradient)"
-                        className="transition-all duration-700"
+                  {filteredInvoices.length === 0 ? (
+                    <div className="text-center py-16 text-gray-400">
+                      <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-100 flex items-center justify-center">
+                        <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
+                        </svg>
+                      </div>
+                      <p className="text-sm font-medium">Aucune facture</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="hidden lg:block overflow-x-auto">
+                        <table className="w-full">
+                          <thead>
+                            <tr className="border-b border-gray-100">
+                              <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">N°</th>
+                              <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Vendeur</th>
+                              <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Acheteur</th>
+                              <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Échéance</th>
+                              <th className="text-right text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Total</th>
+                              <th className="text-center text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Statut</th>
+                              <th className="text-right text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filteredInvoices.map(inv => (
+                              <tr key={inv.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                                <td className="px-6 py-4">
+                                  <span className="font-mono text-xs font-semibold text-gray-900 bg-gray-100 px-2 py-1 rounded-md">{inv.invoiceNumber}</span>
+                                </td>
+                                <td className="px-6 py-4 text-xs text-gray-500">{inv.sellerId.slice(0, 8)}</td>
+                                <td className="px-6 py-4 text-xs text-gray-500">{inv.buyerId.slice(0, 8)}</td>
+                                <td className="px-6 py-4 text-xs text-gray-500">{inv.dueDate ? new Date(inv.dueDate).toISOString().split('T')[0] : '—'}</td>
+                                <td className="px-6 py-4 text-right">
+                                  <span className="text-sm font-bold text-gray-900">{formatCFA(inv.totalAmount)} <span className="text-[10px] font-medium text-gray-400">{inv.currency}</span></span>
+                                </td>
+                                <td className="px-6 py-4 text-center">
+                                  <span className={`badge border ${INVOICE_COLORS[inv.status] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                                    {INVOICE_STATUS[inv.status] || inv.status}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 text-right">
+                                  <button
+                                    onClick={() => { setShowStatus(inv); setStatusForm(inv.status); }}
+                                    className="text-[11px] font-semibold text-orange-600 hover:text-orange-700 transition-colors"
+                                  >
+                                    Changer statut
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      <div className="lg:hidden p-4 space-y-3">
+                        {filteredInvoices.map(inv => (
+                          <div key={inv.id} className="p-4 rounded-xl border border-gray-100">
+                            <div className="flex items-start justify-between mb-2">
+                              <span className="font-mono text-[11px] font-semibold text-gray-900 bg-gray-100 px-2 py-0.5 rounded">{inv.invoiceNumber}</span>
+                              <span className={`badge border ${INVOICE_COLORS[inv.status] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                                {INVOICE_STATUS[inv.status] || inv.status}
+                              </span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs text-gray-400">
+                                {inv.dueDate ? new Date(inv.dueDate).toISOString().split('T')[0] : '—'} · {inv.buyerId.slice(0, 8)}
+                              </span>
+                              <span className="text-sm font-bold text-gray-900">{formatCFA(inv.totalAmount)} {inv.currency}</span>
+                            </div>
+                            <button
+                              onClick={() => { setShowStatus(inv); setStatusForm(inv.status); }}
+                              className="mt-3 w-full py-1.5 text-[11px] font-semibold text-orange-600 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors"
+                            >
+                              Changer statut
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+
+              {tab === 'accounts' && (
+                <div className="glass-card animate-fade-in">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-6 pb-4 border-b border-gray-100">
+                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                      <input
+                        value={accSearch}
+                        onChange={e => setAccSearch(e.target.value)}
+                        placeholder="Rechercher compte..."
+                        className="input-field !min-h-[38px] !py-2 !text-xs w-full sm:w-64"
                       />
-                      {/* Line */}
-                      <polyline
-                        points={chartData.map(([, v], i) => `${i * 44 + 22},${200 - (v / chartMax) * 180}`).join(' ')}
-                        fill="none"
-                        stroke="#E85D04"
-                        strokeWidth="2.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className="transition-all duration-700"
-                      />
-                      {/* Dots */}
-                      {chartData.map(([, v], i) => (
-                        <g key={i}>
-                          <circle
-                            cx={i * 44 + 22}
-                            cy={200 - (v / chartMax) * 180}
-                            r="4"
-                            fill="white"
-                            stroke="#E85D04"
-                            strokeWidth="2"
-                            className="transition-all duration-300"
-                          />
-                        </g>
-                      ))}
-                    </svg>
-                    {/* X-axis labels */}
-                    <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2">
-                      {chartData.map(([label], i) => (
-                        <span key={i} className="text-[9px] text-gray-400 font-medium truncate max-w-[44px] text-center">
-                          {chartView === 'daily' ? label.slice(5) : label}
-                        </span>
-                      ))}
+                      <select
+                        value={accType}
+                        onChange={e => setAccType(e.target.value)}
+                        className="input-field !min-h-[38px] !py-2 !text-xs"
+                      >
+                        <option value="all">Tous les types</option>
+                        {Object.entries(ACCOUNT_TYPES).map(([k, v]) => (
+                          <option key={k} value={k}>{v}</option>
+                        ))}
+                      </select>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
 
-            {/* Payment Method Donut */}
-            <div className="glass-card p-6 animate-fade-in" style={{ animationDelay: '180ms' }}>
-              <h3 className="text-sm font-bold text-gray-900 mb-4">Méthodes de paiement</h3>
-              {donutData.length > 0 ? (
-                <div className="flex flex-col items-center">
-                  <DonutChart segments={donutData} size={160} thickness={20} />
-                  <div className="w-full mt-5 space-y-2.5">
-                    {methodAmounts.filter(m => m.amount > 0).map(pm => (
-                      <div key={pm.name} className="flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-50 transition-colors">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-3 h-3 rounded-full" style={{ background: pm.color }} />
-                          <span className="text-xs font-medium text-gray-700">{pm.name}</span>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-xs font-bold text-gray-900">{formatCFA(pm.amount)} FCFA</p>
-                          <p className="text-[10px] text-gray-400">{pm.count} tx</p>
-                        </div>
+                  {filteredAccounts.length === 0 ? (
+                    <div className="text-center py-16 text-gray-400">
+                      <p className="text-sm font-medium">Aucun compte comptable</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="hidden lg:block overflow-x-auto">
+                        <table className="w-full">
+                          <thead>
+                            <tr className="border-b border-gray-100">
+                              <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Code</th>
+                              <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Nom</th>
+                              <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Type</th>
+                              <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Parent</th>
+                              <th className="text-right text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Solde</th>
+                              <th className="text-right text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Écritures</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filteredAccounts.map(acc => (
+                              <tr key={acc.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                                <td className="px-6 py-4">
+                                  <span className="font-mono text-xs font-semibold text-gray-900 bg-gray-100 px-2 py-1 rounded-md">{acc.code}</span>
+                                </td>
+                                <td className="px-6 py-4 text-sm font-medium text-gray-700">{acc.name}</td>
+                                <td className="px-6 py-4">
+                                  <span className={`badge border ${ACCOUNT_COLORS[acc.type] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                                    {ACCOUNT_TYPES[acc.type] || acc.type}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 text-xs text-gray-500">{acc.parent?.code ? `${acc.parent.code} · ${acc.parent.name}` : '—'}</td>
+                                <td className="px-6 py-4 text-right">
+                                  <span className={`text-sm font-bold ${acc.balance >= 0 ? 'text-gray-900' : 'text-red-600'}`}>
+                                    {formatCFA(acc.balance)} <span className="text-[10px] font-medium text-gray-400">{acc.currency}</span>
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 text-right text-xs text-gray-500">{acc._count?.transactions ?? 0}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div className="h-[200px] flex items-center justify-center text-gray-400 text-sm">
-                  Aucune donnée
+
+                      <div className="lg:hidden p-4 space-y-3">
+                        {filteredAccounts.map(acc => (
+                          <div key={acc.id} className="p-4 rounded-xl border border-gray-100">
+                            <div className="flex items-start justify-between mb-2">
+                              <span className="font-mono text-[11px] font-semibold text-gray-900 bg-gray-100 px-2 py-0.5 rounded">{acc.code}</span>
+                              <span className={`badge border ${ACCOUNT_COLORS[acc.type] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                                {ACCOUNT_TYPES[acc.type] || acc.type}
+                              </span>
+                            </div>
+                            <p className="text-sm font-medium text-gray-800 mb-1">{acc.name}</p>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs text-gray-400">{acc._count?.transactions ?? 0} écritures</span>
+                              <span className="text-sm font-bold text-gray-900">{formatCFA(acc.balance)} {acc.currency}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
-            </div>
-          </div>
 
-          {/* Recent Transactions */}
-          <div className="glass-card animate-fade-in" style={{ animationDelay: '240ms' }}>
-            <div className="flex items-center justify-between p-6 pb-4">
+              {tab === 'transactions' && (
+                <div className="glass-card animate-fade-in">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-6 pb-4 border-b border-gray-100">
+                    <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                      <input
+                        value={txSearch}
+                        onChange={e => setTxSearch(e.target.value)}
+                        placeholder="Rechercher écriture..."
+                        className="input-field !min-h-[38px] !py-2 !text-xs w-full sm:w-64"
+                      />
+                      <select
+                        value={txType}
+                        onChange={e => setTxType(e.target.value)}
+                        className="input-field !min-h-[38px] !py-2 !text-xs"
+                      >
+                        <option value="all">Débit & crédit</option>
+                        <option value="debit">Débit</option>
+                        <option value="credit">Crédit</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {filteredTransactions.length === 0 ? (
+                    <div className="text-center py-16 text-gray-400">
+                      <p className="text-sm font-medium">Aucune écriture comptable</p>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="hidden lg:block overflow-x-auto">
+                        <table className="w-full">
+                          <thead>
+                            <tr className="border-b border-gray-100">
+                              <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Date</th>
+                              <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Compte</th>
+                              <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Description</th>
+                              <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Référence</th>
+                              <th className="text-right text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Montant</th>
+                              <th className="text-center text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Type</th>
+                              <th className="text-right text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Solde</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {filteredTransactions.map(tx => (
+                              <tr key={tx.id} className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors">
+                                <td className="px-6 py-4 text-xs text-gray-500">{new Date(tx.date).toISOString().split('T')[0]}</td>
+                                <td className="px-6 py-4">
+                                  <span className="font-mono text-xs font-semibold text-gray-900">{tx.account?.code}</span>
+                                  <span className="text-xs text-gray-500 ml-2">{tx.account?.name}</span>
+                                </td>
+                                <td className="px-6 py-4 text-xs text-gray-600">{tx.description || '—'}</td>
+                                <td className="px-6 py-4 text-xs text-gray-400 font-mono">{tx.reference || '—'}</td>
+                                <td className="px-6 py-4 text-right">
+                                  <span className={`text-sm font-bold ${tx.type === 'debit' ? 'text-red-600' : 'text-emerald-600'}`}>
+                                    {tx.type === 'debit' ? '−' : '+'} {formatCFA(tx.amount)}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 text-center">
+                                  <span className={`badge border ${tx.type === 'debit' ? 'bg-red-50 text-red-600 border-red-200' : 'bg-emerald-50 text-emerald-600 border-emerald-200'}`}>
+                                    {tx.type === 'debit' ? 'Débit' : 'Crédit'}
+                                  </span>
+                                </td>
+                                <td className="px-6 py-4 text-right text-xs text-gray-500">{formatCFA(tx.balance)}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      <div className="lg:hidden p-4 space-y-3">
+                        {filteredTransactions.map(tx => (
+                          <div key={tx.id} className="p-4 rounded-xl border border-gray-100">
+                            <div className="flex items-start justify-between mb-2">
+                              <span className={`badge border ${tx.type === 'debit' ? 'bg-red-50 text-red-600 border-red-200' : 'bg-emerald-50 text-emerald-600 border-emerald-200'}`}>
+                                {tx.type === 'debit' ? 'Débit' : 'Crédit'}
+                              </span>
+                              <span className="text-xs text-gray-400">{new Date(tx.date).toISOString().split('T')[0]}</span>
+                            </div>
+                            <p className="text-sm font-medium text-gray-800 mb-1">{tx.account?.name}</p>
+                            <p className="text-xs text-gray-500 mb-2">{tx.description || '—'}</p>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs text-gray-400">Solde {formatCFA(tx.balance)}</span>
+                              <span className={`text-sm font-bold ${tx.type === 'debit' ? 'text-red-600' : 'text-emerald-600'}`}>
+                                {tx.type === 'debit' ? '−' : '+'} {formatCFA(tx.amount)}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Add Invoice Modal */}
+          <Modal isOpen={showAddInvoice} onClose={() => setShowAddInvoice(false)} title="Nouvelle facture">
+            <div className="space-y-4">
               <div>
-                <h3 className="text-sm font-bold text-gray-900">Transactions récentes</h3>
-                <p className="text-[11px] text-gray-400 mt-0.5">{invoices.length} facture{invoices.length !== 1 ? 's' : ''}</p>
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Vendeur (ID)</label>
+                <input
+                  value={invForm.sellerId}
+                  onChange={e => setInvForm(f => ({ ...f, sellerId: e.target.value }))}
+                  placeholder="ID utilisateur vendeur"
+                  className="input-field !text-sm"
+                />
               </div>
-              <button onClick={() => setRefreshKey(k => k + 1)} className="text-[11px] text-orange-600 font-semibold hover:text-orange-700 transition-colors flex items-center gap-1">
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
-                Actualiser
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Acheteur (ID)</label>
+                <input
+                  value={invForm.buyerId}
+                  onChange={e => setInvForm(f => ({ ...f, buyerId: e.target.value }))}
+                  placeholder="ID utilisateur acheteur"
+                  className="input-field !text-sm"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Sous-total (FCFA)</label>
+                  <input
+                    type="number"
+                    value={invForm.subtotal}
+                    onChange={e => setInvForm(f => ({ ...f, subtotal: e.target.value }))}
+                    placeholder="10000"
+                    className="input-field !text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">TVA (%)</label>
+                  <input
+                    type="number"
+                    value={invForm.taxRate}
+                    onChange={e => setInvForm(f => ({ ...f, taxRate: e.target.value }))}
+                    placeholder="18"
+                    className="input-field !text-sm"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Échéance</label>
+                <input
+                  type="date"
+                  value={invForm.dueDate}
+                  onChange={e => setInvForm(f => ({ ...f, dueDate: e.target.value }))}
+                  className="input-field !text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Notes</label>
+                <textarea
+                  value={invForm.notes}
+                  onChange={e => setInvForm(f => ({ ...f, notes: e.target.value }))}
+                  placeholder="Notes internes..."
+                  rows={2}
+                  className="input-field !text-sm resize-none"
+                />
+              </div>
+              <button onClick={handleAddInvoice} className="btn-primary w-full">
+                Créer la facture
               </button>
             </div>
+          </Modal>
 
-            {loading ? (
-              <div className="p-6 pt-0 space-y-3">
-                {[1, 2, 3, 4].map(i => (
-                  <div key={i} className="h-14 rounded-xl skeleton" />
-                ))}
+          {/* Add Account Modal */}
+          <Modal isOpen={showAddAccount} onClose={() => setShowAddAccount(false)} title="Nouveau compte comptable">
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Code</label>
+                  <input
+                    value={accForm.code}
+                    onChange={e => setAccForm(f => ({ ...f, code: e.target.value }))}
+                    placeholder="A1 / 411..."
+                    className="input-field !text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Type</label>
+                  <select
+                    value={accForm.type}
+                    onChange={e => setAccForm(f => ({ ...f, type: e.target.value }))}
+                    className="input-field !text-sm"
+                  >
+                    {Object.entries(ACCOUNT_TYPES).map(([k, v]) => (
+                      <option key={k} value={k}>{v}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
-            ) : invoices.length === 0 ? (
-              <div className="text-center py-16 text-gray-400">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-100 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                  </svg>
-                </div>
-                <p className="text-sm font-medium">Aucune transaction pour le moment</p>
-              </div>
-            ) : (
-              <>
-                {/* Desktop Table */}
-                <div className="hidden lg:block overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-100">
-                        <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Facture</th>
-                        <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Client</th>
-                        <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Date</th>
-                        <th className="text-left text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Méthode</th>
-                        <th className="text-right text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Montant</th>
-                        <th className="text-center text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Statut</th>
-                        <th className="text-right text-[10px] uppercase tracking-wider text-gray-400 font-semibold px-6 py-3">Actions</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {invoices.map((inv, i) => (
-                        <tr
-                          key={i}
-                          className="border-b border-gray-50 hover:bg-gray-50/50 cursor-pointer transition-colors"
-                          onClick={() => setShowInvoiceQR(inv)}
-                        >
-                          <td className="px-6 py-4">
-                            <span className="font-mono text-xs font-semibold text-gray-900 bg-gray-100 px-2 py-1 rounded-md">{inv.id}</span>
-                          </td>
-                          <td className="px-6 py-4 text-sm font-medium text-gray-700">{inv.client}</td>
-                          <td className="px-6 py-4 text-xs text-gray-500">{inv.date}</td>
-                          <td className="px-6 py-4">
-                            <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded-md">{inv.method}</span>
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <span className="text-sm font-bold text-gray-900">{formatCFA(inv.amount)} <span className="text-[10px] font-medium text-gray-400">FCFA</span></span>
-                          </td>
-                          <td className="px-6 py-4 text-center">
-                            <span className={`badge ${inv.status === 'paid' ? 'badge-success' : inv.status === 'escrow' ? 'badge-info' : inv.status === 'cancelled' ? 'badge-danger' : 'badge-warning'}`}>
-                              {inv.status === 'paid' ? 'Payé' : inv.status === 'escrow' ? 'En route' : inv.status === 'cancelled' ? 'Annulé' : 'En attente'}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <div className="flex items-center justify-end gap-2" onClick={e => e.stopPropagation()}>
-                              <button
-                                onClick={() => setShowInvoiceQR(inv)}
-                                className="p-1.5 rounded-lg hover:bg-purple-50 text-purple-500 hover:text-purple-600 transition-colors"
-                                title="QR Code"
-                              >
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                                </svg>
-                              </button>
-                              <button
-                                onClick={() => addToast('info', `PDF ${inv.id} en cours de génération...`)}
-                                className="p-1.5 rounded-lg hover:bg-orange-50 text-gray-400 hover:text-orange-500 transition-colors"
-                                title="Télécharger PDF"
-                              >
-                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                </svg>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-
-                {/* Mobile Cards */}
-                <div className="lg:hidden p-4 space-y-3">
-                  {invoices.map((inv, i) => (
-                    <div
-                      key={i}
-                      className="p-4 rounded-xl border border-gray-100 hover:border-orange-200 transition-colors cursor-pointer"
-                      onClick={() => setShowInvoiceQR(inv)}
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <span className="font-mono text-[11px] font-semibold text-gray-900 bg-gray-100 px-2 py-0.5 rounded">{inv.id}</span>
-                        <span className={`badge ${inv.status === 'paid' ? 'badge-success' : inv.status === 'escrow' ? 'badge-info' : inv.status === 'cancelled' ? 'badge-danger' : 'badge-warning'}`}>
-                          {inv.status === 'paid' ? 'Payé' : inv.status === 'escrow' ? 'En route' : inv.status === 'cancelled' ? 'Annulé' : 'En attente'}
-                        </span>
-                      </div>
-                      <p className="text-sm font-medium text-gray-800 mb-1">{inv.client}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-gray-400">{inv.date} · {inv.method}</span>
-                        <span className="text-sm font-bold text-gray-900">{formatCFA(inv.amount)} FCFA</span>
-                      </div>
-                      <div className="flex gap-2 mt-3" onClick={e => e.stopPropagation()}>
-                        <button
-                          onClick={() => setShowInvoiceQR(inv)}
-                          className="flex-1 py-1.5 text-[11px] font-semibold text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
-                        >
-                          QR Code
-                        </button>
-                        <button
-                          onClick={() => addToast('info', `PDF ${inv.id} en cours de génération...`)}
-                          className="flex-1 py-1.5 text-[11px] font-semibold text-orange-600 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors"
-                        >
-                          PDF
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
-          </div>
-
-          {/* QR Modal */}
-          <Modal isOpen={!!showInvoiceQR} onClose={() => setShowInvoiceQR(null)} title="QR Code Facture">
-            {showInvoiceQR && (
-              <div className="text-center">
-                <QRCodeDisplay
-                  data={`autoafrique:invoice:${showInvoiceQR.id}:${showInvoiceQR.amount}`}
-                  title={`Facture ${showInvoiceQR.id}`}
-                  subtitle={`${showInvoiceQR.client} · ${formatCFA(showInvoiceQR.amount)} FCFA`}
-                  size={180}
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Nom</label>
+                <input
+                  value={accForm.name}
+                  onChange={e => setAccForm(f => ({ ...f, name: e.target.value }))}
+                  placeholder="Caisse, Banque, Ventes..."
+                  className="input-field !text-sm"
                 />
-                <div className="mt-5 bg-gray-50 rounded-xl p-4 text-left space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-500">Client</span>
-                    <span className="text-sm font-semibold text-gray-900">{showInvoiceQR.client}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-500">Montant</span>
-                    <span className="text-sm font-bold text-orange-600">{formatCFA(showInvoiceQR.amount)} FCFA</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-500">Date</span>
-                    <span className="text-sm font-semibold text-gray-900">{showInvoiceQR.date}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-500">Statut</span>
-                    <span className={`badge ${showInvoiceQR.status === 'paid' ? 'badge-success' : showInvoiceQR.status === 'escrow' ? 'badge-info' : showInvoiceQR.status === 'cancelled' ? 'badge-danger' : 'badge-warning'}`}>
-                      {showInvoiceQR.status === 'paid' ? 'Payé' : showInvoiceQR.status === 'escrow' ? 'En route' : showInvoiceQR.status === 'cancelled' ? 'Annulé' : 'En attente'}
-                    </span>
-                  </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Compte parent (ID)</label>
+                  <input
+                    value={accForm.parentId}
+                    onChange={e => setAccForm(f => ({ ...f, parentId: e.target.value }))}
+                    placeholder="Optionnel"
+                    className="input-field !text-sm"
+                  />
                 </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Solde initial</label>
+                  <input
+                    type="number"
+                    value={accForm.balance}
+                    onChange={e => setAccForm(f => ({ ...f, balance: e.target.value }))}
+                    placeholder="0"
+                    className="input-field !text-sm"
+                  />
+                </div>
+              </div>
+              <button onClick={handleAddAccount} className="btn-primary w-full">
+                Créer le compte
+              </button>
+            </div>
+          </Modal>
+
+          {/* Add Transaction Modal */}
+          <Modal isOpen={showAddTxn} onClose={() => setShowAddTxn(false)} title="Nouvelle écriture comptable">
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Compte</label>
+                <select
+                  value={txForm.accountId}
+                  onChange={e => setTxForm(f => ({ ...f, accountId: e.target.value }))}
+                  className="input-field !text-sm"
+                >
+                  <option value="">Sélectionner un compte...</option>
+                  {accounts.map(acc => (
+                    <option key={acc.id} value={acc.id}>{acc.code} · {acc.name}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Type</label>
+                  <select
+                    value={txForm.type}
+                    onChange={e => setTxForm(f => ({ ...f, type: e.target.value }))}
+                    className="input-field !text-sm"
+                  >
+                    <option value="debit">Débit</option>
+                    <option value="credit">Crédit</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Montant (FCFA)</label>
+                  <input
+                    type="number"
+                    value={txForm.amount}
+                    onChange={e => setTxForm(f => ({ ...f, amount: e.target.value }))}
+                    placeholder="0"
+                    className="input-field !text-sm"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Description</label>
+                <input
+                  value={txForm.description}
+                  onChange={e => setTxForm(f => ({ ...f, description: e.target.value }))}
+                  placeholder="Description de l'écriture"
+                  className="input-field !text-sm"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Référence</label>
+                  <input
+                    value={txForm.reference}
+                    onChange={e => setTxForm(f => ({ ...f, reference: e.target.value }))}
+                    placeholder="N° facture / PO"
+                    className="input-field !text-sm"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Date</label>
+                  <input
+                    type="date"
+                    value={txForm.date}
+                    onChange={e => setTxForm(f => ({ ...f, date: e.target.value }))}
+                    className="input-field !text-sm"
+                  />
+                </div>
+              </div>
+              <button onClick={handleAddTxn} className="btn-primary w-full">
+                Enregistrer l&apos;écriture
+              </button>
+            </div>
+          </Modal>
+
+          {/* Status Modal */}
+          <Modal isOpen={!!showStatus} onClose={() => setShowStatus(null)} title="Changer le statut">
+            {showStatus && (
+              <div className="space-y-4">
+                <div className="bg-gray-50 rounded-xl p-4 flex items-center justify-between">
+                  <span className="font-mono text-xs font-semibold text-gray-900">{showStatus.invoiceNumber}</span>
+                  <span className="text-sm font-bold text-gray-900">{formatCFA(showStatus.totalAmount)} {showStatus.currency}</span>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Statut</label>
+                  <select
+                    value={statusForm}
+                    onChange={e => setStatusForm(e.target.value)}
+                    className="input-field !text-sm"
+                  >
+                    {Object.entries(INVOICE_STATUS).map(([k, v]) => (
+                      <option key={k} value={k}>{v}</option>
+                    ))}
+                  </select>
+                </div>
+                <button onClick={handleStatus} className="btn-primary w-full">
+                  Mettre à jour
+                </button>
               </div>
             )}
           </Modal>

@@ -317,6 +317,67 @@ async function main() {
   }
 
   console.log(`Seeded: ${stockLines.length} inventory lines + movements`)
+
+  const accounts = [
+    { code: 'C01', name: 'Caisse', type: 'asset', balance: 2500000 },
+    { code: 'C02', name: 'Banque SDCI', type: 'asset', balance: 18500000 },
+    { code: 'C03', name: 'Créances clients', type: 'asset', balance: 4200000 },
+    { code: 'P01', name: 'Dettes fournisseurs', type: 'liability', balance: -7300000 },
+    { code: 'R01', name: 'Ventes pièces détachées', type: 'revenue', balance: 24000000 },
+    { code: 'R02', name: 'Ventes véhicules', type: 'revenue', balance: 52000000 },
+    { code: 'E01', name: 'Achats marchandises', type: 'expense', balance: -15000000 },
+    { code: 'E02', name: 'Frais logistiques', type: 'expense', balance: -3200000 },
+    { code: 'E03', name: 'Droits de douane', type: 'expense', balance: -6800000 },
+  ]
+
+  const insertAccount = db.prepare(`INSERT INTO Account (id, code, name, type, parentId, balance, currency, tenantId, active, createdAt) VALUES (?, ?, ?, ?, NULL, ?, 'XOF', NULL, 1, ?)`)
+
+  const accountIds = []
+  for (const a of accounts) {
+    const id = cuid()
+    accountIds.push(id)
+    insertAccount.run(id, a.code, a.name, a.type, a.balance, nowIso())
+  }
+
+  console.log(`Seeded: ${accounts.length} accounts`)
+
+  const ledgerEntries = [
+    { accountIndex: 4, type: 'credit', amount: 1200000, description: 'Vente pièces détachées — facture FAC-2026-001', reference: 'INV-001' },
+    { accountIndex: 5, type: 'credit', amount: 8000000, description: 'Vente véhicule Toyota Corolla 2021', reference: 'INV-002' },
+    { accountIndex: 3, type: 'debit', amount: 4500000, description: 'Paiement fournisseur Guangzhou Auto Parts', reference: 'PO-2026-001' },
+    { accountIndex: 1, type: 'debit', amount: 9200000, description: 'Encaissement vente véhicule', reference: 'INV-002' },
+  ]
+
+  const insertTransaction = db.prepare(`INSERT INTO "Transaction" (id, accountId, type, amount, balance, description, reference, date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`)
+
+  for (const e of ledgerEntries) {
+    const account = accounts[e.accountIndex]
+    const newBalance = account.balance + (e.type === 'debit' ? e.amount : -e.amount)
+    accounts[e.accountIndex] = { ...account, balance: newBalance }
+    insertTransaction.run(cuid(), accountIds[e.accountIndex], e.type, e.amount, newBalance, e.description, e.reference, nowIso())
+  }
+
+  console.log(`Seeded: ${ledgerEntries.length} ledger transactions`)
+
+  const invoices = [
+    { buyerId: users[2].id, sellerId: users[0].id, subtotal: 1016949, taxRate: 18, taxAmount: 183051, totalAmount: 1200000, status: 'PAID' },
+    { buyerId: users[2].id, sellerId: users[0].id, subtotal: 6779661, taxRate: 18, taxAmount: 1220339, totalAmount: 8000000, status: 'PAID' },
+    { buyerId: users[1].id, sellerId: users[0].id, subtotal: 847458, taxRate: 18, taxAmount: 152542, totalAmount: 1000000, status: 'SENT' },
+    { buyerId: users[1].id, sellerId: users[0].id, subtotal: 2033898, taxRate: 18, taxAmount: 366102, totalAmount: 2400000, status: 'PARTIALLY_PAID' },
+  ]
+
+  const insertInvoice = db.prepare(`INSERT INTO Invoice (id, invoiceNumber, orderId, tenantId, sellerId, buyerId, status, subtotal, taxRate, taxAmount, totalAmount, currency, dueDate, paidAt, notes, createdAt, updatedAt) VALUES (?, ?, NULL, NULL, ?, ?, ?, ?, ?, ?, ?, 'XOF', ?, ?, NULL, ?, ?)`)
+
+  for (let i = 0; i < invoices.length; i++) {
+    const inv = invoices[i]
+    const ts = nowIso()
+    const dueDate = addDays(30)
+    const paidAt = inv.status === 'PAID' ? ts : null
+    insertInvoice.run(cuid(), `FAC-2026-00${i + 1}`, inv.sellerId, inv.buyerId, inv.status, inv.subtotal, inv.taxRate, inv.taxAmount, inv.totalAmount, dueDate, paidAt, ts, ts)
+  }
+
+  console.log(`Seeded: ${invoices.length} invoices`)
+
   db.close()
 }
 
