@@ -89,6 +89,18 @@
 | R156 | `/api/v1/customs-records/[id]` | PUT | Required | Modifier dossier douane |
 | R157 | `/api/v1/customs-records/[id]` | PATCH | Required | Changer statut dossier douane |
 | R158 | `/api/v1/customs-records/[id]` | DELETE | Required | Supprimer dossier douane |
+| R159 | `/api/v1/warehouses` | GET | Public | Liste entrepôts |
+| R160 | `/api/v1/warehouses` | POST | Required | Créer entrepôt |
+| R161 | `/api/v1/warehouses/[id]` | GET | Public | Détail entrepôt |
+| R162 | `/api/v1/warehouses/[id]` | PUT | Required | Modifier entrepôt |
+| R163 | `/api/v1/warehouses/[id]` | DELETE | Required | Supprimer entrepôt |
+| R164 | `/api/v1/inventory` | GET | Public | Liste stock par entrepôt |
+| R165 | `/api/v1/inventory` | POST | Required | Créer ligne stock |
+| R166 | `/api/v1/inventory/[id]` | GET | Public | Détail ligne stock |
+| R167 | `/api/v1/inventory/[id]` | PATCH | Required | Ajuster quantité stock |
+| R168 | `/api/v1/inventory/[id]` | DELETE | Required | Supprimer ligne stock |
+| R169 | `/api/v1/inventory/movements` | GET | Public | Liste mouvements de stock |
+| R170 | `/api/v1/inventory/transfer` | POST | Required | Transférer du stock entre entrepôts |
 
 ## Routes techniques
 

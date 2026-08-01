@@ -214,3 +214,20 @@
 
 **Impact** : Nouvelles routes `/api/v1/suppliers`, `/api/v1/purchase-orders`, `/api/v1/containers`, `/api/v1/customs-records` et pages `/dashboard/suppliers`, `/dashboard/purchase-orders`, `/dashboard/containers`, `/dashboard/customs`. Routes documentees dans `03-ROUTES-MATRIX.md` (R018-R021, R136-R158). Les 4 modules de la supply chain sont construits : `Fournisseurs`, `Approvisionnement` (PurchaseOrder), `Conteneurs` (Container) et `Douanes` (CustomsRecord).
 
+## D12 : Module inventaire et entrepôts
+
+**Contexte** : Les modeles Prisma `Warehouse`, `Inventory` et `StockMovement` existent dans le schema sans surface applicative. La page `/dashboard/inventory` existante etait un simple CRUD produits reposant sur `Product.stock`, sans notion d'entrepot, de lignes de stock par produit/entrepot, ni d'historique de mouvements. Le module est la suite logique de la supply chain : apres le dedouanement, la marchandise entre dans un entrepot puis circule entre entrepots.
+
+**Decision** : Construire le module inventaire et entrepots en une iteration : service `src/modules/inventory/inventory.service.ts` (gestion des entrepots, lignes de stock et mouvements), routes `/api/v1/warehouses` (+`[id]`) et `/api/v1/inventory` (+`[id]`, `/movements`, `/transfer`), refonte de la page `/dashboard/inventory` en vue multi-onglets (Stock / Entrepots / Mouvements) avec ajustement de stock inline et transfert entre entrepots. La page refondue remplace le CRUD produits (les produits restent geres via `/dashboard/marketplace` et `/api/v1/products`).
+
+**Alternatives envisagees** :
+- Conserver la page CRUD produits et ajouter l'inventaire comme page separee : doublon de surface UI, stock produit et lignes inventaire divergents
+- Ne pas construire les mouvements de stock : aucune tracabilite (reception, transfert, ajustement)
+
+**Justification** :
+- La page multi-onglets centralise la gestion de stock sans dupliquer le CRUD produits
+- Le modele `Inventory` (productId + warehouseId unique) permet un stock multi-entrepots avec `available = quantity - reserved`
+- Les `StockMovement` offrent la tracabilite complete (RECEIVED, TRANSFERRED, ADJUSTED, SOLD...)
+
+**Impact** : Nouvelles routes `/api/v1/warehouses` (R159-R163) et `/api/v1/inventory` (R164-R170) documentees dans `03-ROUTES-MATRIX.md`. Service `src/modules/inventory/inventory.service.ts`, routes API associees, page `/dashboard/inventory` refondue. Seed : 3 entrepots (Abidjan, port Abidjan, Bouake) + 8 lignes de stock + mouvements de reception. Tests : 17 tests unitaires.
+

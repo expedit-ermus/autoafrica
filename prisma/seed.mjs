@@ -145,12 +145,15 @@ async function main() {
 
   const insertProduct = db.prepare(`INSERT INTO Product (id, title, slug, description, reference, brandId, categoryId, price, currency, stock, condition, sellerId, active, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 
+  const productIds = []
   for (const p of products) {
+    const pid = cuid()
+    productIds.push(pid)
     const sellerId = Math.random() > 0.5 ? users[0].id : users[1].id
     const brandId = brandMap[p.brand] || null
     const categoryId = catMap[p.category] || null
     const slug = p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + crypto.randomBytes(3).toString('hex')
-    insertProduct.run(cuid(), p.title, slug, p.description, p.reference, brandId, categoryId, p.price, 'XOF', p.stock, p.condition, sellerId, 1, now, now)
+    insertProduct.run(pid, p.title, slug, p.description, p.reference, brandId, categoryId, p.price, 'XOF', p.stock, p.condition, sellerId, 1, now, now)
   }
 
   console.log(`Seeded: ${users.length} users, ${brands.length} brands, ${categories.length} categories, ${products.length} products`)
@@ -270,6 +273,50 @@ async function main() {
   }
 
   console.log(`Seeded: ${customsRecords.length} customs records`)
+
+  const warehouses = [
+    { name: 'Depot Principal Abidjan', code: 'ABJ-01', type: 'STANDARD', country: 'CI', city: 'Abidjan', address: 'Zone Industrielle de Yopougon', capacity: 5000, active: 1 },
+    { name: 'Depot Portuaire Abidjan', code: 'ABJ-PORT', type: 'CROSS_DOCK', country: 'CI', city: 'Abidjan', address: 'Port Autonome d\'Abidjan, Terminal', capacity: 2000, active: 1 },
+    { name: 'Depot Bouake', code: 'BKE-01', type: 'STANDARD', country: 'CI', city: 'Bouake', address: 'Zone industrielle de Bouake', capacity: 1500, active: 1 },
+  ]
+
+  const insertWarehouse = db.prepare(`INSERT INTO Warehouse (id, name, code, type, country, city, address, capacity, active, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+
+  const warehouseIds = []
+  for (const w of warehouses) {
+    const id = cuid()
+    warehouseIds.push(id)
+    const ts = nowIso()
+    insertWarehouse.run(id, w.name, w.code, w.type, w.country, w.city, w.address, w.capacity, w.active, ts, ts)
+  }
+
+  console.log(`Seeded: ${warehouses.length} warehouses`)
+
+  const insertInventory = db.prepare(`INSERT INTO Inventory (id, productId, warehouseId, quantity, reserved, available, binLocation, lotNumber, costBasis, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+  const insertMovement = db.prepare(`INSERT INTO StockMovement (id, productId, fromWarehouseId, toWarehouseId, inventoryId, type, quantity, reference, notes, createdBy, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+
+  const stockLines = [
+    { productIndex: 0, warehouseIndex: 0, quantity: 45, reserved: 3, binLocation: 'A-01-01', lotNumber: 'LOT-A1', costBasis: 5000 },
+    { productIndex: 1, warehouseIndex: 0, quantity: 30, reserved: 2, binLocation: 'A-01-02', lotNumber: 'LOT-A2', costBasis: 3800 },
+    { productIndex: 3, warehouseIndex: 0, quantity: 25, reserved: 0, binLocation: 'B-02-01', lotNumber: 'LOT-B1', costBasis: 11000 },
+    { productIndex: 4, warehouseIndex: 0, quantity: 10, reserved: 4, binLocation: 'B-02-02', lotNumber: 'LOT-B2', costBasis: 21000 },
+    { productIndex: 9, warehouseIndex: 0, quantity: 2, reserved: 1, binLocation: 'C-03-01', lotNumber: 'LOT-C1', costBasis: 120000 },
+    { productIndex: 0, warehouseIndex: 1, quantity: 20, reserved: 1, binLocation: 'D-01-01', lotNumber: 'LOT-A1', costBasis: 5000 },
+    { productIndex: 2, warehouseIndex: 1, quantity: 3, reserved: 0, binLocation: 'D-01-02', lotNumber: 'LOT-D1', costBasis: 80000 },
+    { productIndex: 5, warehouseIndex: 2, quantity: 8, reserved: 2, binLocation: 'E-01-01', lotNumber: 'LOT-E1', costBasis: 28000 },
+  ]
+
+  for (const line of stockLines) {
+    const id = cuid()
+    const ts = nowIso()
+    const productId = productIds[line.productIndex]
+    const warehouseId = warehouseIds[line.warehouseIndex]
+    const available = line.quantity - line.reserved
+    insertInventory.run(id, productId, warehouseId, line.quantity, line.reserved, available, line.binLocation, line.lotNumber, line.costBasis, ts)
+    insertMovement.run(cuid(), productId, null, null, id, 'RECEIVED', line.quantity, 'PO-SEED', `Reception initiale — lot ${line.lotNumber}`, users[0].id, ts)
+  }
+
+  console.log(`Seeded: ${stockLines.length} inventory lines + movements`)
   db.close()
 }
 
