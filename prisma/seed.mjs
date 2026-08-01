@@ -154,6 +154,36 @@ async function main() {
   }
 
   console.log(`Seeded: ${users.length} users, ${brands.length} brands, ${categories.length} categories, ${products.length} products`)
+
+  const vehicles = [
+    { name: 'Toyota Corolla 2021', brand: 'Toyota', year: 2021, price: 11500000, mileage: 62000, fuel: 'GASOLINE', gearbox: 'AUTOMATIC', condition: 'USED', bodyType: 'Berline', color: 'Gris métal', city: 'Abidjan', description: 'Corolla 2021, entretien suivi, clim, Bluetooth, radar de recul.' },
+    { name: 'Toyota RAV4 2020', brand: 'Toyota', year: 2020, price: 18500000, mileage: 85000, fuel: 'GASOLINE', gearbox: 'AUTOMATIC', condition: 'USED', bodyType: 'SUV', color: 'Blanc', city: 'Yopougon', description: 'RAV4 2020 essence, 4x4, toit ouvrant, sièges cuir, carnet complet.' },
+    { name: 'Peugeot 3008 2022', brand: 'Peugeot', year: 2022, price: 16800000, mileage: 40000, fuel: 'DIESEL', gearbox: 'AUTOMATIC', condition: 'USED', bodyType: 'SUV', color: 'Noir', city: 'Bouaké', description: '3008 2022 BlueHDi 130, caméra 360, écran tactile, très bon état.' },
+    { name: 'Hyundai Tucson 2021', brand: 'Hyundai', year: 2021, price: 14200000, mileage: 58000, fuel: 'DIESEL', gearbox: 'AUTOMATIC', condition: 'USED', bodyType: 'SUV', color: 'Bleu nuit', city: 'Cocody', description: 'Tucson 2.0 CRDi, pack confort, régulateur, GPS, non accidenté.' },
+    { name: 'Kia Sportage 2020', brand: 'Kia', year: 2020, price: 13500000, mileage: 70000, fuel: 'DIESEL', gearbox: 'AUTOMATIC', condition: 'USED', bodyType: 'SUV', color: 'Rouge', city: 'Abidjan', description: 'Sportage IV 2.0 CRDi, entretien en concession, climatisation bi-zone.' },
+    { name: 'Mercedes C180 2019', brand: 'Mercedes', year: 2019, price: 19500000, mileage: 96000, fuel: 'GASOLINE', gearbox: 'AUTOMATIC', condition: 'CERTIFIED', bodyType: 'Berline', color: 'Argent', city: 'Abidjan', description: 'C180 W205, certifié, carnet Mercedes, toit ouvrant, sièges électriques.' },
+    { name: 'Renault Duster 2021', brand: 'Renault', year: 2021, price: 8800000, mileage: 54000, fuel: 'DIESEL', gearbox: 'MANUAL', condition: 'USED', bodyType: 'SUV', color: 'Blanc', city: 'San-Pédro', description: 'Duster 1.5 dCi 110, barre de toit, Bluetooth, véhicule de particulier.' },
+    { name: 'Nissan Qashqai 2020', brand: 'Nissan', year: 2020, price: 13900000, mileage: 64000, fuel: 'DIESEL', gearbox: 'MANUAL', condition: 'USED', bodyType: 'SUV', color: 'Gris', city: 'Yamoussoukro', description: 'Qashqai 1.5 dCi, caméra de recul, capteurs, entretien régulier.' },
+    { name: 'Volkswagen Tiguan 2021', brand: 'Volkswagen', year: 2021, price: 17200000, mileage: 47000, fuel: 'DIESEL', gearbox: 'AUTOMATIC', condition: 'USED', bodyType: 'SUV', color: 'Noir', city: 'Abidjan', description: 'Tiguan 2.0 TDI, 4MOTION, écran 9,2", hayon électrique.' },
+    { name: 'Toyota Hilux 2022', brand: 'Toyota', year: 2022, price: 24000000, mileage: 38000, fuel: 'DIESEL', gearbox: 'AUTOMATIC', condition: 'USED', bodyType: 'Pickup', color: 'Blanc', city: 'Korhogo', description: 'Hilux 2.8 D-4D double cabine, traction 4x4, coffre bâché.' },
+  ]
+
+  const insertVehicle = db.prepare(`INSERT INTO Vehicle (id, brandId, name, slug, year, price, currency, mileage, fuel, gearbox, condition, bodyType, color, city, country, description, active, featured, views, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, 'XOF', ?, ?, ?, ?, ?, ?, ?, 'CI', ?, 1, 0, 0, ?, ?)`)
+
+  const insertListing = db.prepare(`INSERT INTO VehicleListing (id, vehicleId, sellerId, status, price, currency, createdAt, updatedAt) VALUES (?, ?, ?, 'ACTIVE', ?, 'XOF', ?, ?)`)
+
+  for (const v of vehicles) {
+    const id = cuid()
+    const brandId = brandMap[v.brand]
+    if (!brandId) continue
+    const slug = v.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + crypto.randomBytes(3).toString('hex')
+    const sellerId = users[0].id
+    const ts = new Date().toISOString()
+    insertVehicle.run(id, brandId, v.name, slug, v.year, v.price, v.mileage, v.fuel, v.gearbox, v.condition, v.bodyType, v.color, v.city, v.description, ts, ts)
+    insertListing.run(cuid(), id, sellerId, v.price, ts, ts)
+  }
+
+  console.log(`Seeded: ${vehicles.length} vehicles + active listings`)
   db.close()
 }
 

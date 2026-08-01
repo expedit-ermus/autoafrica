@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, afterEach } from 'vitest'
 import { PaymentMethod } from '@/generated/prisma/client'
 import { paymentProviders } from './registry'
 import { OrangeMoneyAdapter } from './orange-money.adapter'
@@ -28,6 +28,10 @@ describe('paymentProviders registry', () => {
 describe('Mobile Money adapters', () => {
   const adapters = [new OrangeMoneyAdapter(), new MtnMomoAdapter(), new MoovMoneyAdapter()]
 
+  afterEach(() => {
+    vi.restoreAllMocks()
+  })
+
   it.each(adapters.map(a => [a.name, a]))('exposes the Ivorian market config (%s)', (_name, adapter) => {
     expect(adapter.countries).toContain('CI')
     expect(adapter.limits.min).toBeGreaterThan(0)
@@ -36,6 +40,7 @@ describe('Mobile Money adapters', () => {
   })
 
   it.each(adapters.map(a => [a.name, a]))('completes a valid payment (%s)', async (_name, adapter) => {
+    vi.spyOn(Math, 'random').mockReturnValue(0.5)
     const result = await adapter.initiate({
       phone: '+22507080910',
       amount: 150000,
