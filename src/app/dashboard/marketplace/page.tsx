@@ -835,7 +835,7 @@ export default function MarketplacePage() {
 
                   <div className="flex items-center gap-3">
                     <label className="text-sm font-medium text-gray-700">Qté:</label>
-                    <div className="flex items-center border border-gray-200 rounded-xl">
+                    <div role="group" aria-label="Quantité" className="flex items-center border border-gray-200 rounded-xl">
                       <button onClick={() => setQuantity(q => Math.max(1, q - 1))} className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-50 rounded-l-xl">-</button>
                       <span className="w-10 text-center text-sm font-bold">{quantity}</span>
                       <button onClick={() => setQuantity(q => Math.min(detailProduct.stock, q + 1))} className="w-8 h-8 flex items-center justify-center text-gray-600 hover:bg-gray-50 rounded-r-xl">+</button>

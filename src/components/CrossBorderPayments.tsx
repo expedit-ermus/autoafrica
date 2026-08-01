@@ -49,8 +49,8 @@ export default function CrossBorderPayments() {
         {/* Country selector */}
         <div className="flex items-center gap-4">
           <div className="flex-1">
-            <label className="block text-xs font-medium text-gray-500 mb-1">De</label>
-            <select value={fromCountry} onChange={(e) => setFromCountry(e.target.value)}
+            <label htmlFor="cbp-from" className="block text-xs font-medium text-gray-500 mb-1">De</label>
+            <select id="cbp-from" value={fromCountry} onChange={(e) => setFromCountry(e.target.value)}
               className="input-field">
               {countries.map(c => (
                 <option key={c.code} value={c.code}>{c.flag} {c.name}</option>
@@ -64,8 +64,8 @@ export default function CrossBorderPayments() {
             </button>
           </div>
           <div className="flex-1">
-            <label className="block text-xs font-medium text-gray-500 mb-1">Vers</label>
-            <select value={toCountry} onChange={(e) => setToCountry(e.target.value)}
+            <label htmlFor="cbp-to" className="block text-xs font-medium text-gray-500 mb-1">Vers</label>
+            <select id="cbp-to" value={toCountry} onChange={(e) => setToCountry(e.target.value)}
               className="input-field">
               {countries.filter(c => c.code !== fromCountry).map(c => (
                 <option key={c.code} value={c.code}>{c.flag} {c.name}</option>
@@ -76,9 +76,9 @@ export default function CrossBorderPayments() {
 
         {/* Amount */}
         <div>
-          <label className="block text-xs font-medium text-gray-500 mb-1">Montant à envoyer</label>
+          <label htmlFor="cbp-amount" className="block text-xs font-medium text-gray-500 mb-1">Montant à envoyer</label>
           <div className="relative">
-            <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)}
+            <input id="cbp-amount" type="number" value={amount} onChange={(e) => setAmount(e.target.value)}
               className="input-field !pr-20 text-lg font-bold" placeholder="0" />
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400">
               {from?.currency.split(' ')[0]}

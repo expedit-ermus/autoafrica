@@ -86,8 +86,9 @@ export default function SettingsPage() {
 
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Langue</label>
+                <label htmlFor="set-language" className="block text-sm font-medium text-gray-700 mb-1.5">Langue</label>
                 <select
+                  id="set-language"
                   className="input-field"
                   value={general.language}
                   onChange={e => setGeneral({ ...general, language: e.target.value })}
@@ -100,8 +101,9 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Devise</label>
+                <label htmlFor="set-currency" className="block text-sm font-medium text-gray-700 mb-1.5">Devise</label>
                 <select
+                  id="set-currency"
                   className="input-field"
                   value={general.currency}
                   onChange={e => setGeneral({ ...general, currency: e.target.value })}
@@ -117,8 +119,9 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Fuseau horaire</label>
+                <label htmlFor="set-timezone" className="block text-sm font-medium text-gray-700 mb-1.5">Fuseau horaire</label>
                 <select
+                  id="set-timezone"
                   className="input-field"
                   value={general.timezone}
                   onChange={e => setGeneral({ ...general, timezone: e.target.value })}
@@ -195,7 +198,7 @@ export default function SettingsPage() {
             <div className="space-y-5">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Thème</label>
-                <div className="grid grid-cols-2 gap-3">
+                <div role="group" aria-label="Thème" className="grid grid-cols-2 gap-3">
                   {[
                     { value: 'light' as const, label: 'Clair', icon: '☀️' },
                     { value: 'dark' as const, label: 'Sombre', icon: '🌙' },

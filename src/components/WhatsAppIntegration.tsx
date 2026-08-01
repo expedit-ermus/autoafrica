@@ -58,7 +58,7 @@ export default function WhatsAppIntegration() {
       {/* Input */}
       <div className="bg-[#F0F0F0] rounded-b-2xl p-3 flex items-center gap-2">
         <button className="text-gray-500 text-lg">😊</button>
-        <input value={input} onChange={(e) => setInput(e.target.value)}
+        <input aria-label="Tapez un message" value={input} onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
           className="flex-1 bg-white rounded-full px-4 py-2 text-sm outline-none"
           placeholder="Tapez un message..." />

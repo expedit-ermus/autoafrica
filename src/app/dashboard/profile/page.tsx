@@ -190,18 +190,18 @@ export default function ProfilePage() {
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Prénom</label>
-                      <input className="input-field" value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} />
+                      <label htmlFor="profile-firstName" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Prénom</label>
+                      <input id="profile-firstName" className="input-field" value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Nom</label>
-                      <input className="input-field" value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} />
+                      <label htmlFor="profile-lastName" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Nom</label>
+                      <input id="profile-lastName" className="input-field" value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Email</label>
+                    <label htmlFor="profile-email" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Email</label>
                     <div className="relative">
-                      <input className="input-field bg-gray-50/80 pr-10" value={user?.email || ''} disabled />
+                      <input id="profile-email" className="input-field bg-gray-50/80 pr-10" value={user?.email || ''} disabled />
                       <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
                       </svg>
@@ -209,17 +209,17 @@ export default function ProfilePage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Téléphone</label>
-                      <input className="input-field" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="+225 XX XX XX XX" />
+                      <label htmlFor="profile-phone" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Téléphone</label>
+                      <input id="profile-phone" className="input-field" value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} placeholder="+225 XX XX XX XX" />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Ville</label>
-                      <input className="input-field" value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} />
+                      <label htmlFor="profile-city" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Ville</label>
+                      <input id="profile-city" className="input-field" value={form.city} onChange={e => setForm({ ...form, city: e.target.value })} />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Pays</label>
-                    <select className="input-field" value={form.country} onChange={e => setForm({ ...form, country: e.target.value })}>
+                    <label htmlFor="profile-country" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Pays</label>
+                    <select id="profile-country" className="input-field" value={form.country} onChange={e => setForm({ ...form, country: e.target.value })}>
                       {Object.entries(t.countries).map(([code, name]) => <option key={code} value={code}>{name}</option>)}
                     </select>
                   </div>
@@ -241,12 +241,12 @@ export default function ProfilePage() {
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Nom de la boutique</label>
-                    <input className="input-field" value={form.shopName} onChange={e => setForm({ ...form, shopName: e.target.value })} placeholder="AutoPièces CI" />
+                    <label htmlFor="profile-shopName" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Nom de la boutique</label>
+                    <input id="profile-shopName" className="input-field" value={form.shopName} onChange={e => setForm({ ...form, shopName: e.target.value })} placeholder="AutoPièces CI" />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Description</label>
-                    <textarea className="input-field resize-none" rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Spécialiste en pièces Toyota et Peugeot..." />
+                    <label htmlFor="profile-description" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Description</label>
+                    <textarea id="profile-description" className="input-field resize-none" rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Spécialiste en pièces Toyota et Peugeot..." />
                   </div>
                   <div className="bg-gradient-to-r from-blue-50/80 to-indigo-50/50 rounded-2xl p-4 border border-blue-100/50">
                     <div className="flex items-start gap-3">
@@ -343,9 +343,9 @@ export default function ProfilePage() {
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Mot de passe actuel</label>
+                    <label htmlFor="profile-currentPass" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Mot de passe actuel</label>
                     <div className="relative">
-                      <input type={showCurrentPass ? 'text' : 'password'} className="input-field pr-10" value={passwords.current} onChange={e => setPasswords({ ...passwords, current: e.target.value })} />
+                      <input id="profile-currentPass" type={showCurrentPass ? 'text' : 'password'} className="input-field pr-10" value={passwords.current} onChange={e => setPasswords({ ...passwords, current: e.target.value })} />
                       <button type="button" onClick={() => setShowCurrentPass(p => !p)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                         {showCurrentPass ? (
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12c1.292 4.338 5.31 7.5 10.066 7.5.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
@@ -356,9 +356,9 @@ export default function ProfilePage() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Nouveau mot de passe</label>
+                    <label htmlFor="profile-newPass" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Nouveau mot de passe</label>
                     <div className="relative">
-                      <input type={showNewPass ? 'text' : 'password'} className="input-field pr-10" value={passwords.newPass} onChange={e => setPasswords({ ...passwords, newPass: e.target.value })} placeholder="Min. 8 caractères" />
+                      <input id="profile-newPass" type={showNewPass ? 'text' : 'password'} className="input-field pr-10" value={passwords.newPass} onChange={e => setPasswords({ ...passwords, newPass: e.target.value })} placeholder="Min. 8 caractères" />
                       <button type="button" onClick={() => setShowNewPass(p => !p)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                         {showNewPass ? (
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12c1.292 4.338 5.31 7.5 10.066 7.5.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
@@ -369,9 +369,9 @@ export default function ProfilePage() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Confirmer</label>
+                    <label htmlFor="profile-confirmPass" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Confirmer</label>
                     <div className="relative">
-                      <input type={showConfirmPass ? 'text' : 'password'} className="input-field pr-10" value={passwords.confirm} onChange={e => setPasswords({ ...passwords, confirm: e.target.value })} />
+                      <input id="profile-confirmPass" type={showConfirmPass ? 'text' : 'password'} className="input-field pr-10" value={passwords.confirm} onChange={e => setPasswords({ ...passwords, confirm: e.target.value })} />
                       <button type="button" onClick={() => setShowConfirmPass(p => !p)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
                         {showConfirmPass ? (
                           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12c1.292 4.338 5.31 7.5 10.066 7.5.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>

@@ -68,7 +68,7 @@ export default function InstallmentPlan({ vehicleName, vehiclePrice, onPlanSelec
 
         {/* Down payment */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Apport initial</label>
+          <label htmlFor="dp-amount" className="block text-sm font-medium text-gray-700 mb-2">Apport initial</label>
           <div className="flex gap-2 mb-2">
             {[10, 20, 30, 50].map(pct => (
               <button key={pct} onClick={() => setDownPayment(Math.ceil(vehiclePrice * pct / 100))}
@@ -82,7 +82,7 @@ export default function InstallmentPlan({ vehicleName, vehiclePrice, onPlanSelec
             ))}
           </div>
           <div className="relative">
-            <input type="number" value={downPayment} onChange={(e) => setDownPayment(Number(e.target.value))}
+            <input id="dp-amount" type="number" value={downPayment} onChange={(e) => setDownPayment(Number(e.target.value))}
               className="input-field !pr-16" />
             <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400">FCFA</span>
           </div>
@@ -91,7 +91,7 @@ export default function InstallmentPlan({ vehicleName, vehiclePrice, onPlanSelec
         {/* Duration */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Durée du paiement</label>
-          <div className="grid grid-cols-4 gap-2">
+          <div role="group" aria-label="Durée du paiement" className="grid grid-cols-4 gap-2">
             {plans.map((p, i) => (
               <button key={p.duration} onClick={() => { setSelectedPlan(i); setDuration(p.duration); }}
                 className={`py-3 rounded-xl text-center transition-all ${
@@ -109,7 +109,7 @@ export default function InstallmentPlan({ vehicleName, vehiclePrice, onPlanSelec
         {/* Payment method */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Mode de paiement des mensualités</label>
-          <div className="grid grid-cols-2 gap-2">
+          <div role="group" aria-label="Mode de paiement des mensualités" className="grid grid-cols-2 gap-2">
             {paymentMethods.map(pm => (
               <button key={pm.id} onClick={() => setProvider(pm.id)}
                 className={`flex items-center gap-2 p-3 rounded-xl border transition ${

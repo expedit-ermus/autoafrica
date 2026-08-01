@@ -238,6 +238,7 @@ export default function OrdersPage() {
                 </svg>
                 <input
                   type="text"
+                  aria-label="Rechercher une commande"
                   placeholder="Rechercher par ID, client, tÃ©lÃ©phone..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
@@ -255,6 +256,7 @@ export default function OrdersPage() {
                 <div className="relative">
                   <input
                     type="date"
+                    aria-label="Date de début"
                     value={dateFrom}
                     onChange={e => setDateFrom(e.target.value)}
                     className="w-full sm:w-[150px] px-3 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition"
@@ -265,6 +267,7 @@ export default function OrdersPage() {
                 <div className="relative">
                   <input
                     type="date"
+                    aria-label="Date de fin"
                     value={dateTo}
                     onChange={e => setDateTo(e.target.value)}
                     className="w-full sm:w-[150px] px-3 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition"

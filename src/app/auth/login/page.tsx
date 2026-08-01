@@ -165,12 +165,13 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Email field */}
               <div className="auth-fade-in-delay-1">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.email}</label>
+                <label htmlFor="login-email" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.email}</label>
                 <div className="auth-input-group">
                   <div className="auth-input-icon">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
                   </div>
                   <input
+                    id="login-email"
                     type="email" value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     onBlur={() => setEmailTouched(true)}
@@ -188,12 +189,13 @@ export default function LoginPage() {
 
               {/* Password field */}
               <div className="auth-fade-in-delay-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.password}</label>
+                <label htmlFor="login-password" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.password}</label>
                 <div className="auth-input-group">
                   <div className="auth-input-icon">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
                   </div>
                   <input
+                    id="login-password"
                     type="password" value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="input-field" placeholder="••••••••" required

@@ -215,25 +215,25 @@ export default function RegisterPage() {
               {/* Name fields */}
               <div className="grid grid-cols-2 gap-4 auth-fade-in-delay-1">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Prénom</label>
-                  <input type="text" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+                  <label htmlFor="reg-firstName" className="block text-sm font-semibold text-gray-700 mb-2">Prénom</label>
+                  <input id="reg-firstName" type="text" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })}
                     className="input-field !min-h-[52px] rounded-xl" placeholder="Amadou" required />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Nom</label>
-                  <input type="text" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+                  <label htmlFor="reg-lastName" className="block text-sm font-semibold text-gray-700 mb-2">Nom</label>
+                  <input id="reg-lastName" type="text" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })}
                     className="input-field !min-h-[52px] rounded-xl" placeholder="Diallo" required />
                 </div>
               </div>
 
               {/* Email */}
               <div className="auth-fade-in-delay-1">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.email}</label>
+                <label htmlFor="reg-email" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.email}</label>
                 <div className="auth-input-group">
                   <div className="auth-input-icon">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
                   </div>
-                  <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  <input id="reg-email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
                     className="input-field !min-h-[52px] rounded-xl" placeholder="vous@exemple.com" required />
                 </div>
               </div>
@@ -241,20 +241,20 @@ export default function RegisterPage() {
               {/* Phone and Country */}
               <div className="grid grid-cols-2 gap-4 auth-fade-in-delay-2">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.phone}</label>
+                  <label htmlFor="reg-phone" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.phone}</label>
                   <div className="auth-input-group">
                     <div className="auth-input-icon">
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
                     </div>
-                    <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    <input id="reg-phone" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       className="input-field !min-h-[52px] rounded-xl" placeholder="+225 07 08 09 10" />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.country}</label>
+                  <label htmlFor="reg-country" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.country}</label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-lg pointer-events-none z-10">{selectedCountry?.flag}</span>
-                    <select value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="input-field !pl-10 appearance-none cursor-pointer !min-h-[52px] rounded-xl">
+                    <select id="reg-country" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="input-field !pl-10 appearance-none cursor-pointer !min-h-[52px] rounded-xl">
                       {COUNTRIES.map((country) => (
                         <option key={country.code} value={country.code}>{country.flag} {country.name}</option>
                       ))}
@@ -266,12 +266,12 @@ export default function RegisterPage() {
 
               {/* Shop name */}
               <div className="auth-fade-in-delay-2">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Nom de la boutique</label>
+                <label htmlFor="reg-shopName" className="block text-sm font-semibold text-gray-700 mb-2">Nom de la boutique</label>
                 <div className="auth-input-group">
                   <div className="auth-input-icon">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" /></svg>
                   </div>
-                  <input type="text" value={form.shopName} onChange={(e) => setForm({ ...form, shopName: e.target.value })}
+                  <input id="reg-shopName" type="text" value={form.shopName} onChange={(e) => setForm({ ...form, shopName: e.target.value })}
                     className="input-field !min-h-[52px] rounded-xl" placeholder="Garage Moussa Pièces" />
                 </div>
               </div>
@@ -279,7 +279,7 @@ export default function RegisterPage() {
               {/* Role selector */}
               <div className="auth-fade-in-delay-3">
                 <label className="block text-sm font-semibold text-gray-700 mb-3">Type de compte</label>
-                <div className="grid grid-cols-2 gap-3">
+                <div role="group" aria-label="Type de compte" className="grid grid-cols-2 gap-3">
                   <button type="button" onClick={() => setForm({ ...form, role: 'SELLER' })}
                     className={`auth-role-card relative p-5 rounded-2xl border-2 text-sm font-semibold flex flex-col items-center gap-3 ${form.role === 'SELLER' ? 'selected border-orange-500 text-orange-700' : 'border-gray-200 hover:border-gray-300 text-gray-600 bg-white hover:bg-gray-50'}`}>
                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 ${form.role === 'SELLER' ? 'bg-orange-100 scale-110' : 'bg-gray-100'}`}>
@@ -308,13 +308,13 @@ export default function RegisterPage() {
               {/* Password fields */}
               <div className="grid grid-cols-2 gap-4 auth-fade-in-delay-3">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.password}</label>
-                  <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  <label htmlFor="reg-password" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.password}</label>
+                  <input id="reg-password" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}
                     className="input-field !min-h-[52px] rounded-xl" placeholder="••••••••" required />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.confirmPassword}</label>
-                  <input type="password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+                  <label htmlFor="reg-confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.confirmPassword}</label>
+                  <input id="reg-confirmPassword" type="password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
                     className={`input-field !min-h-[52px] rounded-xl ${passwordMismatch ? 'border-red-500 !shadow-[0_0_0_3px_rgba(220,38,38,0.08)]' : ''}`}
                     placeholder="••••••••" required />
                 </div>

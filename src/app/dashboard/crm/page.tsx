@@ -825,27 +825,27 @@ export default function CRMPage() {
             <Modal isOpen={showAdd} onClose={() => setShowAdd(false)} title="Nouveau contact">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Nom complet *</label>
-                  <input className="input-field" placeholder="Ex: Kouame Jean" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                  <label htmlFor="crm-name" className="block text-xs font-semibold text-gray-700 mb-1.5">Nom complet *</label>
+                  <input id="crm-name" className="input-field" placeholder="Ex: Kouame Jean" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Email *</label>
-                  <input className="input-field" type="email" placeholder="Ex: jean@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                  <label htmlFor="crm-email" className="block text-xs font-semibold text-gray-700 mb-1.5">Email *</label>
+                  <input id="crm-email" className="input-field" type="email" placeholder="Ex: jean@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Telephone</label>
-                  <input className="input-field" placeholder="Ex: +225 07 07 07 07" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                  <label htmlFor="crm-phone" className="block text-xs font-semibold text-gray-700 mb-1.5">Telephone</label>
+                  <input id="crm-phone" className="input-field" placeholder="Ex: +225 07 07 07 07" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Pays</label>
-                    <select className="input-field" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })}>
+                    <label htmlFor="crm-country" className="block text-xs font-semibold text-gray-700 mb-1.5">Pays</label>
+                    <select id="crm-country" className="input-field" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })}>
                       {Object.entries(t.countries).map(([code, name]) => <option key={code} value={code}>{name}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Type</label>
-                    <select className="input-field" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}>
+                    <label htmlFor="crm-type" className="block text-xs font-semibold text-gray-700 mb-1.5">Type</label>
+                    <select id="crm-type" className="input-field" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}>
                       <option value="garage">Garage</option>
                       <option value="revendeur">Revendeur</option>
                       <option value="particulier">Particulier</option>
@@ -854,8 +854,8 @@ export default function CRMPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Notes</label>
-                  <textarea className="input-field" rows={2} placeholder="Informations complementaires..." value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
+                  <label htmlFor="crm-notes" className="block text-xs font-semibold text-gray-700 mb-1.5">Notes</label>
+                  <textarea id="crm-notes" className="input-field" rows={2} placeholder="Informations complementaires..." value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
                 </div>
                 <div className="flex gap-3 pt-2">
                   <button onClick={handleAddCustomer} className="btn-primary flex-1 text-sm !py-3">Enregistrer</button>
@@ -872,25 +872,25 @@ export default function CRMPage() {
             <Modal isOpen={showAdd} onClose={() => setShowAdd(false)} title="Nouveau lead">
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Nom complet *</label>
-                  <input className="input-field" placeholder="Ex: Amadou Diallo" value={leadForm.name} onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })} />
+                  <label htmlFor="lead-name" className="block text-xs font-semibold text-gray-700 mb-1.5">Nom complet *</label>
+                  <input id="lead-name" className="input-field" placeholder="Ex: Amadou Diallo" value={leadForm.name} onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Telephone *</label>
-                  <input className="input-field" placeholder="Ex: +225 05 05 05 05" value={leadForm.phone} onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })} />
+                  <label htmlFor="lead-phone" className="block text-xs font-semibold text-gray-700 mb-1.5">Telephone *</label>
+                  <input id="lead-phone" className="input-field" placeholder="Ex: +225 05 05 05 05" value={leadForm.phone} onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Email</label>
-                  <input className="input-field" type="email" placeholder="Ex: amadou@example.com" value={leadForm.email} onChange={(e) => setLeadForm({ ...leadForm, email: e.target.value })} />
+                  <label htmlFor="lead-email" className="block text-xs font-semibold text-gray-700 mb-1.5">Email</label>
+                  <input id="lead-email" className="input-field" type="email" placeholder="Ex: amadou@example.com" value={leadForm.email} onChange={(e) => setLeadForm({ ...leadForm, email: e.target.value })} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Valeur (FCFA)</label>
-                    <input className="input-field" type="number" placeholder="Ex: 500000" value={leadForm.value || ''} onChange={(e) => setLeadForm({ ...leadForm, value: Number(e.target.value) })} />
+                    <label htmlFor="lead-value" className="block text-xs font-semibold text-gray-700 mb-1.5">Valeur (FCFA)</label>
+                    <input id="lead-value" className="input-field" type="number" placeholder="Ex: 500000" value={leadForm.value || ''} onChange={(e) => setLeadForm({ ...leadForm, value: Number(e.target.value) })} />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Source</label>
-                    <select className="input-field" value={leadForm.source} onChange={(e) => setLeadForm({ ...leadForm, source: e.target.value })}>
+                    <label htmlFor="lead-source" className="block text-xs font-semibold text-gray-700 mb-1.5">Source</label>
+                    <select id="lead-source" className="input-field" value={leadForm.source} onChange={(e) => setLeadForm({ ...leadForm, source: e.target.value })}>
                       {Object.entries(SOURCE_LABELS).map(([key, label]) => (
                         <option key={key} value={key}>{label}</option>
                       ))}
@@ -898,8 +898,8 @@ export default function CRMPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Notes</label>
-                  <textarea className="input-field" rows={2} placeholder="Informations complementaires..." value={leadForm.notes} onChange={(e) => setLeadForm({ ...leadForm, notes: e.target.value })} />
+                  <label htmlFor="lead-notes" className="block text-xs font-semibold text-gray-700 mb-1.5">Notes</label>
+                  <textarea id="lead-notes" className="input-field" rows={2} placeholder="Informations complementaires..." value={leadForm.notes} onChange={(e) => setLeadForm({ ...leadForm, notes: e.target.value })} />
                 </div>
                 <div className="flex gap-3 pt-2">
                   <button onClick={handleAddLead} className="btn-primary flex-1 text-sm !py-3">Enregistrer</button>
@@ -916,27 +916,27 @@ export default function CRMPage() {
             {editCustomer && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Nom complet</label>
-                  <input className="input-field" placeholder="Nom" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                  <label htmlFor="editcrm-name" className="block text-xs font-semibold text-gray-700 mb-1.5">Nom complet</label>
+                  <input id="editcrm-name" className="input-field" placeholder="Nom" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Email</label>
-                  <input className="input-field" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+                  <label htmlFor="editcrm-email" className="block text-xs font-semibold text-gray-700 mb-1.5">Email</label>
+                  <input id="editcrm-email" className="input-field" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Telephone</label>
-                  <input className="input-field" placeholder="Telephone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                  <label htmlFor="editcrm-phone" className="block text-xs font-semibold text-gray-700 mb-1.5">Telephone</label>
+                  <input id="editcrm-phone" className="input-field" placeholder="Telephone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Pays</label>
-                    <select className="input-field" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })}>
+                    <label htmlFor="editcrm-country" className="block text-xs font-semibold text-gray-700 mb-1.5">Pays</label>
+                    <select id="editcrm-country" className="input-field" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })}>
                       {Object.entries(t.countries).map(([code, name]) => <option key={code} value={code}>{name}</option>)}
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Type</label>
-                    <select className="input-field" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}>
+                    <label htmlFor="editcrm-type" className="block text-xs font-semibold text-gray-700 mb-1.5">Type</label>
+                    <select id="editcrm-type" className="input-field" value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}>
                       <option value="garage">Garage</option>
                       <option value="revendeur">Revendeur</option>
                       <option value="particulier">Particulier</option>
@@ -945,8 +945,8 @@ export default function CRMPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Notes</label>
-                  <textarea className="input-field" rows={2} placeholder="Notes" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
+                  <label htmlFor="editcrm-notes" className="block text-xs font-semibold text-gray-700 mb-1.5">Notes</label>
+                  <textarea id="editcrm-notes" className="input-field" rows={2} placeholder="Notes" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
                 </div>
                 <div className="flex gap-3 pt-2">
                   <button onClick={handleUpdateCustomer} className="btn-primary flex-1 text-sm !py-3">Mettre a jour</button>
@@ -963,25 +963,25 @@ export default function CRMPage() {
             {editLead && (
               <div className="space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Nom complet</label>
-                  <input className="input-field" placeholder="Nom" value={leadForm.name} onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })} />
+                  <label htmlFor="editlead-name" className="block text-xs font-semibold text-gray-700 mb-1.5">Nom complet</label>
+                  <input id="editlead-name" className="input-field" placeholder="Nom" value={leadForm.name} onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Telephone</label>
-                  <input className="input-field" placeholder="Telephone" value={leadForm.phone} onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })} />
+                  <label htmlFor="editlead-phone" className="block text-xs font-semibold text-gray-700 mb-1.5">Telephone</label>
+                  <input id="editlead-phone" className="input-field" placeholder="Telephone" value={leadForm.phone} onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Email</label>
-                  <input className="input-field" type="email" placeholder="Email" value={leadForm.email} onChange={(e) => setLeadForm({ ...leadForm, email: e.target.value })} />
+                  <label htmlFor="editlead-email" className="block text-xs font-semibold text-gray-700 mb-1.5">Email</label>
+                  <input id="editlead-email" className="input-field" type="email" placeholder="Email" value={leadForm.email} onChange={(e) => setLeadForm({ ...leadForm, email: e.target.value })} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Valeur (FCFA)</label>
-                    <input className="input-field" type="number" placeholder="Valeur" value={leadForm.value || ''} onChange={(e) => setLeadForm({ ...leadForm, value: Number(e.target.value) })} />
+                    <label htmlFor="editlead-value" className="block text-xs font-semibold text-gray-700 mb-1.5">Valeur (FCFA)</label>
+                    <input id="editlead-value" className="input-field" type="number" placeholder="Valeur" value={leadForm.value || ''} onChange={(e) => setLeadForm({ ...leadForm, value: Number(e.target.value) })} />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Source</label>
-                    <select className="input-field" value={leadForm.source} onChange={(e) => setLeadForm({ ...leadForm, source: e.target.value })}>
+                    <label htmlFor="editlead-source" className="block text-xs font-semibold text-gray-700 mb-1.5">Source</label>
+                    <select id="editlead-source" className="input-field" value={leadForm.source} onChange={(e) => setLeadForm({ ...leadForm, source: e.target.value })}>
                       {Object.entries(SOURCE_LABELS).map(([key, label]) => (
                         <option key={key} value={key}>{label}</option>
                       ))}
@@ -989,8 +989,8 @@ export default function CRMPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1.5">Notes</label>
-                  <textarea className="input-field" rows={2} placeholder="Notes" value={leadForm.notes} onChange={(e) => setLeadForm({ ...leadForm, notes: e.target.value })} />
+                  <label htmlFor="editlead-notes" className="block text-xs font-semibold text-gray-700 mb-1.5">Notes</label>
+                  <textarea id="editlead-notes" className="input-field" rows={2} placeholder="Notes" value={leadForm.notes} onChange={(e) => setLeadForm({ ...leadForm, notes: e.target.value })} />
                 </div>
                 <div className="flex gap-3 pt-2">
                   <button onClick={handleUpdateLead} className="btn-primary flex-1 text-sm !py-3">Mettre a jour</button>

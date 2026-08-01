@@ -663,39 +663,39 @@ export default function InventoryPage() {
           <Modal isOpen={showAdd} onClose={() => { setShowAdd(false); setEditProduct(null); }} title={editProduct ? 'Modifier la piÃ¨ce' : 'Ajouter une piÃ¨ce'}>
             <div className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Titre *</label>
-                <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" placeholder="Filtre Ã  huile Toyota Hilux" />
+                <label htmlFor="inv-title" className="block text-sm font-medium text-gray-700 mb-1.5">Titre *</label>
+                <input id="inv-title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" placeholder="Filtre Ã  huile Toyota Hilux" />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Marque</label>
-                  <select value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all cursor-pointer">
+                  <label htmlFor="inv-brand" className="block text-sm font-medium text-gray-700 mb-1.5">Marque</label>
+                  <select id="inv-brand" value={form.brand} onChange={(e) => setForm({ ...form, brand: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all cursor-pointer">
                     {brands.map(b => <option key={b} value={b}>{b}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">CatÃ©gorie</label>
-                  <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all cursor-pointer">
+                  <label htmlFor="inv-category" className="block text-sm font-medium text-gray-700 mb-1.5">CatÃ©gorie</label>
+                  <select id="inv-category" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all cursor-pointer">
                     {categories.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">RÃ©fÃ©rence OEM</label>
-                <input value={form.reference} onChange={(e) => setForm({ ...form, reference: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" placeholder="04152-YZZA1" />
+                <label htmlFor="inv-reference" className="block text-sm font-medium text-gray-700 mb-1.5">RÃ©fÃ©rence OEM</label>
+                <input id="inv-reference" value={form.reference} onChange={(e) => setForm({ ...form, reference: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" placeholder="04152-YZZA1" />
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Prix (FCFA) *</label>
-                  <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" min="0" />
+                  <label htmlFor="inv-price" className="block text-sm font-medium text-gray-700 mb-1.5">Prix (FCFA) *</label>
+                  <input id="inv-price" type="number" value={form.price} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" min="0" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Stock</label>
-                  <input type="number" value={form.stock} onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" min="0" />
+                  <label htmlFor="inv-stock" className="block text-sm font-medium text-gray-700 mb-1.5">Stock</label>
+                  <input id="inv-stock" type="number" value={form.stock} onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" min="0" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Condition</label>
-                  <select value={form.condition} onChange={(e) => setForm({ ...form, condition: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all cursor-pointer">
+                  <label htmlFor="inv-condition" className="block text-sm font-medium text-gray-700 mb-1.5">Condition</label>
+                  <select id="inv-condition" value={form.condition} onChange={(e) => setForm({ ...form, condition: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all cursor-pointer">
                     <option value="new">Neuf</option>
                     <option value="used">Occasion</option>
                     <option value="refurbished">Recond.</option>
@@ -704,17 +704,17 @@ export default function InventoryPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">AnnÃ©e dÃ©but</label>
-                  <input type="number" value={form.yearStart} onChange={(e) => setForm({ ...form, yearStart: Number(e.target.value) })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" min="1990" max="2030" />
+                  <label htmlFor="inv-yearStart" className="block text-sm font-medium text-gray-700 mb-1.5">AnnÃ©e dÃ©but</label>
+                  <input id="inv-yearStart" type="number" value={form.yearStart} onChange={(e) => setForm({ ...form, yearStart: Number(e.target.value) })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" min="1990" max="2030" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">AnnÃ©e fin</label>
-                  <input type="number" value={form.yearEnd} onChange={(e) => setForm({ ...form, yearEnd: Number(e.target.value) })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" min="1990" max="2030" />
+                  <label htmlFor="inv-yearEnd" className="block text-sm font-medium text-gray-700 mb-1.5">AnnÃ©e fin</label>
+                  <input id="inv-yearEnd" type="number" value={form.yearEnd} onChange={(e) => setForm({ ...form, yearEnd: Number(e.target.value) })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all" min="1990" max="2030" />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
-                <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all resize-none" rows={3} placeholder="Description..." />
+                <label htmlFor="inv-description" className="block text-sm font-medium text-gray-700 mb-1.5">Description</label>
+                <textarea id="inv-description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all resize-none" rows={3} placeholder="Description..." />
               </div>
               <ImageUpload images={form.images} onChange={(images) => setForm({ ...form, images })} maxImages={5} />
               <div className="flex gap-3 pt-2">

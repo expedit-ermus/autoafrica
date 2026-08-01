@@ -118,7 +118,7 @@ export default function CarSelector() {
 
       <div className="p-7">
         <div className="mb-7">
-          <label className="block text-base font-bold text-[#2D1B0E] mb-2.5">
+          <label htmlFor="regNumber" className="block text-base font-bold text-[#2D1B0E] mb-2.5">
             {L('Numéro d\'immatriculation', 'Registration number')}
           </label>
           <div className="flex gap-3">
@@ -127,6 +127,7 @@ export default function CarSelector() {
                 <span className="text-white text-xs font-bold">CI</span>
               </div>
               <input
+                id="regNumber"
                 type="text"
                 value={regNumber}
                 onChange={(e) => setRegNumber(e.target.value.toUpperCase())}
@@ -151,10 +152,11 @@ export default function CarSelector() {
 
         <div className="space-y-5">
           <div>
-            <label className="block text-base font-bold text-[#2D1B0E] mb-2.5">
+            <label htmlFor="carMake" className="block text-base font-bold text-[#2D1B0E] mb-2.5">
               {L('Marque', 'Make')}
             </label>
             <select
+              id="carMake"
               value={selectedMake || ''}
               onChange={(e) => {
                 setSelectedMake(Number(e.target.value) || null);
@@ -178,10 +180,11 @@ export default function CarSelector() {
           </div>
 
           <div>
-            <label className="block text-base font-bold text-[#2D1B0E] mb-2.5">
+            <label htmlFor="carModel" className="block text-base font-bold text-[#2D1B0E] mb-2.5">
               {L('Modèle', 'Model')}
             </label>
             <select
+              id="carModel"
               value={selectedModel || ''}
               onChange={(e) => {
                 setSelectedModel(Number(e.target.value) || null);
@@ -198,10 +201,11 @@ export default function CarSelector() {
           </div>
 
           <div>
-            <label className="block text-base font-bold text-[#2D1B0E] mb-2.5">
+            <label htmlFor="carEngine" className="block text-base font-bold text-[#2D1B0E] mb-2.5">
               {L('Motorisation', 'Engine')}
             </label>
             <select
+              id="carEngine"
               value={selectedEngine || ''}
               onChange={(e) => setSelectedEngine(Number(e.target.value) || null)}
               disabled={!selectedModel}

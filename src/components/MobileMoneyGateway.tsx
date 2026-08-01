@@ -163,9 +163,9 @@ export default function MobileMoneyGateway({ amount, currency, vehicleInfo, onPa
         <div className="p-5 space-y-4">
           <button onClick={() => setStep('select')} className="text-sm text-gray-500 hover:text-orange-600">← Retour</button>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Numéro de téléphone</label>
+            <label htmlFor="mmg-phone" className="block text-sm font-medium text-gray-700 mb-1">Numéro de téléphone</label>
             <div className="flex gap-2">
-              <select className="input-field !w-24">
+              <select id="mmg-country" aria-label="Indicatif pays" className="input-field !w-24">
                 <option>+225</option>
                 <option>+221</option>
                 <option>+223</option>
@@ -176,7 +176,7 @@ export default function MobileMoneyGateway({ amount, currency, vehicleInfo, onPa
                 <option>+233</option>
                 <option>+234</option>
               </select>
-              <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
+              <input id="mmg-phone" type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
                 className="input-field flex-1" placeholder="07 08 09 10" />
             </div>
           </div>

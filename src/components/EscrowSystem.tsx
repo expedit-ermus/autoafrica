@@ -109,8 +109,8 @@ export default function EscrowSystem({ vehicleId, vehicleName, amount, buyerName
         {currentStatus === 2 && (
           <div className="space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Notes d&apos;inspection</label>
-              <textarea value={inspectionNotes} onChange={(e) => setInspectionNotes(e.target.value)}
+              <label htmlFor="escrow-inspectionNotes" className="block text-sm font-medium text-gray-700 mb-1">Notes d&apos;inspection</label>
+              <textarea id="escrow-inspectionNotes" value={inspectionNotes} onChange={(e) => setInspectionNotes(e.target.value)}
                 className="input-field" rows={3} placeholder="Décrivez l'état du véhicule..." />
             </div>
             <div className="flex gap-3">
@@ -129,7 +129,7 @@ export default function EscrowSystem({ vehicleId, vehicleName, amount, buyerName
         {showDispute && (
           <div className="bg-red-50 rounded-xl p-4 space-y-3 border border-red-200">
             <p className="text-sm font-bold text-red-800">Signaler un problème</p>
-            <select value={disputeReason} onChange={(e) => setDisputeReason(e.target.value)} className="input-field">
+            <select aria-label="Motif du problème" value={disputeReason} onChange={(e) => setDisputeReason(e.target.value)} className="input-field">
               <option value="">Sélectionnez un motif...</option>
               <option value="condition">État du véhicule différent de l&apos;annonce</option>
               <option value="documents">Documents manquants ou falsifiés</option>
@@ -137,7 +137,7 @@ export default function EscrowSystem({ vehicleId, vehicleName, amount, buyerName
               <option value="damage">Dommages non déclarés</option>
               <option value="other">Autre</option>
             </select>
-            <textarea className="input-field" rows={2} placeholder="Détails..." />
+            <textarea className="input-field" aria-label="Détails du problème" rows={2} placeholder="Détails..." />
             <div className="flex gap-2">
               <button onClick={() => setShowDispute(false)} className="text-xs text-gray-500">Annuler</button>
               <button className="px-4 py-2 rounded-lg bg-red-600 text-white text-xs font-semibold">Envoyer la réclamation</button>

@@ -162,14 +162,14 @@ export default function UssdPaymentFlow() {
                 <p className="text-yellow-400 text-xs text-center">Paiement {selectedProvider}</p>
                 <div className="border border-gray-600 rounded p-3 space-y-3">
                   <div>
-                    <label className="text-[10px] text-gray-400">Numéro de téléphone :</label>
-                    <input type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
+                    <label htmlFor="ussd-phone" className="text-[10px] text-gray-400">Numéro de téléphone :</label>
+                    <input id="ussd-phone" type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
                       className="w-full bg-transparent border-b border-gray-600 text-white text-sm py-1 outline-none font-mono"
                       placeholder="+225 XX XX XX XX" />
                   </div>
                   <div>
-                    <label className="text-[10px] text-gray-400">Montant (FCFA) :</label>
-                    <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)}
+                    <label htmlFor="ussd-amount" className="text-[10px] text-gray-400">Montant (FCFA) :</label>
+                    <input id="ussd-amount" type="number" value={amount} onChange={(e) => setAmount(e.target.value)}
                       className="w-full bg-transparent border-b border-gray-600 text-white text-sm py-1 outline-none font-mono"
                       placeholder="500000" />
                   </div>
@@ -189,8 +189,8 @@ export default function UssdPaymentFlow() {
                   <p className="text-[10px] text-gray-400">Montant : {new Intl.NumberFormat('fr-FR').format(Number(amount) || 0)} FCFA</p>
                   <p className="text-[10px] text-gray-400">Vers : {selectedProvider}</p>
                   <div>
-                    <label className="text-[10px] text-gray-400">Entrez votre PIN :</label>
-                    <input type="password" value={pin} onChange={(e) => setPin(e.target.value)}
+                    <label htmlFor="ussd-pin" className="text-[10px] text-gray-400">Entrez votre PIN :</label>
+                    <input id="ussd-pin" type="password" value={pin} onChange={(e) => setPin(e.target.value)}
                       className="w-full bg-transparent border-b border-gray-600 text-white text-sm py-1 outline-none font-mono text-center tracking-[0.5em]"
                       placeholder="••••" maxLength={4} />
                   </div>

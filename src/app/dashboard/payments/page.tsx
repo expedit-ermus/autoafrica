@@ -216,7 +216,7 @@ export default function PaymentsPage() {
                 <div className="flex flex-col lg:flex-row gap-4">
                   <div className="flex-1">
                     <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">Méthode</label>
-                    <div className="flex gap-2 flex-wrap">
+                    <div role="group" aria-label="Méthode" className="flex gap-2 flex-wrap">
                       {['all', 'ORANGE_MONEY', 'MTN_MOMO', 'WAVE', 'MOOV_MONEY'].map(m => (
                         <button key={m} onClick={() => setMethodFilter(m)}
                           className={`px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${methodFilter === m ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
@@ -227,7 +227,7 @@ export default function PaymentsPage() {
                   </div>
                   <div className="flex-1">
                     <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">Statut</label>
-                    <div className="flex gap-2 flex-wrap">
+                    <div role="group" aria-label="Statut" className="flex gap-2 flex-wrap">
                       {['all', 'COMPLETED', 'PENDING', 'HELD', 'FAILED', 'REFUNDED'].map(s => (
                         <button key={s} onClick={() => setStatusFilter(s)}
                           className={`px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${statusFilter === s ? 'bg-slate-900 text-white shadow-md' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
@@ -238,13 +238,13 @@ export default function PaymentsPage() {
                   </div>
                   <div className="flex gap-3 items-end">
                     <div>
-                      <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">Du</label>
-                      <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)}
+                      <label htmlFor="pay-dateFrom" className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">Du</label>
+                      <input id="pay-dateFrom" type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)}
                         className="px-3 py-2 rounded-lg border border-slate-200 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-400" />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">Au</label>
-                      <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)}
+                      <label htmlFor="pay-dateTo" className="block text-xs font-medium text-slate-500 uppercase tracking-wide mb-2">Au</label>
+                      <input id="pay-dateTo" type="date" value={dateTo} onChange={e => setDateTo(e.target.value)}
                         className="px-3 py-2 rounded-lg border border-slate-200 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-900/20 focus:border-slate-400" />
                     </div>
                   </div>

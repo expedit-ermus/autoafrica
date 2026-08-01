@@ -92,6 +92,7 @@ export default function VehicleInspection({ vehicleName, vehicleId }: Props) {
                   </div>
                 </div>
                 <textarea
+                  aria-label="Notes d'inspection"
                   value={notes[key] || ''}
                   onChange={(e) => setNotes({ ...notes, [key]: e.target.value })}
                   className="input-field text-xs" rows={2}

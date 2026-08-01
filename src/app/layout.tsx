@@ -94,9 +94,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body className={`${inter.variable} antialiased`}>
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-xl focus:bg-orange-600 focus:text-white focus:font-semibold focus:shadow-lg"
+        >
+          Aller au contenu
+        </a>
         <AppProvider>
           <ToastProvider>
-            {children}
+            <div id="main-content" tabIndex={-1}>
+              {children}
+            </div>
             <GlobalWidgets />
           </ToastProvider>
         </AppProvider>

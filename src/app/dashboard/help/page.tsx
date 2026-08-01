@@ -263,8 +263,9 @@ export default function HelpPage() {
                 <p className="text-xs text-gray-500 mb-4">Remplissez le formulaire et nous vous répondrons sous 24h.</p>
                 <div className="space-y-3">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Nom complet *</label>
+                    <label htmlFor="help-name" className="block text-xs font-semibold text-gray-700 mb-1.5">Nom complet *</label>
                     <input
+                      id="help-name"
                       className="input-field"
                       placeholder="Votre nom"
                       value={contactForm.name}
@@ -272,8 +273,9 @@ export default function HelpPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Email *</label>
+                    <label htmlFor="help-email" className="block text-xs font-semibold text-gray-700 mb-1.5">Email *</label>
                     <input
+                      id="help-email"
                       className="input-field"
                       type="email"
                       placeholder="votre@email.com"
@@ -282,8 +284,9 @@ export default function HelpPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Sujet</label>
+                    <label htmlFor="help-subject" className="block text-xs font-semibold text-gray-700 mb-1.5">Sujet</label>
                     <input
+                      id="help-subject"
                       className="input-field"
                       placeholder="De quoi s'agit-il ?"
                       value={contactForm.subject}
@@ -291,8 +294,9 @@ export default function HelpPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1.5">Message *</label>
+                    <label htmlFor="help-message" className="block text-xs font-semibold text-gray-700 mb-1.5">Message *</label>
                     <textarea
+                      id="help-message"
                       className="input-field resize-none"
                       rows={4}
                       placeholder="Décrivez votre problème ou question..."

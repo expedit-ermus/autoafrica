@@ -59,7 +59,7 @@ export default function ImageUpload({ images, onChange, maxImages = 5, disabled 
 
   return (
     <div>
-      <label className="block text-sm font-medium text-gray-700 mb-2">
+      <label htmlFor="image-upload" className="block text-sm font-medium text-gray-700 mb-2">
         Photos {images.length > 0 && <span className="text-gray-400">({images.length}/{maxImages})</span>}
       </label>
 
@@ -98,7 +98,7 @@ export default function ImageUpload({ images, onChange, maxImages = 5, disabled 
         )}
       </div>
 
-      <input ref={inputRef} type="file" accept="image/*" multiple onChange={handleUpload} className="hidden" />
+      <input id="image-upload" ref={inputRef} type="file" accept="image/*" multiple onChange={handleUpload} className="hidden" />
 
       {images.length === 0 && (
         <p className="text-xs text-gray-400">Photos recommandées : pièce vue de face, vue de dos, étiquette référence OEM.</p>
