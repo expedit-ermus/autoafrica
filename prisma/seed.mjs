@@ -246,12 +246,30 @@ async function main() {
 
   const insertContainer = db.prepare(`INSERT INTO Container (id, containerNumber, purchaseOrderId, size, status, originPort, destinationPort, shippingLine, vesselName, etaOrigin, etaDestination, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 
+  const containerIds = []
   for (const c of containers) {
+    const id = cuid()
+    containerIds.push(id)
     const ts = nowIso()
-    insertContainer.run(cuid(), c.containerNumber, poIds[c.poIndex], c.size, c.status, c.originPort, c.destinationPort, c.shippingLine || null, c.vesselName || null, addDays(c.etaOrigin), addDays(c.etaDestination), ts, ts)
+    insertContainer.run(id, c.containerNumber, poIds[c.poIndex], c.size, c.status, c.originPort, c.destinationPort, c.shippingLine || null, c.vesselName || null, addDays(c.etaOrigin), addDays(c.etaDestination), ts, ts)
   }
 
   console.log(`Seeded: ${containers.length} containers`)
+
+  const customsRecords = [
+    { containerIndex: 3, declarationNumber: 'D2024-0113', hsCode: '8708', cifValue: 15000000, duties: 1500000, taxes: 900000, fees: 250000, totalDuty: 2650000, status: 'UNDER_REVIEW', broker: 'SGS Cote d\'Ivoire', brokerContact: '+2252722000000' },
+    { containerIndex: 0, declarationNumber: 'D2024-0114', hsCode: '8708', cifValue: 40000000, duties: 4000000, taxes: 2400000, fees: 400000, totalDuty: 6800000, status: 'DUTY_ASSESSED', broker: 'Bollore Logistics', brokerContact: '+2252721000000' },
+    { containerIndex: 2, declarationNumber: 'D2024-0115', hsCode: '8483', cifValue: 22000000, duties: 2200000, taxes: 1320000, fees: 350000, totalDuty: 3870000, status: 'PENDING', broker: 'SGS Cote d\'Ivoire', brokerContact: '+2252722000000' },
+  ]
+
+  const insertCustoms = db.prepare(`INSERT INTO CustomsRecord (id, containerId, declarationNumber, hsCode, cifValue, duties, taxes, fees, totalDuty, status, broker, brokerContact, releasedAt, notes, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, ?, ?)`)
+
+  for (const r of customsRecords) {
+    const ts = nowIso()
+    insertCustoms.run(cuid(), containerIds[r.containerIndex], r.declarationNumber, r.hsCode, r.cifValue, r.duties, r.taxes, r.fees, r.totalDuty, r.status, r.broker, r.brokerContact, ts, ts)
+  }
+
+  console.log(`Seeded: ${customsRecords.length} customs records`)
   db.close()
 }
 

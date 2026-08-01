@@ -85,6 +85,10 @@
 | R152 | `/api/v1/containers/[id]` | DELETE | Required | Supprimer conteneur |
 | R153 | `/api/v1/customs-records` | GET | Public | Liste dossiers douane |
 | R154 | `/api/v1/customs-records` | POST | Required | Créer dossier douane |
+| R155 | `/api/v1/customs-records/[id]` | GET | Public | Détail dossier douane |
+| R156 | `/api/v1/customs-records/[id]` | PUT | Required | Modifier dossier douane |
+| R157 | `/api/v1/customs-records/[id]` | PATCH | Required | Changer statut dossier douane |
+| R158 | `/api/v1/customs-records/[id]` | DELETE | Required | Supprimer dossier douane |
 
 ## Routes techniques
 
