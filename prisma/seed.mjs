@@ -221,8 +221,10 @@ async function main() {
   const nowIso = () => new Date().toISOString()
   const addDays = (n) => new Date(Date.now() + n * 86400000).toISOString()
 
+  const poIds = []
   for (const po of purchaseOrders) {
     const id = cuid()
+    poIds.push(id)
     const ts = nowIso()
     const supplierId = supplierIds[po.supplierIndex]
     const totalAmount = po.items.reduce((acc, it) => acc + it.quantity * it.unitPrice, 0)
@@ -234,6 +236,22 @@ async function main() {
   }
 
   console.log(`Seeded: ${purchaseOrders.length} purchase orders`)
+
+  const containers = [
+    { poIndex: 1, containerNumber: 'MSKU9876543', size: '40hq', status: 'SHIPPED', originPort: 'Yiwu', destinationPort: 'Abidjan', shippingLine: 'CMA CGM', vesselName: 'CMA CGM IVORY COAST', etaOrigin: -10, etaDestination: 28 },
+    { poIndex: 2, containerNumber: 'TCLU5566778', size: '20ft', status: 'IN_TRANSIT', originPort: 'Taipei', destinationPort: 'Abidjan', shippingLine: 'MSC', vesselName: 'MSC OLIVIA', etaOrigin: -5, etaDestination: 20 },
+    { poIndex: 3, containerNumber: 'HLXU1122334', size: '40ft', status: 'ARRIVED_PORT', originPort: 'Hamburg', destinationPort: 'Abidjan', shippingLine: 'Hapag-Lloyd', vesselName: 'HAMBURG EXPRESS', etaOrigin: -15, etaDestination: 12 },
+    { poIndex: 4, containerNumber: 'CMAU4455667', size: '40hq', status: 'CUSTOMS_PROCESSING', originPort: 'Casablanca', destinationPort: 'Abidjan', shippingLine: 'CMA CGM', vesselName: 'CASABLANCA STAR', etaOrigin: -8, etaDestination: 5 },
+  ]
+
+  const insertContainer = db.prepare(`INSERT INTO Container (id, containerNumber, purchaseOrderId, size, status, originPort, destinationPort, shippingLine, vesselName, etaOrigin, etaDestination, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+
+  for (const c of containers) {
+    const ts = nowIso()
+    insertContainer.run(cuid(), c.containerNumber, poIds[c.poIndex], c.size, c.status, c.originPort, c.destinationPort, c.shippingLine || null, c.vesselName || null, addDays(c.etaOrigin), addDays(c.etaDestination), ts, ts)
+  }
+
+  console.log(`Seeded: ${containers.length} containers`)
   db.close()
 }
 

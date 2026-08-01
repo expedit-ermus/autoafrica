@@ -79,8 +79,12 @@
 | R146 | `/api/v1/purchase-orders/[id]` | DELETE | Required | Supprimer bon de commande |
 | R147 | `/api/v1/containers` | GET | Public | Liste conteneurs |
 | R148 | `/api/v1/containers` | POST | Required | Créer conteneur |
-| R149 | `/api/v1/customs-records` | GET | Public | Liste dossiers douane |
-| R150 | `/api/v1/customs-records` | POST | Required | Créer dossier douane |
+| R149 | `/api/v1/containers/[id]` | GET | Public | Détail conteneur |
+| R150 | `/api/v1/containers/[id]` | PUT | Required | Modifier conteneur |
+| R151 | `/api/v1/containers/[id]` | PATCH | Required | Changer statut conteneur |
+| R152 | `/api/v1/containers/[id]` | DELETE | Required | Supprimer conteneur |
+| R153 | `/api/v1/customs-records` | GET | Public | Liste dossiers douane |
+| R154 | `/api/v1/customs-records` | POST | Required | Créer dossier douane |
 
 ## Routes techniques
 
