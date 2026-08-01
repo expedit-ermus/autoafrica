@@ -197,13 +197,43 @@ async function main() {
 
   const insertSupplier = db.prepare(`INSERT INTO Supplier (id, name, companyName, country, city, address, contactPerson, email, phone, whatsapp, website, rating, leadTimeDays, paymentTerms, moq, verified, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 
+  const supplierIds = []
   for (const s of suppliers) {
     const id = cuid()
+    supplierIds.push(id)
     const ts = new Date().toISOString()
     insertSupplier.run(id, s.name, s.companyName || null, s.country, s.city || null, s.contactPerson || null, s.email || null, s.phone || null, s.whatsapp || null, s.website || null, s.rating || 0, s.leadTimeDays || null, s.paymentTerms || null, s.moq || null, s.verified ? 1 : 0, ts, ts)
   }
 
   console.log(`Seeded: ${suppliers.length} suppliers`)
+
+  const purchaseOrders = [
+    { supplierIndex: 0, status: 'ORDERED', currency: 'USD', paymentTerms: 'LC', shippingMethod: 'sea', items: [{ productName: 'Filtre a huile Toyota Hilux', reference: '04152-YZZA1', quantity: 200, unitPrice: 4 }, { productName: 'Plaquettes frein Toyota Hilux', reference: '04465-0K070', quantity: 100, unitPrice: 9 }] },
+    { supplierIndex: 1, status: 'SHIPPED', currency: 'USD', paymentTerms: 'TT', shippingMethod: 'sea', trackingNumber: 'CGTX7788990011', items: [{ productName: 'Courroie accessoire Peugeot 307', reference: '5750Q2', quantity: 150, unitPrice: 3 }, { productName: 'Kit embrayage Peugeot 208', reference: '420906', quantity: 60, unitPrice: 38 }] },
+    { supplierIndex: 2, status: 'IN_TRANSIT', currency: 'USD', paymentTerms: 'TT', shippingMethod: 'air', trackingNumber: 'TAEC2211005566', items: [{ productName: 'Alternateur Hyundai i30', reference: '37300-2B500', quantity: 80, unitPrice: 22 }] },
+    { supplierIndex: 4, status: 'CUSTOMS', currency: 'EUR', paymentTerms: 'NET30', shippingMethod: 'sea', trackingNumber: 'HLCFRANK123456', items: [{ productName: 'Disques frein avant Peugeot 307', reference: '410604', quantity: 120, unitPrice: 12 }, { productName: 'Support moteur Peugeot 208', reference: '161980', quantity: 90, unitPrice: 6 }] },
+    { supplierIndex: 6, status: 'DELIVERED', currency: 'XOF', paymentTerms: 'COD', shippingMethod: 'road', items: [{ productName: 'Filtre a huile Renault Clio 4', reference: '7700274183', quantity: 300, unitPrice: 1500 }] },
+    { supplierIndex: 0, status: 'COMPLETED', currency: 'USD', paymentTerms: 'LC', shippingMethod: 'sea', items: [{ productName: 'Turbo Toyota Hilux 2.8', reference: '17201-30090', quantity: 40, unitPrice: 85 }] },
+  ]
+
+  const insertPO = db.prepare(`INSERT INTO PurchaseOrder (id, poNumber, supplierId, status, totalAmount, currency, paymentTerms, expectedDate, shippingMethod, trackingNumber, createdBy, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+  const insertPOItem = db.prepare(`INSERT INTO PurchaseOrderItem (id, purchaseOrderId, productName, reference, quantity, unitPrice, totalPrice, receivedQty) VALUES (?, ?, ?, ?, ?, ?, ?, 0)`)
+  const nowIso = () => new Date().toISOString()
+  const addDays = (n) => new Date(Date.now() + n * 86400000).toISOString()
+
+  for (const po of purchaseOrders) {
+    const id = cuid()
+    const ts = nowIso()
+    const supplierId = supplierIds[po.supplierIndex]
+    const totalAmount = po.items.reduce((acc, it) => acc + it.quantity * it.unitPrice, 0)
+    const poNumber = 'PO-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase()
+    insertPO.run(id, poNumber, supplierId, po.status, totalAmount, po.currency, po.paymentTerms, addDays(30), po.shippingMethod, po.trackingNumber || null, users[0].id, ts, ts)
+    for (const item of po.items) {
+      insertPOItem.run(cuid(), id, item.productName, item.reference, item.quantity, item.unitPrice, item.quantity * item.unitPrice)
+    }
+  }
+
+  console.log(`Seeded: ${purchaseOrders.length} purchase orders`)
   db.close()
 }
 

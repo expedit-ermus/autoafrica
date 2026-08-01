@@ -73,10 +73,14 @@
 | R140 | `/api/v1/suppliers/[id]` | DELETE | Required | Supprimer fournisseur |
 | R141 | `/api/v1/purchase-orders` | GET | Public | Liste bons de commande |
 | R142 | `/api/v1/purchase-orders` | POST | Required | Créer bon de commande |
-| R143 | `/api/v1/containers` | GET | Public | Liste conteneurs |
-| R144 | `/api/v1/containers` | POST | Required | Créer conteneur |
-| R145 | `/api/v1/customs-records` | GET | Public | Liste dossiers douane |
-| R146 | `/api/v1/customs-records` | POST | Required | Créer dossier douane |
+| R143 | `/api/v1/purchase-orders/[id]` | GET | Public | Détail bon de commande |
+| R144 | `/api/v1/purchase-orders/[id]` | PUT | Required | Modifier bon de commande |
+| R145 | `/api/v1/purchase-orders/[id]` | PATCH | Required | Changer statut bon de commande |
+| R146 | `/api/v1/purchase-orders/[id]` | DELETE | Required | Supprimer bon de commande |
+| R147 | `/api/v1/containers` | GET | Public | Liste conteneurs |
+| R148 | `/api/v1/containers` | POST | Required | Créer conteneur |
+| R149 | `/api/v1/customs-records` | GET | Public | Liste dossiers douane |
+| R150 | `/api/v1/customs-records` | POST | Required | Créer dossier douane |
 
 ## Routes techniques
 
