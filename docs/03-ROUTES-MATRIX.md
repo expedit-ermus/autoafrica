@@ -21,6 +21,10 @@
 | R015 | `/dashboard/profile` | App | Profile | Profil | Rétention | Navigationnelle | Mon profil | noindex | non | aucun | privée |
 | R016 | `/dashboard/help` | App | Help | Aide | Support | Informationnelle | Aide | noindex | non | FAQPage | privée |
 | R017 | `/dashboard/vehicles` | App | Vehicles | Voir annonces véhicules | Vente | Commerciale | Véhicules — Annonces Côte d'Ivoire | index | oui | Vehicle, ItemList | publique |
+| R018 | `/dashboard/suppliers` | App | Suppliers | Gérer fournisseurs | Rétention | Navigationnelle | Fournisseurs | noindex | non | aucun | privée |
+| R019 | `/dashboard/purchase-orders` | App | PurchaseOrders | Suivre approvisionnement | Rétention | Navigationnelle | Approvisionnement | noindex | non | aucun | privée |
+| R020 | `/dashboard/containers` | App | Containers | Suivre conteneurs | Rétention | Navigationnelle | Conteneurs | noindex | non | aucun | privée |
+| R021 | `/dashboard/customs` | App | Customs | Suivre dossiers douane | Rétention | Navigationnelle | Douanes | noindex | non | aucun | privée |
 
 ## Routes API
 
@@ -62,6 +66,17 @@
 | R133 | `/api/v1/vehicles/[id]` | GET | Public | Détail véhicule |
 | R134 | `/api/v1/vehicles/[id]` | PUT | Required | Modifier annonce véhicule |
 | R135 | `/api/v1/vehicles/[id]` | DELETE | Required | Supprimer annonce véhicule |
+| R136 | `/api/v1/suppliers` | GET | Public | Liste fournisseurs |
+| R137 | `/api/v1/suppliers` | POST | Required | Créer fournisseur |
+| R138 | `/api/v1/suppliers/[id]` | GET | Public | Détail fournisseur |
+| R139 | `/api/v1/suppliers/[id]` | PUT | Required | Modifier fournisseur |
+| R140 | `/api/v1/suppliers/[id]` | DELETE | Required | Supprimer fournisseur |
+| R141 | `/api/v1/purchase-orders` | GET | Public | Liste bons de commande |
+| R142 | `/api/v1/purchase-orders` | POST | Required | Créer bon de commande |
+| R143 | `/api/v1/containers` | GET | Public | Liste conteneurs |
+| R144 | `/api/v1/containers` | POST | Required | Créer conteneur |
+| R145 | `/api/v1/customs-records` | GET | Public | Liste dossiers douane |
+| R146 | `/api/v1/customs-records` | POST | Required | Créer dossier douane |
 
 ## Routes techniques
 

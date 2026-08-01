@@ -184,6 +184,26 @@ async function main() {
   }
 
   console.log(`Seeded: ${vehicles.length} vehicles + active listings`)
+
+  const suppliers = [
+    { name: 'Guangzhou Auto Parts Co.', companyName: '广州汽车配件有限公司', country: 'CN', city: 'Guangzhou', contactPerson: 'Wei Zhang', email: 'wei@guangzhouparts.cn', phone: '+8613800001234', whatsapp: '+8613800001234', website: 'www.guangzhouparts.cn', rating: 4.8, leadTimeDays: 45, paymentTerms: 'LC', moq: 100, verified: true },
+    { name: 'Yiwu Spare Parts Trading', country: 'CN', city: 'Yiwu', contactPerson: 'Chen Li', email: 'chen@yiwuparts.cn', phone: '+8613800005678', leadTimeDays: 30, paymentTerms: 'TT', moq: 50, verified: true },
+    { name: 'Taipei Auto Components', country: 'TW', city: 'Taipei', contactPerson: 'Huang Ming', email: 'sales@taipeiauto.tw', phone: '+886900000000', leadTimeDays: 35, paymentTerms: 'TT', moq: 200, verified: true },
+    { name: 'Osaka Jidosha Bihin', country: 'JP', city: 'Osaka', contactPerson: 'Tanaka Hiroshi', email: 'info@osakajidosha.jp', phone: '+818000000000', website: 'www.osakajidosha.jp', rating: 4.5, leadTimeDays: 60, paymentTerms: 'LC', moq: 50, verified: false },
+    { name: 'Frankfurt KFZ Teile GmbH', companyName: 'Frankfurt KFZ Teile GmbH', country: 'DE', city: 'Frankfurt', contactPerson: 'Klaus Weber', email: 'kontakt@frankfurtkfz.de', phone: '+496900000000', leadTimeDays: 20, paymentTerms: 'NET30', moq: 10, verified: true },
+    { name: 'Dubai Auto Trading LLC', country: 'AE', city: 'Dubai', contactPerson: 'Omar Al Farsi', email: 'omar@dubaiauto.ae', phone: '+971500000000', whatsapp: '+971500000000', website: 'www.dubaiauto.ae', rating: 4.2, leadTimeDays: 25, paymentTerms: 'NET60', moq: 20, verified: false },
+    { name: 'Casablanca Pièces Auto', country: 'MA', city: 'Casablanca', contactPerson: 'Youssef Benali', email: 'contact@casablancapieces.ma', phone: '+212600000000', leadTimeDays: 15, paymentTerms: 'COD', moq: 5, verified: true },
+  ]
+
+  const insertSupplier = db.prepare(`INSERT INTO Supplier (id, name, companyName, country, city, address, contactPerson, email, phone, whatsapp, website, rating, leadTimeDays, paymentTerms, moq, verified, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+
+  for (const s of suppliers) {
+    const id = cuid()
+    const ts = new Date().toISOString()
+    insertSupplier.run(id, s.name, s.companyName || null, s.country, s.city || null, s.contactPerson || null, s.email || null, s.phone || null, s.whatsapp || null, s.website || null, s.rating || 0, s.leadTimeDays || null, s.paymentTerms || null, s.moq || null, s.verified ? 1 : 0, ts, ts)
+  }
+
+  console.log(`Seeded: ${suppliers.length} suppliers`)
   db.close()
 }
 

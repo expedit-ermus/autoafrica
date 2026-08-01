@@ -168,18 +168,134 @@ model Customer {
 ### Supplier
 ```
 model Supplier {
-  id        String   @id @default(cuid())
-  tenantId  String
-  tenant    Tenant   @relation(fields: [tenantId], references: [id])
-  name      String
-  email     String?
-  phone     String?
-  address   String?
-  city      String?
-  country   String?
-  notes     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(cuid())
+  name          String
+  companyName   String?
+  country       String   // CN, TW, JP, KR, DE, etc.
+  city          String?
+  address       String?
+  contactPerson String?
+  email         String?
+  phone         String?
+  whatsapp      String?
+  website       String?
+  rating        Float    @default(0)
+  leadTimeDays  Int?     // Average lead time
+  paymentTerms  String?  // "NET30", "LC", "TT"
+  moq           Int?     // Minimum Order Quantity
+  verified      Boolean  @default(false)
+  metadata      Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  purchaseOrders PurchaseOrder[]
+  products       SupplierProduct[]
+}
+```
+
+### SupplierProduct
+```
+model SupplierProduct {
+  id              String   @id @default(cuid())
+  supplierId      String
+  productName     String
+  reference       String?
+  moq             Int?
+  unitPrice       Int
+  currency        String   @default("USD")
+  leadTimeDays    Int?
+  sampleAvailable Boolean  @default(false)
+  metadata        Json?
+  createdAt       DateTime @default(now())
+}
+```
+
+### PurchaseOrder
+```
+model PurchaseOrder {
+  id             String   @id @default(cuid())
+  poNumber       String   @unique
+  supplierId     String
+  warehouseId    String?
+  status         POStatus @default(DRAFT)
+  totalAmount    Int
+  currency       String   @default("USD")
+  paymentTerms   String?
+  expectedDate   DateTime?
+  actualDate     DateTime?
+  shippingMethod String?  // "sea", "air", "road"
+  trackingNumber String?
+  notes          String?
+  approvedBy     String?
+  approvedAt     DateTime?
+  createdBy      String?
+  metadata       Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  items          PurchaseOrderItem[]
+  container      Container?
+}
+```
+
+### PurchaseOrderItem
+```
+model PurchaseOrderItem {
+  id              String @id @default(cuid())
+  purchaseOrderId String
+  productName     String
+  reference       String?
+  quantity        Int
+  unitPrice       Int
+  totalPrice      Int
+  receivedQty     Int    @default(0)
+  notes           String?
+}
+```
+
+### Container
+```
+model Container {
+  id              String   @id @default(cuid())
+  containerNumber String   @unique
+  purchaseOrderId String?  @unique
+  size            String   // "20ft", "40ft", "40hq"
+  status          ContainerStatus @default(LOADING)
+  originPort      String
+  destinationPort String
+  shippingLine    String?
+  vesselName      String?
+  etaOrigin       DateTime?
+  etaDestination  DateTime?
+  departedAt      DateTime?
+  arrivedAt       DateTime?
+  clearedAt       DateTime?
+  shippingDocs    Json?
+  metadata        Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  customsRecord   CustomsRecord?
+}
+```
+
+### CustomsRecord
+```
+model CustomsRecord {
+  id                String @id @default(cuid())
+  containerId       String @unique
+  declarationNumber String?
+  hsCode            String?
+  cifValue          Int?
+  duties            Int?
+  taxes             Int?
+  fees              Int?
+  totalDuty         Int?
+  status            CustomsStatus @default(PENDING)
+  broker            String?
+  brokerContact     String?
+  documents         Json?
+  releasedAt        DateTime?
+  notes             String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
 }
 ```
 
