@@ -104,7 +104,7 @@ export default function ProfilePage() {
           {/* ── Profile Header ── */}
           <div className="relative overflow-hidden rounded-3xl bg-white border border-black/[0.04] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.02)] mb-8">
             {/* Gradient Banner */}
-            <div className="h-36 sm:h-44 bg-gradient-to-br from-[#E85D04] via-[#D00000] to-[#1a1a2e] relative">
+            <div className="h-36 sm:h-44 bg-gradient-to-br from-[var(--color-primary-dark)] via-[var(--color-warm-red)] to-[#1a1a2e] relative">
               <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 50%, white 1px, transparent 1px), radial-gradient(circle at 80% 30%, white 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
               <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent" />
             </div>
@@ -112,7 +112,7 @@ export default function ProfilePage() {
             <div className="px-6 sm:px-8 pb-6 -mt-12 relative z-10">
               <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6">
                 {/* Avatar */}
-                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-[#E85D04] to-[#D00000] flex items-center justify-center text-white text-3xl sm:text-4xl font-extrabold shadow-lg ring-4 ring-white shrink-0">
+                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-br from-[var(--color-primary-dark)] to-[var(--color-warm-red)] flex items-center justify-center text-white text-3xl sm:text-4xl font-extrabold shadow-lg ring-4 ring-white shrink-0">
                   {initials}
                 </div>
                 {/* Info */}
@@ -121,8 +121,8 @@ export default function ProfilePage() {
                     <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 truncate">
                       {user?.firstName || 'Vendeur'} {user?.lastName || ''}
                     </h1>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-[#E85D04]/10 to-[#D00000]/10 text-[#D00000] border border-[#D00000]/10 w-fit">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#D00000] animate-pulse" />
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-[var(--color-primary-dark)]/10 to-[var(--color-warm-red)]/10 text-[var(--color-warm-red)] border border-[var(--color-warm-red)]/10 w-fit">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-warm-red)] animate-pulse" />
                       {user?.role === 'SELLER' ? 'Vendeur' : 'Acheteur'}
                     </span>
                   </div>
@@ -161,7 +161,7 @@ export default function ProfilePage() {
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
                   activeTab === tab.id
-                    ? 'bg-gradient-to-r from-[#E85D04] to-[#D00000] text-white shadow-md shadow-[#E85D04]/20'
+                    ? 'bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-warm-red)] text-white shadow-md shadow-[var(--color-primary-dark)]/20'
                     : 'bg-white text-gray-500 border border-gray-200/80 hover:border-gray-300 hover:text-gray-700'
                 }`}>
                 {tab.icon}
@@ -298,7 +298,7 @@ export default function ProfilePage() {
                       </div>
                       {/* Toggle Switch */}
                       <button onClick={() => setNotifications(n => ({ ...n, [item.key]: !n[item.key] }))}
-                        className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${notifications[item.key] ? 'bg-gradient-to-r from-[#E85D04] to-[#D00000]' : 'bg-gray-300'}`}>
+                        className={`relative w-11 h-6 rounded-full transition-colors duration-200 ${notifications[item.key] ? 'bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-warm-red)]' : 'bg-gray-300'}`}>
                         <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform duration-200 ${notifications[item.key] ? 'translate-x-5' : 'translate-x-0'}`} />
                       </button>
                     </div>
@@ -309,7 +309,7 @@ export default function ProfilePage() {
               {/* Save Button */}
               <div className="lg:col-span-2 flex justify-end">
                 <button onClick={handleSaveProfile} disabled={saving}
-                  className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-[#E85D04] to-[#D00000] text-white shadow-lg shadow-[#E85D04]/25 hover:shadow-xl hover:shadow-[#E85D04]/30 hover:-translate-y-0.5 active:scale-[0.97] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                  className="inline-flex items-center gap-2 px-8 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-warm-red)] text-white shadow-lg shadow-[var(--color-primary-dark)]/25 hover:shadow-xl hover:shadow-[var(--color-primary-dark)]/30 hover:-translate-y-0.5 active:scale-[0.97] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
                   {saving ? (
                     <>
                       <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
@@ -398,7 +398,7 @@ export default function ProfilePage() {
                   </div>
 
                   <button onClick={handleChangePassword} disabled={saving}
-                    className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-[#E85D04] to-[#D00000] text-white shadow-lg shadow-[#E85D04]/25 hover:shadow-xl hover:shadow-[#E85D04]/30 hover:-translate-y-0.5 active:scale-[0.97] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                    className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-warm-red)] text-white shadow-lg shadow-[var(--color-primary-dark)]/25 hover:shadow-xl hover:shadow-[var(--color-primary-dark)]/30 hover:-translate-y-0.5 active:scale-[0.97] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
                     {saving ? (
                       <>
                         <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>

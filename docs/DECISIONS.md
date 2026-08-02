@@ -555,6 +555,7 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 **Contrainte AGENTS.md** : les pages fonctionnelles dashboard (`crm`, `page`, `profile`, `settings`, `not-found`, `error`) utilisant aussi des hex warm/tierces restent volontairement non migrees dans cette iteration (prudence : pages metier + couleurs tierces) ; a voir en iteration suivante.
 
 **Impact** : `src/app/globals.css`, `docs/04-DESIGN-SYSTEM.md`, `src/components/*.tsx` (13), `src/components/WhatsAppIntegration.tsx` (suppression d'un numero de support factice, cf. D28). Lint/typecheck/275 tests/build OK.
+- **Complement (meme iteration)** : migration des pages fonctionnelles du dashboard (`crm`, `page`, `profile`, `settings`, `not-found`, `error`) vers les memes tokens (`#E85D04`→`--color-primary-dark`, `#D00000`→`--color-warm-red`, `#FF6B35`→`--color-primary`), pixel-identique. `#E85A25` (hover de `not-found`/`error`) n'a pas de token correspondant (distinct de `#E85D04`) : conserve en literal. Couleurs de marques tierces conservees en literal. Lint/typecheck/275 tests/build OK.
 
 
 

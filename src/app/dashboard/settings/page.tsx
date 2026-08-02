@@ -10,7 +10,7 @@ function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: b
       type="button"
       onClick={() => onChange(!checked)}
       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 ${
-        checked ? 'bg-gradient-to-r from-[#E85D04] to-[#D00000]' : 'bg-gray-200'
+        checked ? 'bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-warm-red)]' : 'bg-gray-200'
       }`}
     >
       <span
@@ -62,7 +62,7 @@ export default function SettingsPage() {
           {/* Page Header */}
           <div className="mb-8 animate-fade-in">
             <div className="flex items-center gap-3 mb-1">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#E85D04] to-[#D00000] flex items-center justify-center text-white text-lg">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--color-primary-dark)] to-[var(--color-warm-red)] flex items-center justify-center text-white text-lg">
                 ⚙
               </div>
               <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Paramètres</h1>
@@ -208,16 +208,16 @@ export default function SettingsPage() {
                       onClick={() => setAppearance({ ...appearance, theme: theme.value })}
                       className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all duration-200 ${
                         appearance.theme === theme.value
-                          ? 'border-[#E85D04] bg-orange-50/60 shadow-sm'
+                          ? 'border-[var(--color-primary-dark)] bg-orange-50/60 shadow-sm'
                           : 'border-gray-100 bg-white hover:border-gray-200'
                       }`}
                     >
                       <span className="text-lg">{theme.icon}</span>
-                      <span className={`text-sm font-semibold ${appearance.theme === theme.value ? 'text-[#E85D04]' : 'text-gray-700'}`}>
+                      <span className={`text-sm font-semibold ${appearance.theme === theme.value ? 'text-[var(--color-primary-dark)]' : 'text-gray-700'}`}>
                         {theme.label}
                       </span>
                       {appearance.theme === theme.value && (
-                        <span className="ml-auto text-[#E85D04] text-sm">✓</span>
+                        <span className="ml-auto text-[var(--color-primary-dark)] text-sm">✓</span>
                       )}
                     </button>
                   ))}

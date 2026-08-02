@@ -207,7 +207,7 @@ export default function DashboardPage() {
 
           {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• HERO BANNER â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
           <div className="relative rounded-3xl overflow-hidden mb-8" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
-            <div className="absolute inset-0 bg-gradient-to-br from-[#0f0f23] via-[#1a1a2e] via-50% to-[#D00000]" />
+            <div className="absolute inset-0 bg-gradient-to-br from-[#0f0f23] via-[#1a1a2e] via-50% to-[var(--color-warm-red)]" />
             <div className="absolute inset-0 opacity-[0.07]">
               <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-orange-400 blur-[120px] translate-x-1/3 -translate-y-1/3" />
               <div className="absolute bottom-0 left-1/4 w-80 h-80 rounded-full bg-red-500 blur-[100px] translate-y-1/3" />
@@ -364,7 +364,7 @@ export default function DashboardPage() {
                       className={`flex items-center gap-4 p-3.5 rounded-2xl hover:bg-white/80 hover:shadow-sm transition-all duration-200 border-l-4 ${statusBorderLeft[o.status] || 'border-l-gray-200'} group`}
                     >
                       <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center text-sm shrink-0 group-hover:scale-105 transition-transform">
-                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#E85D04" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+                        <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="var(--color-primary-dark)" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-gray-900 text-sm truncate group-hover:text-orange-600 transition-colors">{o.orderNumber || o.id?.slice(0, 8)}</p>

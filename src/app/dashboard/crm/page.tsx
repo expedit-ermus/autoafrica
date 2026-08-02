@@ -333,7 +333,7 @@ export default function CRMPage() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
               <div>
                 <div className="flex items-center gap-3 mb-1">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#E85D04] to-[#D00000] flex items-center justify-center shadow-lg shadow-orange-500/20">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--color-primary-dark)] to-[var(--color-warm-red)] flex items-center justify-center shadow-lg shadow-orange-500/20">
                     <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
@@ -346,7 +346,7 @@ export default function CRMPage() {
               {/* Stats chips */}
               <div className="flex items-center gap-2 flex-wrap ml-[52px] sm:ml-0">
                 <div className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-gray-100 shadow-sm">
-                  <div className="w-2 h-2 rounded-full bg-[#E85D04]"></div>
+                  <div className="w-2 h-2 rounded-full bg-[var(--color-primary-dark)]"></div>
                   <span className="text-xs font-semibold text-gray-700">{stats.totalCustomers} contacts</span>
                 </div>
                 <div className="flex items-center gap-1.5 bg-white px-3 py-1.5 rounded-full border border-gray-100 shadow-sm">
@@ -369,7 +369,7 @@ export default function CRMPage() {
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#E85D04]/20 focus:border-[#E85D04] transition-all shadow-sm"
+                  className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)]/20 focus:border-[var(--color-primary-dark)] transition-all shadow-sm"
                   placeholder={activeTab === 'contacts' ? 'Rechercher un contact par nom, email ou telephone...' : 'Rechercher un lead par nom, email ou telephone...'}
                 />
                 {search && (
@@ -389,7 +389,7 @@ export default function CRMPage() {
                   }
                   setShowAdd(true);
                 }}
-                className="flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-[#E85D04] to-[#D00000] text-white rounded-xl font-semibold text-sm shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 hover:-translate-y-0.5 active:scale-[0.98] transition-all whitespace-nowrap"
+                className="flex items-center justify-center gap-2 px-5 py-3 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-warm-red)] text-white rounded-xl font-semibold text-sm shadow-lg shadow-orange-500/25 hover:shadow-xl hover:shadow-orange-500/30 hover:-translate-y-0.5 active:scale-[0.98] transition-all whitespace-nowrap"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -406,7 +406,7 @@ export default function CRMPage() {
             <button
               onClick={() => setActiveTab('contacts')}
               className={`relative px-5 py-3 text-sm font-semibold transition-colors ${
-                activeTab === 'contacts' ? 'text-[#E85D04]' : 'text-gray-500 hover:text-gray-700'
+                activeTab === 'contacts' ? 'text-[var(--color-primary-dark)]' : 'text-gray-500 hover:text-gray-700'
               }`}
             >
               <span className="flex items-center gap-2">
@@ -415,19 +415,19 @@ export default function CRMPage() {
                 </svg>
                 Contacts
                 <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                  activeTab === 'contacts' ? 'bg-[#E85D04]/10 text-[#E85D04]' : 'bg-gray-100 text-gray-500'
+                  activeTab === 'contacts' ? 'bg-[var(--color-primary-dark)]/10 text-[var(--color-primary-dark)]' : 'bg-gray-100 text-gray-500'
                 }`}>
                   {stats.totalCustomers}
                 </span>
               </span>
               {activeTab === 'contacts' && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#E85D04] to-[#D00000] rounded-full" />
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-warm-red)] rounded-full" />
               )}
             </button>
             <button
               onClick={() => setActiveTab('leads')}
               className={`relative px-5 py-3 text-sm font-semibold transition-colors ${
-                activeTab === 'leads' ? 'text-[#E85D04]' : 'text-gray-500 hover:text-gray-700'
+                activeTab === 'leads' ? 'text-[var(--color-primary-dark)]' : 'text-gray-500 hover:text-gray-700'
               }`}
             >
               <span className="flex items-center gap-2">
@@ -436,13 +436,13 @@ export default function CRMPage() {
                 </svg>
                 Leads
                 <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                  activeTab === 'leads' ? 'bg-[#E85D04]/10 text-[#E85D04]' : 'bg-gray-100 text-gray-500'
+                  activeTab === 'leads' ? 'bg-[var(--color-primary-dark)]/10 text-[var(--color-primary-dark)]' : 'bg-gray-100 text-gray-500'
                 }`}>
                   {stats.totalLeads}
                 </span>
               </span>
               {activeTab === 'leads' && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#E85D04] to-[#D00000] rounded-full" />
+                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-warm-red)] rounded-full" />
               )}
             </button>
           </div>
@@ -475,7 +475,7 @@ export default function CRMPage() {
                 <select
                   value={countryFilter}
                   onChange={(e) => setCountryFilter(e.target.value)}
-                  className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 bg-white text-gray-600 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#E85D04]/20 focus:border-[#E85D04] transition-all appearance-none pr-8 cursor-pointer"
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 bg-white text-gray-600 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)]/20 focus:border-[var(--color-primary-dark)] transition-all appearance-none pr-8 cursor-pointer"
                   style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.2em 1.2em' }}
                 >
                   <option value="all">Tous les pays</option>
@@ -553,7 +553,7 @@ export default function CRMPage() {
                       setForm({ name: '', email: '', phone: '', country: 'CI', type: 'garage', notes: '', source: 'web' });
                       setShowAdd(true);
                     }}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#E85D04] to-[#D00000] text-white rounded-xl font-semibold text-sm shadow-lg shadow-orange-500/25 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] transition-all"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-warm-red)] text-white rounded-xl font-semibold text-sm shadow-lg shadow-orange-500/25 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] transition-all"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -580,7 +580,7 @@ export default function CRMPage() {
                           {getInitials(c.name)}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-bold text-gray-900 text-sm truncate group-hover:text-[#E85D04] transition-colors">{c.name}</h3>
+                          <h3 className="font-bold text-gray-900 text-sm truncate group-hover:text-[var(--color-primary-dark)] transition-colors">{c.name}</h3>
                           <div className="flex items-center gap-2 mt-1">
                             <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold border capitalize ${TYPE_COLORS[c.type] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
                               {c.type}
@@ -692,7 +692,7 @@ export default function CRMPage() {
                       setLeadForm({ name: '', phone: '', email: '', source: 'web', value: 0, notes: '' });
                       setShowAdd(true);
                     }}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#E85D04] to-[#D00000] text-white rounded-xl font-semibold text-sm shadow-lg shadow-orange-500/25 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] transition-all"
+                    className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-warm-red)] text-white rounded-xl font-semibold text-sm shadow-lg shadow-orange-500/25 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.98] transition-all"
                   >
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -754,7 +754,7 @@ export default function CRMPage() {
                                         <div className="w-1 h-1 rounded-full bg-gray-300"></div>
                                       </div>
                                     </div>
-                                    <h4 className="font-bold text-gray-900 text-sm group-hover:text-[#E85D04] transition-colors">{lead.name}</h4>
+                                    <h4 className="font-bold text-gray-900 text-sm group-hover:text-[var(--color-primary-dark)] transition-colors">{lead.name}</h4>
                                   </div>
                                 </div>
 
@@ -798,7 +798,7 @@ export default function CRMPage() {
                                       value={lead.status}
                                       onChange={(e) => { e.stopPropagation(); handleUpdateLeadStatus(lead.id, e.target.value); }}
                                       onClick={(e) => e.stopPropagation()}
-                                      className="p-1.5 rounded-md border-0 text-[10px] font-semibold cursor-pointer bg-gray-50 text-gray-500 hover:bg-gray-100 focus:ring-2 focus:ring-[#E85D04]/20"
+                                      className="p-1.5 rounded-md border-0 text-[10px] font-semibold cursor-pointer bg-gray-50 text-gray-500 hover:bg-gray-100 focus:ring-2 focus:ring-[var(--color-primary-dark)]/20"
                                     >
                                       {LEAD_STATUSES.map(s => (
                                         <option key={s} value={s}>{LEAD_STATUS_LABELS[s]}</option>
@@ -1185,7 +1185,7 @@ export default function CRMPage() {
             }
             setShowAdd(true);
           }}
-          className="lg:hidden fixed bottom-24 right-5 w-14 h-14 rounded-full bg-gradient-to-br from-[#E85D04] to-[#D00000] text-white shadow-xl shadow-orange-500/30 flex items-center justify-center hover:shadow-2xl hover:-translate-y-1 active:scale-90 transition-all z-40"
+          className="lg:hidden fixed bottom-24 right-5 w-14 h-14 rounded-full bg-gradient-to-br from-[var(--color-primary-dark)] to-[var(--color-warm-red)] text-white shadow-xl shadow-orange-500/30 flex items-center justify-center hover:shadow-2xl hover:-translate-y-1 active:scale-90 transition-all z-40"
         >
           <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
