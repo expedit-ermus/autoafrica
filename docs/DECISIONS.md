@@ -505,6 +505,21 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `package.json` (devDeps), `vitest.setup.ts`, `src/components/Modal.test.tsx`, `src/components/EmptyState.test.tsx`, `src/components/StarRating.test.tsx`, `src/lib/useDocumentTitle.test.ts`, `docs/DECISIONS.md`.
 
+## D27 : CI GitHub Actions alignee sur `22-TESTS.md` (tests unitaires + E2E)
+
+**Contexte** : `22-TESTS.md` documente une CI/CD « lint au push, typecheck au push, tests unitaires au push, tests E2E au merge sur main, build verification avant deploy ». Limite notee depuis D25/D26 : seuls lint/typecheck/build/deploy etaient dans `.github/workflows/ci-cd.yml` ; les tests unitaires et E2E n'etaient pas executes en CI.
+
+**Decision** : completer `.github/workflows/ci-cd.yml` :
+- job `unit-tests` (needs lint, typecheck) : `npm ci` puis `npx vitest run` — execute au push/PR
+- job `e2e` (needs build, condition `if: github.ref == 'refs/heads/main'`) : `npm ci`, `npx playwright install --with-deps chromium`, `npm run test:e2e` — au merge sur main (4 tests E2E)
+- les jobs existants `lint`, `typecheck`, `build`, `deploy` (Vercel via secrets) sont conserves
+
+**Resultats** : validation locale pre-commit : lint OK, typecheck OK, `npx vitest run` 275 verts, build OK. Workflow decoreli dans CI reversible par GitHub Actions au prochain push/PR ; les tests unitaires utilisent le fallback `JWT_SECRET='test-secret-for-vitest'` du `vitest.setup.ts` (aucune variable requise en CI).
+
+**Limite** : l'execution reelle des runs CI depend d'un `git push` (le merge sur `main` declenche la branche E2E) ; la couverture (threads seuils) n'est pas bloquante dans AI (seuls les tests complets important).
+
+**Impact** : `.github/workflows/ci-cd.yml`, `docs/DECISIONS.md`.
+
 
 
 
