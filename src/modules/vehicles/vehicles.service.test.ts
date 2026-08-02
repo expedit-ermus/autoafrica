@@ -140,4 +140,134 @@ describe('VehiclesService', () => {
     expect(result.status).toBe('SOLD');
     expect(mockPrisma.vehicle.update).toHaveBeenCalledWith({ where: { id: 'v1' }, data: { active: false } });
   });
+
+  it('applies all list filters to the where clause', async () => {
+    mockPrisma.vehicle.findMany.mockResolvedValue([]);
+    mockPrisma.vehicle.count.mockResolvedValue(0);
+
+    await vehiclesService.list(
+      {
+        brand: 'Toyota',
+        model: 'Corolla',
+        country: 'CI',
+        city: 'Abidjan',
+        search: '2023',
+        minPrice: 1000000,
+        maxPrice: 20000000,
+        fuel: 'DIESEL',
+        gearbox: 'AUTOMATIC',
+        condition: 'USED',
+        minYear: 2019,
+        maxYear: 2023,
+        sellerId: 's1',
+      },
+      { page: 2, pageSize: 12 },
+    );
+
+    expect(mockPrisma.vehicle.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          active: true,
+          brand: { name: 'Toyota' },
+          country: 'CI',
+          fuel: 'DIESEL',
+          gearbox: 'AUTOMATIC',
+          condition: 'USED',
+          OR: expect.any(Array),
+          year: expect.objectContaining({ gte: 2019, lte: 2023 }),
+          price: expect.objectContaining({ gte: 1000000, lte: 20000000 }),
+          listings: { some: { sellerId: 's1' } },
+        }),
+      }),
+    );
+  });
+
+  it('rejects a non-positive price on create', async () => {
+    await expect(
+      vehiclesService.create({ brand: 'Toyota', name: 'X', year: 2020, price: 0 }, 'seller-1'),
+    ).rejects.toBeInstanceOf(ValidationError);
+  });
+
+  it('creates a vehicle with a car model and serialized images', async () => {
+    mockPrisma.brand.findUnique.mockResolvedValue({ id: 'brand-1', name: 'Toyota' });
+    mockPrisma.carModel.findFirst.mockResolvedValue({ id: 'model-1' });
+    mockPrisma.vehicle.create.mockResolvedValue({ id: 'v1' });
+    mockPrisma.vehicleListing.create.mockResolvedValue({ id: 'l1' });
+
+    await vehiclesService.create(
+      {
+        brand: 'Toyota',
+        model: 'Corolla',
+        name: 'Corolla',
+        year: 2023,
+        price: 10000000,
+        images: ['/a.jpg'],
+        condition: 'USED',
+      },
+      'seller-1',
+    );
+
+    expect(mockPrisma.vehicle.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          carModelId: 'model-1',
+          images: JSON.stringify(['/a.jpg']),
+          condition: 'USED',
+        }),
+      }),
+    );
+  });
+
+  it('updates a vehicle and its listing price', async () => {
+    mockPrisma.vehicleListing.findFirst.mockResolvedValue({ id: 'l1', vehicleId: 'v1', sellerId: 'seller-1' });
+    mockPrisma.vehicle.update.mockResolvedValue({ id: 'v1' });
+    mockPrisma.vehicleListing.update.mockResolvedValue({});
+
+    const result = await vehiclesService.update('v1', { price: 5000000, name: 'Corolla X' }, 'seller-1');
+
+    expect(result.id).toBe('v1');
+    expect(mockPrisma.vehicleListing.update).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ price: 5000000, currency: 'XOF' }) }),
+    );
+  });
+
+  it('throws NotFoundError when updating a missing vehicle', async () => {
+    mockPrisma.vehicleListing.findFirst.mockResolvedValue(null);
+
+    await expect(vehiclesService.update('missing', { price: 100 }, 'seller-1')).rejects.toBeInstanceOf(NotFoundError);
+  });
+
+  it('deletes a vehicle by deactivating it and cancelling the listing', async () => {
+    mockPrisma.vehicleListing.findFirst.mockResolvedValue({ id: 'l1', vehicleId: 'v1', sellerId: 'seller-1' });
+    mockPrisma.vehicle.update.mockResolvedValue({});
+    mockPrisma.vehicleListing.update.mockResolvedValue({});
+
+    const result = await vehiclesService.delete('v1', 'seller-1');
+
+    expect(result.success).toBe(true);
+    expect(mockPrisma.vehicle.update).toHaveBeenCalledWith({ where: { id: 'v1' }, data: { active: false } });
+    expect(mockPrisma.vehicleListing.update).toHaveBeenCalledWith({ where: { id: 'l1' }, data: { status: 'CANCELLED' } });
+  });
+
+  it('forbids deleting a vehicle that is not yours', async () => {
+    mockPrisma.vehicleListing.findFirst.mockResolvedValue({ id: 'l1', vehicleId: 'v1', sellerId: 'other' });
+
+    await expect(vehiclesService.delete('v1', 'seller-1')).rejects.toBeInstanceOf(ForbiddenError);
+  });
+
+  it('sets a non-SOLD status without deactivating the vehicle', async () => {
+    mockPrisma.vehicleListing.findFirst.mockResolvedValue({ id: 'l1', vehicleId: 'v1', sellerId: 'seller-1' });
+    mockPrisma.vehicleListing.update.mockResolvedValue({});
+
+    const result = await vehiclesService.setStatus('v1', 'RESERVED', 'seller-1');
+
+    expect(result.status).toBe('RESERVED');
+    expect(mockPrisma.vehicle.update).not.toHaveBeenCalled();
+  });
+
+  it('throws NotFoundError for setStatus on a missing vehicle', async () => {
+    mockPrisma.vehicleListing.findFirst.mockResolvedValue(null);
+
+    await expect(vehiclesService.setStatus('v1', 'ACTIVE', 'seller-1')).rejects.toBeInstanceOf(NotFoundError);
+  });
 });

@@ -471,6 +471,22 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `src/app/not-found.tsx`, `src/app/error.tsx`, `docs/DECISIONS.md`. L'image Open Graph reste `/og-image.png` (conforme `06-SEO.md`) ; la route `/opengraph-image` (R207) est servie par le fichier `opengraph-image.tsx` existant (200 image/png verifie), independamment de la meta `og:image` explicite du layout.
 
+## D25 : Alignement de la strategie de tests sur `22-TESTS.md` (couverture + E2E)
+
+**Contexte** : `22-TESTS.md` documente des seuils de couverture (Instructions > 80 %, Branches > 70 %, Functions > 80 %, Lines > 80 %), des scripts `test:run`/`test:coverage`/`test:e2e`/`test:e2e:ui`, des tests d'integration (Vitest + Testing Library) et des tests E2E (Playwright). Etat avant : aucun provider de couverture (mesure impossible), aucun script, pas de Playwright, pas de config E2E. Mesure initiale reelle : Stmts 76.6 %, Branch 63.3 % (sous les seuils).
+
+**Decision** :
+- Installer `@vitest/coverage-v8` (provider v8) et `@playwright/test` (dependances dev, justifiees par `22-TESTS.md`)
+- `vitest.config.mts` : `coverage` provider v8 + seuils (statements 80, branches 70, functions 80, lines 80) ; exclusion de `tests-e2e/**` du runner unitaire (via `defaultExclude`)
+- `package.json` : scripts `test:run`, `test:coverage` (verifie les seuils), `test:e2e`, `test:e2e:ui`
+- Etendre les tests unitaires des services les moins couverts pour atteindre les seuils : `auth` (login inexistant, refresh ok/expire/manquant, logout, MFA enable/verify/erreurs), `vehicles` (liste tous filtres, prix non positif, modele+images, update ok/missing, delete ok/forbidden, setStatus non-SOLD/missing), `finance` (sous-total negatif, invoice avec orderId, update ok/missing, statut/remove missing, compte parent manquant, updateAccount ok/dup/self-parent/type, removeAccount avec enfants, credit, tri+recherche transactions)
+- Ajouter Playwright : `playwright.config.ts` (project chromium, `webServer` = `npm run dev`, port 3000) + `tests-e2e/core.spec.ts` (4 tests E2E des flux critiques : R001 landing H1/titre, R005 marketplace titre+grille, R017 vehicules titre, R206 404 FR « Page introuvable »)
+- `.gitignore` : `/playwright-report`, `/test-results` ; eslint : ignore `coverage/**`, `playwright-report/**`, `test-results/**`
+
+**Resultats** : 258 tests unitaires (35 ajoutes), couverture Stmts 83.9 / Branch 71.6 / Funcs 88.0 / Lines 88.4 — tous au-dessus des seuils documentes. E2E : 4 passes (21.7 s). Lint/typecheck/build OK.
+
+**Limitation documentee** : les tests d'integration « Vitest + Testing Library » (`22-TESTS.md`) et la CI GitHub Actions ne sont pas mis en place ici (environnement local ; l'installation de `@testing-library/*` + jsdom reste a faire). Le runner unitaire reste en environnement `node` (pas de jsdom).
+
 
 
 

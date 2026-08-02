@@ -120,4 +120,90 @@ describe('AuthService', () => {
 
     await expect(authService.me('missing')).rejects.toBeInstanceOf(NotFoundError);
   });
+
+  it('throws UnauthorizedError when the user does not exist in login()', async () => {
+    mockPrisma.user.findUnique.mockResolvedValue(null);
+
+    await expect(
+      authService.login({ email: 'nobody@example.com', password: 'pw' }),
+    ).rejects.toBeInstanceOf(UnauthorizedError);
+  });
+
+  it('refreshes the token when the refresh token is valid', async () => {
+    mockPrisma.refreshToken.findUnique.mockResolvedValue({
+      id: 'rt-1',
+      token: 'rtoken',
+      expiresAt: new Date(Date.now() + 100000),
+      userId: 'user-1',
+      user: { role: 'SELLER' },
+    });
+    mockPrisma.refreshToken.delete.mockResolvedValue({});
+    mockPrisma.refreshToken.create.mockResolvedValue({ id: 'rt-2' });
+
+    const result = await authService.refresh('rtoken');
+
+    expect(result.token).toBeTruthy();
+    expect(result.refreshToken).toBeTruthy();
+    expect(mockPrisma.refreshToken.delete).toHaveBeenCalledWith({ where: { id: 'rt-1' } });
+  });
+
+  it('throws UnauthorizedError for a missing refresh token', async () => {
+    mockPrisma.refreshToken.findUnique.mockResolvedValue(null);
+
+    await expect(authService.refresh('missing')).rejects.toBeInstanceOf(UnauthorizedError);
+  });
+
+  it('throws UnauthorizedError for an expired refresh token', async () => {
+    mockPrisma.refreshToken.findUnique.mockResolvedValue({
+      id: 'rt-1',
+      token: 'rtoken',
+      expiresAt: new Date(Date.now() - 1000),
+      userId: 'user-1',
+      user: { role: 'SELLER' },
+    });
+
+    await expect(authService.refresh('rtoken')).rejects.toBeInstanceOf(UnauthorizedError);
+  });
+
+  it('logs out by deleting all refresh tokens for the user', async () => {
+    mockPrisma.refreshToken.deleteMany.mockResolvedValue({ count: 1 });
+
+    const result = await authService.logout('user-1');
+
+    expect(result.success).toBe(true);
+    expect(mockPrisma.refreshToken.deleteMany).toHaveBeenCalledWith({ where: { userId: 'user-1' } });
+  });
+
+  it('enables MFA and returns a 6-digit secret', async () => {
+    mockPrisma.user.update.mockResolvedValue({});
+
+    const result = await authService.enableMfa('user-1');
+
+    expect(result.secret).toMatch(/^\d{6}$/);
+    expect(mockPrisma.user.update).toHaveBeenCalledWith(
+      expect.objectContaining({ data: expect.objectContaining({ mfaSecret: result.secret }) }),
+    );
+  });
+
+  it('verifies a valid MFA code and enables MFA', async () => {
+    mockPrisma.user.findUnique.mockResolvedValue({ id: 'user-1', mfaSecret: '123456' });
+    mockPrisma.user.update.mockResolvedValue({});
+
+    const result = await authService.verifyMfa('user-1', '123456');
+
+    expect(result.success).toBe(true);
+    expect(mockPrisma.user.update).toHaveBeenCalledWith({ where: { id: 'user-1' }, data: { mfaEnabled: true } });
+  });
+
+  it('throws UnauthorizedError when MFA is not enabled', async () => {
+    mockPrisma.user.findUnique.mockResolvedValue({ id: 'user-1', mfaSecret: null });
+
+    await expect(authService.verifyMfa('user-1', '123456')).rejects.toBeInstanceOf(UnauthorizedError);
+  });
+
+  it('throws UnauthorizedError for an invalid MFA code', async () => {
+    mockPrisma.user.findUnique.mockResolvedValue({ id: 'user-1', mfaSecret: '111111' });
+
+    await expect(authService.verifyMfa('user-1', '999999')).rejects.toBeInstanceOf(UnauthorizedError);
+  });
 });

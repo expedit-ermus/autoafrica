@@ -136,6 +136,77 @@ describe('FinanceService', () => {
       expect(result.success).toBe(true);
       expect(mockPrisma.invoice.delete).toHaveBeenCalledWith({ where: { id: 'inv-1' } });
     });
+
+    it('rejects a negative subtotal', async () => {
+      await expect(
+        financeService.createInvoice({ sellerId: 's', buyerId: 'b', subtotal: -5 }),
+      ).rejects.toBeInstanceOf(ValidationError);
+    });
+
+    it('creates an invoice when the linked order exists', async () => {
+      mockPrisma.order.findUnique.mockResolvedValue({ id: 'order-1' });
+      mockPrisma.invoice.create.mockResolvedValue({ id: 'inv-1' });
+
+      const result = await financeService.createInvoice({
+        sellerId: 's',
+        buyerId: 'b',
+        subtotal: 1000,
+        orderId: 'order-1',
+        dueDate: '2026-01-01',
+        invoiceNumber: 'INV-CUSTOM',
+        status: 'PENDING',
+        currency: 'XOF',
+      });
+
+      expect(result.id).toBe('inv-1');
+      expect(mockPrisma.invoice.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            invoiceNumber: 'INV-CUSTOM',
+            orderId: 'order-1',
+            status: 'PENDING',
+          }),
+        }),
+      );
+    });
+
+    it('throws NotFoundError when updating a missing invoice', async () => {
+      mockPrisma.invoice.findUnique.mockResolvedValue(null);
+
+      await expect(financeService.updateInvoice('missing', { status: 'PAID' })).rejects.toBeInstanceOf(NotFoundError);
+    });
+
+    it('updates an invoice with recomputed totals', async () => {
+      mockPrisma.invoice.findUnique.mockResolvedValue({
+        id: 'inv-1',
+        subtotal: 1000,
+        taxRate: 18,
+        taxAmount: 180,
+        totalAmount: 1180,
+      });
+      mockPrisma.invoice.update.mockResolvedValue({ id: 'inv-1' });
+
+      const result = await financeService.updateInvoice('inv-1', { subtotal: 2000 });
+
+      expect(result.id).toBe('inv-1');
+      expect(mockPrisma.invoice.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ subtotal: 2000, taxAmount: 360, totalAmount: 2360 }),
+        }),
+      );
+    });
+
+    it('throws NotFoundError for a missing invoice in updateInvoiceStatus', async () => {
+      mockPrisma.invoice.findUnique.mockResolvedValue(null);
+
+      await expect(financeService.updateInvoiceStatus('missing', 'PAID')).rejects.toBeInstanceOf(NotFoundError);
+    });
+
+    it('throws NotFoundError when removing a missing invoice', async () => {
+      mockPrisma.invoice.findUnique.mockResolvedValue(null);
+
+      await expect(financeService.removeInvoice('missing')).rejects.toBeInstanceOf(NotFoundError);
+    });
   });
 
   describe('accounts', () => {
@@ -203,6 +274,76 @@ describe('FinanceService', () => {
       expect(result.success).toBe(true);
       expect(mockPrisma.account.delete).toHaveBeenCalledWith({ where: { id: 'acc-1' } });
     });
+
+    it('returns an account with parent and children', async () => {
+      mockPrisma.account.findUnique.mockResolvedValue({ id: 'acc-1', parent: null, children: [] });
+
+      const account = await financeService.getAccountById('acc-1');
+
+      expect(account.id).toBe('acc-1');
+    });
+
+    it('lists accounts filtering by active state', async () => {
+      mockPrisma.account.findMany.mockResolvedValue([{ id: 'acc-1' }]);
+      mockPrisma.account.count.mockResolvedValue(1);
+
+      const result = await financeService.listAccounts({ active: 'true' }, { page: 1, pageSize: 10 });
+
+      expect(result.total).toBe(1);
+      expect(mockPrisma.account.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ where: expect.objectContaining({ active: true }) }),
+      );
+    });
+
+    it('throws NotFoundError when the account parent does not exist', async () => {
+      mockPrisma.account.findFirst.mockResolvedValue(null);
+      mockPrisma.account.findUnique.mockResolvedValue(null);
+
+      await expect(
+        financeService.createAccount({ code: 'A1', name: 'Caisse', type: 'asset', parentId: 'missing' }),
+      ).rejects.toBeInstanceOf(NotFoundError);
+    });
+
+    it('rejects updating an account with a duplicate code', async () => {
+      mockPrisma.account.findUnique.mockResolvedValue({ id: 'acc-1' });
+      mockPrisma.account.findFirst.mockResolvedValue({ id: 'acc-2' });
+
+      await expect(financeService.updateAccount('acc-1', { code: 'X1' })).rejects.toBeInstanceOf(ValidationError);
+    });
+
+    it('rejects updating an account to be its own parent', async () => {
+      mockPrisma.account.findUnique.mockResolvedValue({ id: 'acc-1' });
+
+      await expect(financeService.updateAccount('acc-1', { parentId: 'acc-1' })).rejects.toBeInstanceOf(ValidationError);
+    });
+
+    it('rejects updating an account with an invalid type', async () => {
+      mockPrisma.account.findUnique.mockResolvedValue({ id: 'acc-1' });
+
+      await expect(financeService.updateAccount('acc-1', { type: 'nope' })).rejects.toBeInstanceOf(ValidationError);
+    });
+
+    it('updates an account successfully', async () => {
+      mockPrisma.account.findUnique.mockResolvedValue({ id: 'acc-1' });
+      mockPrisma.account.update.mockResolvedValue({ id: 'acc-1' });
+
+      const result = await financeService.updateAccount('acc-1', { name: 'Caisse XOF', active: false });
+
+      expect(result.id).toBe('acc-1');
+    });
+
+    it('throws NotFoundError for a missing account in updateAccount', async () => {
+      mockPrisma.account.findUnique.mockResolvedValue(null);
+
+      await expect(financeService.updateAccount('missing', { name: 'x' })).rejects.toBeInstanceOf(NotFoundError);
+    });
+
+    it('rejects removing an account that has children', async () => {
+      mockPrisma.account.findUnique.mockResolvedValue({ id: 'acc-1' });
+      mockPrisma.account.count.mockResolvedValue(2);
+
+      await expect(financeService.removeAccount('acc-1')).rejects.toBeInstanceOf(ValidationError);
+    });
   });
 
   describe('transactions', () => {
@@ -260,6 +401,30 @@ describe('FinanceService', () => {
       expect(result.total).toBe(1);
       expect(mockPrisma.transaction.findMany).toHaveBeenCalledWith(
         expect.objectContaining({ where: expect.objectContaining({ accountId: 'acc-1' }) }),
+      );
+    });
+
+    it('records a credit transaction with a lower balance', async () => {
+      mockPrisma.account.findUnique.mockResolvedValue({ id: 'acc-1', balance: 10000 });
+      mockPrisma.$transaction.mockResolvedValue([{ id: 'txn-2', balance: 8000 }]);
+
+      const result = await financeService.recordTransaction({ accountId: 'acc-1', type: 'credit', amount: 2000 });
+
+      expect(result.balance).toBe(8000);
+    });
+
+    it('lists transactions with sort and search filters', async () => {
+      mockPrisma.transaction.findMany.mockResolvedValue([{ id: 'txn-1' }]);
+      mockPrisma.transaction.count.mockResolvedValue(1);
+
+      const result = await financeService.listTransactions(
+        { search: 'depot', type: 'debit' },
+        { page: 1, pageSize: 10, sortBy: 'date', sortOrder: 'asc' },
+      );
+
+      expect(result.total).toBe(1);
+      expect(mockPrisma.transaction.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({ orderBy: { date: 'asc' } }),
       );
     });
   });
