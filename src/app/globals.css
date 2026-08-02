@@ -2,7 +2,7 @@
 
 :root {
   --color-primary: #FF6B35;
-  --color-primary-hover: #E85A25;
+  --color-primary-hover: #E85D04;
   --color-primary-dark: #E85D04;
   --color-primary-light: #FF8F65;
   --color-secondary: #1E3A5F;
@@ -30,6 +30,16 @@
   --color-surface: #FFFFFF;
   --color-surface-warm: #FFFAF5;
   --color-surface-glass: rgba(255, 255, 255, 0.72);
+  --color-warm-ink: #2D1B0E;
+  --color-warm-muted: #9A8A7A;
+  --color-warm-muted-strong: #6B5B4E;
+  --color-warm-faint: #4A3728;
+  --color-warm-border: #E8DDD0;
+  --color-warm-navy-deep: #0A1929;
+  --color-warm-slate: #0F2744;
+  --color-warm-teal: #00C9A7;
+  --color-warm-red: #D00000;
+  --color-orange-hover: #FF5520;
   --color-border: rgba(139, 69, 19, 0.08);
   --color-border-warm: rgba(255, 107, 53, 0.12);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);

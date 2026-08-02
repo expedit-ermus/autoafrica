@@ -37,14 +37,14 @@ export default function CTASection({
         style={{
           background: bgImage
             ? `linear-gradient(135deg, rgba(15,39,68,0.92) 0%, rgba(10,25,41,0.88) 100%), url(${bgImage})`
-            : 'linear-gradient(135deg, #1E3A5F 0%, #0F2744 50%, #0A1929 100%)',
+            : 'linear-gradient(135deg, var(--color-secondary) 0%, var(--color-warm-slate) 50%, var(--color-warm-navy-deep) 100%)',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
         }}
       />
       <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#FF6B35] rounded-full filter blur-[128px]" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-[#00C9A7] rounded-full filter blur-[128px]" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-[var(--color-primary)] rounded-full filter blur-[128px]" />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-[var(--color-warm-teal)] rounded-full filter blur-[128px]" />
       </div>
 
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
@@ -59,7 +59,7 @@ export default function CTASection({
           <Link
             href={primaryCTA.href}
             className="inline-flex items-center justify-center px-8 py-4 rounded-xl text-lg font-bold text-white shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-            style={{ background: 'linear-gradient(135deg, #E85D04 0%, #D00000 100%)' }}
+            style={{ background: 'linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-warm-red) 100%)' }}
           >
             {primaryCTA.label}
             <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -54,7 +54,7 @@ export default function NewsletterSignup({
             <p className="text-gray-600">Vous recevrez nos prochaines offres et nouveautés par email.</p>
             <button
               onClick={() => setStatus('idle')}
-              className="mt-6 text-sm text-[#E85D04] font-medium hover:underline"
+              className="mt-6 text-sm text-[var(--color-primary-dark)] font-medium hover:underline"
             >
               S&apos;inscrire un autre email
             </button>
@@ -69,10 +69,10 @@ export default function NewsletterSignup({
       <div className="max-w-2xl mx-auto px-4 sm:px-6">
         <div
           className="rounded-2xl p-8 sm:p-12 text-center"
-          style={{ background: 'linear-gradient(135deg, #1E3A5F 0%, #0F2744 100%)' }}
+          style={{ background: 'linear-gradient(135deg, var(--color-secondary) 0%, var(--color-warm-slate) 100%)' }}
         >
           <div className="w-14 h-14 rounded-xl bg-white/10 flex items-center justify-center mx-auto mb-5">
-            <svg className="w-7 h-7 text-[#FF6B35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-7 h-7 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
           </div>
@@ -86,14 +86,14 @@ export default function NewsletterSignup({
               value={email}
               onChange={e => { setEmail(e.target.value); if (status === 'error') setStatus('idle'); }}
               placeholder="Votre adresse email"
-              className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#FF6B35] focus:border-transparent transition-all"
+              className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
               required
             />
             <button
               type="submit"
               disabled={status === 'loading'}
               className="px-6 py-3 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105 disabled:opacity-60 disabled:cursor-not-allowed"
-              style={{ background: 'linear-gradient(135deg, #E85D04, #D00000)' }}
+              style={{ background: 'linear-gradient(135deg, var(--color-primary-dark), var(--color-warm-red))' }}
             >
               {status === 'loading' ? (
                 <span className="flex items-center gap-2">

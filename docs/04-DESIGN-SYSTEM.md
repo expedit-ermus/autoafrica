@@ -7,7 +7,7 @@
 | Token | Valeur | Usage |
 |-------|--------|-------|
 | `--color-primary` | `#FF6B35` | CTA, liens, accent |
-| `--color-primary-hover` | `#E85A25` | Hover CTA |
+| `--color-primary-hover` | `#E85D04` | Hover CTA |
 | `--color-secondary` | `#1E3A5F` | Header, sidebar, accents sombres |
 | `--color-secondary-hover` | `#162D4A` | Hover secondary |
 | `--color-success` | `#10B981` | Confirmations, badges |
@@ -35,6 +35,61 @@
 | `--background` | `#FFFFFF` | Fond body |
 | `--card-bg` | `#FFFFFF` | Fond cartes |
 | `--card-border` | `#E5E7EB` | Bordure cartes |
+
+### Palette chaude (mode marketplace, marque AutoAfrique)
+
+Palette "warm/earth" utilisée par le marketplace, la landing page et les composants de marque
+(ProductCard, Header, Footer, CarSelector, BrandsGrid, CTASection, Newsletter, PromoBanner…).
+Chaque token référence une valeur HEX réelle utilisée dans le code (pas de doublon avec les
+tokens systémiques : `--color-primary`, `--color-primary-dark`, `--color-accent-warm`,
+`--color-accent`, `--color-secondary`, `--color-bg`, `--color-bg-warm`,
+`--color-surface-warm` sont réutilisés et non dupliqués).
+
+| Token | Valeur | Usage |
+|-------|--------|-------|
+| `--color-warm-ink` | `#2D1B0E` | Texte principal / titres chauds (brun foncé) |
+| `--color-warm-muted` | `#9A8A7A` | Placeholder, texte muet, références produit |
+| `--color-warm-muted-strong` | `#6B5B4E` | Texte secondaire (descriptions, compteurs) |
+| `--color-warm-faint` | `#4A3728` | Texte long / paragraphes (brun clair) |
+| `--color-warm-border` | `#E8DDD0` | Bordures crème des cartes, inputs, wraps |
+| `--color-warm-navy-deep` | `#0A1929` | Gradients/fonds navy très sombres (footer, sidebar) |
+| `--color-warm-slate` | `#0F2744` | Fonds/gradients navy (bannières, CTA) |
+| `--color-warm-teal` | `#00C9A7` | Accent turquoise (mobile money, glow, badges) |
+| `--color-warm-red` | `#D00000` | Accent rouge des CTA plats / dégradés chauds |
+| `--color-orange-hover` | `#FF5520` | Hover du dégradé orange (variante par-dessus `--color-primary`) |
+
+Synonymes déjà documentés (réutilisés, pas de doublon) :
+`#FEF3E2` → `--color-bg-warm` (alias crème), `#FFF8F0` → `--color-bg`,
+`#FFBA08` → `--color-accent` (gold), `#E85D04` → `--color-primary-dark`,
+`#FF8C00` → `--color-accent-warm`, `#FF6B35` → `--color-primary`,
+`#1E3A5F` → `--color-secondary`, `#162D4A` → `--color-secondary-hover`,
+`#2A4A6F` → `--color-secondary-light`.
+
+Dégradé orange standard du marketplace :
+`linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent-warm) 50%, var(--color-primary-dark) 100%)`
+(identique à la classe `.gradient-primary`/`.bg-gradient-warm`).
+
+### Couleurs de marques tierces (hors tokens)
+
+Ces couleurs sont des identités visuelles de marques tiers (Mobile Money, banques, réseaux
+sociaux). Elles ne sont **PAS** des tokens internes AutoAfrique : elles restent écrites en
+littéral (hex) dans le code, sans être transformées en variable CSS, afin de reproduire
+fidèlement la charte de chaque marque.
+
+| Marque | Couleur(s) | Domaine |
+|--------|-----------|---------|
+| Orange Money | `#FF6600` | Mobile Money |
+| MTN MoMo | `#FFCC00` | Mobile Money |
+| Wave | `#00B4D8` | Mobile Money / Fintech |
+| Visa | `#1A1F71` | Banque / paiement carte |
+| Mastercard | `#EB001B` | Banque / paiement carte |
+| Facebook | `#1877F2` | Réseau social |
+| WhatsApp | `#25D366` | Messagerie |
+| Google (Gmail/Docs) | `#EA4335`, `#4285F4`, `#FBBC05`, `#34A853` | Boutons SSO Google |
+| Wave secondaire / CinetPay | `#0066CC` | Paiement |
+
+Règle : ne jamais définir ces hex comme tokens relatifs `--color-*` ; les conserver en littéral
+dans les composants de paiement / réseaux sociaux.
 
 ## Typographie
 

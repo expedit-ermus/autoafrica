@@ -46,7 +46,7 @@ export default function SocialProof({
     <section className={`py-16 sm:py-20 bg-gray-50 ${className}`}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-12">
-          <p className="text-sm font-semibold text-[#E85D04] uppercase tracking-wider mb-2">
+          <p className="text-sm font-semibold text-[var(--color-primary-dark)] uppercase tracking-wider mb-2">
             La confiance de milliers
           </p>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">

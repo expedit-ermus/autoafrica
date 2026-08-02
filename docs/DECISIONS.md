@@ -542,6 +542,20 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `src/app/globals.css`, `docs/DECISIONS.md`.
 
+## D30 : Palette chaude de marque – tokens CSS + migration des composants (zero changement visuel)
+
+**Contexte** : audit CSS (`04-DESIGN-SYSTEM.md` vs code). Le mode marketplace utilise une palette « chaude/warm » (`#2D1B0E`, `#9A8A7A`, `#E8DDD0`, `#FEF3E2`, `#FFBA08`, dégradés orange...) absente du design system, et `--color-primary-hover` documentait une valeur (`#E85A25`) jamais utilisee dans le code (le vrai hover utilise partout est `#E85D04`). Decision arrete avec le mentor : figer cette palette en tokens officiels et migrer les composants, SANS aucun changement de valeur pour preserver le rendu.
+
+**Decision** :
+- `globals.css` : corriger `--color-primary-hover` `#E85A25` → `#E85D04` ; ajouter dans `:root` les tokens warm : `--color-warm-ink #2D1B0E`, `--color-warm-muted #9A8A7A`, `--color-warm-muted-strong #6B5B4E`, `--color-warm-faint #4A3728`, `--color-warm-border #E8DDD0`, `--color-warm-navy-deep #0A1929`, `--color-warm-slate #0F2744`, `--color-warm-teal #00C9A7`, `--color-warm-red #D00000`, `--color-orange-hover #FF5520` (reunissant les alias existants `accent`/`accent-warm`/`primary-dark`/`bg-warm`)
+- `docs/04-DESIGN-SYSTEM.md` : corriger `--color-primary-hover` ; ajouter la section « Palette chaude (mode marketplace, marque AutoAfrique) » et une section « Couleurs de marques tierces (hors tokens) » (Orange Money `#FF6600`, MTN `#FFCC00`, Wave `#00B4D8`/`#0066CC`, Visa `#1A1F71`, Mastercard `#EB001B`, Facebook `#1877F2`, WhatsApp `#25D366`) qui DOIVENT rester en literal dans le code (couleurs de marque, pas des tokens internes)
+- Migrer 13 composants (`ProductCard`, `Header`, `Footer`, `LandingPage`, `CarSelector`, `PartsCatalog`, `BrandGrid`, `CTASection`, `NewsletterSignup`, `PromoBanner`, `PricingTable`, `TestimonialCarousel`, `SocialProof`) des hex en dur vers `var(--color-*)`, valeurs strictement identiques. Les couleurs tierces du `Footer` restent literales
+- Tailwind v4 : les classes arbitraires `bg-[var(--color-primary)]/40` compilent nativement (emission `color-mix(in oklab, var(--color-primary) 40%, transparent)`) et vérifie via la CSS buildée
+
+**Contrainte AGENTS.md** : les pages fonctionnelles dashboard (`crm`, `page`, `profile`, `settings`, `not-found`, `error`) utilisant aussi des hex warm/tierces restent volontairement non migrees dans cette iteration (prudence : pages metier + couleurs tierces) ; a voir en iteration suivante.
+
+**Impact** : `src/app/globals.css`, `docs/04-DESIGN-SYSTEM.md`, `src/components/*.tsx` (13), `src/components/WhatsAppIntegration.tsx` (suppression d'un numero de support factice, cf. D28). Lint/typecheck/275 tests/build OK.
+
 
 
 

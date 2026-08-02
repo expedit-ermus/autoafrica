@@ -84,7 +84,7 @@ const bestsellers = [
 const trustFeatures = [
   {
     icon: (
-      <svg className="w-8 h-8 text-[#FF6B35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-8 h-8 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
       </svg>
     ),
@@ -93,7 +93,7 @@ const trustFeatures = [
   },
   {
     icon: (
-      <svg className="w-8 h-8 text-[#FF6B35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-8 h-8 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
       </svg>
     ),
@@ -102,7 +102,7 @@ const trustFeatures = [
   },
   {
     icon: (
-      <svg className="w-8 h-8 text-[#FF6B35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-8 h-8 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
       </svg>
     ),
@@ -111,7 +111,7 @@ const trustFeatures = [
   },
   {
     icon: (
-      <svg className="w-8 h-8 text-[#FF6B35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-8 h-8 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
       </svg>
     ),
@@ -125,10 +125,10 @@ export default function LandingPage() {
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
   return (
-    <div className="overflow-x-hidden bg-[#FFF8F0]">
-      <section className="bg-gradient-to-b from-[#FEF3E2] to-[#FFF8F0] py-8">
+    <div className="overflow-x-hidden bg-[var(--color-bg)]">
+      <section className="bg-gradient-to-b from-[var(--color-bg-warm)] to-[var(--color-bg)] py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl md:text-3xl font-extrabold text-[#2D1B0E] text-center mb-8">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] text-center mb-8">
             {L('AutoAfrique — Pièces Auto Marketplace Afrique de l\'Ouest', 'AutoAfrique — Auto Parts Marketplace West Africa')}
           </h1>
           <div className="grid lg:grid-cols-5 gap-6">
@@ -146,19 +146,19 @@ export default function LandingPage() {
 
       <BrandGrid />
 
-      <section className="py-8 bg-white border-y border-[#E8DDD0]">
+      <section className="py-8 bg-white border-y border-[var(--color-warm-border)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {trustFeatures.map((feat, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-[#FEF3E2] transition-colors">
-                <div className="shrink-0 w-12 h-12 bg-[#FEF3E2] rounded-xl flex items-center justify-center">
+              <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-[var(--color-bg-warm)] transition-colors">
+                <div className="shrink-0 w-12 h-12 bg-[var(--color-bg-warm)] rounded-xl flex items-center justify-center">
                   {feat.icon}
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-[#2D1B0E]">
+                  <div className="text-sm font-bold text-[var(--color-warm-ink)]">
                     {feat.title[locale as 'fr' | 'en']}
                   </div>
-                  <div className="text-xs text-[#6B5B4E] font-medium">
+                  <div className="text-xs text-[var(--color-warm-muted-strong)] font-medium">
                     {feat.desc[locale as 'fr' | 'en']}
                   </div>
                 </div>
@@ -168,9 +168,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-14 bg-[#FFF8F0]">
+      <section className="py-14 bg-[var(--color-bg)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-[#2D1B0E] mb-10">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] mb-10">
             {L('Meilleures ventes', 'Bestsellers')}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
@@ -181,13 +181,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-14 bg-[#FEF3E2]">
+      <section className="py-14 bg-[var(--color-bg-warm)]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-3xl p-8 md:p-10 border border-[#E8DDD0] shadow-lg shadow-[#8B4513]/5">
-            <h2 className="text-xl md:text-2xl font-extrabold text-[#2D1B0E] mb-5">
+          <div className="bg-white rounded-3xl p-8 md:p-10 border border-[var(--color-warm-border)] shadow-lg shadow-[var(--color-earth)]/5">
+            <h2 className="text-xl md:text-2xl font-extrabold text-[var(--color-warm-ink)] mb-5">
               {L('AutoAfrique — La marketplace des pièces automobiles en Afrique de l\'Ouest', 'AutoAfrique — The auto parts marketplace in West Africa')}
             </h2>
-            <div className="text-base text-[#4A3728] leading-relaxed space-y-4">
+            <div className="text-base text-[var(--color-warm-faint)] leading-relaxed space-y-4">
               <p>
                 {L(
                   'AutoAfrique est une marketplace e-commerce dédiée aux pièces détachées automobile en Afrique de l\'Ouest. Elle connecte les vendeurs et les acheteurs pour les marques Toyota, Hyundai, Kia, Peugeot, Mercedes et Renault, dans 10 pays : Côte d\'Ivoire, Sénégal, Mali, Burkina Faso, Niger, Bénin, Togo, Guinée-Bissau, Nigeria et Ghana.',
@@ -200,7 +200,7 @@ export default function LandingPage() {
                   'Whether you\'re a mechanic, dealer or individual, find the parts you need at the best price. Pay with Orange Money, MTN MoMo, Wave or credit card. Fast delivery in 24-72h across West Africa.'
                 )}
               </p>
-              <button className="text-[#FF6B35] font-bold text-base hover:underline">
+              <button className="text-[var(--color-primary)] font-bold text-base hover:underline">
                 {L('Lire la suite', 'Read more')} ↓
               </button>
             </div>

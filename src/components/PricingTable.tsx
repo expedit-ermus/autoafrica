@@ -54,7 +54,7 @@ const defaultPlans: PricingPlan[] = [
     ],
     cta: { label: 'Commencer Pro', href: '/register?plan=pro' },
     popular: true,
-    accent: '#E85D04',
+    accent: 'var(--color-primary-dark)',
   },
   {
     name: 'Enterprise',
@@ -70,7 +70,7 @@ const defaultPlans: PricingPlan[] = [
       { text: 'API intégration complète', included: true },
     ],
     cta: { label: 'Contacter les ventes', href: '/contact' },
-    accent: '#0F2744',
+    accent: 'var(--color-warm-slate)',
   },
 ];
 
@@ -82,7 +82,7 @@ export default function PricingTable({ plans = defaultPlans, className = '' }: P
           key={i}
           className={`relative bg-white rounded-2xl border-2 p-6 sm:p-8 flex flex-col transition-all duration-300 hover:shadow-xl ${
             plan.popular
-              ? 'border-[#E85D04] shadow-lg scale-[1.02] md:scale-105'
+              ? 'border-[var(--color-primary-dark)] shadow-lg scale-[1.02] md:scale-105'
               : 'border-gray-200 hover:border-gray-300'
           }`}
         >
@@ -90,7 +90,7 @@ export default function PricingTable({ plans = defaultPlans, className = '' }: P
             <div className="absolute -top-4 left-1/2 -translate-x-1/2">
               <span
                 className="inline-block px-4 py-1 rounded-full text-sm font-bold text-white shadow-md"
-                style={{ background: 'linear-gradient(135deg, #E85D04, #D00000)' }}
+                style={{ background: 'linear-gradient(135deg, var(--color-primary-dark), var(--color-warm-red))' }}
               >
                 ⭐ Le plus populaire
               </span>
@@ -138,7 +138,7 @@ export default function PricingTable({ plans = defaultPlans, className = '' }: P
             }`}
             style={
               plan.popular
-                ? { background: 'linear-gradient(135deg, #E85D04, #D00000)' }
+                ? { background: 'linear-gradient(135deg, var(--color-primary-dark), var(--color-warm-red))' }
                 : { borderColor: plan.accent, color: plan.accent }
             }
           >

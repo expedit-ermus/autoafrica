@@ -83,9 +83,9 @@ export default function PartsCatalog() {
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
   return (
-    <section className="py-14 bg-[#FFF8F0]">
+    <section className="py-14 bg-[var(--color-bg)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl md:text-3xl font-extrabold text-[#2D1B0E] mb-10">
+        <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] mb-10">
           {L('Catégories de pièces', 'Parts categories')}
         </h2>
 
@@ -94,9 +94,9 @@ export default function PartsCatalog() {
             <Link
               key={cat.id}
               href="/dashboard/marketplace"
-              className="group relative bg-white rounded-2xl border border-[#E8DDD0] hover:border-[#FF6B35]/40 hover:shadow-xl hover:shadow-[#FF6B35]/10 transition-all duration-300 overflow-hidden"
+              className="group relative bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--color-primary)]/10 transition-all duration-300 overflow-hidden"
             >
-              <div className="relative aspect-square overflow-hidden bg-[#FEF3E2]">
+              <div className="relative aspect-square overflow-hidden bg-[var(--color-bg-warm)]">
                 <Image
                   src={cat.image}
                   alt={cat.name[locale as 'fr' | 'en']}
@@ -106,12 +106,12 @@ export default function PartsCatalog() {
                 />
               </div>
               <div className="p-4 text-center">
-                <h3 className="text-sm font-bold text-[#2D1B0E] group-hover:text-[#FF6B35] transition-colors">
+                <h3 className="text-sm font-bold text-[var(--color-warm-ink)] group-hover:text-[var(--color-primary)] transition-colors">
                   {cat.name[locale as 'fr' | 'en']}
                 </h3>
               </div>
 
-              <div className="absolute inset-0 bg-gradient-to-b from-[#1E3A5F]/95 to-[#0A1929]/95 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
+              <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-secondary)]/95 to-[var(--color-warm-navy-deep)]/95 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
                 <div className="text-center">
                   <h3 className="text-white font-bold text-sm mb-3">
                     {cat.name[locale as 'fr' | 'en']}
@@ -119,7 +119,7 @@ export default function PartsCatalog() {
                   <ul className="space-y-2">
                     {cat.subcategories.map((sub) => (
                       <li key={sub}>
-                        <span className="text-white/80 text-xs hover:text-[#FF6B35] transition-colors cursor-pointer font-medium">
+                        <span className="text-white/80 text-xs hover:text-[var(--color-primary)] transition-colors cursor-pointer font-medium">
                           {sub}
                         </span>
                       </li>
@@ -134,7 +134,7 @@ export default function PartsCatalog() {
         <div className="text-center mt-10">
           <Link
             href="/dashboard/marketplace"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[#FEF3E2] hover:bg-[#FF6B35] hover:text-white text-[#2D1B0E] font-bold rounded-xl transition-all duration-300 border border-[#E8DDD0]"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-[var(--color-bg-warm)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-warm-ink)] font-bold rounded-xl transition-all duration-300 border border-[var(--color-warm-border)]"
           >
             {L('Plus de pièces détachées', 'More spare parts')}
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -106,8 +106,8 @@ export default function CarSelector() {
   const availableEngines = selectedModel ? carEngines[selectedModel] || [] : [];
 
   return (
-    <div className="bg-white rounded-3xl shadow-xl shadow-[#8B4513]/8 border border-[#E8DDD0] overflow-hidden">
-      <div className="bg-gradient-to-r from-[#1E3A5F] to-[#0A1929] p-7">
+    <div className="bg-white rounded-3xl shadow-xl shadow-[var(--color-earth)]/8 border border-[var(--color-warm-border)] overflow-hidden">
+      <div className="bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-warm-navy-deep)] p-7">
         <h3 className="text-white font-extrabold text-xl mb-2">
           {L('Trouvez les pièces pour votre véhicule', 'Find parts for your vehicle')}
         </h3>
@@ -118,7 +118,7 @@ export default function CarSelector() {
 
       <div className="p-7">
         <div className="mb-7">
-          <label htmlFor="regNumber" className="block text-base font-bold text-[#2D1B0E] mb-2.5">
+          <label htmlFor="regNumber" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
             {L('Numéro d\'immatriculation', 'Registration number')}
           </label>
           <div className="flex gap-3">
@@ -133,26 +133,26 @@ export default function CarSelector() {
                 onChange={(e) => setRegNumber(e.target.value.toUpperCase())}
                 placeholder="AB-123-CD"
                 maxLength={12}
-                className="flex-1 px-5 py-3.5 border-2 border-[#E8DDD0] rounded-xl text-lg font-mono uppercase focus:border-[#FF6B35] focus:outline-none transition-colors text-[#2D1B0E] placeholder-[#9A8A7A]"
+                className="flex-1 px-5 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-lg font-mono uppercase focus:border-[var(--color-primary)] focus:outline-none transition-colors text-[var(--color-warm-ink)] placeholder-[var(--color-warm-muted)]"
               />
             </div>
-            <button className="px-7 py-3.5 bg-gradient-to-r from-[#FF6B35] to-[#FF8C00] hover:from-[#FF5520] hover:to-[#E85D04] text-white font-bold rounded-xl transition-all shadow-lg shadow-[#FF6B35]/30">
+            <button className="px-7 py-3.5 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-xl transition-all shadow-lg shadow-[var(--color-primary)]/30">
               {L('Rechercher', 'Search')}
             </button>
           </div>
         </div>
 
         <div className="relative flex items-center gap-4 my-7">
-          <div className="flex-1 h-px bg-[#E8DDD0]"></div>
-          <span className="text-sm text-[#9A8A7A] font-bold">
+          <div className="flex-1 h-px bg-[var(--color-warm-border)]"></div>
+          <span className="text-sm text-[var(--color-warm-muted)] font-bold">
             {L('ou sélectionnez votre modèle', 'or select your model')}
           </span>
-          <div className="flex-1 h-px bg-[#E8DDD0]"></div>
+          <div className="flex-1 h-px bg-[var(--color-warm-border)]"></div>
         </div>
 
         <div className="space-y-5">
           <div>
-            <label htmlFor="carMake" className="block text-base font-bold text-[#2D1B0E] mb-2.5">
+            <label htmlFor="carMake" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
               {L('Marque', 'Make')}
             </label>
             <select
@@ -163,7 +163,7 @@ export default function CarSelector() {
                 setSelectedModel(null);
                 setSelectedEngine(null);
               }}
-              className="w-full px-5 py-3.5 border-2 border-[#E8DDD0] rounded-xl text-[#2D1B0E] focus:border-[#FF6B35] focus:outline-none transition-colors appearance-none bg-white font-medium"
+              className="w-full px-5 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-[var(--color-warm-ink)] focus:border-[var(--color-primary)] focus:outline-none transition-colors appearance-none bg-white font-medium"
             >
               <option value="">{L('Choisissez une marque', 'Choose a make')}</option>
               <optgroup label={L('Populaires', 'Popular')}>
@@ -180,7 +180,7 @@ export default function CarSelector() {
           </div>
 
           <div>
-            <label htmlFor="carModel" className="block text-base font-bold text-[#2D1B0E] mb-2.5">
+            <label htmlFor="carModel" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
               {L('Modèle', 'Model')}
             </label>
             <select
@@ -191,7 +191,7 @@ export default function CarSelector() {
                 setSelectedEngine(null);
               }}
               disabled={!selectedMake}
-              className="w-full px-5 py-3.5 border-2 border-[#E8DDD0] rounded-xl text-[#2D1B0E] focus:border-[#FF6B35] focus:outline-none transition-colors appearance-none bg-white disabled:bg-[#FEF3E2] disabled:text-[#9A8A7A] font-medium"
+              className="w-full px-5 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-[var(--color-warm-ink)] focus:border-[var(--color-primary)] focus:outline-none transition-colors appearance-none bg-white disabled:bg-[var(--color-bg-warm)] disabled:text-[var(--color-warm-muted)] font-medium"
             >
               <option value="">{L('Choisissez un modèle', 'Choose a model')}</option>
               {availableModels.map((model) => (
@@ -201,7 +201,7 @@ export default function CarSelector() {
           </div>
 
           <div>
-            <label htmlFor="carEngine" className="block text-base font-bold text-[#2D1B0E] mb-2.5">
+            <label htmlFor="carEngine" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
               {L('Motorisation', 'Engine')}
             </label>
             <select
@@ -209,7 +209,7 @@ export default function CarSelector() {
               value={selectedEngine || ''}
               onChange={(e) => setSelectedEngine(Number(e.target.value) || null)}
               disabled={!selectedModel}
-              className="w-full px-5 py-3.5 border-2 border-[#E8DDD0] rounded-xl text-[#2D1B0E] focus:border-[#FF6B35] focus:outline-none transition-colors appearance-none bg-white disabled:bg-[#FEF3E2] disabled:text-[#9A8A7A] font-medium"
+              className="w-full px-5 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-[var(--color-warm-ink)] focus:border-[var(--color-primary)] focus:outline-none transition-colors appearance-none bg-white disabled:bg-[var(--color-bg-warm)] disabled:text-[var(--color-warm-muted)] font-medium"
             >
               <option value="">{L('Choisissez une motorisation', 'Choose an engine')}</option>
               {availableEngines.map((engine) => (
@@ -218,14 +218,14 @@ export default function CarSelector() {
             </select>
           </div>
 
-          <button className="w-full px-7 py-4 bg-gradient-to-r from-[#1E3A5F] to-[#2A4A6F] hover:from-[#2A4A6F] hover:to-[#1E3A5F] text-white font-bold rounded-xl transition-all shadow-lg text-lg">
+          <button className="w-full px-7 py-4 bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-secondary-light)] hover:from-[var(--color-secondary-light)] hover:to-[var(--color-secondary)] text-white font-bold rounded-xl transition-all shadow-lg text-lg">
             {L('Rechercher les pièces', 'Search parts')}
           </button>
         </div>
 
-        <p className="text-center text-sm text-[#9A8A7A] mt-5 font-medium">
+        <p className="text-center text-sm text-[var(--color-warm-muted)] mt-5 font-medium">
           {L('Vous ne trouvez pas votre voiture ?', 'Can\'t find your car?')}{' '}
-          <a href="#" className="text-[#FF6B35] hover:underline font-bold">
+          <a href="#" className="text-[var(--color-primary)] hover:underline font-bold">
             {L('Contactez-nous', 'Contact us')}
           </a>
         </p>

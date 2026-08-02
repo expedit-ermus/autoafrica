@@ -19,7 +19,7 @@ export default function WhatsAppIntegration() {
     setTimeout(() => {
       setMessages(prev => [...prev, {
         from: 'system',
-        text: 'Merci pour votre message ! Un agent vous répondra sous peu. 📞\n\nEn attendant, vous pouvez :\n- Appeler le +225 27 20 30 40\n- Nous envoyer un vocal',
+        text: 'Merci pour votre message ! 📞\n\nUn agent vous répondra sous peu. En attendant, décrivez bien votre besoin ici.',
         time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
       }]);
     }, 1500);

@@ -21,45 +21,45 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50">
-      <div className="bg-[#0A1929] text-white text-xs py-2">
+      <div className="bg-[var(--color-warm-navy-deep)] text-white text-xs py-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/" className="hover:text-[#FF6B35] transition-colors font-bold tracking-wide">
+            <Link href="/" className="hover:text-[var(--color-primary)] transition-colors font-bold tracking-wide">
               {L('BOUTIQUE', 'SHOP')}
             </Link>
             <span className="text-white/30">|</span>
-            <Link href="/dashboard" className="hover:text-[#FF6B35] transition-colors font-medium">
+            <Link href="/dashboard" className="hover:text-[var(--color-primary)] transition-colors font-medium">
               {L('CLUB', 'CLUB')}
             </Link>
             <span className="text-white/30">|</span>
-            <Link href="/dashboard/vehicles" className="hover:text-[#FF6B35] transition-colors font-medium">
+            <Link href="/dashboard/vehicles" className="hover:text-[var(--color-primary)] transition-colors font-medium">
               {L('VÉHICULES', 'VEHICLES')}
             </Link>
           </div>
           <div className="hidden md:flex items-center gap-4 text-white/70">
             <span className="flex items-center gap-1.5">
-              <span className="text-[#FF6B35]">●</span>
+              <span className="text-[var(--color-primary)]">●</span>
               {L('Livraison gratuite dès 50 000 FCFA', 'Free delivery from 50,000 FCFA')}
             </span>
             <span className="text-white/30">|</span>
             <span className="flex items-center gap-1.5">
-              <span className="text-[#00C9A7]">●</span>
+              <span className="text-[var(--color-warm-teal)]">●</span>
               {L('Mobile Money accepté', 'Mobile Money accepted')}
             </span>
           </div>
         </div>
       </div>
 
-      <div className="bg-[#1E3A5F]">
+      <div className="bg-[var(--color-secondary)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-4">
             <Link href="/" className="flex items-center gap-2.5 shrink-0">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#FF6B35] to-[#FF8C00] flex items-center justify-center shadow-lg shadow-[#FF6B35]/30">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-accent-warm)] flex items-center justify-center shadow-lg shadow-[var(--color-primary)]/30">
                 <span className="text-white font-bold text-xl">🔧</span>
               </div>
               <div className="hidden sm:block">
                 <span className="text-xl font-extrabold text-white tracking-tight">Auto</span>
-                <span className="text-xl font-extrabold text-[#FF6B35] tracking-tight">Afrique</span>
+                <span className="text-xl font-extrabold text-[var(--color-primary)] tracking-tight">Afrique</span>
               </div>
             </Link>
 
@@ -70,9 +70,9 @@ export default function Header() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={L('Rechercher une pièce (ex: filtre Toyota Hilux)', 'Search for a part (ex: filter Toyota Hilux)')}
-                  className="flex-1 px-5 py-3 rounded-l-xl text-base text-[#2D1B0E] placeholder-[#9A8A7A] focus:outline-none border-2 border-transparent focus:border-[#FF6B35]"
+                  className="flex-1 px-5 py-3 rounded-l-xl text-base text-[var(--color-warm-ink)] placeholder-[var(--color-warm-muted)] focus:outline-none border-2 border-transparent focus:border-[var(--color-primary)]"
                 />
-                <button className="px-6 py-3 bg-gradient-to-r from-[#FF6B35] to-[#FF8C00] hover:from-[#FF5520] hover:to-[#E85D04] text-white font-bold rounded-r-xl transition-all flex items-center gap-2 shadow-lg shadow-[#FF6B35]/30">
+                <button className="px-6 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-r-xl transition-all flex items-center gap-2 shadow-lg shadow-[var(--color-primary)]/30">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
@@ -117,7 +117,7 @@ export default function Header() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" />
                   </svg>
                   {cartCount > 0 && (
-                    <span className="absolute -top-2 -right-2 w-5 h-5 bg-[#FF6B35] text-white text-[11px] font-bold rounded-full flex items-center justify-center shadow-md">
+                    <span className="absolute -top-2 -right-2 w-5 h-5 bg-[var(--color-primary)] text-white text-[11px] font-bold rounded-full flex items-center justify-center shadow-md">
                       {cartCount}
                     </span>
                   )}
@@ -139,14 +139,14 @@ export default function Header() {
         </div>
       </div>
 
-      <div className="bg-[#162D4A] border-t border-[#FF6B35]/10">
+      <div className="bg-[var(--color-secondary-hover)] border-t border-[var(--color-primary)]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-1 overflow-x-auto py-2.5 scrollbar-hide">
             {categoryNav.map((cat) => (
               <Link
                 key={cat.name.fr}
                 href={cat.href}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm text-white/75 hover:text-white hover:bg-[#FF6B35]/15 transition-all whitespace-nowrap font-medium"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm text-white/75 hover:text-white hover:bg-[var(--color-primary)]/15 transition-all whitespace-nowrap font-medium"
               >
                 <span className="text-base">{cat.icon}</span>
                 <span>{cat.name[locale as 'fr' | 'en']}</span>

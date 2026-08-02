@@ -56,7 +56,7 @@ export default function TestimonialCarousel({
             {t.img ? (
               <Image src={t.img} alt={t.name} width={64} height={64} className="w-16 h-16 rounded-full mx-auto object-cover border-2 border-orange-100" />
             ) : (
-              <div className="w-16 h-16 rounded-full mx-auto bg-gradient-to-br from-[#E85D04] to-[#D00000] flex items-center justify-center text-white text-xl font-bold">
+              <div className="w-16 h-16 rounded-full mx-auto bg-gradient-to-br from-[var(--color-primary-dark)] to-[var(--color-warm-red)] flex items-center justify-center text-white text-xl font-bold">
                 {t.name[0]}
               </div>
             )}
@@ -108,7 +108,7 @@ export default function TestimonialCarousel({
               onClick={() => setCurrent(i)}
               className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
                 i === current
-                  ? 'bg-[#E85D04] w-7'
+                  ? 'bg-[var(--color-primary-dark)] w-7'
                   : 'bg-gray-300 hover:bg-gray-400'
               }`}
               aria-label={`Témoignage ${i + 1}`}
