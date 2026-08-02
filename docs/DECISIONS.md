@@ -460,6 +460,17 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `src/lib/useDocumentTitle.ts` (+ `useDocumentTitle.test.ts`, 3 tests), `src/app/dashboard/marketplace/page.tsx`, `src/app/dashboard/vehicles/page.tsx`, `docs/DECISIONS.md`, `docs/06-SEO.md` (note ajoutee).
 
+## D24 : Pages d'erreur 404 et 500 (localisation FR)
+
+**Contexte** : `03-PAGES.md` (section « Erreurs » et « Localisation FR ») documente les messages « Page introuvable » (404) et « Erreur serveur, réessayez » (500). Or l'application n'avait aucun `not-found.tsx`/`error.tsx` : les pages d'erreur par defaut de Next.js affichaient un message anglais (« 404 This page could not be found »), hors localisation FR documentee. Les routes techniques R204-R207 restaient fonctionnelles (verifie : `/robots.txt` 200, `/sitemap.xml` 200, `/opengraph-image` 200 image/png, `/404` et URL inconnue 404).
+
+**Decision** :
+- Creer `src/app/not-found.tsx` (composant serveur) : page 404 brandee aux couleurs du design system (`#FF6B35`), message « Page introuvable », `metadata` titre « Page introuvable | AutoAfrique » et `robots: noindex, nofollow`, CTA « Retour à l'accueil » (`/`) et « Parcourir le marketplace » (`/dashboard/marketplace`)
+- Creer `src/app/error.tsx` (composant client, obligatoire pour une error boundary) : page 500 « Erreur serveur, réessayez » avec bouton « Réessayer » (`reset`)
+- R206 `/404` et toute URL inconnue renvoient desormais le 404 FR brande
+
+**Impact** : `src/app/not-found.tsx`, `src/app/error.tsx`, `docs/DECISIONS.md`. L'image Open Graph reste `/og-image.png` (conforme `06-SEO.md`) ; la route `/opengraph-image` (R207) est servie par le fichier `opengraph-image.tsx` existant (200 image/png verifie), independamment de la meta `og:image` explicite du layout.
+
 
 
 
