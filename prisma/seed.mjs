@@ -471,6 +471,96 @@ async function main() {
 
   console.log(`Seeded: ${notifications.length} notifications`)
 
+  const insertEvent = db.prepare(`INSERT INTO AnalyticsEvent (id, event, userId, sessionId, entity, entityId, properties, country, city, device, browser, ip, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+  const eventSessions = ['sess-a1b2c3', 'sess-d4e5f6', 'sess-g7h8i9', 'sess-j0k1l2', 'sess-m3n4o5']
+
+  let eventCount = 0
+  for (let d = 14; d >= 0; d--) {
+    const n = 4 + ((d * 3) % 8)
+    for (let i = 0; i < n; i++) {
+      const user = users[i % 3]
+      insertEvent.run(
+        cuid(), 'page_view', user.id, eventSessions[(d + i) % 5], 'page', '/dashboard/marketplace',
+        JSON.stringify({ page: '/dashboard/marketplace', title: 'Marketplace — Pièces détachées automobile' }),
+        user.country, user.city, i % 2 === 0 ? 'mobile' : 'desktop', 'chrome', null, addDays(-d),
+      )
+      eventCount++
+    }
+  }
+
+  const productEvents = [
+    { event: 'search_product', properties: { query: 'filtre huile toyota' } },
+    { event: 'search_product', properties: { query: 'plaquettes frein' } },
+    { event: 'search_product', properties: { query: 'amortisseur' } },
+    { event: 'filter_product', properties: { filter_type: 'brand', filter_value: 'Toyota' } },
+    { event: 'filter_product', properties: { filter_type: 'category', filter_value: 'Frein' } },
+    { event: 'filter_product', properties: { filter_type: 'condition', filter_value: 'NEW' } },
+  ]
+
+  for (const pe of productEvents) {
+    const user = users[Math.floor(Math.random() * 3)]
+    insertEvent.run(
+      cuid(), pe.event, user.id, eventSessions[Math.floor(Math.random() * 5)], null, null,
+      JSON.stringify(pe.properties), user.country, user.city, 'mobile', 'chrome', null, addDays(-Math.floor(Math.random() * 7)),
+    )
+    eventCount++
+  }
+
+  for (let i = 0; i < 12; i++) {
+    const user = users[i % 3]
+    const pid = productIds[i % productIds.length]
+    insertEvent.run(
+      cuid(), 'view_product', user.id, eventSessions[i % 5], 'product', pid,
+      JSON.stringify({ product_id: pid }), user.country, user.city, i % 2 === 0 ? 'mobile' : 'desktop', 'chrome', null, addDays(-Math.floor(Math.random() * 10)),
+    )
+    eventCount++
+  }
+
+  for (let i = 0; i < 8; i++) {
+    const user = users[i % 3]
+    const pid = productIds[i % productIds.length]
+    insertEvent.run(
+      cuid(), 'add_to_cart', user.id, eventSessions[i % 5], 'product', pid,
+      JSON.stringify({ product_id: pid, quantity: 1 }), user.country, user.city, 'mobile', 'chrome', null, addDays(-Math.floor(Math.random() * 8)),
+    )
+    eventCount++
+  }
+
+  for (let i = 0; i < 5; i++) {
+    const user = users[i % 3]
+    insertEvent.run(
+      cuid(), 'checkout_start', user.id, eventSessions[i % 5], null, null,
+      JSON.stringify({ cart_value: 10000 + i * 5000, items_count: 1 }), user.country, user.city, 'mobile', 'chrome', null, addDays(-Math.floor(Math.random() * 6)),
+    )
+    eventCount++
+  }
+
+  for (let i = 0; i < 4; i++) {
+    const user = users[i % 3]
+    insertEvent.run(
+      cuid(), 'order_complete', user.id, eventSessions[i % 5], 'order', `CMD-2026-00${i + 1}`,
+      JSON.stringify({ order_id: `CMD-2026-00${i + 1}` }), user.country, user.city, 'mobile', 'chrome', null, addDays(-Math.floor(Math.random() * 5)),
+    )
+    eventCount++
+  }
+
+  for (let i = 0; i < 4; i++) {
+    const user = users[i % 3]
+    insertEvent.run(
+      cuid(), 'payment_success', user.id, eventSessions[i % 5], 'order', `CMD-2026-00${i + 1}`,
+      JSON.stringify({ method: i % 2 === 0 ? 'ORANGE_MONEY' : 'MTN_MOMO' }), user.country, user.city, 'mobile', 'chrome', null, addDays(-Math.floor(Math.random() * 5)),
+    )
+    eventCount++
+  }
+
+  for (const u of users) {
+    insertEvent.run(cuid(), 'register', u.id, null, null, null, null, u.country, u.city, 'mobile', 'chrome', null, addDays(-20))
+    insertEvent.run(cuid(), 'login', u.id, null, null, null, null, u.country, u.city, 'mobile', 'chrome', null, addDays(-Math.floor(Math.random() * 5)))
+    eventCount += 2
+  }
+
+  console.log(`Seeded: ${eventCount} analytics events`)
+
   db.close()
 }
 

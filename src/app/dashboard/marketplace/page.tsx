@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
@@ -8,6 +8,7 @@ import { useToast } from '@/contexts/ToastContext';
 import Modal from '@/components/Modal';
 import StarRating, { ProductReviews } from '@/components/StarRating';
 import { Product } from '@/shared/types';
+import { track, trackPageView } from '@/lib/tracking';
 
 interface CartItem {
   id: string;
@@ -124,7 +125,29 @@ export default function MarketplacePage() {
     return () => { cancelled = true; };
   }, [brandFilter, categoryFilter, conditionFilter, sortBy, page, search, minPrice, maxPrice, refreshKey]);
 
-  const handleSearch = () => { setPage(1); };
+  const handleSearch = () => {
+    setPage(1);
+    track('search_product', { query: search, results_count: total });
+  };
+
+  const firstRender = useRef(true);
+
+  useEffect(() => {
+    trackPageView();
+  }, []);
+
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+    track('filter_product', {
+      filter_type: 'filters',
+      filter_value: JSON.stringify({
+        brand: brandFilter, category: categoryFilter, condition: conditionFilter, minPrice, maxPrice,
+      }),
+    });
+  }, [brandFilter, categoryFilter, conditionFilter, minPrice, maxPrice]);
 
   const getImages = (p: Product): string[] => {
     if (Array.isArray(p.images) && p.images.length > 0) return p.images;
@@ -135,12 +158,18 @@ export default function MarketplacePage() {
     setDetailProduct(p);
     setDetailImageIdx(0);
     setQuantity(1);
+    track('view_product', {
+      entity: 'product', entityId: p.id, product_id: p.id, product_name: p.title, price: p.price,
+    });
     const viewed = [p, ...recentlyViewed.filter(v => v.id !== p.id)].slice(0, 6);
     setRecentlyViewed(viewed);
     localStorage.setItem('recentlyViewed', JSON.stringify(viewed));
   };
 
   const addToCart = (product: Product, qty: number = 1) => {
+    track('add_to_cart', {
+      entity: 'product', entityId: product.id, product_id: product.id, price: product.price, quantity: qty,
+    });
     const saved = localStorage.getItem('cart');
     const cart: CartItem[] = saved ? JSON.parse(saved) : [];
     const existing = cart.find(item => item.productId === product.id);
@@ -159,6 +188,7 @@ export default function MarketplacePage() {
   const confirmBuy = async () => {
     if (!showBuy) return;
     setBuying(true);
+    track('checkout_start', { cart_value: showBuy.price * quantity, items_count: 1 });
     try {
       const res = await fetch('/api/v1/orders', {
         method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
@@ -166,6 +196,9 @@ export default function MarketplacePage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Order failed');
+      track('order_complete', {
+        entity: 'order', entityId: data.data.orderNumber, order_id: data.data.orderNumber, total: data.data.totalAmount,
+      });
       addToast('success', `Commande ${data.data.orderNumber} créée !`);
       setShowBuy(null);
       setDetailProduct(null);

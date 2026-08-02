@@ -186,6 +186,40 @@ Response 201: { "review": { ... } }
 
 ---
 
+## Analytics
+
+### Track Event
+POST /api/v1/analytics/events
+Public — le tracking anonyme est autorisé ; si un cookie JWT `token` est présent, l'événement est rattaché à l'utilisateur.
+Request: { "event", "sessionId", "entity", "entityId", "properties", "country", "city" }
+- `event` : l'un des événements documentés dans `09-TRACKING.md` (page_view, search_product, view_product, add_to_cart, checkout_start, order_complete, payment_success, ...)
+- `properties` : objet libre (query, product_id, price, quantité...)
+Response 201: { "success": true, "data": { "id", "event", "createdAt" } }
+Response 400: { "error": "Événement non reconnu : <name>" } (événement hors liste)
+Response 400: { "error": "Un nom d'événement est requis" }
+
+### List Events
+GET /api/v1/analytics/events?event=&entity=&entityId=&from=&to=&limit=
+Auth requise.
+Response 200: { "success": true, "data": { "data": [...], "total": N } }
+- `limit` plafonné à 200
+
+### Analytics Stats
+GET /api/v1/analytics/stats?from=&to=
+Auth requise. Agrège les événements de la période pour le dashboard `/dashboard/analytics`.
+Response 200: {
+  "success": true,
+  "data": {
+    "totalEvents": 100,
+    "uniqueSessions": 42,
+    "byEvent": { "page_view": 50, "search_product": 20 },
+    "funnel": { "searches": 20, "productViews": 30, "addToCarts": 12, "checkouts": 8, "orders": 4 },
+    "series": [{ "date": "2026-01-01", "count": 5 }]
+  }
+}
+
+---
+
 # Gestion des erreurs
 
 ## Pages d'erreur

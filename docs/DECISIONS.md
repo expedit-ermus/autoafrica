@@ -333,5 +333,30 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : 4 fichiers de test crees. 57 tests unitaires ajoutes (CRM 13, Orders 14, Payments 16, Products 14). Suite totale : 189 tests (16 fichiers) — 132 avant, 57 ajoutes.
 
+## D18 : Module analytics / tracking
+
+**Contexte** : Le document `09-TRACKING.md` definit un schema de tracking (page_view, search_product, view_product, add_to_cart, checkout_start, order_complete, payment_success, login, register, etc.) et le modele Prisma `AnalyticsEvent` existe dans le schema, mais aucun evenement n'est enregistre et aucune route API ne les expose. Le dashboard `/dashboard/analytics` (R012) affiche des metriques calculees depuis products/orders/payments, avec un chiffre de satisfaction code en dur (`avgRating = 4.7`, `totalReviews = 0`) qui viole la regle « aucun faux chiffre » d'AGENTS.md.
+
+**Decision** : Construire le module analytics en une iteration :
+- Service `src/modules/analytics/analytics.service.ts` : `trackEvent` (validation de l'evenement dans la liste `TRACKABLE_EVENTS`, proprietes objet, stringifiees pour le champ Json), `listEvents` (filtres event/entity/entityId/from/to, limite plafonnee a 200), `getStats` (agregation par type, sessions uniques, entonnoir de conversion, serie temporelle journaliere)
+- Routes `POST /api/v1/analytics/events` (R208, publique pour le tracking anonyme du marketplace, `userId` rattache via cookie JWT si present via `optionalAuth`), `GET /api/v1/analytics/events` (R209, auth requise), `GET /api/v1/analytics/stats` (R210, auth requise)
+- Utilitaire client `src/lib/tracking.ts` (`track`, `trackPageView`, `getSessionId` persiste dans localStorage) branche dans le marketplace (`search_product`, `filter_product`, `view_product`, `add_to_cart`, `checkout_start`, `order_complete`, `page_view`)
+- Dashboard `/dashboard/analytics` alimente par R210 (engagement : vues pages, recherches, ajouts panier, sessions uniques, entonnoir de conversion) et par `/api/v1/reviews` pour la satisfaction reelle (note moyenne + nombre d'avis), remplacant le `avgRating = 4.7` code en dur
+- Seed : ~100 evenements analytics sur les 14 derniers jours (page_view, search_product, filter_product, view_product, add_to_cart, checkout_start, order_complete, payment_success, register, login)
+- Tests : `src/modules/analytics/analytics.service.test.ts` (trackEvent validation + creation, listEvents filtres + limite, getStats agregation/entonnoir/serie)
+
+**Alternatives envisagees** :
+- Integrer Google Analytics 4 (gtag) cote client : pas de persistance propre, les donnees ne sont pas revisables dans l'ERP, et la regle « aucun faux chiffre » reste non resolue pour le dashboard
+- Conserver le `avgRating` code en dur : violation directe d'AGENTS.md (faux chiffre)
+
+**Justification** :
+- Le modele `AnalyticsEvent` existant evite toute migration schema
+- Le tracking interne alimente le dashboard ERP sans dependance externe ; le module suit le pattern service + routes + tests + docs des iterations precedentes
+- R208 publique avec `optionalAuth` respecte le flux public du marketplace (visiteurs non connectes) tout en rattachant l'identite quand elle est connue
+- Le dashboard affiche desormais uniquement des donnees reelles
+
+**Impact** : Nouvelles routes R208-R210 documentees dans `02-ROUTES.md` et `19-API.md`. `09-TRACKING.md` complete avec l'implementation du module, `18-DATABASE.md` avec le modele `AnalyticsEvent`. Dossier `src/modules/analytics/` cree. Seed : ~100 evenements. Tests : 9 tests unitaires ajoutes (198 au total, 17 fichiers).
+
+
 
 

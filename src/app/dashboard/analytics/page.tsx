@@ -9,6 +9,14 @@ export default function AnalyticsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
+  const [stats, setStats] = useState<{
+    totalEvents: number;
+    uniqueSessions: number;
+    byEvent: Record<string, number>;
+    funnel: { searches: number; productViews: number; addToCarts: number; checkouts: number; orders: number };
+    series: { date: string; count: number }[];
+  } | null>(null);
+  const [reviews, setReviews] = useState<{ averageRating: number; total: number }>({ averageRating: 0, total: 0 });
   const [period, setPeriod] = useState('month');
 
   const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
@@ -17,16 +25,21 @@ export default function AnalyticsPage() {
     let cancelled = false;
     (async () => {
       try {
-        const [p, o, pay] = await Promise.all([
+        const [p, o, pay, st, rv] = await Promise.all([
           fetch('/api/v1/products?pageSize=200', { credentials: 'include' }),
           fetch('/api/v1/orders?pageSize=200', { credentials: 'include' }),
           fetch('/api/v1/payments?pageSize=200', { credentials: 'include' }),
+          fetch('/api/v1/analytics/stats', { credentials: 'include' }),
+          fetch('/api/v1/reviews?pageSize=1', { credentials: 'include' }),
         ]);
         const pd = await p.json(); const od = await o.json(); const payd = await pay.json();
+        const sd = await st.json(); const rvd = await rv.json();
         if (!cancelled) {
           if (pd.success) setProducts(pd.data.data);
           if (od.success) setOrders(od.data.data);
           if (payd.success) setPayments(payd.data.data);
+          if (sd.success) setStats(sd.data);
+          if (rvd.success) setReviews({ averageRating: rvd.data.averageRating || 0, total: rvd.data.total || 0 });
         }
       } catch {}
     })();
@@ -39,8 +52,25 @@ export default function AnalyticsPage() {
   const cancelledOrders = orders.filter(o => o.status === 'CANCELLED');
   const avgOrderValue = completedOrders.length > 0 ? totalRevenue / completedOrders.length : 0;
   const conversionRate = totalOrders > 0 ? ((completedOrders.length / totalOrders) * 100).toFixed(1) : '0.0';
-  const avgRating = 4.7;
-  const totalReviews = 0;
+  const avgRating = reviews.averageRating;
+  const totalReviews = reviews.total;
+
+  const pageViews = stats?.byEvent?.page_view || 0;
+  const searches = stats?.funnel?.searches || 0;
+  const productViews = stats?.funnel?.productViews || 0;
+  const addToCarts = stats?.funnel?.addToCarts || 0;
+  const checkouts = stats?.funnel?.checkouts || 0;
+  const orderCompletes = stats?.funnel?.orders || 0;
+  const uniqueSessions = stats?.uniqueSessions || 0;
+  const visitToCartRate = productViews > 0 ? ((addToCarts / productViews) * 100).toFixed(1) : '0.0';
+
+  const funnelStages = [
+    { label: 'Vues produit', value: productViews, color: 'bg-blue-500' },
+    { label: 'Ajouts panier', value: addToCarts, color: 'bg-orange-500' },
+    { label: 'Checkouts', value: checkouts, color: 'bg-amber-500' },
+    { label: 'Commandes', value: orderCompletes, color: 'bg-emerald-500' },
+  ];
+  const funnelMax = Math.max(1, ...funnelStages.map(s => s.value));
 
   // Revenue by payment method
   const methodRevenues: Record<string, number> = {};
@@ -253,6 +283,67 @@ export default function AnalyticsPage() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Engagement Metrics */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            {[
+              { label: 'Vues pages', value: pageViews, icon: '👁️', bg: 'bg-sky-50', iconBg: 'bg-sky-100' },
+              { label: 'Recherches', value: searches, icon: '🔍', bg: 'bg-orange-50', iconBg: 'bg-orange-100' },
+              { label: 'Ajouts panier', value: addToCarts, icon: '🛒', bg: 'bg-blue-50', iconBg: 'bg-blue-100' },
+              { label: 'Sessions uniques', value: uniqueSessions, icon: '👤', bg: 'bg-purple-50', iconBg: 'bg-purple-100' },
+            ].map((k, idx) => (
+              <div
+                key={k.label}
+                className="bg-white/80 backdrop-blur-sm rounded-2xl p-5 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 animate-fade-in"
+                style={{ animationDelay: `${idx * 75}ms` }}
+              >
+                <div className="flex items-start justify-between mb-3">
+                  <div className={`w-10 h-10 rounded-xl ${k.iconBg} flex items-center justify-center text-lg`}>{k.icon}</div>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl font-extrabold text-gray-900 tracking-tight">{formatCFA(k.value)}</span>
+                </div>
+                <div className="flex items-center justify-between mt-2">
+                  <span className="text-xs font-medium text-gray-500">{k.label}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Conversion Funnel */}
+          <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm p-6 mb-8 animate-fade-in">
+            <div className="flex items-center justify-between mb-5">
+              <div>
+                <h3 className="font-bold text-gray-900 text-sm">Entonnoir de conversion</h3>
+                <p className="text-xs text-gray-400 mt-0.5">Vues produit → commandes ({visitToCartRate}% de conversion vue → panier)</p>
+              </div>
+            </div>
+            {funnelMax > 1 ? (
+              <div className="space-y-4">
+                {funnelStages.map(stage => (
+                  <div key={stage.label}>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-sm font-medium text-gray-700">{stage.label}</span>
+                      <span className="text-sm font-bold text-gray-900">{formatCFA(stage.value)}</span>
+                    </div>
+                    <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full ${stage.color} rounded-full transition-all duration-700 ease-out`}
+                        style={{ width: `${(stage.value / funnelMax) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-10">
+                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+                  <span className="text-lg">📊</span>
+                </div>
+                <p className="text-sm text-gray-400">Aucun événement de navigation enregistré</p>
+              </div>
+            )}
           </div>
 
           {/* Charts Row 1 — Revenue by Method & Order Status */}

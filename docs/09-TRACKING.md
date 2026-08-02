@@ -99,3 +99,13 @@
 - Tableau de bord `/dashboard/analytics`
 - Graphiques par periode
 - Export CSV
+
+## Implementation (module analytics)
+
+Les evenements sont persistes dans le modele `AnalyticsEvent` (voir `18-DATABASE.md`) via le service `src/modules/analytics/analytics.service.ts` et les routes API documentees dans `02-ROUTES.md` :
+
+- `POST /api/v1/analytics/events` (R208) — enregistre un evenement ; public pour permettre le tracking anonyme du marketplace, `userId` rattache si un cookie JWT est present
+- `GET /api/v1/analytics/events` (R209) — liste les evenements (filtres `event`, `entity`, `entityId`, `from`, `to`, `limit` ≤ 200), auth requise
+- `GET /api/v1/analytics/stats` (R210) — statistiques agregees (total, sessions uniques, `byEvent`, entonnoir `funnel`, serie temporelle `series`), auth requise
+
+Le tracking cote client est assure par `src/lib/tracking.ts` (`track`, `trackPageView`, `getSessionId`) : fire-and-forget vers R208 avec un `sessionId` persiste dans `localStorage`. Le marketplace branche `search_product`, `filter_product`, `view_product`, `add_to_cart`, `checkout_start` et `order_complete`. Le dashboard `/dashboard/analytics` (R012) consomme R210 pour les metriques d'engagement et l'entonnoir de conversion.

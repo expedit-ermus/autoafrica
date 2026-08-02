@@ -368,6 +368,31 @@ model VehicleListing {
 }
 ```
 
+### AnalyticsEvent
+```
+model AnalyticsEvent {
+  id         String   @id @default(cuid())
+  event      String   // "page_view", "product_view", "search", "add_to_cart"
+  userId     String?
+  sessionId  String?
+  entity     String?  // "product", "order", "page", ...
+  entityId   String?
+  properties Json?    // métadonnées libres de l'événement (query, product_id, price...)
+  country    String?
+  city       String?
+  device     String?
+  browser    String?
+  ip         String?
+  createdAt  DateTime @default(now())
+
+  @@index([event])
+  @@index([userId])
+  @@index([entity, entityId])
+  @@index([createdAt])
+}
+```
+Les événements sont définis dans `09-TRACKING.md`. Le service `src/modules/analytics/analytics.service.ts` (trackEvent, listEvents, getStats) alimente le dashboard `/dashboard/analytics` (R012) via `GET /api/v1/analytics/events` (R208, R209) et `GET /api/v1/analytics/stats` (R210).
+
 ## Enums
 
 ### Role

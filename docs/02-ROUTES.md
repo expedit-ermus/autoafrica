@@ -132,6 +132,11 @@
 | R198 | `/api/v1/fleet-vehicles/[id]` | GET | Public | Détail véhicule de flotte |
 | R199 | `/api/v1/fleet-vehicles/[id]` | PUT | Required | Modifier véhicule de flotte |
 | R200 | `/api/v1/fleet-vehicles/[id]` | DELETE | Required | Supprimer véhicule de flotte |
+| R208 | `/api/v1/analytics/events` | POST | Public* | Enregistrer un événement de tracking (page_view, search_product...) |
+| R209 | `/api/v1/analytics/events` | GET | Required | Lister les événements de tracking (filtres + limite) |
+| R210 | `/api/v1/analytics/stats` | GET | Required | Statistiques agrégées pour le dashboard Analytics |
+
+*R208 est public pour permettre le tracking anonyme (visiteurs non connectés du marketplace) ; si un cookie de session JWT est présent, l'événement est rattaché à l'utilisateur (`userId`).
 
 ## Routes techniques
 
