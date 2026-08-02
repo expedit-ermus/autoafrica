@@ -47,7 +47,6 @@ interface Review {
   createdAt?: string;
   author?: { firstName?: string; lastName?: string };
 }
-
 interface ReviewsProps {
   productId: string;
 }
@@ -154,7 +153,7 @@ export function ProductReviews({ productId }: ReviewsProps) {
                 </div>
               </div>
               {rev.title && <p className="text-sm font-bold text-gray-800 mb-1">{rev.title}</p>}
-              <p className="text-sm text-gray-600">{rev.comment}</p>
+              <p className="text-sm text-gray-600">{rev.comment || rev.content}</p>
             </div>
           ))}
         </div>

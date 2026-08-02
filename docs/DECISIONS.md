@@ -357,6 +357,32 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : Nouvelles routes R208-R210 documentees dans `02-ROUTES.md` et `19-API.md`. `09-TRACKING.md` complete avec l'implementation du module, `18-DATABASE.md` avec le modele `AnalyticsEvent`. Dossier `src/modules/analytics/` cree. Seed : ~100 evenements. Tests : 9 tests unitaires ajoutes (198 au total, 17 fichiers).
 
+## D19 : Module avis produits
+
+**Contexte** : Les routes `/api/v1/reviews` GET (R128) et POST (R129) et la section « Avis produits » de `16-PRODUITS.md` documentent les avis, mais l'implementation est un fichier inline `src/app/api/v1/reviews/route.ts` sans service ni tests. De plus, le composant `ProductReviews` lit `rev.comment` alors que la route stocke `content`, donc les commentaires saisis n'etaient pas affiches ; et les cartes produits du marketplace utilisaient `_avgRating`/`_reviewCount` jamais calcules par la liste des produits.
+
+**Decision** : Construire le module avis en une iteration :
+- Service `src/modules/reviews/reviews.service.ts` : `listReviews` (avis actifs du produit, auteur enrichi, `comment` alias de `content`, `averageRating`, distribution `ratingCounts`, pagination), `createReview` (validation note entiere 1-5, commentaire requis, produit existe, un seul avis par utilisateur/produit via `@@unique`)
+- Refactorisation de `src/app/api/v1/reviews/route.ts` pour utiliser le service (GET public, POST avec `requireAuth`)
+- Correction du composant `ProductReviews` : affichage `rev.comment || rev.content`
+- Agregation `_avgRating` et `_reviewCount` dans `list()` de `products.service.ts` (include des notes des avis actifs) pour alimenter les cartes du marketplace
+- Seed : 11 avis demo sur les produits existants (verifie flag `verified` a 0 : pas de mention « achat verifie » fausse)
+- Tests : `src/modules/reviews/reviews.service.test.ts` (listReviews vide/riche, createReview validation, produit manquant, doublon, succes)
+
+**Alternatives envisagees** :
+- Garder la route inline et ne rien corriger : les commentaires restent invisibles (bug) et aucun test ne couvre R128/R129
+- Afficher les notes sans agregation cote liste produits : les cartes marketplace continuent de ne jamais montrer de note
+
+**Justification** :
+- Le modele `Review` existant (rating, title, content, verified, helpful, active, `@@unique([productId, userId])`) evite toute migration schema
+- Le module suit le pattern service + routes + tests + docs des iterations precedentes et satisfait la Definition of Done
+- `verified` reste 0 dans le seed pour respecter la regle « aucun faux chiffre / avis trompeur »
+
+**Impact** : Route `/api/v1/reviews` refactoree (R128, R129), dossier `src/modules/reviews/` cree, `16-PRODUITS.md` et `19-API.md` mis a jour. Seed : 11 avis. Tests : 8 tests unitaires ajoutes (206 au total, 18 fichiers).
+
+**Note (verification)** : Un bug pre-existant a ete detecte et corrige pendant la verification : le seed inserait `Product.condition` en minuscules (`new`, `used`, `refurbished`) alors que l'enum Prisma `ProductCondition` est `NEW`, `USED`, `REFURBISHED`, `OEM_AFTERMARKET`. Prisma 7 valide les enums en lecture (P2023), donc `GET /api/v1/products` echouait en 500. Correction : `p.condition.toUpperCase()` dans `prisma/seed.mjs` (le frontend et l'enum utilisaient deja les majuscules).
+
+
 
 
 

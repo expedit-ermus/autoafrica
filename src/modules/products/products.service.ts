@@ -81,6 +81,7 @@ export class ProductsService {
           seller: { select: { id: true, firstName: true, lastName: true, shopName: true, country: true } },
           brand: { select: { name: true, slug: true } },
           category: { select: { name: true, slug: true } },
+          reviews: { where: { active: true }, select: { rating: true } },
         },
         skip,
         take: pageSize,
@@ -89,7 +90,18 @@ export class ProductsService {
       prisma.product.count({ where }),
     ])
 
-    return buildPaginatedResponse(products, total, page, pageSize)
+    const withRatings = products.map(p => {
+      const { reviews } = p as { reviews?: { rating: number }[] }
+      const list = reviews || []
+      const _avgRating = list.length > 0
+        ? Math.round((list.reduce((s, r) => s + r.rating, 0) / list.length) * 10) / 10
+        : null
+      const rest = { ...p }
+      delete (rest as { reviews?: unknown }).reviews
+      return { ...rest, _avgRating, _reviewCount: list.length }
+    })
+
+    return buildPaginatedResponse(withRatings, total, page, pageSize)
   }
 
   async getById(id: string) {

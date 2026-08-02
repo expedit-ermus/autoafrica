@@ -49,8 +49,14 @@ Un produit est lié à un tenant et à un vendeur (`User`). La disponibilité co
 
 | Méthode | Route | Auth | Description |
 |---------|-------|------|-------------|
-| GET | `/api/v1/reviews?productId=` | Public | Liste avis |
+| GET | `/api/v1/reviews?productId=` | Public | Liste avis (+ moyenne, distribution des notes) |
 | POST | `/api/v1/reviews` | Requise | Créer avis (rating 1-5, comment) |
+
+- Un seul avis par utilisateur et par produit (`@@unique([productId, userId])` dans le schema)
+- La note est un entier entre 1 et 5 ; le commentaire est requis
+- Le service `src/modules/reviews/reviews.service.ts` (listReviews, createReview) est expose par `/api/v1/reviews` (R128, R129)
+- La liste des produits (`GET /api/v1/products`) renvoie `_avgRating` et `_reviewCount` agreges depuis les avis actifs pour afficher les notes dans le marketplace
+- Le composant `ProductReviews` (voir `04-DESIGN-SYSTEM.md`) affiche le resume, la distribution et le formulaire de creation
 
 ## Endpoints produits
 

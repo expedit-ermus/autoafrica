@@ -176,13 +176,19 @@ Response 201: { "url": "/uploads/image.jpg" }
 ## Reviews
 
 ### List Reviews
-GET /api/v1/reviews?productId=&page=&limit=
-Response 200: { "reviews": [...], "total": 8 }
+GET /api/v1/reviews?productId=&page=&pageSize=
+Public — liste des avis actifs d'un produit (auteur enrichi, `comment` alias de `content`).
+Response 200: { "success": true, "data": { "data": [...], "total": 8, "averageRating": 4.5, "ratingCounts": { "1": 0, "2": 0, "3": 1, "4": 3, "5": 4 } } }
 
 ### Create Review
 POST /api/v1/reviews
-Request: { "productId", "rating": 5, "comment" }
-Response 201: { "review": { ... } }
+Auth requise.
+Request: { "productId", "rating": 5, "title", "comment" }
+Response 201: { "success": true, "data": { "review": { ... } } }
+Response 400: { "error": "La note doit être un entier entre 1 et 5" } (rating hors 1-5)
+Response 400: { "error": "Le commentaire est requis" }
+Response 400: { "error": "Vous avez déjà laissé un avis pour ce produit" } (un avis par utilisateur et par produit)
+Response 404: { "error": "Product <id> not found" }
 
 ---
 

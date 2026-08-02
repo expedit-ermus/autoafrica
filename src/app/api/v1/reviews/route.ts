@@ -1,34 +1,20 @@
 import { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { reviewsService } from '@/modules/reviews/reviews.service'
 import { requireAuth } from '@/modules/auth/auth.guard'
 import { successResponse, handleApiError } from '@/shared/utils/response'
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const productId = searchParams.get('productId')
-    if (!productId) return successResponse({ data: [], total: 0, averageRating: 0 })
-
-    const reviews = await prisma.review.findMany({
-      where: { productId, active: true },
-      orderBy: { createdAt: 'desc' },
-    })
-
-    const userIds = [...new Set(reviews.map(r => r.userId))]
-    const users = userIds.length > 0 ? await prisma.user.findMany({
-      where: { id: { in: userIds } },
-      select: { id: true, firstName: true, lastName: true, shopName: true },
-    }) : []
-    const userMap = new Map(users.map(u => [u.id, u]))
-
-    const enriched = reviews.map(r => ({
-      ...r,
-      author: userMap.get(r.userId) || { firstName: 'Utilisateur', lastName: '' },
-    }))
-
-    const avg = reviews.length > 0 ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0
-
-    return successResponse({ data: enriched, total: reviews.length, averageRating: Math.round(avg * 10) / 10 })
+    const productId = searchParams.get('productId') || ''
+    const pagination = {
+      page: Number(searchParams.get('page')) || 1,
+      pageSize: Number(searchParams.get('pageSize')) || 20,
+      sortBy: searchParams.get('sortBy') || undefined,
+      sortOrder: (searchParams.get('sortOrder') as 'asc' | 'desc') || undefined,
+    }
+    const result = await reviewsService.listReviews(productId, pagination)
+    return successResponse(result)
   } catch (error) {
     return handleApiError(error)
   }
@@ -39,19 +25,12 @@ export async function POST(request: NextRequest) {
     const auth = await requireAuth(request)
     const body = await request.json()
 
-    const existing = await prisma.review.findFirst({
-      where: { productId: body.productId, userId: auth.userId },
-    })
-    if (existing) return handleApiError(new Error('Vous avez déjà laissé un avis'))
-
-    const review = await prisma.review.create({
-      data: {
-        productId: body.productId,
-        userId: auth.userId,
-        rating: body.rating,
-        title: body.title || '',
-        content: body.comment || '',
-      },
+    const review = await reviewsService.createReview({
+      userId: auth.userId,
+      productId: body.productId,
+      rating: Number(body.rating),
+      title: body.title,
+      content: body.comment || body.content,
     })
 
     return successResponse(review, 'Avis publié', 201)

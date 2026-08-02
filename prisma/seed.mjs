@@ -153,7 +153,7 @@ async function main() {
     const brandId = brandMap[p.brand] || null
     const categoryId = catMap[p.category] || null
     const slug = p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + crypto.randomBytes(3).toString('hex')
-    insertProduct.run(pid, p.title, slug, p.description, p.reference, brandId, categoryId, p.price, 'XOF', p.stock, p.condition, sellerId, 1, now, now)
+    insertProduct.run(pid, p.title, slug, p.description, p.reference, brandId, categoryId, p.price, 'XOF', p.stock, p.condition.toUpperCase(), sellerId, 1, now, now)
   }
 
   console.log(`Seeded: ${users.length} users, ${brands.length} brands, ${categories.length} categories, ${products.length} products`)
@@ -560,6 +560,30 @@ async function main() {
   }
 
   console.log(`Seeded: ${eventCount} analytics events`)
+
+  const reviews = [
+    { productIndex: 0, userIndex: 0, rating: 5, title: 'Parfait pour le Hilux', content: 'Filtre conforme à l\'origine, livraison rapide à Yopougon. Je recommande.' },
+    { productIndex: 0, userIndex: 2, rating: 4, title: 'Très bon rapport qualité/prix', content: 'Bonne pièce, installée sans problème sur un Hilux 2.4.' },
+    { productIndex: 1, userIndex: 0, rating: 4, title: 'Bonne qualité', content: 'Filtre à air robuste, prix correct pour la Corolla.' },
+    { productIndex: 3, userIndex: 1, rating: 5, title: 'Excellent', content: 'Plaquettes efficaces, freinage immédiat même sur le sable.' },
+    { productIndex: 4, userIndex: 2, rating: 4, title: 'Bien', content: 'Disques conformes à la référence, emballage soigné.' },
+    { productIndex: 5, userIndex: 1, rating: 3, title: 'Correct', content: 'Amortisseur d\'occasion en bon état, mais à vérifier à la réception.' },
+    { productIndex: 11, userIndex: 0, rating: 5, title: 'Disques parfaits', content: 'Jeu de disques 283mm au top pour la 307.' },
+    { productIndex: 12, userIndex: 2, rating: 5, title: 'Kit complet', content: 'Tout est dans la boîte, mécanisme et butée inclus. Très satisfait.' },
+    { productIndex: 19, userIndex: 0, rating: 4, title: 'Bon amortisseur', content: 'Monté sur un Tucson III, tenue de route améliorée.' },
+    { productIndex: 26, userIndex: 1, rating: 5, title: 'Serré et fiable', content: 'Plaquettes arrière Kia parfaites pour le Sportage.' },
+    { productIndex: 34, userIndex: 2, rating: 4, title: 'Bonne pièce', content: 'Courroie de distribution conforme pour le C180 W204.' },
+  ]
+
+  const insertReview = db.prepare(`INSERT INTO Review (id, productId, userId, rating, title, content, images, verified, helpful, active, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, NULL, 0, ?, 1, ?, ?)`)
+  let reviewCount = 0
+  for (const r of reviews) {
+    const ts = addDays(-Math.floor(Math.random() * 10))
+    insertReview.run(cuid(), productIds[r.productIndex], users[r.userIndex].id, r.rating, r.title, r.content, Math.floor(Math.random() * 6), ts, ts)
+    reviewCount++
+  }
+
+  console.log(`Seeded: ${reviewCount} reviews`)
 
   db.close()
 }
