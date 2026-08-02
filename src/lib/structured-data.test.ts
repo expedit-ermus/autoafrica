@@ -5,6 +5,7 @@ import {
   buildItemListSchema,
   buildOrganizationSchema,
   buildProductSchema,
+  buildVehicleSchema,
   buildWebsiteSchema,
   MARKETPLACE_URL,
   SITE_URL,
@@ -136,5 +137,52 @@ describe('buildFAQPageSchema', () => {
       name: 'Comment ajouter une pièce ?',
       acceptedAnswer: { '@type': 'Answer', text: 'Allez dans Inventaire.' },
     })
+  })
+})
+
+describe('buildVehicleSchema', () => {
+  it('returns a valid Vehicle schema with XOF offer and odometer', () => {
+    const schema = buildVehicleSchema({
+      name: 'Toyota Corolla 2021',
+      brand: 'Toyota',
+      model: 'Corolla',
+      year: 2021,
+      mileage: 62000,
+      fuel: 'DIESEL',
+      gearbox: 'AUTOMATIC',
+      bodyType: 'Berline',
+      color: 'Gris métal',
+      condition: 'USED',
+      price: 11500000,
+      currency: 'XOF',
+      seller: 'Garage Moussa',
+    })
+
+    expect(schema['@type']).toBe('Vehicle')
+    expect(schema.name).toBe('Toyota Corolla 2021')
+    expect(schema.brand).toEqual({ '@type': 'Brand', name: 'Toyota' })
+    expect(schema.vehicleModelDate).toBe('2021')
+    expect(schema.mileageFromOdometer).toEqual({ '@type': 'QuantitativeValue', value: 62000, unitCode: 'KMT' })
+    expect(schema.fuelType).toBe('https://schema.org/DieselFuel')
+    expect(schema.vehicleTransmission).toBe('https://schema.org/AutomaticTransmission')
+    expect(schema.offers.priceCurrency).toBe('XOF')
+    expect(schema.offers.price).toBe('11500000')
+    expect(schema.offers.itemCondition).toBe('https://schema.org/UsedCondition')
+  })
+
+  it('maps new condition to NewCondition and omits missing fields', () => {
+    const schema = buildVehicleSchema({ name: 'Hilux', price: 24000000, condition: 'NEW' })
+
+    expect(schema.offers.itemCondition).toBe('https://schema.org/NewCondition')
+    expect(schema.mileageFromOdometer).toBeUndefined()
+    expect(schema.fuelType).toBeUndefined()
+    expect(schema.vehicleTransmission).toBeUndefined()
+    expect(schema.color).toBeUndefined()
+  })
+
+  it('maps certified to UsedCondition', () => {
+    const schema = buildVehicleSchema({ name: 'C180', price: 19500000, condition: 'CERTIFIED' })
+
+    expect(schema.offers.itemCondition).toBe('https://schema.org/UsedCondition')
   })
 })

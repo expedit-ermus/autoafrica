@@ -4,10 +4,12 @@ import {
   buildItemListSchema,
   buildOrganizationSchema,
   buildProductSchema,
+  buildVehicleSchema,
   buildWebsiteSchema,
   BreadcrumbEntry,
   FAQEntry,
   ItemListEntry,
+  VehicleSchemaInput,
 } from '@/lib/structured-data'
 
 interface JsonLd {
@@ -69,6 +71,12 @@ interface ItemListStructuredDataProps {
 export function ItemListStructuredData({ items }: ItemListStructuredDataProps) {
   if (items.length === 0) return null;
   return <JsonLdScript id="itemlist-schema" data={buildItemListSchema(items)} />;
+}
+
+type VehicleStructuredDataProps = VehicleSchemaInput;
+
+export function VehicleStructuredData(props: VehicleStructuredDataProps) {
+  return <JsonLdScript id="vehicle-schema" data={buildVehicleSchema(props)} />;
 }
 
 interface BreadcrumbStructuredDataProps {

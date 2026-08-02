@@ -8,9 +8,11 @@ import { useToast } from '@/contexts/ToastContext';
 import Modal from '@/components/Modal';
 import StarRating, { ProductReviews } from '@/components/StarRating';
 import {
+  BreadcrumbStructuredData,
   ItemListStructuredData,
   ProductStructuredData,
 } from '@/components/StructuredData';
+import { MARKETPLACE_URL, SITE_URL } from '@/lib/structured-data';
 import { Product } from '@/shared/types';
 import { track, trackPageView } from '@/lib/tracking';
 
@@ -390,6 +392,7 @@ export default function MarketplacePage() {
       <div className="flex-1 lg:ml-64">
         <DashboardTopBar />
         <main className="p-4 lg:p-8 pb-24 lg:pb-8 max-w-[1600px] mx-auto">
+          <BreadcrumbStructuredData items={[{ name: 'AutoAfrique', url: SITE_URL }, { name: 'Marketplace', url: MARKETPLACE_URL }]} />
 
           {/* Header */}
           <div className="mb-8">
@@ -737,7 +740,7 @@ export default function MarketplacePage() {
                     )}
                   </div>
 
-                  <ItemListStructuredData items={products.map(() => ({ url: 'https://autoafrique-saas.vercel.app/dashboard/marketplace' }))} />
+                  <ItemListStructuredData items={products.map(() => ({ url: MARKETPLACE_URL }))} />
 
                   {/* Pagination */}
                   {totalPages > 1 && (

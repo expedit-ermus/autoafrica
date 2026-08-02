@@ -69,6 +69,38 @@
 }
 ```
 
+## Vehicle (Véhicules)
+
+```json
+{
+  "@context": "https://schema.org",
+  "@type": "Vehicle",
+  "name": "[marque] [modèle] [année]",
+  "brand": { "@type": "Brand", "name": "[marque]" },
+  "vehicleModelDate": "[année]",
+  "mileageFromOdometer": {
+    "@type": "QuantitativeValue",
+    "value": "[kilométrage]",
+    "unitCode": "KMT"
+  },
+  "color": "[couleur]",
+  "bodyType": "[type de carrosserie]",
+  "fuelType": "[https://schema.org/DieselFuel | Gasoline | Hybrid | ElectricFuel | Propane]",
+  "vehicleTransmission": "[https://schema.org/ManualTransmission | AutomaticTransmission]",
+  "offers": {
+    "@type": "Offer",
+    "price": "[prix]",
+    "priceCurrency": "XOF",
+    "availability": "https://schema.org/InStock",
+    "itemCondition": "[https://schema.org/NewCondition | UsedCondition]",
+    "seller": {
+      "@type": "Organization",
+      "name": "[nom vendeur]"
+    }
+  }
+}
+```
+
 ## FAQPage (Aide)
 
 ```json

@@ -1,5 +1,6 @@
 export const SITE_URL = 'https://autoafrique-saas.vercel.app'
 export const MARKETPLACE_URL = `${SITE_URL}/dashboard/marketplace`
+export const VEHICLES_URL = `${SITE_URL}/dashboard/vehicles`
 
 export interface BreadcrumbEntry {
   name: string
@@ -24,6 +25,43 @@ export interface ProductSchemaInput {
   currency?: string
   seller?: string
   url?: string
+}
+
+const FUEL_SCHEMA: Record<string, string> = {
+  DIESEL: 'https://schema.org/DieselFuel',
+  GASOLINE: 'https://schema.org/Gasoline',
+  HYBRID: 'https://schema.org/Hybrid',
+  ELECTRIC: 'https://schema.org/ElectricFuel',
+  LPG: 'https://schema.org/Propane',
+}
+
+const GEARBOX_SCHEMA: Record<string, string> = {
+  MANUAL: 'https://schema.org/ManualTransmission',
+  AUTOMATIC: 'https://schema.org/AutomaticTransmission',
+}
+
+const CONDITION_SCHEMA: Record<string, string> = {
+  NEW: 'https://schema.org/NewCondition',
+  USED: 'https://schema.org/UsedCondition',
+  CERTIFIED: 'https://schema.org/UsedCondition',
+}
+
+export interface VehicleSchemaInput {
+  name: string
+  description?: string | null
+  image?: string
+  brand?: string
+  model?: string
+  year?: number | null
+  mileage?: number | null
+  fuel?: string | null
+  gearbox?: string | null
+  bodyType?: string | null
+  color?: string | null
+  condition?: string | null
+  price: number
+  currency?: string
+  seller?: string
 }
 
 export function buildOrganizationSchema() {
@@ -82,6 +120,32 @@ export function buildItemListSchema(items: ItemListEntry[]) {
       position: index + 1,
       url: item.url,
     })),
+  }
+}
+
+export function buildVehicleSchema(input: VehicleSchemaInput) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Vehicle',
+    name: input.name,
+    ...(input.description ? { description: input.description } : {}),
+    ...(input.image ? { image: input.image } : {}),
+    ...(input.brand ? { brand: { '@type': 'Brand', name: input.brand } } : {}),
+    ...(input.model ? { model: input.model } : {}),
+    ...(input.year ? { vehicleModelDate: String(input.year) } : {}),
+    ...(input.mileage ? { mileageFromOdometer: { '@type': 'QuantitativeValue', value: input.mileage, unitCode: 'KMT' } } : {}),
+    ...(input.color ? { color: input.color } : {}),
+    ...(input.bodyType ? { bodyType: input.bodyType } : {}),
+    ...(input.fuel && FUEL_SCHEMA[input.fuel] ? { fuelType: FUEL_SCHEMA[input.fuel] } : {}),
+    ...(input.gearbox && GEARBOX_SCHEMA[input.gearbox] ? { vehicleTransmission: GEARBOX_SCHEMA[input.gearbox] } : {}),
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: input.currency || 'XOF',
+      price: String(input.price),
+      availability: 'https://schema.org/InStock',
+      ...(input.condition && CONDITION_SCHEMA[input.condition] ? { itemCondition: CONDITION_SCHEMA[input.condition] } : {}),
+      ...(input.seller ? { seller: { '@type': 'Organization', name: input.seller } } : {}),
+    },
   }
 }
 

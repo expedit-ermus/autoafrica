@@ -405,6 +405,12 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `08-STRUCTURED-DATA.md` (documente les schemas) et `DECISIONS.md` mis a jour. Fichiers : `src/lib/structured-data.ts` (+`structured-data.test.ts`), `src/components/StructuredData.tsx`, `src/app/page.tsx`, `src/app/dashboard/marketplace/page.tsx`, `src/app/dashboard/help/page.tsx`. Tests : 12 tests unitaires ajoutes. Limitation connue : les URLs des items ItemList pointent vers la page marketplace (pas de page produit dediee documentee) ; le schema `Vehicle` annonce dans `02-ROUTES.md` (R017) n'est pas traite ici (non defini dans `08-STRUCTURED-DATA.md`).
 
+**Suite (corrections et extension)** :
+- **Schema `Vehicle` (R017)** : ajout de `buildVehicleSchema` (schema.org `Vehicle` : marque, `vehicleModelDate`, `mileageFromOdometer` en `KMT`, `fuelType`/`vehicleTransmission` en enums schema.org, `itemCondition` New/Used selon la condition, offre XOF) et du composant `VehicleStructuredData`. Branche sur `/dashboard/vehicles` : `Vehicle` dans la modale detail + `ItemList` sur la grille. Schema documente dans `08-STRUCTURED-DATA.md`.
+- **Breadcrumb JSON-LD** : `BreadcrumbStructuredData` (deja construit mais inutilise) branche sur `/dashboard/marketplace` (Accueil > Marketplace) et `/dashboard/vehicles` (Accueil > Vehicules).
+- **Assets images manquants** : `logo.png` (reference par le schema Organization et `08-STRUCTURED-DATA.md`), `og-image.png` (Open Graph/Twitter du layout) et `apple-touch-icon.png` (layout) n'existaient pas (404). Generation de vrais fichiers dans `public/` via un script PNG minimal (zlib natif, pas de fausse preuve : logo geometrique aux couleurs de la marque `#FF6B35`), 5-28 KB, sous les budgets de `17-IMAGES-MEDIA.md`.
+- **DRY** : le marketplace utilise desormais la constante `MARKETPLACE_URL` au lieu d'une URL en dur.
+
 
 
 

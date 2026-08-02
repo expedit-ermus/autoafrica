@@ -4,6 +4,12 @@ import Image from 'next/image';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import Modal from '@/components/Modal';
+import {
+  BreadcrumbStructuredData,
+  ItemListStructuredData,
+  VehicleStructuredData,
+} from '@/components/StructuredData';
+import { SITE_URL, VEHICLES_URL } from '@/lib/structured-data';
 
 const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
@@ -187,6 +193,7 @@ export default function VehiclesPage() {
       <div className="flex-1 lg:ml-64">
         <DashboardTopBar />
         <main className="p-4 lg:p-8 pb-24 lg:pb-8 max-w-[1600px] mx-auto">
+          <BreadcrumbStructuredData items={[{ name: 'AutoAfrique', url: SITE_URL }, { name: 'Véhicules', url: VEHICLES_URL }]} />
 
           {/* Header */}
           <div className="mb-8">
@@ -283,6 +290,7 @@ export default function VehiclesPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
                     {vehicles.map(v => <VehicleCard key={v.id} v={v} />)}
                   </div>
+                  <ItemListStructuredData items={vehicles.map(() => ({ url: VEHICLES_URL }))} />
                   {totalPages > 1 && (
                     <div className="flex items-center justify-center gap-3 mt-8">
                       <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1} className="px-4 py-2 rounded-xl border border-gray-200 bg-white text-sm font-medium text-gray-700 disabled:opacity-40 hover:bg-gray-50">← Précédent</button>
@@ -301,6 +309,23 @@ export default function VehiclesPage() {
       <Modal isOpen={!!detail} onClose={() => setDetail(null)} title={detail ? `${detail.brand?.name || ''} ${detail.name} ${detail.year}` : ''} size="lg">
         {detail && (
           <div className="space-y-5">
+            <VehicleStructuredData
+              name={`${detail.brand?.name || ''} ${detail.name} ${detail.year}`.trim()}
+              description={detail.description}
+              image={getImages(detail)[0]}
+              brand={detail.brand?.name}
+              model={detail.name}
+              year={detail.year}
+              mileage={detail.mileage}
+              fuel={detail.fuel}
+              gearbox={detail.gearbox}
+              bodyType={detail.bodyType}
+              color={detail.color}
+              condition={detail.condition}
+              price={detail.price}
+              currency={detail.currency || 'XOF'}
+              seller={detail.listings?.[0]?.seller?.shopName || detail.listings?.[0]?.seller?.firstName || undefined}
+            />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
                 <Image src={getImages(detail)[detailImageIdx]} alt={detail.name} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
