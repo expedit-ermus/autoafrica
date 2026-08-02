@@ -532,6 +532,16 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `src/components/LandingPage.tsx`, `src/components/Footer.tsx`, `src/lib/i18n.ts`, `docs/DECISIONS.md`. Lint/typecheck/275 tests verts.
 
+## D29 : Alignement des tokens CSS sur le design system (`04-DESIGN-SYSTEM.md`)
+
+**Contexte** : audit `globals.css` (bloc `:root`) vs `04-DESIGN-SYSTEM.md` (source de verite visuelle, `AGENTS.md`). Le bloc `:root` divergeait des tokens documentes : `--color-success` `#059669` (doc `#10B981`), `--color-danger` `#DC2626` (doc `#EF4444`), pas de `--color-info` (`#3B82F6`), pas de tokens `*-hover` (`primary-hover #E85A25`, `secondary-hover #162D4A`), pas des neutres gray, pas de `--radius-full`, et shadows/radii avec des valeurs soust-communiquees.
+
+**Decision** : realigner `src/app/globals.css` (`:root`) sur `04-DESIGN-SYSTEM.md` : `success #10B981`, `danger #EF4444`, ajout `info #3B82F6`, ajout `--color-primary-hover #E85A25` et `--color-secondary-hover #162D4A`, ajout des neutres (`white`, `gray-50/100/200/300/500/700/900`), alignement des `shadows` et `radii` (sm .375rem, md .5rem, lg .75rem, xl 1rem, full 9999px) et `shadow-2xl`. Les tokens d'extension de marque (earth/sahel/`accent`, `bg-warm`, `primary-light/dark`, `secondary-light`, `shadow-glow/warm`) sont conserves comme jeu supplementaire. Aucun composant ne consomme ces variables (le style passe par les utilitaires Tailwind et hex inline) : changement sans impact visuel, uniquement de coherence des tokens pour le CSS/CSS cite.
+
+**Divergence documentee (volontaire, non corrigee)** : `04-DESIGN-SYSTEM.md` definit `background`/`card-bg` `#FFFFFF` alors que le `body` utilise une surface chaude `#FFF8F0` (`--color-bg`) — peau « warm/earth » de la marque, coherente avec les `text-[#2D1B0E]`, `#8B4513`, `#FF6B35` utilises dans les composants. Conservee ; raccordement effectue ici sur le perimetre des tokens de couleur fonctionnementnels (success/danger/info/hover), pas sur le fond.
+
+**Impact** : `src/app/globals.css`, `docs/DECISIONS.md`.
+
 
 
 
