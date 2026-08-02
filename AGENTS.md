@@ -8,46 +8,53 @@ L'agent ne doit pas improviser une architecture, une route, une fonctionnalité,
 
 ## Ordre de lecture obligatoire
 
-1. `docs/00-PROJECT-BRIEF.md`
-2. `docs/01-USERS-AND-GOALS.md`
-3. `docs/02-INFORMATION-ARCHITECTURE.md`
-4. `docs/03-ROUTES-MATRIX.md`
-5. `docs/04-PAGE-SPECS.md`
-6. `docs/05-DESIGN-SYSTEM.md`
-7. `docs/06-COMPONENTS-LAYOUT.md`
-8. `docs/07-TEMPLATES.md`
-9. `docs/08-CONTENT-COPYWRITING.md`
-10. `docs/09-SEO-SPECS.md`
-11. `docs/10-FORMS.md`
-12. `docs/11-DATA-MODELS.md`
-13. `docs/12-API-SPECS.md`
-14. `docs/13-I18N.md`
-15. `docs/14-ANALYTICS.md`
-16. `docs/15-PERFORMANCE.md`
-17. `docs/16-TESTING.md`
-18. `docs/17-ACCESSIBILITY.md`
-19. `docs/18-ERROR-HANDLING.md`
-20. `docs/19-SECURITY.md`
-21. `docs/20-DEPLOYMENT.md`
-22. `docs/DECISIONS.md`
+1. `docs/00-VISION.md`
+2. `docs/01-ARCHITECTURE.md`
+3. `docs/02-ROUTES.md`
+4. `docs/03-PAGES.md`
+5. `docs/04-DESIGN-SYSTEM.md`
+6. `docs/05-UX-ACCESSIBILITY.md`
+7. `docs/06-SEO.md`
+8. `docs/07-CRAWL-INDEXATION.md`
+9. `docs/08-STRUCTURED-DATA.md`
+10. `docs/09-TRACKING.md`
+11. `docs/10-AUTHENTIFICATION.md`
+12. `docs/11-MOBILE-MONEY.md`
+13. `docs/12-MARKETPLACE.md`
+14. `docs/13-ERP.md`
+15. `docs/14-CRM.md`
+16. `docs/15-CATALOGUE.md`
+17. `docs/16-PRODUITS.md`
+18. `docs/17-IMAGES-MEDIA.md`
+19. `docs/18-DATABASE.md`
+20. `docs/19-API.md`
+21. `docs/20-SECURITY.md`
+22. `docs/21-PERFORMANCE.md`
+23. `docs/22-TESTS.md`
+24. `docs/23-DEPLOIEMENT.md`
+25. `docs/README.md`
+26. `docs/DECISIONS.md`
 
 ## Sources de vérité
 
-- Les routes sont définies exclusivement dans `03-ROUTES-MATRIX.md`.
-- Les modèles de pages sont définis dans `04-PAGE-SPECS.md`.
-- Les composants visuels sont définis dans `05-DESIGN-SYSTEM.md`.
-- Les composants et le layout sont définis dans `06-COMPONENTS-LAYOUT.md`.
-- Les règles d'accessibilité sont définies dans `17-ACCESSIBILITY.md`.
-- Les règles SEO, de crawl et d'indexation sont définies dans `09-SEO-SPECS.md`.
-- Les modèles de données sont définis dans `11-DATA-MODELS.md`.
-- Les API sont définies exclusivement dans `12-API-SPECS.md`.
-- Les règles d'internationalisation sont définies dans `13-I18N.md`.
-- Les événements de tracking sont définis dans `14-ANALYTICS.md`.
-- Les budgets de performance sont définis dans `15-PERFORMANCE.md`.
-- Les critères de validation sont définis dans `16-TESTING.md`.
-- Les règles de gestion des erreurs sont définies dans `18-ERROR-HANDLING.md`.
-- Les règles de sécurité sont définies dans `19-SECURITY.md`.
-- Les règles de déploiement sont définies dans `20-DEPLOYMENT.md`.
+- Les routes sont définies exclusivement dans `02-ROUTES.md`.
+- Les modèles de pages sont définis dans `03-PAGES.md`.
+- Les composants visuels sont définis dans `04-DESIGN-SYSTEM.md`.
+- Les règles d'accessibilité sont définies dans `05-UX-ACCESSIBILITY.md`.
+- Les règles SEO, de crawl et d'indexation sont définies dans `06-SEO.md`, `07-CRAWL-INDEXATION.md` et `08-STRUCTURED-DATA.md`.
+- Les événements de tracking sont définis dans `09-TRACKING.md`.
+- L'authentification est définie dans `10-AUTHENTIFICATION.md`.
+- Les paiements Mobile Money sont définis dans `11-MOBILE-MONEY.md`.
+- Le marketplace, l'ERP, le CRM, le catalogue et les produits sont définis dans `12-MARKETPLACE.md`, `13-ERP.md`, `14-CRM.md`, `15-CATALOGUE.md` et `16-PRODUITS.md`.
+- Les règles images et médias sont définies dans `17-IMAGES-MEDIA.md`.
+- Les modèles de données sont définis dans `18-DATABASE.md`.
+- Les API sont définies exclusivement dans `19-API.md`.
+- Les règles de gestion des erreurs sont définies dans `19-API.md`.
+- Les règles de sécurité sont définies dans `20-SECURITY.md`.
+- Les budgets de performance sont définis dans `21-PERFORMANCE.md`.
+- Les critères de validation sont définis dans `22-TESTS.md`.
+- Les règles de déploiement sont définies dans `23-DEPLOIEMENT.md`.
+- Les règles d'internationalisation sont définies dans `03-PAGES.md` (section Internationalisation).
 
 ## Interdictions
 
@@ -108,7 +115,7 @@ Après la modification :
 
 ## Images
 
-Avant d'ajouter une image, lire `docs/15-PERFORMANCE.md` (budgets, optimisation) et `docs/17-ACCESSIBILITY.md` (texte alternatif).
+Avant d'ajouter une image, lire `docs/17-IMAGES-MEDIA.md` (budgets, optimisation, texte alternatif) et `docs/21-PERFORMANCE.md` (budgets de performance).
 
 L'agent doit :
 
