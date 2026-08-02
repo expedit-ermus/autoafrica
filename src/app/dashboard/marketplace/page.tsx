@@ -15,6 +15,7 @@ import {
 import { MARKETPLACE_URL, SITE_URL } from '@/lib/structured-data';
 import { Product } from '@/shared/types';
 import { track, trackPageView } from '@/lib/tracking';
+import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 interface CartItem {
   id: string;
@@ -96,6 +97,11 @@ export default function MarketplacePage() {
   const categories = ['Moteur', 'Frein', 'Suspension', 'Carrosserie', 'Électrique', 'Transmission', 'Échappement', 'Pneumatique', 'Refroidissement', 'Direction'];
 
   const [refreshKey, setRefreshKey] = useState(0);
+
+  useDocumentTitle(
+    detailProduct ? detailProduct.title : null,
+    'Marketplace — Pièces détachées automobile | AutoAfrique',
+  );
 
   useEffect(() => {
     let cancelled = false;

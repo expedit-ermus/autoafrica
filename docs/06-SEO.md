@@ -72,3 +72,12 @@
 | FID | < 100ms |
 | CLS | < 0.1 |
 | TTFB | < 600ms |
+
+## Titres dynamiques (détail produit / annonce)
+
+Le détail produit (R005) et le détail annonce véhicule (R017) s'affichent dans une modal (aucune route dédiée documentée dans `02-ROUTES.md`). Le titre de l'onglet est mis à jour côté client via `useDocumentTitle` :
+
+- Modal produit : `<nom du produit> | AutoAfrique` (fallback : « Marketplace — Pièces détachées automobile | AutoAfrique »)
+- Modal véhicule : `<marque> <modèle> <année> | AutoAfrique` (fallback : « Véhicules — Annonces Côte d'Ivoire | AutoAfrique »)
+
+`generateMetadata` reste inutilisable ici (pas de page serveur avec `params`) ; voir `DECISIONS.md` D23.

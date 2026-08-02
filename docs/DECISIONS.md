@@ -446,6 +446,20 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `src/app/dashboard/layout.tsx`, `src/app/dashboard/marketplace/layout.tsx`, `src/app/dashboard/vehicles/layout.tsx`, `src/app/auth/layout.tsx`, `docs/DECISIONS.md`. Pages indexables (R001, R005, R017) desormais avec titre, description, canonical et robots explicites.
 
+## D23 : Titres dynamiques (detail produit / annonce, cote client)
+
+**Contexte** : `generateMetadata` exige une page serveur avec `params` (route dediee), or `02-ROUTES.md` ne documente aucune route UI detail produit/annonce — le detail s'affiche dans une modal sur R005 (`/dashboard/marketplace`) et R017 (`/dashboard/vehicles`). Créer des routes (`/dashboard/marketplace/[id]`, `/dashboard/vehicles/[id]`) violerait l'interdiction « ne créer aucune route non documentee ». Decision (validee) : titre dynamique cote client a l'ouverture de la modal.
+
+**Decision** :
+- Creer `src/lib/useDocumentTitle.ts` : hook `useDocumentTitle(activeTitle, fallbackTitle)` qui applique `document.title` = `<titre> | AutoAfrique` quand une modal detail est ouverte, et restaure le titre de la page a la fermeture. Fonction pure `buildDocumentTitle` testee.
+- Marketplace (R005) : `activeTitle = detailProduct.title` a l'ouverture de la modal produit ; fallback = « Marketplace — Pièces détachées automobile | AutoAfrique ».
+- Vehicules (R017) : `activeTitle = "<marque> <nom> <annee>"` (ex. « Toyota RAV4 2021 ») ; fallback = « Véhicules — Annonces Côte d'Ivoire | AutoAfrique ».
+- Separation `|` alignee sur le template de titre du layout racine (`%s | AutoAfrique`) de D22.
+
+**Limitation documentee** : les titres dynamiques sont poses par JavaScript (modal client) ; ils ameliorent le titre de l'onglet/le sharing instantane mais ne sont pas indexables tels quels par les moteurs (pas de route detail dediee). Si un jour des pages detail sont documentees dans `02-ROUTES.md`, `generateMetadata`/`generateStaticParams` les remplaceront proprement.
+
+**Impact** : `src/lib/useDocumentTitle.ts` (+ `useDocumentTitle.test.ts`, 3 tests), `src/app/dashboard/marketplace/page.tsx`, `src/app/dashboard/vehicles/page.tsx`, `docs/DECISIONS.md`, `docs/06-SEO.md` (note ajoutee).
+
 
 
 

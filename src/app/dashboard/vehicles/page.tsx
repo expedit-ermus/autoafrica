@@ -10,6 +10,7 @@ import {
   VehicleStructuredData,
 } from '@/components/StructuredData';
 import { SITE_URL, VEHICLES_URL } from '@/lib/structured-data';
+import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
@@ -79,6 +80,11 @@ export default function VehiclesPage() {
   const [detail, setDetail] = useState<Vehicle | null>(null);
   const [detailImageIdx, setDetailImageIdx] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
+
+  useDocumentTitle(
+    detail ? `${detail.brand?.name || ''} ${detail.name} ${detail.year}`.trim() : null,
+    "Véhicules — Annonces Côte d'Ivoire | AutoAfrique",
+  );
 
   const brands = ['Toyota', 'Peugeot', 'Hyundai', 'Kia', 'Mercedes', 'Renault', 'Nissan', 'Volkswagen', 'BMW', 'Honda'];
 
