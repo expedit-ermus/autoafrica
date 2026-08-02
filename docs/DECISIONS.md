@@ -382,6 +382,29 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Note (verification)** : Un bug pre-existant a ete detecte et corrige pendant la verification : le seed inserait `Product.condition` en minuscules (`new`, `used`, `refurbished`) alors que l'enum Prisma `ProductCondition` est `NEW`, `USED`, `REFURBISHED`, `OEM_AFTERMARKET`. Prisma 7 valide les enums en lecture (P2023), donc `GET /api/v1/products` echouait en 500. Correction : `p.condition.toUpperCase()` dans `prisma/seed.mjs` (le frontend et l'enum utilisaient deja les majuscules).
 
+## D20 : Donnees structurees JSON-LD (SEO)
+
+**Contexte** : Le document `08-STRUCTURED-DATA.md` definit les schemas JSON-LD (Organization, WebSite, Product, ItemList, FAQPage) pour R001 (accueil), R005 (marketplace) et R016 (aide). Le composant `src/components/StructuredData.tsx` existait mais n'etait importe sur aucune page (code mort) : aucun schema n'etait emis. Il contenait en outre des donnees fausses ou erronees : URLs `sameAs` inventees (facebook.com/autoafrique, twitter.com/autoafrique, etc.), faux numero de telephone, `addressCountry: "SN"` au lieu de la zone documentee, `SearchAction` ciblant `?q=` alors que le marketplace utilise le parametre `search`, et absence du schema `ItemList` pourtant documente pour R005.
+
+**Decision** : Iteration SEO « donnees structurees » :
+- Creer `src/lib/structured-data.ts` : fonctions pures `buildOrganizationSchema`, `buildWebsiteSchema`, `buildProductSchema`, `buildItemListSchema`, `buildBreadcrumbSchema`, `buildFAQPageSchema` conformes a `08-STRUCTURED-DATA.md` (testables unitairement)
+- Reecrire `src/components/StructuredData.tsx` : composants legers rendant `<script type="application/ld+json">` inline (fiable pour les crawlers, compatible pages serveur et client), sans donnees fausses : `sameAs: []`, suppression du faux telephone et de l'adresse SN, ajout d'`areaServed` (10 pays)
+- Brancher les schemas : R001 (`OrganizationStructuredData`, `WebsiteStructuredData` dans `src/app/page.tsx`), R005 (`ItemListStructuredData` sur la grille + `ProductStructuredData` dans la modale detail de `src/app/dashboard/marketplace/page.tsx`), R016 (`FAQStructuredData` alimente par la FAQ existante de `src/app/dashboard/help/page.tsx`)
+- Corriger le `SearchAction` : cible `${SITE_URL}/dashboard/marketplace?search={search_term_string}` (parametre reel du marketplace)
+- Tests : `src/lib/structured-data.test.ts` (structure Organization/WebSite/Product/ItemList/Breadcrumb/FAQPage, areaServed, sameAs vide, cible SearchAction `?search=`, positions ItemList sequentielles)
+
+**Alternatives envisagees** :
+- Utiliser `next/script` cote client pour emettre les JSON-LD : moins fiable pour l'indexation (depend de l'execution JS, hors HTML initial), donc abandonne au profit d'un `<script>` inline
+- Creer une page produit dediee (`/produits/[id]`) pour des URLs ItemList significatives : route non documentee dans `02-ROUTES.md`, interdite par les regles du projet
+
+**Justification** :
+- `08-STRUCTURED-DATA.md` est la source de verite SEO ; les schemas emis suivent exactement la structure documentee
+- La regle « aucune fausse preuve » impose de retirer les `sameAs`/telephone inventes et de n'exposer que des donnees reelles
+- La cible `?q=` ne correspondait a aucun comportement du site : le rich-result de recherche Google pointait vers une URL invalide
+- Les fonctions pures se testent sans mock, ce qui renforce la couverture SEO a cout nul
+
+**Impact** : `08-STRUCTURED-DATA.md` (documente les schemas) et `DECISIONS.md` mis a jour. Fichiers : `src/lib/structured-data.ts` (+`structured-data.test.ts`), `src/components/StructuredData.tsx`, `src/app/page.tsx`, `src/app/dashboard/marketplace/page.tsx`, `src/app/dashboard/help/page.tsx`. Tests : 12 tests unitaires ajoutes. Limitation connue : les URLs des items ItemList pointent vers la page marketplace (pas de page produit dediee documentee) ; le schema `Vehicle` annonce dans `02-ROUTES.md` (R017) n'est pas traite ici (non defini dans `08-STRUCTURED-DATA.md`).
+
 
 
 

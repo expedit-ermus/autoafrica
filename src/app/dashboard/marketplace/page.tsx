@@ -7,6 +7,10 @@ import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
 import Modal from '@/components/Modal';
 import StarRating, { ProductReviews } from '@/components/StarRating';
+import {
+  ItemListStructuredData,
+  ProductStructuredData,
+} from '@/components/StructuredData';
 import { Product } from '@/shared/types';
 import { track, trackPageView } from '@/lib/tracking';
 
@@ -733,6 +737,8 @@ export default function MarketplacePage() {
                     )}
                   </div>
 
+                  <ItemListStructuredData items={products.map(() => ({ url: 'https://autoafrique-saas.vercel.app/dashboard/marketplace' }))} />
+
                   {/* Pagination */}
                   {totalPages > 1 && (
                     <div className="flex items-center justify-center gap-2 mt-10">
@@ -810,6 +816,15 @@ export default function MarketplacePage() {
               const related = relatedSuggestions[detailProduct.category?.name || ''] || [];
               return (
                 <div className="space-y-4">
+                  <ProductStructuredData
+                    name={detailProduct.title}
+                    description={detailProduct.description}
+                    image={imgs[0]}
+                    brand={detailProduct.brand?.name}
+                    price={detailProduct.price}
+                    currency={detailProduct.currency || 'XOF'}
+                    seller={detailProduct.seller?.shopName || detailProduct.seller?.firstName || undefined}
+                  />
                   <div className="relative h-64 rounded-xl overflow-hidden bg-gray-100">
                     <Image src={imgs[detailImageIdx]} alt={detailProduct.title} fill sizes="100vw" className="object-cover" />
                     {imgs.length > 1 && (
