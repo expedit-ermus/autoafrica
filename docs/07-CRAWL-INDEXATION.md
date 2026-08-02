@@ -17,17 +17,22 @@
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/dashboard/vehicles</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
 ```
 
-### Inclure
-- `/` (priority 1.0)
-- `/dashboard/marketplace` (priority 0.9)
-- `/dashboard/help` (priority 0.5)
+### Inclure (uniquement les pages « index / sitemap oui » de `02-ROUTES.md`)
+- `/` (R001, priority 1.0)
+- `/dashboard/marketplace` (R005, priority 0.9)
+- `/dashboard/vehicles` (R017, priority 0.8)
 
 ### Exclure
-- `/auth/*`
-- `/dashboard/*` (pages privées)
+- `/auth/*` (R002, R003 — noindex)
+- `/dashboard/*` privées (R004, R006-R016, R018-R022 — noindex)
 - `/api/*`
 - `/404`
 
@@ -36,12 +41,16 @@
 ```
 User-agent: *
 Allow: /
-Disallow: /auth/
+Allow: /dashboard/marketplace
+Allow: /dashboard/vehicles
 Disallow: /dashboard/
+Disallow: /auth/
 Disallow: /api/
 
 Sitemap: https://autoafrique-saas.vercel.app/sitemap.xml
 ```
+
+Note : les pages publiques indexables sous `/dashboard/` (R005 marketplace, R017 véhicules) doivent rester crawlables ; les `Allow` spécifiques priment sur le `Disallow: /dashboard/` (règle de la correspondance la plus longue).
 
 ## Règles d'URL
 

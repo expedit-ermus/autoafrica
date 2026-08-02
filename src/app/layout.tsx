@@ -23,10 +23,6 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://autoafrique-saas.vercel.app"),
   alternates: {
     canonical: "/",
-    languages: {
-      "fr": "/",
-      "en": "/en",
-    },
   },
   openGraph: {
     type: "website",
@@ -60,9 +56,6 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
-  },
-  verification: {
-    google: "your-google-verification-code",
   },
 };
 

@@ -411,6 +411,21 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 - **Assets images manquants** : `logo.png` (reference par le schema Organization et `08-STRUCTURED-DATA.md`), `og-image.png` (Open Graph/Twitter du layout) et `apple-touch-icon.png` (layout) n'existaient pas (404). Generation de vrais fichiers dans `public/` via un script PNG minimal (zlib natif, pas de fausse preuve : logo geometrique aux couleurs de la marque `#FF6B35`), 5-28 KB, sous les budgets de `17-IMAGES-MEDIA.md`.
 - **DRY** : le marketplace utilise desormais la constante `MARKETPLACE_URL` au lieu d'une URL en dur.
 
+## D21 : Sitemap et robots.txt (contradiction documentaire resolue)
+
+**Contexte** : `02-ROUTES.md` (matrice des routes, source de verite des routes) marque R001 `/` (index, sitemap oui), R005 `/dashboard/marketplace` (index, sitemap oui) et R017 `/dashboard/vehicles` (index, sitemap oui) comme les seules pages indexables ; R016 `/dashboard/help` est noindex. Or l'implementation etait incoherente : `src/app/sitemap.ts` listait les pages auth (R002/R003, noindex) et toutes les pages privees du dashboard, omettait `/dashboard/vehicles`, et incluait `/api/v1` ; `src/app/robots.ts` bloquait tout `/dashboard/` (donc aussi les pages publiques indexables). `07-CRAWL-INDEXATION.md` etait lui-meme contradictoire : il mettait `/dashboard/help` (noindex dans 02) dans le sitemap et ne mentionnait pas `/dashboard/vehicles`, tout en interdisant `/dashboard/` dans robots.txt.
+
+**Decision** :
+- Appliquer en priorite la matrice `02-ROUTES.md` (source de verite des routes) pour l'indexabilite de chaque page, conformement a la procedure de gestion des contradictions d'`AGENTS.md`
+- `sitemap.ts` : ne lister que les pages « index / sitemap oui » : `/` (1.0), `/dashboard/marketplace` (0.9), `/dashboard/vehicles` (0.8)
+- `robots.ts` : `Allow: /`, `/dashboard/marketplace`, `/dashboard/vehicles` (les `Allow` specifiques priment sur `Disallow: /dashboard/` par correspondance la plus longue) ; `Disallow: /dashboard/`, `/api/`, `/auth/`, `/_next/`, `/admin/`
+- Mettre a jour `07-CRAWL-INDEXATION.md` pour aligner sitemap et robots.txt sur `02-ROUTES.md`
+- Corriger les metas du layout : suppression de l'alternate `/en` (route inexistante, 404) et du `verification.google` placeholder « your-google-verification-code » (valeur factice)
+
+**Contradiction signalee** : `07-CRAWL-INDEXATION.md` vs `02-ROUTES.md` (inclusion de `/dashboard/help` dans le sitemap et blocage robot de toutes les pages `/dashboard/`). Resolue en faveur de `02-ROUTES.md`, matrice exhaustive par page.
+
+**Impact** : `src/app/sitemap.ts`, `src/app/robots.ts`, `src/app/layout.tsx`, `docs/07-CRAWL-INDEXATION.md`, `docs/DECISIONS.md`. A noter : le verificateur Google Search Console (metadonnee `verification.google`) reste a renseigner par le proprietaire avec son vrai code.
+
 
 
 
