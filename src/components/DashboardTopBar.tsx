@@ -7,7 +7,7 @@ interface Notification {
   id: string;
   title: string;
   message: string;
-  type: 'order' | 'payment' | 'stock' | 'system';
+  type: 'order' | 'payment' | 'stock' | 'promo' | 'system';
   read: boolean;
   time: string;
 }
@@ -139,14 +139,14 @@ export default function DashboardTopBar() {
 
     const fetchNotifications = async () => {
       try {
-        const res = await fetch('/api/v1/notificaciones', { credentials: 'include' });
+        const res = await fetch('/api/v1/notifications', { credentials: 'include' });
         if (!res.ok) {
           await generateFallbackNotifications();
           return;
         }
         const data = await res.json();
-        if (data.success && data.data.notifications) {
-          const mapped: Notification[] = data.data.notifications.map((n: ApiNotification) => ({
+        if (data.success && Array.isArray(data.data.data)) {
+          const mapped: Notification[] = data.data.data.map((n: ApiNotification) => ({
             id: n.id,
             title: n.title,
             message: n.message,
@@ -180,7 +180,7 @@ export default function DashboardTopBar() {
     setNotifications((n) => n.map((n) => ({ ...n, read: true })));
     setUnreadCount(0);
     try {
-      await fetch('/api/v1/notificaciones/read', {
+      await fetch('/api/v1/notifications/read', {
         method: 'POST',
         credentials: 'include',
       });
@@ -210,6 +210,7 @@ export default function DashboardTopBar() {
     order: { icon: '🛒', color: 'bg-blue-500', border: 'border-l-blue-500' },
     payment: { icon: '💰', color: 'bg-emerald-500', border: 'border-l-emerald-500' },
     stock: { icon: '⚠️', color: 'bg-amber-500', border: 'border-l-amber-500' },
+    promo: { icon: '🎁', color: 'bg-purple-500', border: 'border-l-purple-500' },
     system: { icon: '🔔', color: 'bg-gray-400', border: 'border-l-gray-400' },
   };
 

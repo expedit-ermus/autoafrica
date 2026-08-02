@@ -297,3 +297,21 @@
 
 **Impact** : Les anciens noms de fichiers `docs/*` sont retirés du dépôt. `AGENTS.md` et `.env.example` pointent vers la nouvelle organisation. Le `README.md` sert d'index des sources de vérité. Cette décision s'appuie sur D9 (le contenu des documents est la source de vérité ; seuls les noms changent).
 
+## D16 : Module notifications
+
+**Contexte** : Le modèle Prisma `Notification` existe dans le schéma sans surface applicative. Les routes `GET /api/v1/notifications` (R126) et `POST /api/v1/notifications/read` (R127) sont documentées dans `02-ROUTES.md` et `19-API.md` mais non implémentées. La cloche de `DashboardTopBar` appelait des routes inexistantes (`/api/v1/notificaciones`) et retombait sur des notifications générées côté client, sans persistance ni vue dédiée.
+
+**Decision** : Construire le module notifications en une iteration : service `src/modules/notifications/notifications.service.ts` (liste, compteur non lues, marquer comme lue, tout marquer comme lu, création), routes `GET /api/v1/notifications` (liste paginée filtrée par `read`, `type`, `search`, avec `unreadCount`) et `POST /api/v1/notifications/read` (body `{ ids: [...] }` ; sans `ids`, toutes les non-lues de l'utilisateur sont marquées lues), page `/dashboard/notifications` (filtres Toutes / Non lues / Lues, filtre par type, recherche, marquer comme lu et tout marquer comme lu). Les notifications sont toujours scopées à l'utilisateur authentifié (`userId` issu du token). Les types valides sont order / payment / stock / promo / system.
+
+**Alternatives envisagees** :
+- Conserver la génération de notifications côté client dans `DashboardTopBar` : aucune persistance, compteur perdu au rechargement, aucune vue dédiée
+- Exposer les notifications sans auth : violation du scopage utilisateur, chaque compte verrait les notifications des autres
+
+**Justification** :
+- Le modèle `Notification` existant (userId, title, message, type, link, read, readAt, metadata, createdAt) évite toute migration schema
+- `POST /api/v1/notifications/read` sans `ids` couvre le « Tout lire » de la cloche sans nouvelle route
+- La correction de la typo `notificaciones` → `notifications` dans `DashboardTopBar` branche la cloche sur les vraies routes (R126, R127)
+
+**Impact** : Nouvelles routes `GET /api/v1/notifications` (R126) et `POST /api/v1/notifications/read` (R127) implémentées. Service `src/modules/notifications/notifications.service.ts`, routes API associees, page `/dashboard/notifications`, entree de navigation (icone cloche) + cles i18n fr/en. Correction de `DashboardTopBar` (`/api/v1/notificaciones` → `/api/v1/notifications`). Seed : 8 notifications (5 non lues / 3 lues pour Moussa, 1 pour Abdoulaye, 1 pour Fatima). Tests : 10 tests unitaires (132 au total).
+
+

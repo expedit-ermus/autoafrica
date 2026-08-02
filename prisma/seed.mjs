@@ -17,9 +17,9 @@ async function main() {
   const password = await bcryptjs.hash('password123', 12)
 
   const users = [
-    { id: cuid(), email: 'moussa@example.com', password, firstName: 'Moussa', lastName: 'Koulibaly', phone: '+22507080910', country: 'CI', city: 'Yopougon', shopName: 'Garage Moussa Pièces', specialties: '["Toyota","Peugeot"]', role: 'seller', plan: 'starter', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: cuid(), email: 'abdoulaye@example.com', password, firstName: 'Abdoulaye', lastName: 'Ndiaye', phone: '+221771234567', country: 'SN', city: 'Pikine', shopName: 'Casse Auto Pikine', specialties: '["Hyundai","Kia"]', role: 'seller', plan: 'pro', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-    { id: cuid(), email: 'fatima@example.com', password, firstName: 'Fatima', lastName: 'Camara', phone: '+22376543210', country: 'ML', city: 'Bamako', shopName: 'Garage Bamako Express', specialties: '["Renault","Mercedes"]', role: 'buyer', plan: 'starter', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    { id: cuid(), email: 'moussa@example.com', password, firstName: 'Moussa', lastName: 'Koulibaly', phone: '+22507080910', country: 'CI', city: 'Yopougon', shopName: 'Garage Moussa Pièces', specialties: '["Toyota","Peugeot"]', role: 'SELLER', plan: 'starter', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    { id: cuid(), email: 'abdoulaye@example.com', password, firstName: 'Abdoulaye', lastName: 'Ndiaye', phone: '+221771234567', country: 'SN', city: 'Pikine', shopName: 'Casse Auto Pikine', specialties: '["Hyundai","Kia"]', role: 'SELLER', plan: 'pro', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
+    { id: cuid(), email: 'fatima@example.com', password, firstName: 'Fatima', lastName: 'Camara', phone: '+22376543210', country: 'ML', city: 'Bamako', shopName: 'Garage Bamako Express', specialties: '["Renault","Mercedes"]', role: 'BUYER', plan: 'starter', createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
   ]
 
   const insertUser = db.prepare(`INSERT INTO User (id, email, password, firstName, lastName, phone, country, city, shopName, specialties, role, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
@@ -450,6 +450,26 @@ async function main() {
   }
 
   console.log(`Seeded: ${fleetVehicles.length} fleet vehicles`)
+
+  const notifications = [
+    { userIndex: 0, title: 'Nouvelle commande', message: 'Commande CMD-2026-001 confirmee — 182 000 FCFA', type: 'order', link: '/dashboard/orders', read: 0, daysAgo: 0 },
+    { userIndex: 0, title: 'Paiement recu', message: 'Paiement Mobile Money de 42 760 FCFA recu', type: 'payment', link: '/dashboard/payments', read: 0, daysAgo: 0 },
+    { userIndex: 0, title: 'Stock bas', message: 'Filtre a huile Toyota — 3 restants', type: 'stock', link: '/dashboard/inventory', read: 0, daysAgo: 1 },
+    { userIndex: 0, title: 'Livraison livree', message: 'Expedition DHL-CI-88210 livree a Abidjan, Cocody', type: 'order', link: '/dashboard/delivery', read: 0, daysAgo: 2 },
+    { userIndex: 0, title: 'Promotion', message: 'Soldes saisonnieres : -15% sur les pieces de frein', type: 'promo', link: '/dashboard/marketplace', read: 1, daysAgo: 3 },
+    { userIndex: 0, title: 'Bienvenue sur AutoAfrique', message: 'Votre plateforme ERP pieces detachees est operationnelle.', type: 'system', link: null, read: 1, daysAgo: 4 },
+    { userIndex: 1, title: 'Nouvelle commande', message: 'Commande CMD-2026-003 expediee — 105 300 FCFA', type: 'order', link: '/dashboard/orders', read: 0, daysAgo: 0 },
+    { userIndex: 2, title: 'Paiement recu', message: 'Paiement de 182 000 FCFA confirme', type: 'payment', link: '/dashboard/payments', read: 0, daysAgo: 0 },
+  ]
+
+  const insertNotification = db.prepare(`INSERT INTO Notification (id, userId, title, message, type, link, read, readAt, metadata, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL, ?)`)
+
+  for (const n of notifications) {
+    const ts = addDays(-n.daysAgo)
+    insertNotification.run(cuid(), users[n.userIndex].id, n.title, n.message, n.type, n.link, n.read, n.read ? ts : null, ts)
+  }
+
+  console.log(`Seeded: ${notifications.length} notifications`)
 
   db.close()
 }
