@@ -314,4 +314,24 @@
 
 **Impact** : Nouvelles routes `GET /api/v1/notifications` (R126) et `POST /api/v1/notifications/read` (R127) implémentées. Service `src/modules/notifications/notifications.service.ts`, routes API associees, page `/dashboard/notifications`, entree de navigation (icone cloche) + cles i18n fr/en. Correction de `DashboardTopBar` (`/api/v1/notificaciones` → `/api/v1/notifications`). Seed : 8 notifications (5 non lues / 3 lues pour Moussa, 1 pour Abdoulaye, 1 pour Fatima). Tests : 10 tests unitaires (132 au total).
 
+## D17 : Couverture de tests des services restants
+
+**Contexte** : Les services `crm`, `orders`, `payments` et `products` etaient implementes (routes, pages, seeds) mais sans tests unitaires, contrairement aux modules construits par iteration. La Definition of Done impose des tests qui reussissent pour chaque module.
+
+**Decision** : Ajouter des fichiers de test unitaires pour les quatre services :
+- `src/modules/crm/crm.service.test.ts` — customers (list, get, create, update, delete), interactions (list, create avec `lastOrderAt`), leads (list, create, updateLeadStatus, delete), KPIs
+- `src/modules/orders/orders.service.test.ts` — list avec filtres (seller, plage de dates), create (NotFound produit, stock insuffisant, TVA 18%, decrement stock, numero `AAF-`), updateStatus (timeline), cancel (Forbidden, statut non annulable, restauration du stock), delegation seller/buyer
+- `src/modules/payments/payments.service.test.ts` — process (NotFound commande, commande d'autrui, deja payee, methode non supportee, succes completant le paiement et marquant PAID, echec provider → FAILED + PaymentError), cancel, getStatus, list, refund (REFUNDED + remboursement)
+- `src/modules/products/products.service.test.ts` — list (brand, category, recherche OR), getById (increment views), create (slug genere, resolution brand/category), update et delete (NotFound, Forbidden, soft delete), getBrands, getCategories, search
+
+Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour injecter un fournisseur factice sans passer par les adaptateurs reels (qui simulent un delai de 1s).
+
+**Justification** :
+- Les quatre services suivent le meme pattern `prisma` mocke (`vi.hoisted` + `vi.mock('@/lib/prisma')`) que les autres modules
+- La logique metier critique (TVA, stock, statuts de paiement, ownership) est desormais verifiee par des tests dedies
+- Aucun changement de code applicatif : les tests documentent et verifient le comportement existant
+
+**Impact** : 4 fichiers de test crees. 57 tests unitaires ajoutes (CRM 13, Orders 14, Payments 16, Products 14). Suite totale : 189 tests (16 fichiers) — 132 avant, 57 ajoutes.
+
+
 
