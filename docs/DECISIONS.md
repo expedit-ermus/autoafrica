@@ -520,6 +520,18 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `.github/workflows/ci-cd.yml`, `docs/DECISIONS.md`.
 
+## D28 : Retrait des faux chiffres et superlatifs non verifiables (Landing/Footer/meta)
+
+**Contexte** : audit de verification (grep sur les interdictions `AGENTS.md` : « ne creer aucun faux chiffre », « ne creer aucune fausse donnee »). Le chiffre « plus de 85 000 pieces referencees » — dont D20/D22 avaient documente le retrait pour volume d'inventaire non verifie — reapparaissait dans le blurb About de la Landing (`LandingPage.tsx`), accompagne de superlatifs marketing non verifiables (« premiere plateforme e-commerce », « marketplace n°1 / #1 ») egalement presents dans le Footer et les meta du footer (`i18n.ts`).
+
+**Decision** :
+- `src/components/LandingPage.tsx` : supprimer « plus de 85 000 pieces » et « premiere plateforme » ; reformuler sans chiffre invente ni superlatif. Le titre de section « n°1 » devient « La marketplace des pieces automobiles en Afrique de l'Ouest » (FR/EN)
+- `src/components/Footer.tsx` : « La marketplace n°1 des pieces auto » devient « La marketplace des pieces auto » (FR/EN)
+- `src/lib/i18n.ts` (meta footer) : « La premiere plateforme ERP Marketplace... » devient « La marketplace ERP de pieces detachees automobiles... »
+- Les 10 pays et les marques possibles restent listes (tiroir sur le marche cible, pas un chiffre d'inventaire)
+
+**Impact** : `src/components/LandingPage.tsx`, `src/components/Footer.tsx`, `src/lib/i18n.ts`, `docs/DECISIONS.md`. Lint/typecheck/275 tests verts.
+
 
 
 

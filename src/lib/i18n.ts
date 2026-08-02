@@ -165,7 +165,7 @@ export const translations = {
       GHS: 'Cedi',
     },
     footer: {
-      description: 'La première plateforme ERP Marketplace de pièces détachées automobiles pour l\'Afrique de l\'Ouest.',
+      description: 'La marketplace ERP de pièces détachées automobiles pour l\'Afrique de l\'Ouest.',
       product: 'Produit',
       company: 'Entreprise',
       support: 'Support',

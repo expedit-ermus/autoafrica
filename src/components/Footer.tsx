@@ -51,7 +51,7 @@ export default function Footer() {
             </div>
             <div className="text-center md:text-right">
               <div className="text-3xl font-extrabold tracking-tight">Auto<span className="text-[#FF6B35]">Afrique</span></div>
-              <p className="text-white/50 text-sm mt-2 font-medium">{L('La marketplace n°1 des pièces auto', '#1 auto parts marketplace')}</p>
+              <p className="text-white/50 text-sm mt-2 font-medium">{L('La marketplace des pièces auto', 'The auto parts marketplace')}</p>
             </div>
           </div>
         </div>

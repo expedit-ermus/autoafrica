@@ -185,13 +185,13 @@ export default function LandingPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-3xl p-8 md:p-10 border border-[#E8DDD0] shadow-lg shadow-[#8B4513]/5">
             <h2 className="text-xl md:text-2xl font-extrabold text-[#2D1B0E] mb-5">
-              {L('AutoAfrique — La marketplace n°1 des pièces automobiles en Afrique de l\'Ouest', 'AutoAfrique — #1 auto parts marketplace in West Africa')}
+              {L('AutoAfrique — La marketplace des pièces automobiles en Afrique de l\'Ouest', 'AutoAfrique — The auto parts marketplace in West Africa')}
             </h2>
             <div className="text-base text-[#4A3728] leading-relaxed space-y-4">
               <p>
                 {L(
-                  'AutoAfrique est la première plateforme e-commerce dédiée aux pièces détachées automobile en Afrique de l\'Ouest. Avec plus de 85 000 pièces référencées pour Toyota, Hyundai, Kia, Peugeot, Mercedes et Renault, nous connectons les vendeurs et les acheteurs dans 10 pays : Côte d\'Ivoire, Sénégal, Mali, Burkina Faso, Niger, Bénin, Togo, Guinée-Bissau, Nigeria et Ghana.',
-                  'AutoAfrique is the first e-commerce platform dedicated to auto parts in West Africa. With over 85,000 parts listed for Toyota, Hyundai, Kia, Peugeot, Mercedes and Renault, we connect sellers and buyers in 10 countries: Ivory Coast, Senegal, Mali, Burkina Faso, Niger, Benin, Togo, Guinea-Bissau, Nigeria and Ghana.'
+                  'AutoAfrique est une marketplace e-commerce dédiée aux pièces détachées automobile en Afrique de l\'Ouest. Elle connecte les vendeurs et les acheteurs pour les marques Toyota, Hyundai, Kia, Peugeot, Mercedes et Renault, dans 10 pays : Côte d\'Ivoire, Sénégal, Mali, Burkina Faso, Niger, Bénin, Togo, Guinée-Bissau, Nigeria et Ghana.',
+                  'AutoAfrique is an e-commerce marketplace dedicated to auto parts in West Africa. It connects sellers and buyers for Toyota, Hyundai, Kia, Peugeot, Mercedes and Renault, across 10 countries: Ivory Coast, Senegal, Mali, Burkina Faso, Niger, Benin, Togo, Guinea-Bissau and Ghana.'
                 )}
               </p>
               <p>
