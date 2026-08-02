@@ -487,6 +487,24 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Limitation documentee** : les tests d'integration « Vitest + Testing Library » (`22-TESTS.md`) et la CI GitHub Actions ne sont pas mis en place ici (environnement local ; l'installation de `@testing-library/*` + jsdom reste a faire). Le runner unitaire reste en environnement `node` (pas de jsdom).
 
+## D26 : Tests d'integration jsdom + Testing Library (Modal, EmptyState, StarRating, ProductReviews, useDocumentTitle)
+
+**Contexte** : `22-TESTS.md` documente des tests d'integration « Vitest + Testing Library ». La limite D25 notait que `@testing-library/*` + jsdom n'etaient pas installes. Etat avant : aucun test des composants UI, la couverture du dossier `components` etait 0 %.
+
+**Decision** :
+- Installer (dependances dev, justifiees par `22-TESTS.md`) : `jsdom`, `@testing-library/react`, `@testing-library/dom`, `@testing-library/jest-dom`, `@testing-library/user-event`
+- `vitest.setup.ts` : `import '@testing-library/jest-dom/vitest'` (remplace le contenu precedent) ; le runner garde l'environnement `node` par defaut, les fichiers de tests UI declarent `// @vitest-environment jsdom`
+- `src/components/Modal.test.tsx` (4 tests) : rendu ferme/ouvert, fermeture par Escape, fermeture par le bouton (accessible via `getByLabelText('Close modal')`)
+- `src/components/EmptyState.test.tsx` (3 tests) : titre/description, actions primaire et secondaire
+- `src/components/StarRating.test.tsx` (4 tests composant + 3 tests `ProductReviews`) : 5 etoiles par defaut, nombre custom, mode lecture seule (pas d'`onChange`), clic interactif (`onChange(index)`), et `ProductReviews` (fetch mocke via `vi.stubGlobal`) : rendu des avis + moyenne + auteur, etat vide « Aucun avis pour le moment », soumission POST d'un avis puis rechargement de la liste
+- `src/lib/useDocumentTitle.test.ts` etendu avec `renderHook` : titre applique, fallback, mise a jour au re-render (via `// @vitest-environment jsdom`)
+
+**Resultats** : 275 tests unitaires (23 fichiers), tous verts. Couverture : Stmts 84.53 / Branch 72.39 / Funcs 88.73 / Lines 89.0 — au-dessus des seuils documentes (80/70/80/80). Premier essai echoue (comptage cumule de 5+3 etoiles sur deux rendus), corrige en separant les tests. Lint/typecheck/build OK.
+
+**Limitation restante (D25)** : la CI GitHub Actions n'est pas mise en place (environnement local uniquement) ; la couverture du dossier `components` reste partielle (StarRating/ProductReviews completement testes, les autres composants visuels non testes).
+
+**Impact** : `package.json` (devDeps), `vitest.setup.ts`, `src/components/Modal.test.tsx`, `src/components/EmptyState.test.tsx`, `src/components/StarRating.test.tsx`, `src/lib/useDocumentTitle.test.ts`, `docs/DECISIONS.md`.
+
 
 
 
