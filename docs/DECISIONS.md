@@ -248,3 +248,20 @@
 
 **Impact** : Nouvelles routes `/api/v1/invoices` (R171-R176), `/api/v1/accounts` (R177-R181) et `/api/v1/finance/transactions` (R182-R183) documentees dans `03-ROUTES-MATRIX.md`. Service `src/modules/finance/finance.service.ts`, routes API associees, page `/dashboard/finance` refondue. Seed : 9 comptes comptables + 4 ecritures de journal + 4 factures. Tests : 20 tests unitaires (102 au total).
 
+## D14 : Module livraison (expeditions, tournees, flotte)
+
+**Contexte** : Les modeles Prisma `Shipment`, `DeliveryRoute` et `FleetVehicle` existent dans le schema sans surface applicative. La livraison est la cloture logique du cycle commercial : commande -> paiement -> facture -> expedier -> livrer. Le module couvre le suivi des colis lies aux commandes (tracking, transporteur, statut jusqu'a DELIVERED), l'organisation des tournees (routes de livraison) et la gestion de la flotte de vehicules de livraison.
+
+**Decision** : Construire le module livraison en une iteration : service `src/modules/delivery/delivery.service.ts` (expeditions, tournees, vehicules de flotte), routes `/api/v1/shipments` (+`[id]`), `/api/v1/delivery-routes` (+`[id]`) et `/api/v1/fleet-vehicles` (+`[id]`), page `/dashboard/delivery` en vue multi-onglets (Livraisons / Tournees / Flotte) avec creation via modales et changement de statut. Une expedition se cree liee a une commande existante (`Order`) avec un numero de tracking unique ; le passage a DELIVERED horodate `actualDelivery`. Une tournee lie des livraisons et horodate `completedAt` a la cloture. Un vehicule de flotte a une plaque immatriculation unique et un type parmi moto / voiture / camion / van.
+
+**Alternatives envisagees** :
+- Conserver un seul modele generique (Shipment) et gerer tournees et flotte hors schema : perte de la structuration existante du schema Prisma
+- Ne pas construire la flotte : la planification des tournees sans vehicules ne reflechit pas la capacite reelle de livraison
+
+**Justification** :
+- Le modele `Shipment.orderId` reference directement une `Order`, reliant la livraison au cycle commercial deja construit (paiement, facture)
+- Les modeles existants evitent toute migration schema
+- Les statuts et types sont directement portes par les enums Prisma existants (`ShipmentStatus`, `DeliveryRouteStatus`, `VehicleType`)
+
+**Impact** : Nouvelles routes `/api/v1/shipments` (R184-R189), `/api/v1/delivery-routes` (R190-R195) et `/api/v1/fleet-vehicles` (R196-R203) documentees dans `03-ROUTES-MATRIX.md` (les routes techniques robots/sitemap/404/opengraph sont renumerees R204-R207 pour eviter la collision avec R200). Service `src/modules/delivery/delivery.service.ts`, routes API associees, page `/dashboard/delivery` refondue. Seed : 4 commandes de livraison (CMD-2026-001 a 004) + 4 expeditions (DHL-CI-88210, LOCAL-77190, GAB-55017, LOCAL-77314) + 3 tournees + 4 vehicules de flotte. Tests : 20 tests unitaires (122 au total).
+

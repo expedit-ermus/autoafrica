@@ -25,6 +25,7 @@
 | R019 | `/dashboard/purchase-orders` | App | PurchaseOrders | Suivre approvisionnement | Rétention | Navigationnelle | Approvisionnement | noindex | non | aucun | privée |
 | R020 | `/dashboard/containers` | App | Containers | Suivre conteneurs | Rétention | Navigationnelle | Conteneurs | noindex | non | aucun | privée |
 | R021 | `/dashboard/customs` | App | Customs | Suivre dossiers douane | Rétention | Navigationnelle | Douanes | noindex | non | aucun | privée |
+| R022 | `/dashboard/delivery` | App | Delivery | Suivre livraisons | Rétention | Navigationnelle | Livraison | noindex | non | aucun | privée |
 
 ## Routes API
 
@@ -114,15 +115,32 @@
 | R181 | `/api/v1/accounts/[id]` | DELETE | Required | Supprimer compte comptable |
 | R182 | `/api/v1/finance/transactions` | GET | Public | Liste écritures comptables |
 | R183 | `/api/v1/finance/transactions` | POST | Required | Enregistrer une écriture comptable |
+| R184 | `/api/v1/shipments` | GET | Public | Liste livraisons |
+| R185 | `/api/v1/shipments` | POST | Required | Créer livraison |
+| R186 | `/api/v1/shipments/[id]` | GET | Public | Détail livraison |
+| R187 | `/api/v1/shipments/[id]` | PUT | Required | Modifier livraison |
+| R188 | `/api/v1/shipments/[id]` | PATCH | Required | Changer statut livraison |
+| R189 | `/api/v1/shipments/[id]` | DELETE | Required | Supprimer livraison |
+| R190 | `/api/v1/delivery-routes` | GET | Public | Liste tournées de livraison |
+| R191 | `/api/v1/delivery-routes` | POST | Required | Créer tournée de livraison |
+| R192 | `/api/v1/delivery-routes/[id]` | GET | Public | Détail tournée de livraison |
+| R193 | `/api/v1/delivery-routes/[id]` | PUT | Required | Modifier tournée de livraison |
+| R194 | `/api/v1/delivery-routes/[id]` | PATCH | Required | Changer statut tournée |
+| R195 | `/api/v1/delivery-routes/[id]` | DELETE | Required | Supprimer tournée de livraison |
+| R196 | `/api/v1/fleet-vehicles` | GET | Public | Liste véhicules de flotte |
+| R197 | `/api/v1/fleet-vehicles` | POST | Required | Créer véhicule de flotte |
+| R198 | `/api/v1/fleet-vehicles/[id]` | GET | Public | Détail véhicule de flotte |
+| R199 | `/api/v1/fleet-vehicles/[id]` | PUT | Required | Modifier véhicule de flotte |
+| R200 | `/api/v1/fleet-vehicles/[id]` | DELETE | Required | Supprimer véhicule de flotte |
 
 ## Routes techniques
 
 | ID | Route | Statut | Description |
 |----|-------|--------|-------------|
-| R200 | `/robots.txt` | 200 | Robots |
-| R201 | `/sitemap.xml` | 200 | Sitemap |
-| R202 | `/404` | 404 | Page introuvable |
-| R203 | `/opengraph-image` | 200 | Image OG |
+| R204 | `/robots.txt` | 200 | Robots |
+| R205 | `/sitemap.xml` | 200 | Sitemap |
+| R206 | `/404` | 404 | Page introuvable |
+| R207 | `/opengraph-image` | 200 | Image OG |
 
 ## Règles d'URL
 

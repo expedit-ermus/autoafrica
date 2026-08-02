@@ -378,6 +378,79 @@ async function main() {
 
   console.log(`Seeded: ${invoices.length} invoices`)
 
+  const deliveryOrders = [
+    { buyerId: users[2].id, status: 'COMPLETED', paymentStatus: 'PAID', fulfillmentStatus: 'FULFILLED', subtotal: 150000, taxAmount: 27000, shippingAmount: 5000, totalAmount: 182000 },
+    { buyerId: users[2].id, status: 'DELIVERED', paymentStatus: 'PAID', fulfillmentStatus: 'DELIVERED', subtotal: 32000, taxAmount: 5760, shippingAmount: 5000, totalAmount: 42760 },
+    { buyerId: users[1].id, status: 'SHIPPED', paymentStatus: 'PAID', fulfillmentStatus: 'SHIPPED', subtotal: 85000, taxAmount: 15300, shippingAmount: 5000, totalAmount: 105300 },
+    { buyerId: users[2].id, status: 'OUT_FOR_DELIVERY', paymentStatus: 'PAID', fulfillmentStatus: 'SHIPPED', subtotal: 18000, taxAmount: 3240, shippingAmount: 5000, totalAmount: 26240 },
+  ]
+
+  const insertOrder = db.prepare(`INSERT INTO "Order" (id, orderNumber, tenantId, buyerId, status, paymentStatus, fulfillmentStatus, subtotal, taxAmount, shippingAmount, discountAmount, totalAmount, currency, createdAt, updatedAt) VALUES (?, ?, NULL, ?, ?, ?, ?, ?, ?, ?, 0, ?, 'XOF', ?, ?)`)
+
+  const orderIds = []
+  for (let i = 0; i < deliveryOrders.length; i++) {
+    const o = deliveryOrders[i]
+    const id = cuid()
+    orderIds.push(id)
+    const ts = nowIso()
+    insertOrder.run(id, `CMD-2026-00${i + 1}`, o.buyerId, o.status, o.paymentStatus, o.fulfillmentStatus, o.subtotal, o.taxAmount, o.shippingAmount, o.totalAmount, ts, ts)
+  }
+
+  console.log(`Seeded: ${deliveryOrders.length} delivery orders`)
+
+  const shipments = [
+    { orderIndex: 0, trackingNumber: 'DHL-CI-88210', carrier: 'dhl', method: 'express', status: 'DELIVERED', currentLocation: 'Abidjan, Cocody', signedBy: 'Moussa Koulibaly' },
+    { orderIndex: 1, trackingNumber: 'LOCAL-77190', carrier: 'local', method: 'standard', status: 'DELIVERED', currentLocation: 'Abidjan, Yopougon', signedBy: 'Fatima Camara' },
+    { orderIndex: 2, trackingNumber: 'GAB-55017', carrier: 'gabriel', method: 'standard', status: 'IN_TRANSIT', currentLocation: 'Bouake', signedBy: null },
+    { orderIndex: 3, trackingNumber: 'LOCAL-77314', carrier: 'local', method: 'standard', status: 'OUT_FOR_DELIVERY', currentLocation: 'Abidjan, Marcory', signedBy: null },
+  ]
+
+  const insertShipment = db.prepare(`INSERT INTO Shipment (id, orderId, trackingNumber, carrier, method, status, currentLocation, estimatedDelivery, actualDelivery, signedBy, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+
+  for (let i = 0; i < shipments.length; i++) {
+    const s = shipments[i]
+    const ts = nowIso()
+    const actualDelivery = s.status === 'DELIVERED' ? addDays(-2) : null
+    insertShipment.run(cuid(), orderIds[s.orderIndex], s.trackingNumber, s.carrier, s.method, s.status, s.currentLocation, addDays(5), actualDelivery, s.signedBy, ts, ts)
+  }
+
+  console.log(`Seeded: ${shipments.length} shipments`)
+
+  const deliveryRoutes = [
+    { name: 'Tournee Yopougon matin', country: 'CI', city: 'Yopougon', status: 'completed', distance: 28, duration: 120 },
+    { name: 'Tournee Cocody apres-midi', country: 'CI', city: 'Cocody', status: 'active', distance: 35, duration: 150 },
+    { name: 'Tournee Bouake centre', country: 'CI', city: 'Bouake', status: 'planned', distance: 350, duration: 300 },
+  ]
+
+  const insertRoute = db.prepare(`INSERT INTO DeliveryRoute (id, name, driverId, vehicleId, country, city, date, status, stops, distance, duration, completedAt, createdAt, updatedAt) VALUES (?, ?, NULL, NULL, ?, ?, ?, ?, NULL, ?, ?, NULL, ?, ?)`)
+
+  const routeIds = []
+  for (let i = 0; i < deliveryRoutes.length; i++) {
+    const r = deliveryRoutes[i]
+    const id = cuid()
+    routeIds.push(id)
+    const ts = nowIso()
+    insertRoute.run(id, r.name, r.country, r.city, addDays(i - 1), r.status, r.distance, r.duration, ts, ts)
+  }
+
+  console.log(`Seeded: ${deliveryRoutes.length} delivery routes`)
+
+  const fleetVehicles = [
+    { plateNumber: 'CI-1422-KB', type: 'camion', brand: 'Toyota', model: 'Hilux', year: 2021, capacity: 1200, status: 'active' },
+    { plateNumber: 'CI-3120-GB', type: 'van', brand: 'Peugeot', model: 'Boxer', year: 2020, capacity: 800, status: 'active' },
+    { plateNumber: 'CI-0088-LM', type: 'moto', brand: 'Yamaha', model: 'MT 125', year: 2023, capacity: 50, status: 'maintenance' },
+    { plateNumber: 'CI-5566-TR', type: 'voiture', brand: 'Renault', model: 'Duster', year: 2022, capacity: 300, status: 'active' },
+  ]
+
+  const insertFleetVehicle = db.prepare(`INSERT INTO FleetVehicle (id, plateNumber, type, brand, model, year, capacity, driverId, status, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, NULL, ?, ?, ?)`)
+
+  for (const v of fleetVehicles) {
+    const ts = nowIso()
+    insertFleetVehicle.run(cuid(), v.plateNumber, v.type, v.brand, v.model, v.year, v.capacity, v.status, ts, ts)
+  }
+
+  console.log(`Seeded: ${fleetVehicles.length} fleet vehicles`)
+
   db.close()
 }
 
