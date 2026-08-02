@@ -426,6 +426,26 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `src/app/sitemap.ts`, `src/app/robots.ts`, `src/app/layout.tsx`, `docs/07-CRAWL-INDEXATION.md`, `docs/DECISIONS.md`. A noter : le verificateur Google Search Console (metadonnee `verification.google`) reste a renseigner par le proprietaire avec son vrai code.
 
+## D22 : Metadonnees par page (titres, canonical, robots)
+
+**Contexte** : `06-SEO.md` documente des titres, descriptions, canonicals et directives robots par page (Landing, Marketplace, Connexion, Inscription, Dashboard). Or les pages concernes (`/dashboard/marketplace`, `/dashboard/vehicles`, `/auth/login`, `/auth/register` et le reste du dashboard) sont des composants client (`'use client'`) : ils ne peuvent pas exporter `metadata`/`generateMetadata`. Resultat avant cette decision : toutes ces pages heritaient du titre par defaut du layout racine et etaient `index,follow` par defaut (y compris les pages privees du dashboard).
+
+**Decision** :
+- Ajouter des `layout.tsx` serveur par route (les layouts sont des serveurs et peuvent exporter `metadata` meme si la page sous-jacente est cliente) :
+  - `src/app/dashboard/layout.tsx` : `robots: noindex, nofollow` pour toutes les pages du dashboard (conforme `06-SEO.md` et `02-ROUTES.md` R004-R020 hors R005/R017)
+  - `src/app/dashboard/marketplace/layout.tsx` : titre « Marketplace — Pièces détachées automobile », description, `canonical: /dashboard/marketplace`, `robots: index, follow`
+  - `src/app/dashboard/vehicles/layout.tsx` : titre « Véhicules — Annonces Côte d'Ivoire », description, `canonical: /dashboard/vehicles`, `robots: index, follow`
+  - `src/app/auth/layout.tsx` : `robots: noindex, follow` (Connexion/Inscription, conforme `06-SEO.md`)
+- Le titre final respecte le template racine `%s | AutoAfrique` : « Marketplace — Pièces détachées automobile | AutoAfrique » et « Véhicules — Annonces Côte d'Ivoire | AutoAfrique » (conforme `06-SEO.md`)
+- Appliquer la regle « aucun faux chiffre » : les descriptions ne reprennent PAS « 85,000+ pièces » de `06-SEO.md` (volume d'inventaire non verifie). Divergence signalee.
+
+**Contradiction / limite** :
+- `06-SEO.md` (source de verite SEO) annonce « 85,000+ pièces » dans les descriptions. Interdiction `AGENTS.md` « ne creer aucun faux chiffre » : on n'emet pas ce chiffre, descriptions redigees sans valeur numerique. Divergence documentee ici.
+- `06-SEO.md` annonce `og:locale: fr_SN` (Senegal) alors que le marche cible est la Cote d'Ivoire ; le layout racine emet `fr_FR` (divergence deja traitee en D20, pas de modif ici).
+- Les autres pages du dashboard (R004, R006-R020) restent en titre generique du layout racine car pages clientes sans layout dedie ; le point critique SEO (noindex/noindex) est couvert par le layout dashboard.
+
+**Impact** : `src/app/dashboard/layout.tsx`, `src/app/dashboard/marketplace/layout.tsx`, `src/app/dashboard/vehicles/layout.tsx`, `src/app/auth/layout.tsx`, `docs/DECISIONS.md`. Pages indexables (R001, R005, R017) desormais avec titre, description, canonical et robots explicites.
+
 
 
 
