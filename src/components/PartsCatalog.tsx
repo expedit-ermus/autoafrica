@@ -7,13 +7,13 @@ const categories = [
   {
     id: 1,
     name: { fr: 'Pneus & Jantes', en: 'Tyres & Rims' },
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=300&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=300&h=300&fit=crop',
     subcategories: ['Pneus été', 'Pneus hiver', 'Jantes aluminium', 'Jantes acier'],
   },
   {
     id: 2,
     name: { fr: 'Frein', en: 'Brakes' },
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=300&h=300&fit=crop',
+    image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=300&h=300&fit=crop',
     subcategories: ['Disques de frein', 'Plaquettes', 'Étriers', 'Câbles de frein'],
   },
   {
