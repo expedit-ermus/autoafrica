@@ -47,12 +47,22 @@ function ensureDatabaseInitialized(url: string) {
   globalForPrisma.dbInitialized = true
 }
 
+function isRemoteUrl(url: string) {
+  return url.startsWith('libsql://') || url.startsWith('wss://') || url.startsWith('https://')
+}
+
 function createPrismaClient() {
   const url = process.env.DATABASE_URL || `file:${path.join(process.cwd(), 'dev.db')}`
-  if (process.env.NODE_ENV === 'production') {
+  const remote = isRemoteUrl(url)
+  if (process.env.NODE_ENV === 'production' && !remote) {
     ensureDatabaseInitialized(url)
   }
-  const adapter = new PrismaLibSql({ url })
+  const adapter = remote
+    ? new PrismaLibSql({ url, authToken: process.env.TURSO_AUTH_TOKEN })
+    : new PrismaLibSql({ url })
+  if (remote) {
+    console.log('Using remote libSQL database')
+  }
   return new PrismaClient({ adapter })
 }
 
