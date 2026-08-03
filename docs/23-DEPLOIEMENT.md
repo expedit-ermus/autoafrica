@@ -80,6 +80,33 @@ npx vercel --yes
 | JWT_SECRET | [secret] | Production |
 | NEXTAUTH_SECRET | [secret] | Production |
 
+### Base de donnees persistante (Turso/libSQL — optionnel)
+
+Par defaut la production utilise une SQLite ephemere (`file:./prod.db`) reinitialisee a chaque deploiement. Pour une base persistante gratuite (Turso) :
+
+1. Creer un compte et une base sur https://turso.tech (plan gratuit : 500 bases, 5 Go / base).
+2. Recuperer l'URL (`libsql://<slug>.turso.io`) et generer un token.
+3. Pousser le schema vers la base distante :
+
+```bash
+DATABASE_URL="libsql://<slug>.turso.io" TURSO_AUTH_TOKEN="<token>" npm run db:push
+```
+
+4. (Optionnel) Alimenter la base distante avec les donnees de demo :
+
+```bash
+DATABASE_URL="libsql://<slug>.turso.io" TURSO_AUTH_TOKEN="<token>" npm run db:seed
+```
+
+5. Mettre a jour les variables Vercel :
+
+| Variable | Valeur | Securite |
+|----------|--------|----------|
+| DATABASE_URL | libsql://<slug>.turso.io | Production |
+| TURSO_AUTH_TOKEN | [token Turso] | Production |
+
+Le client (`src/lib/prisma.ts`) detecte automatiquement une URL distante (`libsql://`, `wss://`, `https://`) et utilise `TURSO_AUTH_TOKEN` ; le chemin local `file:` reste inchange.
+
 ### Development (.env.local)
 
 | Variable | Valeur |

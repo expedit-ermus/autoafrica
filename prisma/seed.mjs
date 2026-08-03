@@ -1,11 +1,28 @@
 import Database from 'better-sqlite3'
+import { createClient } from '@libsql/client'
 import bcryptjs from 'bcryptjs'
 import path from 'path'
 import crypto from 'crypto'
 import { fileURLToPath } from 'url'
 
-const dbPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'dev.db')
-const db = new Database(dbPath)
+const isRemote = process.env.DATABASE_URL && (process.env.DATABASE_URL.startsWith('libsql://') || process.env.DATABASE_URL.startsWith('wss://'))
+let db
+if (isRemote) {
+  const client = createClient({ url: process.env.DATABASE_URL, authToken: process.env.TURSO_AUTH_TOKEN })
+  const pending = []
+  db = {
+    prepare(sql) {
+      return {
+        run: (...args) => { pending.push(client.execute({ sql, args })) },
+      }
+    },
+    close: async () => { await Promise.all(pending); await client.close() },
+  }
+  console.log('Seeding remote libSQL database...')
+} else {
+  const dbPath = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'dev.db')
+  db = new Database(dbPath)
+}
 
 function cuid() {
   return 'c' + crypto.randomBytes(12).toString('hex')
@@ -587,7 +604,7 @@ async function main() {
 
   console.log(`Seeded: ${reviewCount} reviews`)
 
-  db.close()
+  await db.close()
 }
 
 main().catch(console.error)
