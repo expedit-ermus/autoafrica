@@ -32,7 +32,7 @@ const partImages: Record<string, string[]> = {
 
 function getImages(p: Product): string {
   if (Array.isArray(p.images) && p.images.length > 0) return p.images[0];
-  const pool = partImages[p.category?.name || 'default'];
+  const pool = partImages[p.category?.name || 'default'] || partImages['default'];
   return pool[Math.abs(p.id.split('').reduce((s, c) => s + c.charCodeAt(0), 0)) % pool.length];
 }
 
