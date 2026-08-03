@@ -73,7 +73,7 @@ const COUNTRY_FLAGS: Record<string, string> = {
   CI: 'ci', SN: 'sn', ML: 'ml', BF: 'bf', GH: 'gh', CM: 'cm', NE: 'ne', TG: 'tg', BJ: 'bj', GN: 'gn',
 };
 const SOURCE_LABELS: Record<string, string> = {
-  web: 'Site web', phone: 'Telephone', referral: 'Recommandation', social: 'Reseau social', event: 'Evenement', other: 'Autre',
+  web: 'Site web', phone: 'Téléphone', referral: 'Recommandation', social: 'Réseau social', event: 'Événement', other: 'Autre',
 };
 
 export default function CRMPage() {
@@ -320,9 +320,9 @@ export default function CRMPage() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#f0f2f5]">
+    <div className="flex min-h-screen bg-warm">
       <Sidebar />
-      <div className="flex-1 lg:ml-64">
+      <div className="flex-1 lg:ml-[260px]">
         <DashboardTopBar />
         <main className="p-4 lg:p-8 pb-24 lg:pb-8">
 
@@ -370,7 +370,7 @@ export default function CRMPage() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-dark)]/20 focus:border-[var(--color-primary-dark)] transition-all shadow-sm"
-                  placeholder={activeTab === 'contacts' ? 'Rechercher un contact par nom, email ou telephone...' : 'Rechercher un lead par nom, email ou telephone...'}
+                  placeholder={activeTab === 'contacts' ? 'Rechercher un contact par nom, email ou téléphone...' : 'Rechercher un lead par nom, email ou téléphone...'}
                 />
                 {search && (
                   <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-gray-100 transition">
@@ -456,7 +456,7 @@ export default function CRMPage() {
                 <button onClick={() => setTypeFilter('all')}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
                     typeFilter === 'all'
-                      ? 'bg-gray-900 text-white border-gray-900 shadow-sm'
+                      ? 'bg-[var(--color-secondary)] text-white border-[var(--color-secondary)] shadow-sm'
                       : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                   }`}>
                   Tous
@@ -465,7 +465,7 @@ export default function CRMPage() {
                   <button key={tp} onClick={() => setTypeFilter(tp)}
                     className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all border capitalize ${
                       typeFilter === tp
-                        ? 'bg-gray-900 text-white border-gray-900 shadow-sm'
+                        ? 'bg-[var(--color-secondary)] text-white border-[var(--color-secondary)] shadow-sm'
                         : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                     }`}>
                     {tp}
@@ -491,7 +491,7 @@ export default function CRMPage() {
                 <button onClick={() => setStatusFilter('all')}
                   className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
                     statusFilter === 'all'
-                      ? 'bg-gray-900 text-white border-gray-900 shadow-sm'
+                      ? 'bg-[var(--color-secondary)] text-white border-[var(--color-secondary)] shadow-sm'
                       : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                   }`}>
                   Tous
@@ -500,7 +500,7 @@ export default function CRMPage() {
                   <button key={s} onClick={() => setStatusFilter(s)}
                     className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all border ${
                       statusFilter === s
-                        ? 'bg-gray-900 text-white border-gray-900 shadow-sm'
+                        ? 'bg-[var(--color-secondary)] text-white border-[var(--color-secondary)] shadow-sm'
                         : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                     }`}>
                     <span className="flex items-center gap-1.5">
@@ -546,7 +546,7 @@ export default function CRMPage() {
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 mb-1">Aucun contact pour le moment</h3>
                   <p className="text-sm text-gray-500 mb-5 text-center max-w-xs">
-                    Commencez par ajouter votre premier contact pour gerer vos relations client.
+                    Commencez par ajouter votre premier contact pour gérer vos relations client.
                   </p>
                   <button
                     onClick={() => {
@@ -685,7 +685,7 @@ export default function CRMPage() {
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 mb-1">Aucun lead pour le moment</h3>
                   <p className="text-sm text-gray-500 mb-5 text-center max-w-xs">
-                    Ajoutez votre premier lead pour demarrer votre pipeline de ventes.
+                    Ajoutez votre premier lead pour démarrer votre pipeline de ventes.
                   </p>
                   <button
                     onClick={() => {
@@ -833,7 +833,7 @@ export default function CRMPage() {
                   <input id="crm-email" className="input-field" type="email" placeholder="Ex: jean@example.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
                 </div>
                 <div>
-                  <label htmlFor="crm-phone" className="block text-xs font-semibold text-gray-700 mb-1.5">Telephone</label>
+                  <label htmlFor="crm-phone" className="block text-xs font-semibold text-gray-700 mb-1.5">Téléphone</label>
                   <input id="crm-phone" className="input-field" placeholder="Ex: +225 07 07 07 07" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
@@ -855,7 +855,7 @@ export default function CRMPage() {
                 </div>
                 <div>
                   <label htmlFor="crm-notes" className="block text-xs font-semibold text-gray-700 mb-1.5">Notes</label>
-                  <textarea id="crm-notes" className="input-field" rows={2} placeholder="Informations complementaires..." value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
+                  <textarea id="crm-notes" className="input-field" rows={2} placeholder="Informations complémentaires..." value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
                 </div>
                 <div className="flex gap-3 pt-2">
                   <button onClick={handleAddCustomer} className="btn-primary flex-1 text-sm !py-3">Enregistrer</button>
@@ -876,7 +876,7 @@ export default function CRMPage() {
                   <input id="lead-name" className="input-field" placeholder="Ex: Amadou Diallo" value={leadForm.name} onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })} />
                 </div>
                 <div>
-                  <label htmlFor="lead-phone" className="block text-xs font-semibold text-gray-700 mb-1.5">Telephone *</label>
+                  <label htmlFor="lead-phone" className="block text-xs font-semibold text-gray-700 mb-1.5">Téléphone *</label>
                   <input id="lead-phone" className="input-field" placeholder="Ex: +225 05 05 05 05" value={leadForm.phone} onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })} />
                 </div>
                 <div>
@@ -899,7 +899,7 @@ export default function CRMPage() {
                 </div>
                 <div>
                   <label htmlFor="lead-notes" className="block text-xs font-semibold text-gray-700 mb-1.5">Notes</label>
-                  <textarea id="lead-notes" className="input-field" rows={2} placeholder="Informations complementaires..." value={leadForm.notes} onChange={(e) => setLeadForm({ ...leadForm, notes: e.target.value })} />
+                  <textarea id="lead-notes" className="input-field" rows={2} placeholder="Informations complémentaires..." value={leadForm.notes} onChange={(e) => setLeadForm({ ...leadForm, notes: e.target.value })} />
                 </div>
                 <div className="flex gap-3 pt-2">
                   <button onClick={handleAddLead} className="btn-primary flex-1 text-sm !py-3">Enregistrer</button>
@@ -924,8 +924,8 @@ export default function CRMPage() {
                   <input id="editcrm-email" className="input-field" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
                 </div>
                 <div>
-                  <label htmlFor="editcrm-phone" className="block text-xs font-semibold text-gray-700 mb-1.5">Telephone</label>
-                  <input id="editcrm-phone" className="input-field" placeholder="Telephone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                  <label htmlFor="editcrm-phone" className="block text-xs font-semibold text-gray-700 mb-1.5">Téléphone</label>
+                  <input id="editcrm-phone" className="input-field" placeholder="Téléphone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
@@ -967,8 +967,8 @@ export default function CRMPage() {
                   <input id="editlead-name" className="input-field" placeholder="Nom" value={leadForm.name} onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })} />
                 </div>
                 <div>
-                  <label htmlFor="editlead-phone" className="block text-xs font-semibold text-gray-700 mb-1.5">Telephone</label>
-                  <input id="editlead-phone" className="input-field" placeholder="Telephone" value={leadForm.phone} onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })} />
+                  <label htmlFor="editlead-phone" className="block text-xs font-semibold text-gray-700 mb-1.5">Téléphone</label>
+                  <input id="editlead-phone" className="input-field" placeholder="Téléphone" value={leadForm.phone} onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })} />
                 </div>
                 <div>
                   <label htmlFor="editlead-email" className="block text-xs font-semibold text-gray-700 mb-1.5">Email</label>
@@ -1065,7 +1065,7 @@ export default function CRMPage() {
                     <span className="text-sm font-semibold text-gray-900">{showDetail.email || '-'}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-500">Telephone</span>
+                    <span className="text-sm text-gray-500">Téléphone</span>
                     <span className="text-sm font-semibold text-gray-900">{showDetail.phone}</span>
                   </div>
                   {detailType === 'customer' && (

@@ -201,6 +201,16 @@ export default function DeliveryPage() {
     return list;
   }, [vehicles, vehSearch, vehStatus]);
 
+  const stats = useMemo(() => {
+    const pending = shipments.filter(s => s.status === 'PENDING').length;
+    const inTransit = shipments.filter(s => ['PICKED_UP', 'IN_TRANSIT', 'OUT_FOR_DELIVERY'].includes(s.status)).length;
+    const delivered = shipments.filter(s => s.status === 'DELIVERED').length;
+    const failed = shipments.filter(s => ['FAILED_DELIVERY', 'RETURNED'].includes(s.status)).length;
+    const activeRoutes = routes.filter(r => r.status === 'active').length;
+    const activeVehicles = vehicles.filter(v => v.status === 'active').length;
+    return { pending, inTransit, delivered, failed, activeRoutes, activeVehicles };
+  }, [shipments, routes, vehicles]);
+
   const handleAddShipment = async () => {
     if (!shipmentForm.orderId) { addToast('error', 'Commande requise'); return; }
     try {
@@ -351,7 +361,7 @@ export default function DeliveryPage() {
   const formatDate = (d?: string | null) => d ? new Date(d).toISOString().split('T')[0] : '—';
 
   return (
-    <div className="flex min-h-screen bg-[#F0F2F5]">
+    <div className="flex min-h-screen bg-warm">
       <Sidebar />
       <div className="flex-1 lg:ml-[260px]">
         <DashboardTopBar />
@@ -366,18 +376,21 @@ export default function DeliveryPage() {
             </div>
             <div className="flex items-center gap-2">
               {tab === 'shipments' && (
-                <button onClick={() => setShowAddShipment(true)} className="btn-primary !py-2 !px-4 !text-xs">
-                  + Nouvelle livraison
+                <button onClick={() => setShowAddShipment(true)} className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-semibold shadow-md hover:from-orange-600 hover:to-amber-600 hover:shadow-lg transition-all">
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                  Nouvelle livraison
                 </button>
               )}
               {tab === 'routes' && (
-                <button onClick={() => setShowAddRoute(true)} className="btn-primary !py-2 !px-4 !text-xs">
-                  + Nouvelle tournée
+                <button onClick={() => setShowAddRoute(true)} className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-semibold shadow-md hover:from-orange-600 hover:to-amber-600 hover:shadow-lg transition-all">
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                  Nouvelle tournée
                 </button>
               )}
               {tab === 'fleet' && (
-                <button onClick={() => setShowAddVehicle(true)} className="btn-primary !py-2 !px-4 !text-xs">
-                  + Ajouter véhicule
+                <button onClick={() => setShowAddVehicle(true)} className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-xs font-semibold shadow-md hover:from-orange-600 hover:to-amber-600 hover:shadow-lg transition-all">
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                  Ajouter véhicule
                 </button>
               )}
             </div>
@@ -389,7 +402,7 @@ export default function DeliveryPage() {
                 key={tb.key}
                 onClick={() => setTab(tb.key)}
                 className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
-                  tab === tb.key ? 'bg-[#0F172A] text-white shadow-sm' : 'text-gray-500 hover:text-gray-800'
+                  tab === tb.key ? 'bg-[var(--color-secondary)] text-white shadow-sm' : 'text-gray-500 hover:text-gray-800'
                 }`}
               >
                 {tb.label}
@@ -397,6 +410,32 @@ export default function DeliveryPage() {
                   {tb.count}
                 </span>
               </button>
+            ))}
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-6 animate-fade-in">
+            {[
+              { label: 'En attente', value: stats.pending, color: 'from-amber-500 to-amber-600', icon: (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              ) },
+              { label: 'En transit', value: stats.inTransit, color: 'from-blue-500 to-blue-600', icon: (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25" /></svg>
+              ) },
+              { label: 'Livrées', value: stats.delivered, color: 'from-emerald-500 to-emerald-600', icon: (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+              ) },
+              { label: 'Flotte active', value: stats.activeVehicles, color: 'from-violet-500 to-violet-600', icon: (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2 12l4.5-4.5A2 2 0 017.83 7H16a2 2 0 011.414.586L21 11h-3m-9.5-3v9m9-4v-4" /></svg>
+              ) },
+            ].map(s => (
+              <div key={s.label} className="card-modern p-4 sm:p-5 flex items-center gap-4">
+                <div className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center text-white shadow-sm shrink-0`}>{s.icon}</div>
+                <div className="min-w-0">
+                  <p className="text-xs text-gray-500 font-medium">{s.label}</p>
+                  <p className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">{s.value}</p>
+                </div>
+              </div>
             ))}
           </div>
 
@@ -414,12 +453,12 @@ export default function DeliveryPage() {
                         value={shpSearch}
                         onChange={e => setShpSearch(e.target.value)}
                         placeholder="Rechercher livraison..."
-                        className="input-field !min-h-[38px] !py-2 !text-xs w-full sm:w-64"
+                        className="w-full sm:w-64 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
                       />
                       <select
                         value={shpStatus}
                         onChange={e => setShpStatus(e.target.value)}
-                        className="input-field !min-h-[38px] !py-2 !text-xs"
+                        className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-xs text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
                       >
                         <option value="all">Tous les statuts</option>
                         {Object.entries(SHIPMENT_STATUS).map(([k, v]) => (
@@ -439,13 +478,22 @@ export default function DeliveryPage() {
                   </div>
 
                   {filteredShipments.length === 0 ? (
-                    <div className="text-center py-16 text-gray-400">
-                      <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gray-100 flex items-center justify-center">
-                        <svg className="w-8 h-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+                      <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center mb-5">
+                        <svg className="w-10 h-10 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25" />
                         </svg>
                       </div>
-                      <p className="text-sm font-medium">Aucune livraison</p>
+                      <h3 className="text-lg font-bold text-gray-900 mb-1">Aucune livraison</h3>
+                      <p className="text-sm text-gray-500 mb-5 max-w-sm">
+                        {shpSearch || shpStatus !== 'all'
+                          ? 'Aucune livraison ne correspond à vos critères. Essayez de modifier vos filtres.'
+                          : 'Créez votre première livraison pour suivre vos expéditions en temps réel.'}
+                      </p>
+                      <button onClick={() => setShowAddShipment(true)} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold shadow-md hover:from-orange-600 hover:to-amber-600 hover:shadow-lg transition-all">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                        Nouvelle livraison
+                      </button>
                     </div>
                   ) : (
                     <>
@@ -529,12 +577,12 @@ export default function DeliveryPage() {
                         value={routeSearch}
                         onChange={e => setRouteSearch(e.target.value)}
                         placeholder="Rechercher tournée..."
-                        className="input-field !min-h-[38px] !py-2 !text-xs w-full sm:w-64"
+                        className="w-full sm:w-64 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
                       />
                       <select
                         value={routeStatus}
                         onChange={e => setRouteStatus(e.target.value)}
-                        className="input-field !min-h-[38px] !py-2 !text-xs"
+                        className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-xs text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
                       >
                         <option value="all">Tous les statuts</option>
                         {Object.entries(ROUTE_STATUS).map(([k, v]) => (
@@ -545,8 +593,22 @@ export default function DeliveryPage() {
                   </div>
 
                   {filteredRoutes.length === 0 ? (
-                    <div className="text-center py-16 text-gray-400">
-                      <p className="text-sm font-medium">Aucune tournée</p>
+                    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+                      <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center mb-5">
+                        <svg className="w-10 h-10 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-1">Aucune tournée</h3>
+                      <p className="text-sm text-gray-500 mb-5 max-w-sm">
+                        {routeSearch || routeStatus !== 'all'
+                          ? 'Aucune tournée ne correspond à vos critères. Essayez de modifier vos filtres.'
+                          : 'Planifiez votre première tournée pour organiser les livraisons du jour.'}
+                      </p>
+                      <button onClick={() => setShowAddRoute(true)} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold shadow-md hover:from-orange-600 hover:to-amber-600 hover:shadow-lg transition-all">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                        Nouvelle tournée
+                      </button>
                     </div>
                   ) : (
                     <>
@@ -623,12 +685,12 @@ export default function DeliveryPage() {
                         value={vehSearch}
                         onChange={e => setVehSearch(e.target.value)}
                         placeholder="Rechercher véhicule..."
-                        className="input-field !min-h-[38px] !py-2 !text-xs w-full sm:w-64"
+                        className="w-full sm:w-64 px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
                       />
                       <select
                         value={vehStatus}
                         onChange={e => setVehStatus(e.target.value)}
-                        className="input-field !min-h-[38px] !py-2 !text-xs"
+                        className="px-4 py-2.5 rounded-xl border border-gray-200 bg-white text-xs text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
                       >
                         <option value="all">Tous les statuts</option>
                         {Object.entries(VEHICLE_STATUS).map(([k, v]) => (
@@ -639,8 +701,22 @@ export default function DeliveryPage() {
                   </div>
 
                   {filteredVehicles.length === 0 ? (
-                    <div className="text-center py-16 text-gray-400">
-                      <p className="text-sm font-medium">Aucun véhicule de flotte</p>
+                    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+                      <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-violet-50 to-purple-50 flex items-center justify-center mb-5">
+                        <svg className="w-10 h-10 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2 12l4.5-4.5A2 2 0 017.83 7H16a2 2 0 011.414.586L21 11h-3m-9.5-3v9m9-4v-4" />
+                        </svg>
+                      </div>
+                      <h3 className="text-lg font-bold text-gray-900 mb-1">Aucun véhicule de flotte</h3>
+                      <p className="text-sm text-gray-500 mb-5 max-w-sm">
+                        {vehSearch || vehStatus !== 'all'
+                          ? 'Aucun véhicule ne correspond à vos critères. Essayez de modifier vos filtres.'
+                          : 'Ajoutez votre premier véhicule pour gérer votre flotte de livraison.'}
+                      </p>
+                      <button onClick={() => setShowAddVehicle(true)} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold shadow-md hover:from-orange-600 hover:to-amber-600 hover:shadow-lg transition-all">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                        Ajouter véhicule
+                      </button>
                     </div>
                   ) : (
                     <>

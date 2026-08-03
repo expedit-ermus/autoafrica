@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useState, useEffect } from 'react';
 import RemoteImage from '@/components/RemoteImage';
 import Sidebar from '@/components/Sidebar';
@@ -180,9 +180,9 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen bg-gray-50">
+      <div className="flex min-h-screen bg-warm">
         <Sidebar />
-        <div className="flex-1 lg:ml-64">
+        <div className="flex-1 lg:ml-[260px]">
           <DashboardTopBar />
           <div className="flex items-center justify-center h-96">
             <div className="text-center">
@@ -199,9 +199,9 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen bg-warm">
       <Sidebar />
-      <div className="flex-1 lg:ml-64">
+      <div className="flex-1 lg:ml-[260px]">
         <DashboardTopBar />
         <main className="p-4 lg:p-8 pb-24 lg:pb-8 max-w-[1400px] mx-auto">
 

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useState, useEffect, useMemo } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
@@ -7,11 +7,21 @@ import Modal from '@/components/Modal';
 import { Order } from '@/shared/types';
 
 const TRACKING_STEPS = [
-  { key: 'PENDING', label: 'Commande reçue', icon: '📝', color: 'text-yellow-600', bg: 'bg-yellow-100' },
-  { key: 'CONFIRMED', label: 'Confirmée', icon: '✅', color: 'text-blue-600', bg: 'bg-blue-100' },
-  { key: 'PAID', label: 'Payée', icon: '💳', color: 'text-green-600', bg: 'bg-green-100' },
-  { key: 'SHIPPED', label: 'Expédiée', icon: '🚚', color: 'text-purple-600', bg: 'bg-purple-100' },
-  { key: 'DELIVERED', label: 'Livrée', icon: '📦', color: 'text-green-600', bg: 'bg-green-100' },
+  { key: 'PENDING', label: 'Commande reçue', color: 'text-yellow-600', bg: 'bg-yellow-100', icon: (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>
+  ) },
+  { key: 'CONFIRMED', label: 'Confirmée', color: 'text-blue-600', bg: 'bg-blue-100', icon: (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+  ) },
+  { key: 'PAID', label: 'Payée', color: 'text-green-600', bg: 'bg-green-100', icon: (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+  ) },
+  { key: 'SHIPPED', label: 'Expédiée', color: 'text-purple-600', bg: 'bg-purple-100', icon: (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25" /></svg>
+  ) },
+  { key: 'DELIVERED', label: 'Livrée', color: 'text-green-600', bg: 'bg-green-100', icon: (
+    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+  ) },
 ];
 
 const STATUS_CONFIG: Record<string, { label: string; bg: string; text: string; dot: string }> = {
@@ -159,9 +169,9 @@ export default function OrdersPage() {
   ];
 
   return (
-    <div className="flex min-h-screen bg-gray-50/80">
+    <div className="flex min-h-screen bg-warm">
       <Sidebar />
-      <div className="flex-1 lg:ml-64">
+      <div className="flex-1 lg:ml-[260px]">
         <DashboardTopBar />
         <main className="p-4 lg:p-8 pb-24 lg:pb-8 max-w-7xl mx-auto">
 
@@ -187,17 +197,25 @@ export default function OrdersPage() {
           {/* Quick Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
             {[
-              { label: 'Total', value: orders.length, color: 'from-blue-500 to-blue-600', icon: '📊' },
-              { label: 'En attente', value: pendingCount, color: 'from-amber-500 to-amber-600', icon: '⏳' },
-              { label: 'En transit', value: shippedCount, color: 'from-violet-500 to-violet-600', icon: '🚚' },
-              { label: 'Revenus', value: formatCFA(totalRevenue), suffix: ' FCFA', color: 'from-emerald-500 to-emerald-600', icon: '💰' },
+              { label: 'Total', value: orders.length, color: 'from-blue-500 to-blue-600', icon: (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
+              ) },
+              { label: 'En attente', value: pendingCount, color: 'from-amber-500 to-amber-600', icon: (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              ) },
+              { label: 'En transit', value: shippedCount, color: 'from-violet-500 to-violet-600', icon: (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25" /></svg>
+              ) },
+              { label: 'Revenus', value: formatCFA(totalRevenue), suffix: ' FCFA', color: 'from-emerald-500 to-emerald-600', icon: (
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              ) },
             ].map(s => (
-              <div key={s.label} className="bg-white rounded-xl border border-gray-100 p-4 sm:p-5 hover:shadow-md transition-shadow duration-200">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className={`w-8 h-8 rounded-lg bg-gradient-to-br ${s.color} flex items-center justify-center text-sm text-white shadow-sm`}>{s.icon}</span>
-                  <span className="text-xs text-gray-500 font-medium">{s.label}</span>
+              <div key={s.label} className="card-modern p-4 sm:p-5 flex items-center gap-4">
+                <div className={`w-11 h-11 rounded-2xl bg-gradient-to-br ${s.color} flex items-center justify-center text-white shadow-sm shrink-0`}>{s.icon}</div>
+                <div className="min-w-0">
+                  <p className="text-xs text-gray-500 font-medium">{s.label}</p>
+                  <p className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight truncate">{s.value}{s.suffix && <span className="text-sm font-normal text-gray-400 ml-1">{s.suffix}</span>}</p>
                 </div>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">{s.value}{s.suffix && <span className="text-sm font-normal text-gray-400 ml-1">{s.suffix}</span>}</p>
               </div>
             ))}
           </div>
@@ -398,41 +416,45 @@ export default function OrdersPage() {
                                 <>
                                   <button
                                     onClick={() => handleUpdateStatus(order.id, 'CONFIRMED')}
-                                    className="px-2.5 py-1.5 rounded-md bg-blue-50 text-blue-600 text-xs font-medium hover:bg-blue-100 transition"
+                                    className="px-2.5 py-1.5 rounded-md bg-blue-50 text-blue-600 text-xs font-medium hover:bg-blue-100 transition inline-flex items-center gap-1"
                                     title="Confirmer"
                                   >
+                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
                                     Confirmer
                                   </button>
                                   <button
                                     onClick={() => handleUpdateStatus(order.id, 'CANCELLED')}
-                                    className="px-2 py-1.5 rounded-md bg-red-50 text-red-500 text-xs font-medium hover:bg-red-100 transition"
+                                    className="px-2 py-1.5 rounded-md bg-red-50 text-red-500 text-xs font-medium hover:bg-red-100 transition inline-flex items-center justify-center"
                                     title="Annuler"
                                   >
-                                    ✕
+                                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                                   </button>
                                 </>
                               )}
                               {order.status === 'CONFIRMED' && (
                                 <button
                                   onClick={() => handleUpdateStatus(order.id, 'PAID')}
-                                  className="px-2.5 py-1.5 rounded-md bg-green-50 text-green-600 text-xs font-medium hover:bg-green-100 transition"
+                                  className="px-2.5 py-1.5 rounded-md bg-green-50 text-green-600 text-xs font-medium hover:bg-green-100 transition inline-flex items-center gap-1"
                                 >
+                                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
                                   Marquer payée
                                 </button>
                               )}
                               {order.status === 'PAID' && (
                                 <button
                                   onClick={() => handleUpdateStatus(order.id, 'SHIPPED')}
-                                  className="px-2.5 py-1.5 rounded-md bg-violet-50 text-violet-600 text-xs font-medium hover:bg-violet-100 transition"
+                                  className="px-2.5 py-1.5 rounded-md bg-violet-50 text-violet-600 text-xs font-medium hover:bg-violet-100 transition inline-flex items-center gap-1"
                                 >
+                                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25" /></svg>
                                   Expédier
                                 </button>
                               )}
                               {order.status === 'SHIPPED' && (
                                 <button
                                   onClick={() => handleUpdateStatus(order.id, 'DELIVERED')}
-                                  className="px-2.5 py-1.5 rounded-md bg-emerald-50 text-emerald-600 text-xs font-medium hover:bg-emerald-100 transition"
+                                  className="px-2.5 py-1.5 rounded-md bg-emerald-50 text-emerald-600 text-xs font-medium hover:bg-emerald-100 transition inline-flex items-center gap-1"
                                 >
+                                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
                                   Marquer livrée
                                 </button>
                               )}
@@ -510,40 +532,44 @@ export default function OrdersPage() {
                           <>
                             <button
                               onClick={() => handleUpdateStatus(order.id, 'CONFIRMED')}
-                              className="flex-1 px-3 py-2 rounded-lg bg-blue-500 text-white text-xs font-medium hover:bg-blue-600 active:scale-[0.98] transition-all"
+                              className="flex-1 px-3 py-2 rounded-lg bg-blue-500 text-white text-xs font-medium hover:bg-blue-600 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1"
                             >
-                              ✅ Confirmer
+                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                              Confirmer
                             </button>
                             <button
                               onClick={() => handleUpdateStatus(order.id, 'CANCELLED')}
-                              className="px-3 py-2 rounded-lg bg-red-50 text-red-500 text-xs font-medium hover:bg-red-100 transition"
+                              className="px-3 py-2 rounded-lg bg-red-50 text-red-500 text-xs font-medium hover:bg-red-100 transition inline-flex items-center justify-center"
                             >
-                              ✕
+                              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
                             </button>
                           </>
                         )}
                         {order.status === 'CONFIRMED' && (
                           <button
                             onClick={() => handleUpdateStatus(order.id, 'PAID')}
-                            className="flex-1 px-3 py-2 rounded-lg bg-green-500 text-white text-xs font-medium hover:bg-green-600 active:scale-[0.98] transition-all"
+                            className="flex-1 px-3 py-2 rounded-lg bg-green-500 text-white text-xs font-medium hover:bg-green-600 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1"
                           >
-                            💳 Marquer payée
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                            Marquer payée
                           </button>
                         )}
                         {order.status === 'PAID' && (
                           <button
                             onClick={() => handleUpdateStatus(order.id, 'SHIPPED')}
-                            className="flex-1 px-3 py-2 rounded-lg bg-violet-500 text-white text-xs font-medium hover:bg-violet-600 active:scale-[0.98] transition-all"
+                            className="flex-1 px-3 py-2 rounded-lg bg-violet-500 text-white text-xs font-medium hover:bg-violet-600 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1"
                           >
-                            🚚 Expédier
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25" /></svg>
+                            Expédier
                           </button>
                         )}
                         {order.status === 'SHIPPED' && (
                           <button
                             onClick={() => handleUpdateStatus(order.id, 'DELIVERED')}
-                            className="flex-1 px-3 py-2 rounded-lg bg-emerald-500 text-white text-xs font-medium hover:bg-emerald-600 active:scale-[0.98] transition-all"
+                            className="flex-1 px-3 py-2 rounded-lg bg-emerald-500 text-white text-xs font-medium hover:bg-emerald-600 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1"
                           >
-                            📦 Marquer livrée
+                            <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                            Marquer livrée
                           </button>
                         )}
                         <button
@@ -688,7 +714,10 @@ export default function OrdersPage() {
                 )}
                 {selectedOrder.status === 'CANCELLED' && (
                   <div className="bg-red-50 rounded-xl p-4 text-center border border-red-100">
-                    <span className="text-sm font-medium text-red-600">❌ Commande annulée</span>
+                    <span className="text-sm font-medium text-red-600 inline-flex items-center gap-1.5">
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                      Commande annulée
+                    </span>
                   </div>
                 )}
 
@@ -699,7 +728,9 @@ export default function OrdersPage() {
                     {selectedOrder.items?.map((item) => (
                       <div key={item.id} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center text-xs shrink-0">📦</div>
+                          <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center text-xs shrink-0">
+                            <svg className="w-4 h-4 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                          </div>
                           <div className="min-w-0">
                             <p className="text-sm font-medium text-gray-900 truncate">{item.product?.title || 'Pièce'}</p>
                             <p className="text-xs text-gray-400">Qté: {item.quantity}</p>
@@ -745,13 +776,25 @@ export default function OrdersPage() {
                 <div className="flex flex-wrap gap-2 pt-2 border-t border-gray-100">
                   {selectedOrder.status === 'PENDING' && (
                     <>
-                      <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'CONFIRMED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 active:scale-[0.98] transition-all">✅ Confirmer</button>
-                      <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'CANCELLED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-red-50 text-red-600 text-sm font-medium hover:bg-red-100 transition">❌ Annuler</button>
+                      <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'CONFIRMED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1.5">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                        Confirmer
+                      </button>
+                      <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'CANCELLED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-red-50 text-red-600 text-sm font-medium hover:bg-red-100 transition inline-flex items-center justify-center gap-1.5">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                        Annuler
+                      </button>
                     </>
                   )}
-                  {selectedOrder.status === 'CONFIRMED' && <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'PAID'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600 active:scale-[0.98] transition-all">💳 Marquer payée</button>}
-                  {selectedOrder.status === 'PAID' && <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'SHIPPED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-violet-500 text-white text-sm font-medium hover:bg-violet-600 active:scale-[0.98] transition-all">🚚 Expédier</button>}
-                  {selectedOrder.status === 'SHIPPED' && <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'DELIVERED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 active:scale-[0.98] transition-all">📦 Marquer livrée</button>}
+                  {selectedOrder.status === 'CONFIRMED' && <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'PAID'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1.5">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+                    Marquer payée</button>}
+                  {selectedOrder.status === 'PAID' && <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'SHIPPED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-violet-500 text-white text-sm font-medium hover:bg-violet-600 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1.5">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25" /></svg>
+                    Expédier</button>}
+                  {selectedOrder.status === 'SHIPPED' && <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'DELIVERED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1.5">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                    Marquer livrée</button>}
                 </div>
               </div>
             )}

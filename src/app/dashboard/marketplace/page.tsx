@@ -389,9 +389,9 @@ export default function MarketplacePage() {
   const chips = activeFilterChips();
 
   return (
-    <div className="flex min-h-screen bg-gray-50/50">
+    <div className="flex min-h-screen bg-warm">
       <Sidebar />
-      <div className="flex-1 lg:ml-64">
+      <div className="flex-1 lg:ml-[260px]">
         <DashboardTopBar />
         <main className="p-4 lg:p-8 pb-24 lg:pb-8 max-w-[1600px] mx-auto">
           <BreadcrumbStructuredData items={[{ name: 'AutoAfrique', url: SITE_URL }, { name: 'Marketplace', url: MARKETPLACE_URL }]} />
