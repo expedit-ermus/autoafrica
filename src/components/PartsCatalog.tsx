@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import Image from 'next/image';
+import RemoteImage from '@/components/RemoteImage';
 import { useApp } from '@/contexts/AppContext';
 
 const categories = [
@@ -97,7 +97,7 @@ export default function PartsCatalog() {
               className="group relative bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--color-primary)]/10 transition-all duration-300 overflow-hidden"
             >
               <div className="relative aspect-square overflow-hidden bg-[var(--color-bg-warm)]">
-                <Image
+                <RemoteImage
                   src={cat.image}
                   alt={cat.name[locale as 'fr' | 'en']}
                   fill

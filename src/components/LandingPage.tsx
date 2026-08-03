@@ -174,8 +174,8 @@ export default function LandingPage() {
             {L('Meilleures ventes', 'Bestsellers')}
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {bestsellers.map((product) => (
-              <ProductCard key={product.reference} {...product} />
+            {bestsellers.map((product, i) => (
+              <ProductCard key={product.reference} {...product} priority={i === 0} />
             ))}
           </div>
         </div>

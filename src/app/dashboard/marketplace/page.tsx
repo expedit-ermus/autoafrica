@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
+import RemoteImage from '@/components/RemoteImage';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useApp } from '@/contexts/AppContext';
@@ -240,7 +240,7 @@ export default function MarketplacePage() {
         onClick={() => openDetail(p)}
       >
         <div className="relative h-48 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-          <Image
+          <RemoteImage
             src={imgs[0]}
             alt={p.title}
             fill
@@ -333,7 +333,7 @@ export default function MarketplacePage() {
         onClick={() => openDetail(p)}
       >
         <div className="relative w-48 min-h-[140px] bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden flex-shrink-0">
-          <Image src={imgs[0]} alt={p.title} fill sizes="192px" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+          <RemoteImage src={imgs[0]} alt={p.title} fill sizes="192px" className="object-cover transition-transform duration-500 group-hover:scale-105" />
           <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-white/90 backdrop-blur-sm text-[10px] font-semibold text-gray-700">
             {p.brand?.name || 'Pièce'}
           </span>
@@ -796,13 +796,13 @@ export default function MarketplacePage() {
                         onClick={() => openDetail(p)}
                       >
                         <div className="relative h-20 overflow-hidden rounded-lg mb-2">
-                          <Image
-                            src={getImages(p)[0]}
-                            alt={p.title}
-                            fill
-                            sizes="(max-width: 640px) 50vw, 16vw"
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
+                           <RemoteImage
+                             src={getImages(p)[0]}
+                             alt={p.title}
+                             fill
+                             sizes="(max-width: 640px) 50vw, 16vw"
+                             className="object-cover group-hover:scale-105 transition-transform duration-300"
+                           />
                         </div>
                         <p className="text-xs font-bold text-gray-900 line-clamp-2 group-hover:text-orange-600 transition-colors">{p.title}</p>
                         <p className="text-xs font-bold text-orange-600 mt-1">{formatCFA(p.price)} FCFA</p>
@@ -831,7 +831,7 @@ export default function MarketplacePage() {
                     seller={detailProduct.seller?.shopName || detailProduct.seller?.firstName || undefined}
                   />
                   <div className="relative h-64 rounded-xl overflow-hidden bg-gray-100">
-                    <Image src={imgs[detailImageIdx]} alt={detailProduct.title} fill sizes="100vw" className="object-cover" />
+                    <RemoteImage src={imgs[detailImageIdx]} alt={detailProduct.title} fill sizes="100vw" className="object-cover" />
                     {imgs.length > 1 && (
                       <>
                         <button onClick={() => setDetailImageIdx(i => (i - 1 + imgs.length) % imgs.length)}

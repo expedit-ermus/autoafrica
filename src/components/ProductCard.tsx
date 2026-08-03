@@ -1,5 +1,5 @@
 'use client';
-import Image from 'next/image';
+import RemoteImage from '@/components/RemoteImage';
 import { useApp } from '@/contexts/AppContext';
 
 interface ProductCardProps {
@@ -14,6 +14,7 @@ interface ProductCardProps {
   brand: string;
   inStock: boolean;
   location?: string;
+  priority?: boolean;
 }
 
 export default function ProductCard({
@@ -28,6 +29,7 @@ export default function ProductCard({
   brand,
   inStock,
   location,
+  priority = false,
 }: ProductCardProps) {
   const { locale } = useApp();
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
@@ -39,12 +41,13 @@ export default function ProductCard({
   return (
     <div className="group bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--color-primary)]/10 transition-all duration-300 overflow-hidden flex flex-col">
       <div className="relative aspect-square bg-[var(--color-bg-warm)] overflow-hidden">
-        <Image
+        <RemoteImage
           src={image}
           alt={name}
           fill
           sizes="(max-width: 640px) 50vw, 33vw"
           className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+          priority={priority}
         />
         {discount && discount > 0 && (
           <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-md">

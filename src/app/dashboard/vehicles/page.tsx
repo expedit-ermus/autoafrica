@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import RemoteImage from '@/components/RemoteImage';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import Modal from '@/components/Modal';
@@ -150,7 +150,7 @@ export default function VehiclesPage() {
         onClick={() => { setDetail(v); setDetailImageIdx(0); }}
       >
         <div className="relative h-48 bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
-          <Image src={imgs[0]} alt={v.name} fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+          <RemoteImage src={imgs[0]} alt={v.name} fill sizes="(max-width: 768px) 100vw, 25vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
           <span className={`absolute top-2 left-2 px-2 py-0.5 rounded-md text-[10px] font-semibold backdrop-blur-sm ${cond.cls}`}>{cond.label}</span>
           {v.fuel && (
             <span className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/50 backdrop-blur-sm text-white text-[10px] font-semibold">
@@ -334,7 +334,7 @@ export default function VehiclesPage() {
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">
-                <Image src={getImages(detail)[detailImageIdx]} alt={detail.name} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
+                <RemoteImage src={getImages(detail)[detailImageIdx]} alt={detail.name} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
               </div>
               <div>
                 <p className="text-2xl font-extrabold text-gray-900">{formatCFA(detail.price)} <span className="text-sm font-normal text-gray-400">FCFA</span></p>
@@ -374,7 +374,7 @@ export default function VehiclesPage() {
               <div className="flex gap-2 overflow-x-auto pb-1">
                 {getImages(detail).map((img, i) => (
                   <button key={i} onClick={() => setDetailImageIdx(i)} className={`relative w-20 h-16 rounded-lg overflow-hidden shrink-0 border-2 ${detailImageIdx === i ? 'border-orange-500' : 'border-transparent'}`}>
-                    <Image src={img} alt={`${detail.name} photo ${i + 1}`} fill sizes="80px" className="object-cover" />
+                    <RemoteImage src={img} alt={`${detail.name} photo ${i + 1}`} fill sizes="80px" className="object-cover" />
                   </button>
                 ))}
               </div>

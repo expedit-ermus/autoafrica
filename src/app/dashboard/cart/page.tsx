@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import Image from 'next/image';
+import RemoteImage from '@/components/RemoteImage';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useToast } from '@/contexts/ToastContext';
@@ -134,7 +134,7 @@ export default function CartPage() {
                     <div className="flex items-stretch">
                       {/* Image */}
                       <div className="relative w-28 h-28 sm:w-36 sm:h-36 flex-shrink-0 bg-gray-100">
-                        <Image
+                        <RemoteImage
                           src={item.image}
                           alt={item.title}
                           fill

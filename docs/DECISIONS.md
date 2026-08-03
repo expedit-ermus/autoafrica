@@ -555,7 +555,7 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 **Contrainte AGENTS.md** : les pages fonctionnelles dashboard (`crm`, `page`, `profile`, `settings`, `not-found`, `error`) utilisant aussi des hex warm/tierces restent volontairement non migrees dans cette iteration (prudence : pages metier + couleurs tierces) ; a voir en iteration suivante.
 
 **Impact** : `src/app/globals.css`, `docs/04-DESIGN-SYSTEM.md`, `src/components/*.tsx` (13), `src/components/WhatsAppIntegration.tsx` (suppression d'un numero de support factice, cf. D28). Lint/typecheck/275 tests/build OK.
-- **Complement (meme iteration)** : migration des pages fonctionnelles du dashboard (`crm`, `page`, `profile`, `settings`, `not-found`, `error`) vers les memes tokens (`#E85D04`→`--color-primary-dark`, `#D00000`→`--color-warm-red`, `#FF6B35`→`--color-primary`), pixel-identique. `#E85A25` (hover de `not-found`/`error`) n'a pas de token correspondant (distinct de `#E85D04`) : conserve en literal. Couleurs de marques tierces conservees en literal. Lint/typecheck/275 tests/build OK.
+- **Complement (meme iteration)** : migration des pages fonctionnelles du dashboard (`crm`, `page`, `profile`, `settings`, `not-found`, `error`) vers les memes tokens (`#E85D04`→`--color-primary-dark`, `#D00000`→`--color-warm-red`, `#FF6B35`→`--color-primary`), pixel-identique. `#E85A25` (hover de `not-found`/`error`) n'a pas de token correspondant (distinct de `#E85D04`) : conserve en literal. Les couleurs de marques tierces restent en literal. Lint/typecheck/275 tests/build OK.
 
 ## D31 : Câblage client du tracking (evenements de page + auth), aligne sur `09-TRACKING.md`
 
@@ -570,6 +570,19 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 **Resultats** : 278 tests (275 + 3). Lint (purity fixe), typecheck, build OK. Couverture 84.79/72.42/89.18/89.33 (seuils ok).
 
 **Impact** : `src/components/TrackingProvider.tsx` (+ test), `src/app/layout.tsx`, `src/app/auth/login/page.tsx`, `src/app/auth/register/page.tsx`, `src/components/DashboardTopBar.tsx`, `src/app/dashboard/marketplace/page.tsx`, `docs/DECISIONS.md`.
+
+## D32 : Correction des erreurs d'images distantes (`17-IMAGES-MEDIA` / `21-PERFORMANCE`)
+
+**Contexte** : `npm run test:e2e` et le serveur dev affichaient `upstream image response failed for https://upload.wikimedia.org/.../Toyota.svg/200px-Toyota.svg.png 400` (proxy Next/Image bloqué par Wikimedia sur les SVG) et `404` sur des URLs Unsplash inexistantes ; un warning LCP demandait `loading="eager"` + dimensions sur l'image ci-dessus la fold. Aucune image `image.png` n'existe dans le code : l'erreur portait sur l'optimisation des images à distance.
+
+**Decision** :
+- Créer `src/components/RemoteImage.tsx` (wrapper client) : `unoptimized` par défaut pour toute source `http(s)` (contourne le proxy → Wikimedia 200, plus de 400), `onError` → retombe sur `/logo.png` local (asset généré D20) pour tout 404/400 résiduel, et transmet toutes les props (`fill`/`sizes`/`width`/`height`/`className`/`loading`/`priority`/`alt`/`style`)
+- Remplacer `<Image>` → `<RemoteImage>` sur les 10 fichiers consommant une source distante (BrandGrid, PromoBanner, ProductCard, PartsCatalog, TestimonialCarousel, `dashboard/marketplace`, `vehicles`, `cart`, `page`, `crm`) ; `ImageUpload.tsx` garde `next/image` (sources locales `/uploads/` → optimisation conservée)
+- LCP : propagation de `priority` (→ `loading="eager"`) sur le premier `ProductCard` des best-sellers LandingPage (image ci-dessus la fold)
+
+**Resultats** : 4 E2E passent ; **les erreurs `upstream image response failed 400/400` ont disparu** (Wikimedia/Unsplash/flagcdn ne passent plus par le proxy). Lint, typecheck, 278 tests, build OK. Il reste des warnings dev perf (aspect-ratio / `eager` sur l'image hero du dashboard) — à traiter dans une itération `21-PERFORMANCE` dédiée ; le rendu pixel reste identique.
+
+**Impact** : `src/components/RemoteImage.tsx` (nouveau), `src/components/{BrandGrid,PromoBanner,ProductCard,PartsCatalog,TestimonialCarousel}.tsx`, `src/app/dashboard/{marketplace,vehicles,cart,page,crm}/page.tsx`, `src/components/LandingPage.tsx`, `docs/DECISIONS.md`.
 
 
 

@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import RemoteImage from '@/components/RemoteImage';
 import { useApp } from '@/contexts/AppContext';
 
 const banners = [
@@ -80,7 +80,7 @@ export default function PromoBanner() {
                 </Link>
               </div>
               <div className="hidden md:block flex-1">
-                <Image
+                <RemoteImage
                   src={banner.image}
                   alt={banner.title[locale as 'fr' | 'en']}
                   width={800}

@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useCallback } from 'react';
 import StarRating from './StarRating';
-import Image from 'next/image';
+import RemoteImage from '@/components/RemoteImage';
 
 interface Testimonial {
   name: string;
@@ -54,7 +54,7 @@ export default function TestimonialCarousel({
 
           <div className="mb-4">
             {t.img ? (
-              <Image src={t.img} alt={t.name} width={64} height={64} className="w-16 h-16 rounded-full mx-auto object-cover border-2 border-orange-100" />
+              <RemoteImage src={t.img} alt={t.name} width={64} height={64} className="w-16 h-16 rounded-full mx-auto object-cover border-2 border-orange-100" />
             ) : (
               <div className="w-16 h-16 rounded-full mx-auto bg-gradient-to-br from-[var(--color-primary-dark)] to-[var(--color-warm-red)] flex items-center justify-center text-white text-xl font-bold">
                 {t.name[0]}

@@ -1,6 +1,6 @@
 ﻿'use client';
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import RemoteImage from '@/components/RemoteImage';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useApp } from '@/contexts/AppContext';
@@ -429,7 +429,7 @@ export default function DashboardPage() {
                 <div className="space-y-1">
                   {products.slice(0, 5).map((p) => (
                     <div key={p.id} className="flex items-center gap-4 p-3.5 rounded-2xl hover:bg-gray-50 hover:shadow-sm transition-all duration-200 group cursor-pointer">
-                      <Image src={partImages[p.category?.name || 'default']} alt={p.title} width={48} height={48} className="w-12 h-12 rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow" />
+                      <RemoteImage src={partImages[p.category?.name || 'default']} alt={p.title} width={48} height={48} className="w-12 h-12 rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow" />
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-gray-900 text-sm truncate group-hover:text-orange-600 transition-colors">{p.title}</p>
                         <p className="text-xs text-gray-500 mt-0.5">{p.brand?.name || ''} â€¢ {p.reference || 'N/A'}</p>
@@ -486,7 +486,7 @@ export default function DashboardPage() {
                     { name: 'CÃ´te d\'Ivoire', code: 'CI' }, { name: 'SÃ©nÃ©gal', code: 'SN' }, { name: 'Mali', code: 'ML' }, { name: 'Burkina', code: 'BF' }, { name: 'Nigeria', code: 'NG' },
                   ].map(m => (
                     <div key={m.code} className="text-center p-3 rounded-xl bg-gray-50 hover:bg-orange-50 transition-all duration-200 cursor-pointer hover:shadow-sm group">
-                      <Image src={`https://flagcdn.com/w80/${m.code.toLowerCase()}.png`} alt={m.name} width={80} height={56} className="w-10 h-7 object-cover rounded-md mx-auto mb-1.5 shadow-sm group-hover:shadow-md transition-shadow" />
+                      <RemoteImage src={`https://flagcdn.com/w80/${m.code.toLowerCase()}.png`} alt={m.name} width={80} height={56} className="w-10 h-7 object-cover rounded-md mx-auto mb-1.5 shadow-sm group-hover:shadow-md transition-shadow" />
                       <p className="text-[10px] font-bold text-gray-600 group-hover:text-gray-800 transition-colors leading-tight">{m.name}</p>
                     </div>
                   ))}
