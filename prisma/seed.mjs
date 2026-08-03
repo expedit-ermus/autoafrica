@@ -9,14 +9,14 @@ const isRemote = process.env.DATABASE_URL && (process.env.DATABASE_URL.startsWit
 let db
 if (isRemote) {
   const client = createClient({ url: process.env.DATABASE_URL, authToken: process.env.TURSO_AUTH_TOKEN })
-  const pending = []
+  let chain = Promise.resolve()
   db = {
     prepare(sql) {
       return {
-        run: (...args) => { pending.push(client.execute({ sql, args })) },
+        run: (...args) => { chain = chain.then(() => client.execute({ sql, args })) },
       }
     },
-    close: async () => { await Promise.all(pending); await client.close() },
+    close: async () => { await chain; await client.close() },
   }
   console.log('Seeding remote libSQL database...')
 } else {
