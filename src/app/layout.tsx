@@ -4,6 +4,7 @@ import "./globals.css";
 import { AppProvider } from "@/contexts/AppContext";
 import { ToastProvider } from "@/contexts/ToastContext";
 import GlobalWidgets from "@/components/GlobalWidgets";
+import TrackingProvider from "@/components/TrackingProvider";
 
 export const metadata: Metadata = {
   title: {
@@ -101,6 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <GlobalWidgets />
           </ToastProvider>
         </AppProvider>
+        <TrackingProvider />
       </body>
     </html>
   );

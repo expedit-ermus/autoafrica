@@ -14,7 +14,7 @@ import {
 } from '@/components/StructuredData';
 import { MARKETPLACE_URL, SITE_URL } from '@/lib/structured-data';
 import { Product } from '@/shared/types';
-import { track, trackPageView } from '@/lib/tracking';
+import { track } from '@/lib/tracking';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
 interface CartItem {
@@ -143,10 +143,6 @@ export default function MarketplacePage() {
   };
 
   const firstRender = useRef(true);
-
-  useEffect(() => {
-    trackPageView();
-  }, []);
 
   useEffect(() => {
     if (firstRender.current) {

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
+import { track } from '@/lib/tracking';
 
 export default function LoginPage() {
   const { t, setUser } = useApp();
@@ -31,6 +32,7 @@ export default function LoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
       setUser(data.data.user);
+      track('login', { method: 'email' });
       addToast('success', 'Connexion réussie !');
       router.push('/dashboard');
     } catch (err) {

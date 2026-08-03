@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { useRouter } from 'next/navigation';
+import { track } from '@/lib/tracking';
 
 interface Notification {
   id: string;
@@ -218,6 +219,7 @@ export default function DashboardTopBar() {
     try {
       await fetch('/api/v1/auth/logout', { method: 'POST' });
     } catch {}
+    track('logout');
     window.location.href = '/auth/login';
   };
 

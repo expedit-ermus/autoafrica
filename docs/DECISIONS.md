@@ -557,6 +557,20 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 **Impact** : `src/app/globals.css`, `docs/04-DESIGN-SYSTEM.md`, `src/components/*.tsx` (13), `src/components/WhatsAppIntegration.tsx` (suppression d'un numero de support factice, cf. D28). Lint/typecheck/275 tests/build OK.
 - **Complement (meme iteration)** : migration des pages fonctionnelles du dashboard (`crm`, `page`, `profile`, `settings`, `not-found`, `error`) vers les memes tokens (`#E85D04`→`--color-primary-dark`, `#D00000`→`--color-warm-red`, `#FF6B35`→`--color-primary`), pixel-identique. `#E85A25` (hover de `not-found`/`error`) n'a pas de token correspondant (distinct de `#E85D04`) : conserve en literal. Couleurs de marques tierces conservees en literal. Lint/typecheck/275 tests/build OK.
 
+## D31 : Câblage client du tracking (evenements de page + auth), aligne sur `09-TRACKING.md`
+
+**Contexte** : `09-TRACKING.md` documente des evenements (page_view, scroll_depth, time_on_page, et auth login/register/logout). Verifie : la whitelist backend (`TRACKABLE_EVENTS`) couvrait deja les 24 evenements, mais le câblage client ne declarcherait pas `scroll_depth`, `time_on_page` ni `login`/`register`/`logout` (seul le marketplace declenchait `page_view`, et quelques evenements marketing/commande). C'est un manque de conformite au cahier des charges.
+
+**Decision** :
+- Creer `src/components/TrackingProvider.tsx` (client, ajoute au layout racine) : déclenche `page_view` a chaque changement de route, `scroll_depth` a 25/50/75/100 %, et `time_on_page` (duree en secondes) au changement de route et au demontage. Utilise `usePathname` + effets ; init des refs dans les effets (pas de `Date.now()` au rendu, conformite `react-hooks/purity`)
+- Retirer le `trackPageView` manuel du marketplace (`page.tsx`) pour eviter un doublon (le provider global couvre desormais `page_view`)
+- Brancher les evenements auth documentes : `login` (method email) dans `login/page.tsx`, `register` (role, country) dans `register/page.tsx`, `logout` dans `DashboardTopBar.tsx`
+- Ajouter `src/components/TrackingProvider.test.tsx` (jsdom, mock `next/navigation` + `@/lib/tracking`, 3 tests : page_view, scroll_depth, time_on_page)
+
+**Resultats** : 278 tests (275 + 3). Lint (purity fixe), typecheck, build OK. Couverture 84.79/72.42/89.18/89.33 (seuils ok).
+
+**Impact** : `src/components/TrackingProvider.tsx` (+ test), `src/app/layout.tsx`, `src/app/auth/login/page.tsx`, `src/app/auth/register/page.tsx`, `src/components/DashboardTopBar.tsx`, `src/app/dashboard/marketplace/page.tsx`, `docs/DECISIONS.md`.
+
 
 
 

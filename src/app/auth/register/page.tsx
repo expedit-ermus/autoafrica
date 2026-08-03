@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
+import { track } from '@/lib/tracking';
 
 const COUNTRIES = [
   { code: 'CI', flag: '🇨🇮', name: 'Côte d\'Ivoire' },
@@ -65,6 +66,7 @@ export default function RegisterPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Registration failed');
       setUser(data.data.user);
+      track('register', { role: form.role, country: form.country });
       addToast('success', 'Compte créé avec succès ! Bienvenue sur AutoAfrique');
       router.push('/dashboard');
     } catch (err) {
