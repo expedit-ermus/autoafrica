@@ -83,6 +83,8 @@ button, a, input, select, textarea, [role="button"] {
   font-family: inherit;
 }
 
+@layer components {
+
 /* ════════════════════════════════════════════════════════
    GRADIENTS
    ════════════════════════════════════════════════════════ */
@@ -1196,4 +1198,6 @@ select {
 *:focus-visible {
   outline: 3px solid rgba(255, 107, 53, 0.5);
   outline-offset: 2px;
+}
+
 }
