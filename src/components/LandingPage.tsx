@@ -57,10 +57,10 @@ export default function LandingPage() {
             {L('AutoAfrique — Pièces Auto Marketplace Afrique de l\'Ouest', 'AutoAfrique — Auto Parts Marketplace West Africa')}
           </h1>
           <div className="grid lg:grid-cols-5 gap-6">
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 min-w-0">
               <CarSelector />
             </div>
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-3 min-w-0">
               <PromoBanner />
             </div>
           </div>

@@ -178,7 +178,7 @@ export default function HelpPage() {
           <div className="grid lg:grid-cols-5 gap-8">
 
             {/* ─── FAQ ─── */}
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-3 min-w-0">
               <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <span className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-sm">❓</span>
                 Questions fréquentes
@@ -255,7 +255,7 @@ export default function HelpPage() {
             </div>
 
             {/* ─── CONTACT SIDEBAR ─── */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 min-w-0 space-y-6">
               <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
                 <span className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-sm">📬</span>
                 Contactez-nous

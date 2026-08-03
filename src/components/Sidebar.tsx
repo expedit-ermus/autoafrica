@@ -236,6 +236,77 @@ export default function Sidebar() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
       )}
 
+      {/* ─── Mobile drawer ─── */}
+      <div
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col w-[280px] max-w-[85vw] bg-white lg:hidden transition-transform duration-300 ease-in-out ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        aria-hidden={!sidebarOpen}
+      >
+        <div className="h-[2px] w-full bg-gradient-to-r from-orange-500 via-orange-400 to-amber-400" />
+        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-sm">
+              <span className="text-white font-bold text-sm">A</span>
+            </div>
+            <span className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+              AutoAfrique
+            </span>
+          </div>
+          <button
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Fermer le menu"
+            className="p-2 rounded-xl hover:bg-gray-100 transition-colors"
+          >
+            <SvgIcon name="x" className="w-5 h-5" />
+          </button>
+        </div>
+        <nav className="flex-1 py-3 px-2 overflow-y-auto scrollbar-thin">
+          <div className="space-y-1">
+            {menuItems.map(({ key, icon, href, badge }) => {
+              const active = isActive(href);
+              return (
+                <Link
+                  key={key}
+                  href={href}
+                  onClick={() => setSidebarOpen(false)}
+                  className={`relative flex items-center gap-3 h-11 px-3 rounded-xl transition-all duration-200 ${
+                    active
+                      ? 'bg-gradient-to-r from-orange-500/15 via-orange-500/5 to-transparent text-orange-600'
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                  }`}
+                >
+                  <div className={`flex-shrink-0 w-5 h-5 ${active ? 'text-orange-500' : 'text-gray-400'}`}>
+                    <SvgIcon name={icon} />
+                  </div>
+                  <span className="flex-1 text-[13px] font-medium">{t.nav[key as keyof typeof t.nav]}</span>
+                  {badge > 0 && (
+                    <span className="flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-gradient-to-r from-orange-500 to-red-500 rounded-full">
+                      {badge > 99 ? '99+' : badge}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
+        {user && (
+          <div className="border-t border-gray-100 p-3">
+            <div className="flex items-center gap-3 px-2 py-2 rounded-xl bg-gray-50">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center flex-shrink-0 ring-2 ring-orange-500/20">
+                <span className="text-white text-xs font-bold">
+                  {(user.firstName || 'U')[0]}{(user.lastName || '')[0]}
+                </span>
+              </div>
+              <div className="min-w-0">
+                <p className="text-gray-900 text-sm font-medium truncate">{user.firstName || 'User'} {user.lastName || ''}</p>
+                <p className="text-gray-500 text-xs truncate">{user.email || ''}</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* ─── Mobile bottom tab bar ─── */}
       <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
         <div

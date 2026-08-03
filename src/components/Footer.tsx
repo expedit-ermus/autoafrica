@@ -113,7 +113,7 @@ export default function Footer() {
                 <input
                   type="email"
                   placeholder={L('Votre adresse email', 'Your email address')}
-                  className="flex-1 px-5 py-3 rounded-xl bg-white/10 border border-white/15 text-white placeholder-white/50 text-base focus:outline-none focus:border-[var(--color-primary)] focus:bg-white/15 transition-all"
+                  className="flex-1 min-w-0 px-5 py-3 rounded-xl bg-white/10 border border-white/15 text-white placeholder-white/50 text-base focus:outline-none focus:border-[var(--color-primary)] focus:bg-white/15 transition-all"
                 />
                 <button className="px-8 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-xl transition-all text-base shadow-lg shadow-[var(--color-primary)]/30">
                   {L('S\'abonner', 'Subscribe')}

@@ -51,15 +51,15 @@ export default function PromoBanner() {
   }, []);
 
   return (
-    <div className="relative rounded-2xl overflow-hidden shadow-xl">
+    <div className="relative rounded-2xl overflow-hidden shadow-xl w-full">
       <div
-        className="flex transition-transform duration-500 ease-in-out"
+        className="flex transition-transform duration-500 ease-in-out w-full"
         style={{ transform: `translateX(-${current * 100}%)` }}
       >
         {banners.map((banner) => (
           <div
             key={banner.id}
-            className={`min-w-full bg-gradient-to-r ${banner.bg} relative`}
+            className={`w-full shrink-0 bg-gradient-to-r ${banner.bg} relative`}
           >
             <div className="flex items-center p-8 md:p-10 min-h-[280px]">
               <div className="flex-1 z-10">

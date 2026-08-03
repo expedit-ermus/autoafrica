@@ -63,7 +63,7 @@ export default function Header() {
               </div>
             </Link>
 
-            <div className="flex-1 max-w-2xl">
+            <div className="hidden md:block flex-1 max-w-2xl min-w-0">
               <div className="flex">
                 <input
                   type="text"
