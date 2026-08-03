@@ -160,16 +160,16 @@ export default function CRMPage() {
       });
       const data = await res.json();
       if (data.success) {
-        addToast('success', `${form.name} ajoutÃ© aux contacts`);
+        addToast('success', `${form.name} ajouté aux contacts`);
         setShowAdd(false);
         setForm({ name: '', email: '', phone: '', country: 'CI', type: 'garage', notes: '', source: 'web' });
         setRefreshKey(k => k + 1);
       } else {
-        addToast('error', data.message || 'Erreur lors de la crÃ©ation');
+        addToast('error', data.message || 'Erreur lors de la création');
       }
     } catch (err) {
       console.error(err);
-      addToast('error', 'Erreur lors de la crÃ©ation du contact');
+      addToast('error', 'Erreur lors de la création du contact');
     }
   };
 
@@ -184,16 +184,16 @@ export default function CRMPage() {
       });
       const data = await res.json();
       if (data.success) {
-        addToast('success', 'Contact mis Ã  jour');
+        addToast('success', 'Contact mis à jour');
         setEditCustomer(null);
         setForm({ name: '', email: '', phone: '', country: 'CI', type: 'garage', notes: '', source: 'web' });
         setRefreshKey(k => k + 1);
       } else {
-        addToast('error', data.message || 'Erreur lors de la mise Ã  jour');
+        addToast('error', data.message || 'Erreur lors de la mise à jour');
       }
     } catch (err) {
       console.error(err);
-      addToast('error', 'Erreur lors de la mise Ã  jour');
+      addToast('error', 'Erreur lors de la mise à jour');
     }
   };
 
@@ -203,7 +203,7 @@ export default function CRMPage() {
       const res = await fetch(`/api/v1/customers/${id}`, { method: 'DELETE', credentials: 'include' });
       const data = await res.json();
       if (data.success) {
-        addToast('success', `${name} supprimÃ©`);
+        addToast('success', `${name} supprimé`);
         setRefreshKey(k => k + 1);
       } else {
         addToast('error', data.message || 'Erreur lors de la suppression');
@@ -215,7 +215,7 @@ export default function CRMPage() {
   };
 
   const handleAddLead = async () => {
-    if (!leadForm.name || !leadForm.phone) { addToast('error', 'Nom et tÃ©lÃ©phone requis'); return; }
+    if (!leadForm.name || !leadForm.phone) { addToast('error', 'Nom et téléphone requis'); return; }
     try {
       const res = await fetch('/api/v1/leads', {
         method: 'POST',
@@ -225,16 +225,16 @@ export default function CRMPage() {
       });
       const data = await res.json();
       if (data.success) {
-        addToast('success', `Lead "${leadForm.name}" crÃ©Ã©`);
+        addToast('success', `Lead "${leadForm.name}" créé`);
         setShowAdd(false);
         setLeadForm({ name: '', phone: '', email: '', source: 'web', value: 0, notes: '' });
         setRefreshKey(k => k + 1);
       } else {
-        addToast('error', data.message || 'Erreur lors de la crÃ©ation');
+        addToast('error', data.message || 'Erreur lors de la création');
       }
     } catch (err) {
       console.error(err);
-      addToast('error', 'Erreur lors de la crÃ©ation du lead');
+      addToast('error', 'Erreur lors de la création du lead');
     }
   };
 
@@ -248,14 +248,14 @@ export default function CRMPage() {
       });
       const data = await res.json();
       if (data.success) {
-        addToast('success', 'Statut mis Ã  jour');
+        addToast('success', 'Statut mis à jour');
         setRefreshKey(k => k + 1);
       } else {
-        addToast('error', data.message || 'Erreur lors de la mise Ã  jour');
+        addToast('error', data.message || 'Erreur lors de la mise à jour');
       }
     } catch (err) {
       console.error(err);
-      addToast('error', 'Erreur lors de la mise Ã  jour du statut');
+      addToast('error', 'Erreur lors de la mise à jour du statut');
     }
   };
 
@@ -270,16 +270,16 @@ export default function CRMPage() {
       });
       const data = await res.json();
       if (data.success) {
-        addToast('success', 'Lead mis Ã  jour');
+        addToast('success', 'Lead mis à jour');
         setEditLead(null);
         setLeadForm({ name: '', phone: '', email: '', source: 'web', value: 0, notes: '' });
         setRefreshKey(k => k + 1);
       } else {
-        addToast('error', data.message || 'Erreur lors de la mise Ã  jour');
+        addToast('error', data.message || 'Erreur lors de la mise à jour');
       }
     } catch (err) {
       console.error(err);
-      addToast('error', 'Erreur lors de la mise Ã  jour du lead');
+      addToast('error', 'Erreur lors de la mise à jour du lead');
     }
   };
 
@@ -326,9 +326,9 @@ export default function CRMPage() {
         <DashboardTopBar />
         <main className="p-4 lg:p-8 pb-24 lg:pb-8">
 
-          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          {/* ═══════════════════════════════════════════════════════
               PAGE HEADER
-              â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+              ═══════════════════════════════════════════════════════ */}
           <div className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
               <div>
@@ -399,9 +399,9 @@ export default function CRMPage() {
             </div>
           </div>
 
-          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          {/* ═══════════════════════════════════════════════════════
               TABS
-              â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+              ═══════════════════════════════════════════════════════ */}
           <div className="flex items-center gap-1 mb-6 border-b border-gray-200">
             <button
               onClick={() => setActiveTab('contacts')}
@@ -447,9 +447,9 @@ export default function CRMPage() {
             </button>
           </div>
 
-          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          {/* ═══════════════════════════════════════════════════════
               FILTERS
-              â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+              ═══════════════════════════════════════════════════════ */}
           <div className="flex flex-wrap gap-2 mb-6">
             {activeTab === 'contacts' ? (
               <>
@@ -513,9 +513,9 @@ export default function CRMPage() {
             )}
           </div>
 
-          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          {/* ═══════════════════════════════════════════════════════
               CONTACTS TAB
-              â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+              ═══════════════════════════════════════════════════════ */}
           {activeTab === 'contacts' && (
             <>
               {loading ? (
@@ -655,9 +655,9 @@ export default function CRMPage() {
             </>
           )}
 
-          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          {/* ═══════════════════════════════════════════════════════
               LEADS TAB - PIPELINE VIEW
-              â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+              ═══════════════════════════════════════════════════════ */}
           {activeTab === 'leads' && (
             <>
               {loading ? (
@@ -818,9 +818,9 @@ export default function CRMPage() {
             </>
           )}
 
-          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          {/* ═══════════════════════════════════════════════════════
               ADD MODAL - CUSTOMER
-              â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+              ═══════════════════════════════════════════════════════ */}
           {activeTab === 'contacts' && (
             <Modal isOpen={showAdd} onClose={() => setShowAdd(false)} title="Nouveau contact">
               <div className="space-y-4">
@@ -865,9 +865,9 @@ export default function CRMPage() {
             </Modal>
           )}
 
-          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          {/* ═══════════════════════════════════════════════════════
               ADD MODAL - LEAD
-              â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+              ═══════════════════════════════════════════════════════ */}
           {activeTab === 'leads' && (
             <Modal isOpen={showAdd} onClose={() => setShowAdd(false)} title="Nouveau lead">
               <div className="space-y-4">
@@ -909,9 +909,9 @@ export default function CRMPage() {
             </Modal>
           )}
 
-          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          {/* ═══════════════════════════════════════════════════════
               EDIT MODAL - CUSTOMER
-              â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+              ═══════════════════════════════════════════════════════ */}
           <Modal isOpen={!!editCustomer} onClose={() => setEditCustomer(null)} title="Modifier le contact">
             {editCustomer && (
               <div className="space-y-4">
@@ -956,9 +956,9 @@ export default function CRMPage() {
             )}
           </Modal>
 
-          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          {/* ═══════════════════════════════════════════════════════
               EDIT MODAL - LEAD
-              â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+              ═══════════════════════════════════════════════════════ */}
           <Modal isOpen={!!editLead} onClose={() => setEditLead(null)} title="Modifier le lead">
             {editLead && (
               <div className="space-y-4">
@@ -1000,9 +1000,9 @@ export default function CRMPage() {
             )}
           </Modal>
 
-          {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+          {/* ═══════════════════════════════════════════════════════
               DETAIL MODAL
-              â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+              ═══════════════════════════════════════════════════════ */}
           <Modal isOpen={!!showDetail} onClose={() => setShowDetail(null)} title={detailType === 'customer' ? 'Fiche client' : 'Fiche lead'} size="lg">
             {showDetail && (
               <div className="space-y-5">
@@ -1173,9 +1173,9 @@ export default function CRMPage() {
 
         </main>
 
-        {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+        {/* ═══════════════════════════════════════════════════════
             MOBILE FAB
-            â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+            ═══════════════════════════════════════════════════════ */}
         <button
           onClick={() => {
             if (activeTab === 'contacts') {

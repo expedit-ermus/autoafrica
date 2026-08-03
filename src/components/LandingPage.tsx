@@ -4,82 +4,7 @@ import CarSelector from '@/components/CarSelector';
 import PromoBanner from '@/components/PromoBanner';
 import PartsCatalog from '@/components/PartsCatalog';
 import BrandGrid from '@/components/BrandGrid';
-import ProductCard from '@/components/ProductCard';
-
-const bestsellers = [
-  {
-    name: 'Kit de frein avant — Toyota Hilux 2015-2023',
-    reference: 'BRK-TOY-HIL-01',
-    price: 45000,
-    oldPrice: 68000,
-    discount: 34,
-    rating: 5,
-    reviewCount: 127,
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=400&h=400&fit=crop',
-    brand: 'RIDEX',
-    inStock: true,
-    location: 'Abidjan',
-  },
-  {
-    name: 'Amortisseur arrière — Hyundai Tucson 2015-2021',
-    reference: 'SHK-HYU-TUC-02',
-    price: 32000,
-    rating: 4,
-    reviewCount: 89,
-    image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=400&fit=crop',
-    brand: 'MONROE',
-    inStock: true,
-    location: 'Dakar',
-  },
-  {
-    name: 'Filtre à huile — Kia Sportage 2010-2022',
-    reference: 'FLT-KIA-SPO-03',
-    price: 8500,
-    rating: 5,
-    reviewCount: 234,
-    image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=400&fit=crop',
-    brand: 'MANN-FILTER',
-    inStock: true,
-    location: 'Abidjan',
-  },
-  {
-    name: 'Kit d\'embrayage — Peugeot 308 2007-2013',
-    reference: 'CLT-PEU-308-04',
-    price: 85000,
-    oldPrice: 120000,
-    discount: 29,
-    rating: 4,
-    reviewCount: 56,
-    image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=400&fit=crop',
-    brand: 'SACHS',
-    inStock: true,
-    location: 'Lagos',
-  },
-  {
-    name: 'Courroie de distribution — Renault Duster 1.5 dCi',
-    reference: 'BLT-REN-DUS-05',
-    price: 15000,
-    rating: 5,
-    reviewCount: 178,
-    image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=400&fit=crop',
-    brand: 'GATES',
-    inStock: true,
-    location: 'Dakar',
-  },
-  {
-    name: 'Disque de frein avant — Toyota Corolla 2009-2019',
-    reference: 'DSK-TOY-COR-06',
-    price: 22000,
-    oldPrice: 35000,
-    discount: 37,
-    rating: 4,
-    reviewCount: 92,
-    image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=400&h=400&fit=crop',
-    brand: 'BREMBO',
-    inStock: true,
-    location: 'Abidjan',
-  },
-];
+import Bestsellers from '@/components/Bestsellers';
 
 const trustFeatures = [
   {
@@ -168,18 +93,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-14 bg-[var(--color-bg)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] mb-10">
-            {L('Meilleures ventes', 'Bestsellers')}
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            {bestsellers.map((product, i) => (
-              <ProductCard key={product.reference} {...product} priority={i === 0} />
-            ))}
-          </div>
-        </div>
-      </section>
+      <Bestsellers />
 
       <section className="py-14 bg-[var(--color-bg-warm)]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">

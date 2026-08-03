@@ -48,7 +48,7 @@ export default function BrandGrid() {
               <div className="text-sm font-bold text-[var(--color-warm-ink)] group-hover:text-[var(--color-primary)] transition-colors text-center">
                 {brand.name}
               </div>
-              <div className="text-xs text-[var(--color-warm-muted-strong)] mt-1 font-medium">{brand.count} {L('pièces', 'parts')}</div>
+              <div className="text-xs text-[var(--color-warm-muted-strong)] mt-1 font-medium">{L('Pièces disponibles', 'Parts available')}</div>
             </Link>
           ))}
         </div>

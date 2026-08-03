@@ -7,29 +7,29 @@ import Modal from '@/components/Modal';
 import { Order } from '@/shared/types';
 
 const TRACKING_STEPS = [
-  { key: 'PENDING', label: 'Commande reÃ§ue', icon: 'ðŸ“', color: 'text-yellow-600', bg: 'bg-yellow-100' },
-  { key: 'CONFIRMED', label: 'ConfirmÃ©e', icon: 'âœ…', color: 'text-blue-600', bg: 'bg-blue-100' },
-  { key: 'PAID', label: 'PayÃ©e', icon: 'ðŸ’³', color: 'text-green-600', bg: 'bg-green-100' },
-  { key: 'SHIPPED', label: 'ExpÃ©diÃ©e', icon: 'ðŸšš', color: 'text-purple-600', bg: 'bg-purple-100' },
-  { key: 'DELIVERED', label: 'LivrÃ©e', icon: 'ðŸ“¦', color: 'text-green-600', bg: 'bg-green-100' },
+  { key: 'PENDING', label: 'Commande reçue', icon: '📝', color: 'text-yellow-600', bg: 'bg-yellow-100' },
+  { key: 'CONFIRMED', label: 'Confirmée', icon: '✅', color: 'text-blue-600', bg: 'bg-blue-100' },
+  { key: 'PAID', label: 'Payée', icon: '💳', color: 'text-green-600', bg: 'bg-green-100' },
+  { key: 'SHIPPED', label: 'Expédiée', icon: '🚚', color: 'text-purple-600', bg: 'bg-purple-100' },
+  { key: 'DELIVERED', label: 'Livrée', icon: '📦', color: 'text-green-600', bg: 'bg-green-100' },
 ];
 
 const STATUS_CONFIG: Record<string, { label: string; bg: string; text: string; dot: string }> = {
   PENDING:     { label: 'En attente',   bg: 'bg-amber-50',   text: 'text-amber-700',   dot: 'bg-amber-400' },
-  CONFIRMED:   { label: 'ConfirmÃ©e',    bg: 'bg-blue-50',    text: 'text-blue-700',    dot: 'bg-blue-400' },
-  PAID:        { label: 'PayÃ©e',        bg: 'bg-green-50',   text: 'text-green-700',   dot: 'bg-green-400' },
+  CONFIRMED:   { label: 'Confirmée',    bg: 'bg-blue-50',    text: 'text-blue-700',    dot: 'bg-blue-400' },
+  PAID:        { label: 'Payée',        bg: 'bg-green-50',   text: 'text-green-700',   dot: 'bg-green-400' },
   PROCESSING:  { label: 'En cours',     bg: 'bg-purple-50',  text: 'text-purple-700',  dot: 'bg-purple-400' },
-  SHIPPED:     { label: 'ExpÃ©diÃ©e',     bg: 'bg-violet-50',  text: 'text-violet-700',  dot: 'bg-violet-400' },
-  DELIVERED:   { label: 'LivrÃ©e',       bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-400' },
-  COMPLETED:   { label: 'TerminÃ©e',     bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-400' },
-  CANCELLED:   { label: 'AnnulÃ©e',      bg: 'bg-red-50',     text: 'text-red-700',     dot: 'bg-red-400' },
+  SHIPPED:     { label: 'Expédiée',     bg: 'bg-violet-50',  text: 'text-violet-700',  dot: 'bg-violet-400' },
+  DELIVERED:   { label: 'Livrée',       bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-400' },
+  COMPLETED:   { label: 'Terminée',     bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-400' },
+  CANCELLED:   { label: 'Annulée',      bg: 'bg-red-50',     text: 'text-red-700',     dot: 'bg-red-400' },
 };
 
 const PAYMENT_STATUS: Record<string, { label: string; bg: string; text: string }> = {
   PENDING:   { label: 'En attente', bg: 'bg-amber-50',  text: 'text-amber-600' },
-  PAID:      { label: 'PayÃ©',       bg: 'bg-green-50',  text: 'text-green-600' },
-  FAILED:    { label: 'Ã‰chouÃ©',     bg: 'bg-red-50',    text: 'text-red-600' },
-  REFUNDED:  { label: 'RemboursÃ©',  bg: 'bg-gray-50',   text: 'text-gray-600' },
+  PAID:      { label: 'Payé',       bg: 'bg-green-50',  text: 'text-green-600' },
+  FAILED:    { label: 'Échoué',     bg: 'bg-red-50',    text: 'text-red-600' },
+  REFUNDED:  { label: 'Remboursé',  bg: 'bg-gray-50',   text: 'text-gray-600' },
 };
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
@@ -75,7 +75,7 @@ export default function OrdersPage() {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      addToast('success', `Commande mise Ã  jour: ${STATUS_CONFIG[status]?.label || status}`);
+      addToast('success', `Commande mise à jour: ${STATUS_CONFIG[status]?.label || status}`);
       setRefreshKey(k => k + 1);
     } catch (err) { addToast('error', err instanceof Error ? err.message : 'Erreur'); }
   };
@@ -152,10 +152,10 @@ export default function OrdersPage() {
   const filterButtons = [
     { key: 'all', label: 'Toutes' },
     { key: 'PENDING', label: 'En attente' },
-    { key: 'CONFIRMED', label: 'ConfirmÃ©es' },
-    { key: 'SHIPPED', label: 'ExpÃ©diÃ©es' },
-    { key: 'DELIVERED', label: 'LivrÃ©es' },
-    { key: 'CANCELLED', label: 'AnnulÃ©es' },
+    { key: 'CONFIRMED', label: 'Confirmées' },
+    { key: 'SHIPPED', label: 'Expédiées' },
+    { key: 'DELIVERED', label: 'Livrées' },
+    { key: 'CANCELLED', label: 'Annulées' },
   ];
 
   return (
@@ -171,8 +171,8 @@ export default function OrdersPage() {
               <div>
                 <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Commandes</h1>
                 <p className="mt-1 text-sm text-gray-500">
-                  {filteredOrders.length} commande{filteredOrders.length !== 1 ? 's' : ''} trouvÃ©e{filteredOrders.length !== 1 ? 's' : ''}
-                  {searchQuery && <span className="text-orange-500 font-medium"> â€” Recherche active</span>}
+                  {filteredOrders.length} commande{filteredOrders.length !== 1 ? 's' : ''} trouvée{filteredOrders.length !== 1 ? 's' : ''}
+                  {searchQuery && <span className="text-orange-500 font-medium"> — Recherche active</span>}
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -187,10 +187,10 @@ export default function OrdersPage() {
           {/* Quick Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
             {[
-              { label: 'Total', value: orders.length, color: 'from-blue-500 to-blue-600', icon: 'ðŸ“Š' },
-              { label: 'En attente', value: pendingCount, color: 'from-amber-500 to-amber-600', icon: 'â³' },
-              { label: 'En transit', value: shippedCount, color: 'from-violet-500 to-violet-600', icon: 'ðŸšš' },
-              { label: 'Revenus', value: formatCFA(totalRevenue), suffix: ' FCFA', color: 'from-emerald-500 to-emerald-600', icon: 'ðŸ’°' },
+              { label: 'Total', value: orders.length, color: 'from-blue-500 to-blue-600', icon: '📊' },
+              { label: 'En attente', value: pendingCount, color: 'from-amber-500 to-amber-600', icon: '⏳' },
+              { label: 'En transit', value: shippedCount, color: 'from-violet-500 to-violet-600', icon: '🚚' },
+              { label: 'Revenus', value: formatCFA(totalRevenue), suffix: ' FCFA', color: 'from-emerald-500 to-emerald-600', icon: '💰' },
             ].map(s => (
               <div key={s.label} className="bg-white rounded-xl border border-gray-100 p-4 sm:p-5 hover:shadow-md transition-shadow duration-200">
                 <div className="flex items-center gap-2 mb-2">
@@ -239,7 +239,7 @@ export default function OrdersPage() {
                 <input
                   type="text"
                   aria-label="Rechercher une commande"
-                  placeholder="Rechercher par ID, client, tÃ©lÃ©phone..."
+                  placeholder="Rechercher par ID, client, téléphone..."
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-300 focus:border-orange-400 transition"
@@ -263,7 +263,7 @@ export default function OrdersPage() {
                     placeholder="Du"
                   />
                 </div>
-                <span className="flex items-center text-gray-400 text-sm">Ã </span>
+                <span className="flex items-center text-gray-400 text-sm">à</span>
                 <div className="relative">
                   <input
                     type="date"
@@ -306,12 +306,12 @@ export default function OrdersPage() {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-1">
-                {searchQuery || dateFrom || dateTo ? 'Aucun rÃ©sultat' : 'Aucune commande'}
+                {searchQuery || dateFrom || dateTo ? 'Aucun résultat' : 'Aucune commande'}
               </h3>
               <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
                 {searchQuery || dateFrom || dateTo
-                  ? 'Aucune commande ne correspond Ã  vos critÃ¨res de recherche. Essayez de modifier vos filtres.'
-                  : 'Les commandes apparaÃ®tront ici une fois que les clients commenceront Ã  acheter.'}
+                  ? 'Aucune commande ne correspond à vos critères de recherche. Essayez de modifier vos filtres.'
+                  : 'Les commandes apparaîtront ici une fois que les clients commenceront à acheter.'}
               </p>
               {(searchQuery || dateFrom || dateTo) ? (
                 <button
@@ -324,11 +324,11 @@ export default function OrdersPage() {
                   Effacer les filtres
                 </button>
               ) : (
-                <a href="/dashboard/products" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-orange-500 text-white text-sm font-medium hover:bg-orange-600 transition shadow-sm">
+                <a href="/dashboard/inventory" className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-orange-500 text-white text-sm font-medium hover:bg-orange-600 transition shadow-sm">
                   <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                   </svg>
-                  Commencer Ã  vendre
+                  Commencer à vendre
                 </a>
               )}
             </div>
@@ -376,7 +376,7 @@ export default function OrdersPage() {
                             </div>
                           </td>
                           <td className="px-5 py-3.5">
-                            <span className="text-sm text-gray-500">{order.createdAt ? new Date(order.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : 'â€”'}</span>
+                            <span className="text-sm text-gray-500">{order.createdAt ? new Date(order.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}</span>
                           </td>
                           <td className="px-5 py-3.5 text-right">
                             <span className="text-sm font-bold text-gray-900">{formatCFA(order.totalAmount || order.total || 0)} <span className="text-xs font-normal text-gray-400">FCFA</span></span>
@@ -408,7 +408,7 @@ export default function OrdersPage() {
                                     className="px-2 py-1.5 rounded-md bg-red-50 text-red-500 text-xs font-medium hover:bg-red-100 transition"
                                     title="Annuler"
                                   >
-                                    âœ•
+                                    ✕
                                   </button>
                                 </>
                               )}
@@ -417,7 +417,7 @@ export default function OrdersPage() {
                                   onClick={() => handleUpdateStatus(order.id, 'PAID')}
                                   className="px-2.5 py-1.5 rounded-md bg-green-50 text-green-600 text-xs font-medium hover:bg-green-100 transition"
                                 >
-                                  Marquer payÃ©e
+                                  Marquer payée
                                 </button>
                               )}
                               {order.status === 'PAID' && (
@@ -425,7 +425,7 @@ export default function OrdersPage() {
                                   onClick={() => handleUpdateStatus(order.id, 'SHIPPED')}
                                   className="px-2.5 py-1.5 rounded-md bg-violet-50 text-violet-600 text-xs font-medium hover:bg-violet-100 transition"
                                 >
-                                  ExpÃ©dier
+                                  Expédier
                                 </button>
                               )}
                               {order.status === 'SHIPPED' && (
@@ -433,14 +433,14 @@ export default function OrdersPage() {
                                   onClick={() => handleUpdateStatus(order.id, 'DELIVERED')}
                                   className="px-2.5 py-1.5 rounded-md bg-emerald-50 text-emerald-600 text-xs font-medium hover:bg-emerald-100 transition"
                                 >
-                                  Marquer livrÃ©e
+                                  Marquer livrée
                                 </button>
                               )}
                               <button
                                 onClick={() => setSelectedOrder(order)}
                                 className="px-2.5 py-1.5 rounded-md text-gray-500 hover:text-orange-600 hover:bg-orange-50 text-xs font-medium transition"
                               >
-                                DÃ©tails
+                                Détails
                               </button>
                             </div>
                           </td>
@@ -512,13 +512,13 @@ export default function OrdersPage() {
                               onClick={() => handleUpdateStatus(order.id, 'CONFIRMED')}
                               className="flex-1 px-3 py-2 rounded-lg bg-blue-500 text-white text-xs font-medium hover:bg-blue-600 active:scale-[0.98] transition-all"
                             >
-                              âœ… Confirmer
+                              ✅ Confirmer
                             </button>
                             <button
                               onClick={() => handleUpdateStatus(order.id, 'CANCELLED')}
                               className="px-3 py-2 rounded-lg bg-red-50 text-red-500 text-xs font-medium hover:bg-red-100 transition"
                             >
-                              âœ•
+                              ✕
                             </button>
                           </>
                         )}
@@ -527,7 +527,7 @@ export default function OrdersPage() {
                             onClick={() => handleUpdateStatus(order.id, 'PAID')}
                             className="flex-1 px-3 py-2 rounded-lg bg-green-500 text-white text-xs font-medium hover:bg-green-600 active:scale-[0.98] transition-all"
                           >
-                            ðŸ’³ Marquer payÃ©e
+                            💳 Marquer payée
                           </button>
                         )}
                         {order.status === 'PAID' && (
@@ -535,7 +535,7 @@ export default function OrdersPage() {
                             onClick={() => handleUpdateStatus(order.id, 'SHIPPED')}
                             className="flex-1 px-3 py-2 rounded-lg bg-violet-500 text-white text-xs font-medium hover:bg-violet-600 active:scale-[0.98] transition-all"
                           >
-                            ðŸšš ExpÃ©dier
+                            🚚 Expédier
                           </button>
                         )}
                         {order.status === 'SHIPPED' && (
@@ -543,14 +543,14 @@ export default function OrdersPage() {
                             onClick={() => handleUpdateStatus(order.id, 'DELIVERED')}
                             className="flex-1 px-3 py-2 rounded-lg bg-emerald-500 text-white text-xs font-medium hover:bg-emerald-600 active:scale-[0.98] transition-all"
                           >
-                            ðŸ“¦ Marquer livrÃ©e
+                            📦 Marquer livrée
                           </button>
                         )}
                         <button
                           onClick={() => setSelectedOrder(order)}
                           className="px-3 py-2 rounded-lg text-gray-500 hover:text-orange-600 hover:bg-orange-50 text-xs font-medium transition"
                         >
-                          DÃ©tails â†’
+                          Détails →
                         </button>
                       </div>
                     </div>
@@ -562,7 +562,7 @@ export default function OrdersPage() {
               <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-xl border border-gray-100 px-5 py-3.5">
                 <div className="flex items-center gap-3">
                   <span className="text-sm text-gray-500">
-                    Affichage de <span className="font-semibold text-gray-900">{showingFrom}</span> Ã  <span className="font-semibold text-gray-900">{showingTo}</span> sur <span className="font-semibold text-gray-900">{filteredOrders.length}</span>
+                    Affichage de <span className="font-semibold text-gray-900">{showingFrom}</span> à <span className="font-semibold text-gray-900">{showingTo}</span> sur <span className="font-semibold text-gray-900">{filteredOrders.length}</span>
                   </span>
                   <select
                     value={itemsPerPage}
@@ -581,7 +581,7 @@ export default function OrdersPage() {
                     disabled={currentPage === 1}
                     className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
                   >
-                    â† PrÃ©cÃ©dent
+                    ← Précédent
                   </button>
 
                   {(() => {
@@ -600,7 +600,7 @@ export default function OrdersPage() {
                     }
                     return pages.map((page, idx) =>
                       page === '...' ? (
-                        <span key={`ellipsis-${idx}`} className="px-1.5 text-gray-400 text-sm">â€¦</span>
+                        <span key={`ellipsis-${idx}`} className="px-1.5 text-gray-400 text-sm">…</span>
                       ) : (
                         <button
                           key={page}
@@ -622,7 +622,7 @@ export default function OrdersPage() {
                     disabled={currentPage === totalPages}
                     className="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
                   >
-                    Suivant â†’
+                    Suivant →
                   </button>
                 </div>
               </div>
@@ -673,7 +673,7 @@ export default function OrdersPage() {
                           <div key={step.key} className="flex items-center flex-1">
                             <div className="flex flex-col items-center flex-1">
                               <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm transition-all ${isCompleted ? `${step.bg} ${step.color}` : 'bg-gray-200 text-gray-400'} ${isCurrent ? 'ring-2 ring-offset-2 ring-orange-300 scale-110' : ''}`}>
-                                {isCompleted && i < currentIdx ? 'âœ“' : step.icon}
+                                {isCompleted && i < currentIdx ? '✓' : step.icon}
                               </div>
                               <span className={`text-[10px] mt-1.5 text-center leading-tight font-medium ${isCompleted ? 'text-gray-700' : 'text-gray-400'}`}>{step.label}</span>
                             </div>
@@ -688,7 +688,7 @@ export default function OrdersPage() {
                 )}
                 {selectedOrder.status === 'CANCELLED' && (
                   <div className="bg-red-50 rounded-xl p-4 text-center border border-red-100">
-                    <span className="text-sm font-medium text-red-600">âŒ Commande annulÃ©e</span>
+                    <span className="text-sm font-medium text-red-600">❌ Commande annulée</span>
                   </div>
                 )}
 
@@ -699,10 +699,10 @@ export default function OrdersPage() {
                     {selectedOrder.items?.map((item) => (
                       <div key={item.id} className="flex items-center justify-between py-3 first:pt-0 last:pb-0">
                         <div className="flex items-center gap-3 min-w-0">
-                          <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center text-xs shrink-0">ðŸ“¦</div>
+                          <div className="w-8 h-8 rounded-lg bg-orange-100 flex items-center justify-center text-xs shrink-0">📦</div>
                           <div className="min-w-0">
-                            <p className="text-sm font-medium text-gray-900 truncate">{item.product?.title || 'PiÃ¨ce'}</p>
-                            <p className="text-xs text-gray-400">QtÃ©: {item.quantity}</p>
+                            <p className="text-sm font-medium text-gray-900 truncate">{item.product?.title || 'Pièce'}</p>
+                            <p className="text-xs text-gray-400">Qté: {item.quantity}</p>
                           </div>
                         </div>
                         <span className="text-sm font-bold text-gray-900 shrink-0 ml-3">{formatCFA(item.totalPrice)} <span className="text-xs font-normal text-gray-400">FCFA</span></span>
@@ -719,7 +719,7 @@ export default function OrdersPage() {
                       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center text-sm font-bold text-orange-700">{(selectedOrder.buyer.firstName || 'C')[0]}</div>
                       <div>
                         <p className="text-sm font-semibold text-gray-900">{selectedOrder.buyer.firstName} {selectedOrder.buyer.lastName}</p>
-                        <p className="text-xs text-gray-500">{selectedOrder.buyer.email} â€¢ {selectedOrder.buyer.country}</p>
+                        <p className="text-xs text-gray-500">{selectedOrder.buyer.email} • {selectedOrder.buyer.country}</p>
                         {selectedOrder.buyer.phone && <p className="text-xs text-gray-400 mt-0.5">{selectedOrder.buyer.phone}</p>}
                       </div>
                     </div>
@@ -745,13 +745,13 @@ export default function OrdersPage() {
                 <div className="flex flex-wrap gap-2 pt-2 border-t border-gray-100">
                   {selectedOrder.status === 'PENDING' && (
                     <>
-                      <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'CONFIRMED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 active:scale-[0.98] transition-all">âœ… Confirmer</button>
-                      <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'CANCELLED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-red-50 text-red-600 text-sm font-medium hover:bg-red-100 transition">âŒ Annuler</button>
+                      <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'CONFIRMED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 active:scale-[0.98] transition-all">✅ Confirmer</button>
+                      <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'CANCELLED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-red-50 text-red-600 text-sm font-medium hover:bg-red-100 transition">❌ Annuler</button>
                     </>
                   )}
-                  {selectedOrder.status === 'CONFIRMED' && <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'PAID'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600 active:scale-[0.98] transition-all">ðŸ’³ Marquer payÃ©e</button>}
-                  {selectedOrder.status === 'PAID' && <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'SHIPPED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-violet-500 text-white text-sm font-medium hover:bg-violet-600 active:scale-[0.98] transition-all">ðŸšš ExpÃ©dier</button>}
-                  {selectedOrder.status === 'SHIPPED' && <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'DELIVERED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 active:scale-[0.98] transition-all">ðŸ“¦ Marquer livrÃ©e</button>}
+                  {selectedOrder.status === 'CONFIRMED' && <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'PAID'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-green-500 text-white text-sm font-medium hover:bg-green-600 active:scale-[0.98] transition-all">💳 Marquer payée</button>}
+                  {selectedOrder.status === 'PAID' && <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'SHIPPED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-violet-500 text-white text-sm font-medium hover:bg-violet-600 active:scale-[0.98] transition-all">🚚 Expédier</button>}
+                  {selectedOrder.status === 'SHIPPED' && <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'DELIVERED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-emerald-500 text-white text-sm font-medium hover:bg-emerald-600 active:scale-[0.98] transition-all">📦 Marquer livrée</button>}
                 </div>
               </div>
             )}

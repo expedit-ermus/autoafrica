@@ -143,7 +143,7 @@ async function main() {
     catMap[c.name] = c.id
   }
 
-  const insertProduct = db.prepare(`INSERT INTO Product (id, title, slug, description, reference, brandId, categoryId, price, currency, stock, condition, sellerId, active, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+  const insertProduct = db.prepare(`INSERT INTO Product (id, title, slug, description, reference, brandId, categoryId, price, currency, stock, condition, sellerId, active, salesCount, views, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 
   const productIds = []
   for (const p of products) {
@@ -153,7 +153,9 @@ async function main() {
     const brandId = brandMap[p.brand] || null
     const categoryId = catMap[p.category] || null
     const slug = p.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + crypto.randomBytes(3).toString('hex')
-    insertProduct.run(pid, p.title, slug, p.description, p.reference, brandId, categoryId, p.price, 'XOF', p.stock, p.condition.toUpperCase(), sellerId, 1, now, now)
+    const salesCount = 0 + Math.floor(Math.random() * 900)
+    const views = 100 + Math.floor(Math.random() * 9000)
+    insertProduct.run(pid, p.title, slug, p.description, p.reference, brandId, categoryId, p.price, 'XOF', p.stock, p.condition.toUpperCase(), sellerId, 1, salesCount, views, now, now)
   }
 
   console.log(`Seeded: ${users.length} users, ${brands.length} brands, ${categories.length} categories, ${products.length} products`)

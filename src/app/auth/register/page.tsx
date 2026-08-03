@@ -153,9 +153,9 @@ export default function RegisterPage() {
           {/* Stats grid */}
           <div className="grid grid-cols-3 gap-4 mb-10">
             {[
-              { value: '8,500+', label: 'Pièces' },
-              { value: '2,400+', label: 'Garagistes' },
-              { value: '10', label: 'Pays' },
+              { value: '10', label: 'Pays couverts' },
+              { value: '24-72h', label: 'Livraison' },
+              { value: 'Mobile Money', label: 'Paiement' },
             ].map((stat) => (
               <div key={stat.label} className="text-center p-4 rounded-xl transition-all duration-300 hover:scale-105" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.06)' }}>
                 <div className="text-xl font-bold text-white">{stat.value}</div>
@@ -169,7 +169,7 @@ export default function RegisterPage() {
             {[
               { icon: (
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
-                ), label: '100K+ Pièces', desc: 'en stock disponible' },
+                ), label: '10 Pays', desc: 'couverts en Afrique de l\u2019Ouest' },
               { icon: (
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
                 ), label: 'Mobile Money', desc: 'Orange, MTN, Wave' },
