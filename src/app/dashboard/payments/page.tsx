@@ -29,7 +29,7 @@ export default function PaymentsPage() {
       try {
         const res = await fetch('/api/v1/payments?pageSize=100', { credentials: 'include' });
         const data = await res.json();
-        if (!cancelled && data.success) setPayments(data.data.data);
+        if (!cancelled && data.success) setPayments(Array.isArray(data.data) ? data.data : Array.isArray(data.data?.data) ? data.data.data : []);
       } catch (err) { console.error(err); } finally { if (!cancelled) setLoading(false); }
     })();
     return () => { cancelled = true; };

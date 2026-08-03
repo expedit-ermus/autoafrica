@@ -37,9 +37,9 @@ export default function DashboardPage() {
         const orderData = await orderRes.json();
         const payData = await payRes.json();
         if (!cancelled) {
-          if (prodData.success) setProducts(prodData.data.data as Product[]);
-          if (orderData.success) setOrders(orderData.data.data as Order[]);
-          if (payData.success) setPayments(payData.data.data as Payment[]);
+          if (prodData.success) setProducts(Array.isArray(prodData.data?.data) ? prodData.data.data as Product[] : []);
+          if (orderData.success) setOrders(Array.isArray(orderData.data?.data) ? orderData.data.data as Order[] : []);
+          if (payData.success) setPayments(Array.isArray(payData.data) ? payData.data as Payment[] : Array.isArray(payData.data?.data) ? payData.data.data as Payment[] : []);
         }
       } catch (err) { console.error(err); } finally {
         if (!cancelled) setLoading(false);
@@ -394,9 +394,9 @@ export default function DashboardPage() {
                 { href: '/dashboard/orders', icon: <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>, label: `${pendingOrders} commandes`, bg: 'from-emerald-500 to-emerald-600', lightBg: 'bg-emerald-50', textColor: 'text-emerald-600' },
                 { href: '/dashboard/cart', icon: <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>, label: 'Mon panier', bg: 'from-violet-500 to-purple-600', lightBg: 'bg-violet-50', textColor: 'text-violet-600' },
                 { href: '/dashboard/orders', icon: <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>, label: 'Voir paiements', bg: 'from-rose-500 to-red-500', lightBg: 'bg-rose-50', textColor: 'text-rose-600' },
-              ].map((a) => (
+              ].map((a, i) => (
                 <Link
-                  key={a.href}
+                  key={`${a.href}-${i}`}
                   href={a.href}
                   className="card-modern p-5 flex flex-col items-center gap-3 text-center group cursor-pointer"
                 >
@@ -429,7 +429,7 @@ export default function DashboardPage() {
                 <div className="space-y-1">
                   {products.slice(0, 5).map((p) => (
                     <div key={p.id} className="flex items-center gap-4 p-3.5 rounded-2xl hover:bg-gray-50 hover:shadow-sm transition-all duration-200 group cursor-pointer">
-                      <RemoteImage src={partImages[p.category?.name || 'default']} alt={p.title} width={48} height={48} className="w-12 h-12 rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow" />
+                      <RemoteImage src={partImages[p.category?.name || 'default'] || partImages['default']} alt={p.title} width={48} height={48} className="w-12 h-12 rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow" />
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-gray-900 text-sm truncate group-hover:text-orange-600 transition-colors">{p.title}</p>
                         <p className="text-xs text-gray-500 mt-0.5">{p.brand?.name || ''} • {p.reference || 'N/A'}</p>

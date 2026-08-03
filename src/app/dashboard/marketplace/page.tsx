@@ -128,9 +128,9 @@ export default function MarketplacePage() {
         const res = await fetch(`/api/v1/products?${params}`);
         const data = await res.json();
         if (!cancelled && data.success) {
-          setProducts(data.data.data);
-          setTotalPages(data.data.pagination.totalPages);
-          setTotal(data.data.pagination.total);
+          setProducts(Array.isArray(data.data?.data) ? data.data.data : []);
+          setTotalPages(data.data?.pagination?.totalPages ?? data.data?.totalPages ?? 1);
+          setTotal(data.data?.pagination?.total ?? data.data?.total ?? 0);
         }
       } catch (err) { console.error(err); } finally { if (!cancelled) setLoading(false); }
     })();
@@ -159,7 +159,7 @@ export default function MarketplacePage() {
 
   const getImages = (p: Product): string[] => {
     if (Array.isArray(p.images) && p.images.length > 0) return p.images;
-    return partImages[p.category?.name || 'default'];
+    return partImages[p.category?.name || 'default'] || partImages['default'];
   };
 
   const openDetail = (p: Product) => {

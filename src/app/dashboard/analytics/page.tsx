@@ -35,9 +35,9 @@ export default function AnalyticsPage() {
         const pd = await p.json(); const od = await o.json(); const payd = await pay.json();
         const sd = await st.json(); const rvd = await rv.json();
         if (!cancelled) {
-          if (pd.success) setProducts(pd.data.data);
-          if (od.success) setOrders(od.data.data);
-          if (payd.success) setPayments(payd.data.data);
+          if (pd.success) setProducts(Array.isArray(pd.data?.data) ? pd.data.data : []);
+          if (od.success) setOrders(Array.isArray(od.data?.data) ? od.data.data : []);
+          if (payd.success) setPayments(Array.isArray(payd.data) ? payd.data : Array.isArray(payd.data?.data) ? payd.data.data : []);
           if (sd.success) setStats(sd.data);
           if (rvd.success) setReviews({ averageRating: rvd.data.averageRating || 0, total: rvd.data.total || 0 });
         }
