@@ -175,9 +175,9 @@ export default function AdminPage() {
     return (
       <div className="flex min-h-screen bg-gray-50">
         <Sidebar />
-        <div className="flex-1 lg:ml-64">
-          <DashboardTopBar />
-          <div className="flex items-center justify-center h-96">
+      <div className="flex-1 min-w-0 lg:ml-64">
+        <DashboardTopBar />
+        <div className="flex items-center justify-center h-96">
             <div className="text-center">
               <div className="animate-spin w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full mx-auto mb-4"></div>
               <p className="text-gray-500 font-medium">Chargement de l&apos;administration...</p>
@@ -191,7 +191,7 @@ export default function AdminPage() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      <div className="flex-1 lg:ml-64">
+      <div className="flex-1 min-w-0 lg:ml-64">
         <DashboardTopBar />
         <main className="p-4 lg:p-8 pb-24 lg:pb-8 max-w-[1400px] mx-auto">
 

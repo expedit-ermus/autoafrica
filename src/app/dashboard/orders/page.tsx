@@ -171,7 +171,7 @@ export default function OrdersPage() {
   return (
     <div className="flex min-h-screen bg-warm">
       <Sidebar />
-      <div className="flex-1 lg:ml-[260px] min-w-0">
+      <div className="flex-1 min-w-0 lg:ml-[260px]">
         <DashboardTopBar />
         <main className="p-4 lg:p-8 pb-24 lg:pb-8 max-w-7xl mx-auto">
 
