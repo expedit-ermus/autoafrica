@@ -282,8 +282,8 @@ export default function DashboardPage() {
           </div>
 
           {/* ═══════════════════ CHARTS ROW ═══════════════════ */}
-          <div className="grid lg:grid-cols-3 gap-5 mb-8" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both' }}>
-            <div className="glass-card p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both' }}>
+            <div className="glass-card p-6 min-w-0">
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <h3 className="font-bold text-gray-900 text-sm">Stock par catégorie</h3>
@@ -293,7 +293,7 @@ export default function DashboardPage() {
               </div>
               <BarChart data={categoryData} height={160} />
             </div>
-            <div className="glass-card p-6">
+            <div className="glass-card p-6 min-w-0">
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <h3 className="font-bold text-gray-900 text-sm">Statut des commandes</h3>
@@ -310,7 +310,7 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
-            <div className="glass-card p-6">
+            <div className="glass-card p-6 min-w-0">
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <h3 className="font-bold text-gray-900 text-sm">Répartition des prix</h3>
@@ -410,8 +410,8 @@ export default function DashboardPage() {
           </div>
 
           {/* ═══════════════════ PRODUCTS + STOCK ALERTS ═══════════════════ */}
-          <div className="grid lg:grid-cols-3 gap-5 mb-8" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both' }}>
-            <div className="lg:col-span-2 card-modern p-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both' }}>
+            <div className="lg:col-span-2 card-modern p-6 min-w-0">
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <h2 className="font-bold text-gray-900 text-sm">Dernières pièces</h2>
@@ -445,7 +445,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Stock Alerts */}
-            <div className="space-y-5">
+            <div className="space-y-5 min-w-0">
               {(lowStockProducts.length > 0 || outOfStock.length > 0) && (
                 <div className="card-modern p-6">
                   <div className="flex items-center gap-2 mb-4">
@@ -481,12 +481,12 @@ export default function DashboardPage() {
                   </div>
                   <h2 className="font-bold text-gray-900 text-sm">Marchés Actifs</h2>
                 </div>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 min-w-0 gap-2">
                   {[
                     { name: 'Côte d\'Ivoire', code: 'CI' }, { name: 'Sénégal', code: 'SN' }, { name: 'Mali', code: 'ML' }, { name: 'Burkina', code: 'BF' }, { name: 'Nigeria', code: 'NG' },
                   ].map(m => (
-                    <div key={m.code} className="text-center p-3 rounded-xl bg-gray-50 hover:bg-orange-50 transition-all duration-200 cursor-pointer hover:shadow-sm group">
-                      <RemoteImage src={`https://flagcdn.com/w80/${m.code.toLowerCase()}.png`} alt={m.name} width={80} height={56} className="w-10 h-7 object-cover rounded-md mx-auto mb-1.5 shadow-sm group-hover:shadow-md transition-shadow" />
+                    <div key={m.code} className="min-w-0 text-center p-3 rounded-xl bg-gray-50 hover:bg-orange-50 transition-all duration-200 cursor-pointer hover:shadow-sm group">
+                      <RemoteImage src={`https://flagcdn.com/w80/${m.code.toLowerCase()}.png`} alt={m.name} width={80} height={56} className="w-full h-7 object-cover rounded-md mb-1.5 shadow-sm group-hover:shadow-md transition-shadow" />
                       <p className="text-[10px] font-bold text-gray-600 group-hover:text-gray-800 transition-colors leading-tight">{m.name}</p>
                     </div>
                   ))}
