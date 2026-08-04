@@ -86,7 +86,7 @@ export default function VehiclesPage() {
     "Véhicules — Annonces Côte d'Ivoire | AutoAfrique",
   );
 
-  const brands = ['Toyota', 'Renault', 'Peugeot', 'Nissan', 'Hyundai', 'Kia', 'Mercedes', 'Volkswagen', 'BMW', 'Honda', 'Audi', 'Citroën', 'Fiat', 'Opel', 'Skoda'];
+  const brands = ['Suzuki', 'Toyota', 'Renault', 'Peugeot', 'Nissan', 'Hyundai', 'Kia', 'Mercedes', 'Volkswagen', 'BMW', 'Honda', 'Audi', 'Citroën', 'Fiat', 'Opel', 'Skoda'];
 
   useEffect(() => {
     let cancelled = false;

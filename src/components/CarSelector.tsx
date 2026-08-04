@@ -3,15 +3,16 @@ import { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 
 const carMakes = [
+  { id: 13, name: 'Suzuki', popular: true },
   { id: 1, name: 'Toyota', popular: true },
+  { id: 6, name: 'Renault', popular: true },
+  { id: 4, name: 'Peugeot', popular: true },
+  { id: 9, name: 'Nissan', popular: true },
   { id: 2, name: 'Hyundai', popular: true },
   { id: 3, name: 'Kia', popular: true },
-  { id: 4, name: 'Peugeot', popular: true },
   { id: 5, name: 'Mercedes-Benz', popular: true },
-  { id: 6, name: 'Renault', popular: true },
   { id: 7, name: 'Ford', popular: false },
   { id: 8, name: 'Volkswagen', popular: false },
-  { id: 9, name: 'Nissan', popular: false },
   { id: 10, name: 'BMW', popular: false },
   { id: 11, name: 'Citroën', popular: false },
   { id: 12, name: 'Opel', popular: false },
@@ -58,6 +59,12 @@ const carModels: Record<number, { id: number; name: string }[]> = {
     { id: 603, name: 'Clio' },
     { id: 604, name: 'Scénic' },
   ],
+  13: [
+    { id: 1301, name: 'Alto' },
+    { id: 1302, name: 'Swift' },
+    { id: 1303, name: 'Carry' },
+    { id: 1304, name: 'Desire' },
+  ],
 };
 
 const carEngines: Record<number, { id: number; name: string }[]> = {
@@ -91,6 +98,22 @@ const carEngines: Record<number, { id: number; name: string }[]> = {
     { id: 6002, name: '1.6 SCe 115ch' },
     { id: 6003, name: '1.5 dCi 90ch' },
   ],
+  1301: [
+    { id: 13001, name: '0.8L 3 cyl 47ch' },
+    { id: 13002, name: '1.0L VVT 68ch' },
+  ],
+  1302: [
+    { id: 13021, name: '1.2L VVT 90ch' },
+    { id: 13022, name: '1.4L Boosterjet 140ch' },
+  ],
+  1303: [
+    { id: 13031, name: '1.0L 63ch' },
+    { id: 13032, name: '1.3L 82ch' },
+  ],
+  1304: [
+    { id: 13041, name: '1.2L VVT 90ch' },
+    { id: 13042, name: '1.2L 4 cyl 87ch' },
+  ],
 };
 
 export default function CarSelector() {
@@ -107,11 +130,11 @@ export default function CarSelector() {
 
   return (
     <div className="bg-white rounded-3xl shadow-xl shadow-[var(--color-earth)]/8 border border-[var(--color-warm-border)] overflow-hidden">
-      <div className="bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-warm-navy-deep)] p-7">
+      <div className="bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-warm-navy-deep)] px-7 pt-9 pb-7">
         <h3 className="text-white font-extrabold text-xl mb-2">
           {L('Trouvez les pièces pour votre véhicule', 'Find parts for your vehicle')}
         </h3>
-        <p className="text-white/65 text-base">
+        <p className="text-white/85 text-base">
           {L('Recherchez par numéro d\'immatriculation ou sélectionnez votre modèle', 'Search by registration number or select your model')}
         </p>
       </div>
@@ -122,9 +145,9 @@ export default function CarSelector() {
             {L('Numéro d\'immatriculation', 'Registration number')}
           </label>
           <div className="flex gap-3">
-            <div className="flex items-center gap-2 flex-1">
-              <div className="w-12 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-sm">
-                <span className="text-white text-xs font-bold">CI</span>
+            <div className="flex items-stretch flex-1 min-w-0">
+              <div className="w-14 shrink-0 bg-blue-600 rounded-xl flex items-center justify-center shadow-sm">
+                <span className="text-white text-xs font-bold tracking-wide">CI</span>
               </div>
               <input
                 id="regNumber"
@@ -133,10 +156,10 @@ export default function CarSelector() {
                 onChange={(e) => setRegNumber(e.target.value.toUpperCase())}
                 placeholder="AB-123-CD"
                 maxLength={12}
-                className="flex-1 px-5 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-lg font-mono uppercase focus:border-[var(--color-primary)] focus:outline-none transition-colors text-[var(--color-warm-ink)] placeholder-[var(--color-warm-muted)]"
+                className="flex-1 min-w-0 px-4 py-3.5 border-2 border-l-0 border-[var(--color-warm-border)] rounded-r-xl rounded-l-none text-lg font-mono uppercase focus:border-[var(--color-primary)] focus:outline-none transition-colors text-[var(--color-warm-ink)] placeholder-[var(--color-warm-muted)]"
               />
             </div>
-            <button className="px-7 py-3.5 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-xl transition-all shadow-lg shadow-[var(--color-primary)]/30">
+            <button className="shrink-0 px-5 sm:px-7 py-3.5 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-xl transition-all shadow-lg shadow-[var(--color-primary)]/30 whitespace-nowrap">
               {L('Rechercher', 'Search')}
             </button>
           </div>
@@ -144,7 +167,7 @@ export default function CarSelector() {
 
         <div className="relative flex items-center gap-4 my-7">
           <div className="flex-1 h-px bg-[var(--color-warm-border)]"></div>
-          <span className="text-sm text-[var(--color-warm-muted)] font-bold">
+          <span className="text-sm text-[var(--color-warm-muted)] font-bold leading-none whitespace-nowrap">
             {L('ou sélectionnez votre modèle', 'or select your model')}
           </span>
           <div className="flex-1 h-px bg-[var(--color-warm-border)]"></div>

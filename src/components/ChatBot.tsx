@@ -49,16 +49,24 @@ interface TxCard {
 }
 
 const vehicleDB: VehicleCard[] = [
+  { type: 'vehicle', make: 'Suzuki', model: 'Alto', year: 2023, price: 6500000, location: 'Abidjan, CI', condition: 'Neuf', mileage: 1000, fuel: 'Essence', color: 'Blanc', seller: 'AutoAfrique', phone: '+22507654321', id: 'VH016' },
+  { type: 'vehicle', make: 'Suzuki', model: 'Alto', year: 2021, price: 4800000, location: 'Dakar, SN', condition: 'Occasion', mileage: 30000, fuel: 'Essence', color: 'Gris', seller: 'Dakar Motors', phone: '+22177123456', id: 'VH017' },
+  { type: 'vehicle', make: 'Suzuki', model: 'Carry', year: 2023, price: 9800000, location: 'Abidjan, CI', condition: 'Neuf', mileage: 2000, fuel: 'Essence', color: 'Blanc', seller: 'AutoAfrique', phone: '+22507654321', id: 'VH018' },
   { type: 'vehicle', make: 'Toyota', model: 'Corolla', year: 2022, price: 8500000, location: 'Abidjan, CI', condition: 'Occasion', mileage: 15000, fuel: 'Essence', color: 'Blanc', seller: 'AutoConcession CI', phone: '+22507080910', id: 'VH001' },
-  { type: 'vehicle', make: 'Mercedes-Benz', model: 'C200', year: 2023, price: 25000000, location: 'Dakar, SN', condition: 'Certifié', mileage: 8000, fuel: 'Diesel', color: 'Noir', seller: 'Sénégal Auto Plus', phone: '+221771234567', id: 'VH002' },
-  { type: 'vehicle', make: 'Hyundai', model: 'Tucson', year: 2024, price: 18500000, location: 'Abidjan, CI', condition: 'Neuf', mileage: 2000, fuel: 'Diesel', color: 'Gris', seller: 'AutoConcession CI', phone: '+22507080910', id: 'VH003' },
-  { type: 'vehicle', make: 'BMW', model: 'Série 3', year: 2021, price: 22000000, location: 'Lagos, NG', condition: 'Occasion', mileage: 35000, fuel: 'Essence', color: 'Bleu', seller: 'Lagos Motors', phone: '+2348012345678', id: 'VH004' },
-  { type: 'vehicle', make: 'Peugeot', model: '308', year: 2023, price: 12000000, location: 'Ouagadougou, BF', condition: 'Occasion', mileage: 12000, fuel: 'Diesel', color: 'Rouge', seller: 'Burkina Garage', phone: '+22670123456', id: 'VH005' },
-  { type: 'vehicle', make: 'Kia', model: 'Sportage', year: 2024, price: 19500000, location: 'Accra, GH', condition: 'Neuf', mileage: 500, fuel: 'Hybride', color: 'Blanc', seller: 'Ghana Auto Hub', phone: '+233245678901', id: 'VH006' },
-  { type: 'vehicle', make: 'Toyota', model: 'Land Cruiser', year: 2022, price: 45000000, location: 'Bamako, ML', condition: 'Occasion', mileage: 28000, fuel: 'Diesel', color: 'Beige', seller: 'Mali Véhicules', phone: '+22376543210', id: 'VH007' },
-  { type: 'vehicle', make: 'Nissan', model: 'Qashqai', year: 2023, price: 14500000, location: 'Cotonou, BJ', condition: 'Certifié', mileage: 18000, fuel: 'Essence', color: 'Gris', seller: 'Cotonou Motors', phone: '+22997123456', id: 'VH008' },
-  { type: 'vehicle', make: 'Toyota', model: 'RAV4', year: 2023, price: 15000000, location: 'Dakar, SN', condition: 'Occasion', mileage: 10000, fuel: 'Hybride', color: 'Rouge', seller: 'Sénégal Auto Plus', phone: '+221771234567', id: 'VH009' },
-  { type: 'vehicle', make: 'Mercedes-Benz', model: 'GLC', year: 2022, price: 35000000, location: 'Abidjan, CI', condition: 'Occasion', mileage: 22000, fuel: 'Diesel', color: 'Noir', seller: 'AutoConcession CI', phone: '+22507080910', id: 'VH010' },
+  { type: 'vehicle', make: 'Toyota', model: 'Camry', year: 2023, price: 18500000, location: 'Abidjan, CI', condition: 'Neuf', mileage: 5000, fuel: 'Hybride', color: 'Gris', seller: 'AutoConcession CI', phone: '+22507080910', id: 'VH002' },
+  { type: 'vehicle', make: 'Toyota', model: 'Hilux', year: 2021, price: 12000000, location: 'Abidjan, CI', condition: 'Occasion', mileage: 45000, fuel: 'Diesel', color: 'Gris', seller: 'Logistique Express CI', phone: '+22501234567', id: 'VH003' },
+  { type: 'vehicle', make: 'Toyota', model: 'RAV4', year: 2024, price: 25000000, location: 'Abidjan, CI', condition: 'Neuf', mileage: 3000, fuel: 'Hybride', color: 'Rouge', seller: 'AutoAfrique', phone: '+22507654321', id: 'VH004' },
+  { type: 'vehicle', make: 'Toyota', model: 'Land Cruiser', year: 2022, price: 45000000, location: 'Bamako, ML', condition: 'Occasion', mileage: 28000, fuel: 'Diesel', color: 'Beige', seller: 'Mali Véhicules', phone: '+22376543210', id: 'VH005' },
+  { type: 'vehicle', make: 'Renault', model: 'Duster', year: 2023, price: 15500000, location: 'Abidjan, CI', condition: 'Occasion', mileage: 20000, fuel: 'Essence', color: 'Gris', seller: 'Renault CI', phone: '+22561234567', id: 'VH006' },
+  { type: 'vehicle', make: 'Renault', model: 'Logan', year: 2022, price: 11500000, location: 'Ouagadougou, BF', condition: 'Occasion', mileage: 35000, fuel: 'Diesel', color: 'Gris', seller: 'Burkina Garage', phone: '+22670123456', id: 'VH007' },
+  { type: 'vehicle', make: 'Renault', model: 'Kwid', year: 2024, price: 9500000, location: 'Accra, GH', condition: 'Neuf', mileage: 1000, fuel: 'Essence', color: 'Rouge', seller: 'Accra Motors', phone: '+233200123456', id: 'VH008' },
+  { type: 'vehicle', make: 'Peugeot', model: '308', year: 2023, price: 12000000, location: 'Abidjan, CI', condition: 'Occasion', mileage: 15000, fuel: 'Diesel', color: 'Gris', seller: 'Peugeot CI', phone: '+22507654321', id: 'VH009' },
+  { type: 'vehicle', make: 'Peugeot', model: '207', year: 2021, price: 8500000, location: 'Ouagadougou, BF', condition: 'Occasion', mileage: 40000, fuel: 'Essence', color: 'Gris', seller: 'Burkina Garage', phone: '+22670123456', id: 'VH010' },
+  { type: 'vehicle', make: 'Nissan', model: 'Qashqai', year: 2023, price: 14500000, location: 'Abidjan, CI', condition: 'Certifié', mileage: 18000, fuel: 'Essence', color: 'Gris', seller: 'Cotonou Motors', phone: '+22997123456', id: 'VH011' },
+  { type: 'vehicle', make: 'Nissan', model: 'X-Trail', year: 2022, price: 28000000, location: 'Abidjan, CI', condition: 'Occasion', mileage: 25000, fuel: 'Diesel', color: 'Noir', seller: 'Nissan CI', phone: '+22507654321', id: 'VH012' },
+  { type: 'vehicle', make: 'Hyundai', model: 'Tucson', year: 2024, price: 22000000, location: 'Abidjan, CI', condition: 'Neuf', mileage: 3000, fuel: 'Hybride', color: 'Gris', seller: 'Hyundai CI', phone: '+22561234567', id: 'VH013' },
+  { type: 'vehicle', make: 'Hyundai', model: 'i10', year: 2023, price: 10500000, location: 'Accra, GH', condition: 'Neuf', mileage: 2000, fuel: 'Essence', color: 'Blanc', seller: 'Accra Motors', phone: '+233200123456', id: 'VH014' },
+  { type: 'vehicle', make: 'Hyundai', model: 'Santa Fe', year: 2023, price: 35000000, location: 'Abidjan, CI', condition: 'Occasion', mileage: 12000, fuel: 'Hybride', color: 'Beige', seller: 'Hyundai CI', phone: '+22561234567', id: 'VH015' },
 ];
 
 const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);

@@ -4,15 +4,16 @@ import RemoteImage from '@/components/RemoteImage';
 import { useApp } from '@/contexts/AppContext';
 
 const brands = [
+  { name: 'Suzuki', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Suzuki_logo_2025.svg/250px-Suzuki_logo_2025.svg.png', count: '2,200+' },
   { name: 'Toyota', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Toyota.svg/250px-Toyota.svg.png', count: '12,400+' },
+  { name: 'Renault', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Renault_2009_logo.svg/250px-Renault_2009_logo.svg.png', count: '2,900+' },
+  { name: 'Peugeot', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Peugeot_Logo.svg/250px-Peugeot_Logo.svg.png', count: '4,500+' },
+  { name: 'Nissan', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Nissan_2020_logo.svg/250px-Nissan_2020_logo.svg.png', count: '1,800+' },
   { name: 'Hyundai', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Hyundai_Motor_Company_logo.svg/250px-Hyundai_Motor_Company_logo.svg.png', count: '6,800+' },
   { name: 'Kia', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/KIA_logo.svg/250px-KIA_logo.svg.png', count: '5,200+' },
-  { name: 'Peugeot', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/Peugeot_Logo.svg/250px-Peugeot_Logo.svg.png', count: '4,500+' },
   { name: 'Mercedes-Benz', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Mercedes-Benz_Logo_2010.svg/250px-Mercedes-Benz_Logo_2010.svg.png', count: '3,800+' },
-  { name: 'Renault', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Renault_2009_logo.svg/250px-Renault_2009_logo.svg.png', count: '2,900+' },
   { name: 'Ford', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Ford_Motor_Company_Logo.svg/250px-Ford_Motor_Company_Logo.svg.png', count: '2,400+' },
   { name: 'Volkswagen', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/Volkswagen_logo_2019.svg/250px-Volkswagen_logo_2019.svg.png', count: '2,100+' },
-  { name: 'Nissan', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Nissan_2020_logo.svg/250px-Nissan_2020_logo.svg.png', count: '1,800+' },
   { name: 'BMW', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/BMW.svg/250px-BMW.svg.png', count: '1,500+' },
   { name: 'Citroën', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Citroen_2016_logo.svg/250px-Citroen_2016_logo.svg.png', count: '1,300+' },
   { name: 'Opel', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Opel-Logo_2017.svg/250px-Opel-Logo_2017.svg.png', count: '900+' },

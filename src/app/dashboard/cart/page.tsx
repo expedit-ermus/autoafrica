@@ -73,7 +73,7 @@ export default function CartPage() {
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      <div className="flex-1 lg:ml-64">
+      <div className="flex-1 lg:ml-64 min-w-0">
         <DashboardTopBar />
         <main className="p-4 lg:p-8 pb-32 lg:pb-8">
           {/* ── Page Header ── */}
