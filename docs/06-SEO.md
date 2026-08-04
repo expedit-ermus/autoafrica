@@ -6,8 +6,8 @@
 
 | Balise | Valeur |
 |--------|--------|
-| `<title>` | AutoAfrique : Pièces détachées auto & Marketplace Afrique de l'Ouest |
-| `<meta name="description">` | 85,000+ pièces pour Toyota, Hyundai, Kia, Peugeot. Paiement Mobile Money. Livraison 24-72h en Afrique de l'Ouest. |
+| `<title>` | Pièces détachées auto Abidjan, neuf & occasion \| AutoAfrique |
+| `<meta name="description">` | Achetez pièces détachées auto neuves et occasion à Abidjan, Côte d'Ivoire. Prix transparents, garantie incluse, paiement Mobile Money, Afrique de l'Ouest. |
 | `<link rel="canonical">` | `/` |
 | `<meta name="robots">` | index, follow |
 
@@ -47,8 +47,8 @@
 
 | Property | Valeur |
 |----------|--------|
-| `og:title` | AutoAfrique — Pièces Auto Marketplace Afrique de l'Ouest |
-| `og:description` | 85,000+ pièces pour Toyota, Hyundai, Kia, Peugeot. Paiement Mobile Money. Livraison 24-72h. |
+| `og:title` | Pièces détachées auto Abidjan, neuf & occasion \| AutoAfrique |
+| `og:description` | Achetez pièces détachées auto neuves et occasion à Abidjan, Côte d'Ivoire. Prix transparents, garantie incluse, paiement Mobile Money. |
 | `og:image` | `/og-image.png` (1200×630px) |
 | `og:url` | `https://autoafrique-saas.vercel.app/` |
 | `og:type` | website |
@@ -60,8 +60,8 @@
 | Property | Valeur |
 |----------|--------|
 | `twitter:card` | summary_large_image |
-| `twitter:title` | AutoAfrique — Pièces Auto Marketplace |
-| `twitter:description` | 85,000+ pièces auto. Paiement Mobile Money. Livraison 24-72h. |
+| `twitter:title` | Pièces détachées auto Abidjan, neuf & occasion \| AutoAfrique |
+| `twitter:description` | Achetez pièces détachées auto neuves et occasion à Abidjan, Côte d'Ivoire. Prix transparents, garantie incluse, paiement Mobile Money. |
 | `twitter:image` | `/og-image.png` |
 
 ## Performance SEO
@@ -72,6 +72,10 @@
 | FID | < 100ms |
 | CLS | < 0.1 |
 | TTFB | < 600ms |
+
+## Structured data (landing `/`)
+
+La landing embarque `Organization`, `WebSite` et `FAQPage` (3 questions : compatibilité d'une pièce, différence pièce d'origine / neuve / occasion contrôlée, paiement Mobile Money). Modèles dans `08-STRUCTURED-DATA.md`.
 
 ## Titres dynamiques (détail produit / annonce)
 

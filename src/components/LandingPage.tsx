@@ -1,4 +1,5 @@
 'use client';
+import Link from 'next/link';
 import { useApp } from '@/contexts/AppContext';
 import CarSelector from '@/components/CarSelector';
 import PromoBanner from '@/components/PromoBanner';
@@ -54,7 +55,7 @@ export default function LandingPage() {
       <section className="bg-gradient-to-b from-[var(--color-bg-warm)] to-[var(--color-bg)] py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] text-center mb-8">
-            {L('AutoAfrique — Pièces Auto Marketplace Afrique de l\'Ouest', 'AutoAfrique — Auto Parts Marketplace West Africa')}
+            {L('Pièces détachées auto neuves et occasion à Abidjan — AutoAfrique', 'New and used auto parts in Abidjan — AutoAfrique')}
           </h1>
           <div className="grid lg:grid-cols-5 gap-6">
             <div className="lg:col-span-2 min-w-0">
@@ -94,6 +95,129 @@ export default function LandingPage() {
       </section>
 
       <Bestsellers />
+
+      <section className="py-14 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] mb-8 text-center">
+            {L('Neuf ou occasion, à vous de choisir', 'New or used, you choose')}
+          </h2>
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-[var(--color-bg-warm)] rounded-3xl p-8 border border-[var(--color-warm-border)]">
+              <h3 className="text-lg font-extrabold text-[var(--color-warm-ink)] mb-3">
+                {L('Pièces neuves', 'New parts')}
+              </h3>
+              <p className="text-sm md:text-base text-[var(--color-warm-faint)] leading-relaxed">
+                {L(
+                  'Une pièce neuve sort directement d\'usine et n\'a jamais été montée. Elle convient aux automobilistes et garagistes qui privilégient la durée de vie, avec la garantie AutoAfrique incluse.',
+                  'A new part comes straight from the factory and has never been fitted. It suits car owners and mechanics who value lifespan, with the AutoAfrique warranty included.'
+                )}
+              </p>
+            </div>
+            <div className="bg-[var(--color-bg-warm)] rounded-3xl p-8 border border-[var(--color-warm-border)]">
+              <h3 className="text-lg font-extrabold text-[var(--color-warm-ink)] mb-3">
+                {L('Pièces d\'occasion contrôlée', 'Certified used parts')}
+              </h3>
+              <p className="text-sm md:text-base text-[var(--color-warm-faint)] leading-relaxed">
+                {L(
+                  'Chaque pièce d\'occasion est inspectée, testée et remise en état avant d\'être mise en ligne, avec sa propre garantie. Un choix économique et fiable, notamment pour les modèles Toyota, Peugeot et Renault en Afrique de l\'Ouest.',
+                  'Every used part is inspected, tested and reconditioned before going online, with its own warranty. An affordable, reliable choice, especially for Toyota, Peugeot and Renault models in West Africa.'
+                )}
+              </p>
+            </div>
+          </div>
+          <p className="mt-8 text-center text-sm md:text-base text-[var(--color-warm-faint)] leading-relaxed">
+            {L(
+              'Le prix affiché est toujours le prix final : pas de surprise au moment de payer. Règlement en Mobile Money (Orange Money, MTN MoMo, Wave) et livraison en 24-72h.',
+              'The displayed price is always the final price: no surprises at checkout. Pay by Mobile Money (Orange Money, MTN MoMo, Wave) and get delivery in 24-72h.'
+            )}
+          </p>
+        </div>
+      </section>
+
+      <section className="py-14 bg-[var(--color-bg)]">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-3xl p-8 md:p-10 border border-[var(--color-warm-border)] shadow-lg shadow-[var(--color-earth)]/5">
+            <h2 className="text-xl md:text-2xl font-extrabold text-[var(--color-warm-ink)] mb-5">
+              {L('Une alternative fiable à la casse auto', 'A reliable alternative to scrapyards')}
+            </h2>
+            <div className="text-base text-[var(--color-warm-faint)] leading-relaxed space-y-4">
+              <p>
+                {L(
+                  'Récupérer des pièces dans une casse auto à Abidjan reste une pratique courante, mais les prix sont souvent négociables et la qualité variable. AutoAfrique propose une alternative plus simple : un prix fixe affiché, une pièce de récupération contrôlée ou neuve, et une garantie incluse.',
+                  'Recovering parts from a scrapyard in Abidjan is still common, but prices are often negotiable and quality varies. AutoAfrique offers a simpler alternative: a fixed displayed price, a certified used or new part, and a warranty included.'
+                )}
+              </p>
+              <p>
+                {L(
+                  'Que vous soyez un particulier qui cherche des pièces introuvables, un garage de débrouille qui veut s\'équiper pas cher ou un grossiste qui veut sécuriser son approvisionnement, vous gardez les mêmes prix bas qu\'au marché informel, avec en plus la traçabilité, le devis et le reçu. Trouvez votre garagiste de confiance à Abidjan ou devenez revendeur.',
+                  'Whether you are a private driver looking for hard-to-find parts, a small shop that wants to stock up cheaply, or a wholesaler who wants to secure supply, you keep the same low prices as the informal market, plus traceability, a quote and a receipt. Find a trusted mechanic in Abidjan or become a reseller.'
+                )}
+              </p>
+              <p>
+                {L(
+                  'Le devis de réparation est estimé en ligne et le paiement s\'effectue par Mobile Money. Bénéficiez d\'une pièce auto d\'occasion garantie, livrée en Afrique de l\'Ouest, à Abidjan comme à Dakar.',
+                  'The repair quote is estimated online and payment is made by Mobile Money. Get a certified used auto part, delivered across West Africa, in Abidjan and Dakar alike.'
+                )}
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-14 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-3xl p-8 md:p-10 border border-[var(--color-warm-border)] shadow-lg shadow-[var(--color-earth)]/5">
+            <h2 className="text-xl md:text-2xl font-extrabold text-[var(--color-warm-ink)] mb-5">
+              {L('Questions fréquentes', 'Frequently asked questions')}
+            </h2>
+            <div className="space-y-5">
+              <div>
+                <h3 className="font-bold text-[var(--color-warm-ink)] mb-1.5">
+                  {L('Comment savoir si une pièce auto est compatible avec mon véhicule ?', 'How do I know if an auto part fits my vehicle?')}
+                </h3>
+                <p className="text-sm md:text-base text-[var(--color-warm-faint)] leading-relaxed">
+                  {L(
+                    'Utilisez la recherche par numéro d\'immatriculation ou sélectionnez la marque et le modèle de votre véhicule : nous ne proposons que des pièces référencées pour votre voiture.',
+                    'Use the licence plate search or select your vehicle\'s brand and model: we only list parts referenced for your car.'
+                  )}
+                </p>
+              </div>
+              <div>
+                <h3 className="font-bold text-[var(--color-warm-ink)] mb-1.5">
+                  {L('Quelle est la différence entre pièce d\'origine, pièce neuve et pièce d\'occasion contrôlée ?', 'What is the difference between an OEM part, a new part and a certified used part?')}
+                </h3>
+                <p className="text-sm md:text-base text-[var(--color-warm-faint)] leading-relaxed">
+                  {L(
+                    'La pièce d\'origine est fabriquée par le constructeur. La pièce neuve est une pièce de remplacement neuve, garantie. L\'occasion contrôlée est une pièce de récupération inspectée et testée par AutoAfrique, avec sa propre garantie.',
+                    'An OEM part is made by the manufacturer. A new part is a new replacement part, under warranty. A certified used part is a recovery part inspected and tested by AutoAfrique, with its own warranty.'
+                  )}
+                </p>
+              </div>
+              <div>
+                <h3 className="font-bold text-[var(--color-warm-ink)] mb-1.5">
+                  {L('Comment payer mes pièces auto sur AutoAfrique ?', 'How do I pay for my auto parts on AutoAfrique?')}
+                </h3>
+                <p className="text-sm md:text-base text-[var(--color-warm-faint)] leading-relaxed">
+                  {L(
+                    'Le paiement se fait par Mobile Money (Orange Money, MTN MoMo, Wave), directement et en toute sécurité, avec un reçu conservé dans votre compte.',
+                    'Payment is made by Mobile Money (Orange Money, MTN MoMo, Wave), directly and securely, with a receipt kept in your account.'
+                  )}
+                </p>
+              </div>
+            </div>
+            <p className="mt-8 text-sm md:text-base text-[var(--color-warm-faint)]">
+              {L(
+                'Encore une question ? Parcourez le',
+                'Still have a question? Browse the'
+              )}{' '}
+              <Link href="/dashboard/marketplace" className="font-bold text-[var(--color-primary)] hover:underline">
+                {L('catalogue de pièces', 'parts catalogue')}
+              </Link>
+              {L(' ou recherchez une pièce compatible avec votre véhicule en ligne.', ' or search for a compatible part for your vehicle online.')}
+            </p>
+          </div>
+        </div>
+      </section>
 
       <section className="py-14 bg-[var(--color-bg-warm)]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
