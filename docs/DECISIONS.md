@@ -665,6 +665,18 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `src/components/{PromoBanner,Bestsellers}.tsx`, `docs/{03-PAGES,DECISIONS}.md`.
 
+## D38 : Refonte accueil/layout — groupe 4 « nettoyage footer »
+
+**Contexte** : vérifier qu'il ne reste aucun transporteur générique (DHL, UPS, GLS, Chronopost, FedEx) dans le footer ni dans le site public, après la refonte du Groupe 1.
+
+**Decision** (groupe 4 — vérification, aucun changement de code) :
+- Scan `src/components/Footer.tsx` + `src/app/(public)/*` + `LandingPage.tsx` : aucun transporteur générique (le footer affiche « Livraison locale partenaire » depuis D35) et aucun résidu Lorem Ipsum. `rg -i` pour DHL/UPS/GLS/Chronopost/FedEx/lorem : 0 occurrence sur le site public.
+- Le module `delivery` traite `carrier` comme un champ libre (pas d'enum hardcodé) ; les exemples « DHL123… » / « dhl / local / gabriel… » sont des placeholders du dashboard interne (`dashboard/delivery`), hors périmètre footer, et n'affirment aucun partenariat transporteur. Suivi facultatif : neutraliser ces exemples dans un lot dédié si on veut éviter toute suggestion de transporteur réel.
+
+**Resultats** : footer et site public exempts de transporteurs génériques et de faux contenus ; lint/tsc/tests/build inchangés (aucune modification de code).
+
+**Impact** : aucun fichier de code ; `docs/DECISIONS.md` (D38).
+
 
 
 
