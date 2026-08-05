@@ -8,13 +8,7 @@ import Link from 'next/link';
 import BarChart, { DonutChart, SparkLine } from '@/components/Charts';
 import { Product, Order, Payment } from '@/shared/types';
 
-const partImages: Record<string, string> = {
-  'Moteur': 'https://images.unsplash.com/photo-1763848843613-f8c2ca3a31a1?w=200&h=150&fit=crop',
-  'Frein': 'https://images.unsplash.com/photo-1770656505709-fd97236989b9?w=200&h=150&fit=crop',
-  'Suspension': 'https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=200&h=150&fit=crop',
-  'Carrosserie': 'https://images.unsplash.com/photo-1766650189458-bb0e7969ba5d?w=200&h=150&fit=crop',
-  'default': 'https://images.unsplash.com/photo-1763848843613-f8c2ca3a31a1?w=200&h=150&fit=crop',
-};
+const PLACEHOLDER_IMAGE = '/images/placeholder.svg';
 
 export default function DashboardPage() {
   const { t, user } = useApp();
@@ -429,7 +423,7 @@ export default function DashboardPage() {
                 <div className="space-y-1">
                   {products.slice(0, 5).map((p) => (
                     <div key={p.id} className="flex items-center gap-4 p-3.5 rounded-2xl hover:bg-gray-50 hover:shadow-sm transition-all duration-200 group cursor-pointer">
-                      <RemoteImage src={partImages[p.category?.name || 'default'] || partImages['default']} alt={p.title} width={48} height={48} className="w-12 h-12 rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow" />
+                      <RemoteImage src={PLACEHOLDER_IMAGE} alt={p.title} width={48} height={48} className="w-12 h-12 rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow" />
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-gray-900 text-sm truncate group-hover:text-orange-600 transition-colors">{p.title}</p>
                         <p className="text-xs text-gray-500 mt-0.5">{p.brand?.name || ''} • {p.reference || 'N/A'}</p>

@@ -28,35 +28,7 @@ interface CartItem {
   image: string;
 }
 
-const partImages: Record<string, string[]> = {
-  'Moteur': [
-    'https://images.unsplash.com/photo-1763848843613-f8c2ca3a31a1?w=600&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=600&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&h=450&fit=crop',
-  ],
-  'Frein': [
-    'https://images.unsplash.com/photo-1770656505709-fd97236989b9?w=600&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=600&h=450&fit=crop',
-  ],
-  'Suspension': [
-    'https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=600&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1763848843613-f8c2ca3a31a1?w=600&h=450&fit=crop',
-  ],
-  'Carrosserie': [
-    'https://images.unsplash.com/photo-1766650189458-bb0e7969ba5d?w=600&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1533833406613-0058ceea5d1a?w=600&h=450&fit=crop',
-  ],
-  'Électrique': [
-    'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=600&h=450&fit=crop',
-  ],
-  'Transmission': [
-    'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=600&h=450&fit=crop',
-  ],
-  'default': [
-    'https://images.unsplash.com/photo-1763848843613-f8c2ca3a31a1?w=600&h=450&fit=crop',
-    'https://images.unsplash.com/photo-1770656505709-fd97236989b9?w=600&h=450&fit=crop',
-  ],
-};
+const PLACEHOLDER_IMAGE = '/images/placeholder.svg';
 
 const relatedSuggestions: Record<string, string[]> = {
   'Moteur': ['Filtre à huile', 'Courroie', 'Bougie', 'Pompe à eau'],
@@ -159,7 +131,7 @@ export default function MarketplacePage() {
 
   const getImages = (p: Product): string[] => {
     if (Array.isArray(p.images) && p.images.length > 0) return p.images;
-    return partImages[p.category?.name || 'default'] || partImages['default'];
+    return [PLACEHOLDER_IMAGE];
   };
 
   const openDetail = (p: Product) => {

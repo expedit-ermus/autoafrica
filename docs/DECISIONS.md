@@ -677,6 +677,22 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : aucun fichier de code ; `docs/DECISIONS.md` (D38).
 
+## D39 : Refonte accueil/layout — suite « images distantes et contenus factices restants »
+
+**Contexte** : les groupes 3 et 4 ont laissé des résidus documentés comme suivi facultatif : images Unsplash dans `PartsCatalog` (homepage, vignettes catégories dupliquées), placeholders produits Unsplash dans les pages dashboard (`marketplace`, `vehicles`, `page`), faux compteurs de pièces dans `BrandGrid` (« 12,400+ », « 2,200+ »… présents dans les données, non affichés), et exemples « DHL123… » / « dhl / local / gabriel… » dans le formulaire du dashboard delivery. Consigne utilisateur : corriger puis poursuivre.
+
+**Decision** (groupe 5 — nettoyage des résidus) :
+- Créer `public/images/placeholder.svg` : placeholder local neutre (silhouette véhicule, palette du design system), seule source d'image de repli. Aucune image distante.
+- `PartsCatalog` : suppression des vignettes Unsplash → dégradés de la palette + icône pignon (SVG inline), conservant l'identité par catégorie sans fausse preuve visuelle.
+- `BrandGrid` : suppression des faux compteurs de pièces (données non affichées mais trompeuses). Les logos Wikimedia (logos officiels de marques, sources stables) sont conservés : ce sont des marques réelles, pas une preuve inventée.
+- Pages dashboard `marketplace`, `vehicles`, `page` : les `partImages`/`DEFAULT_IMAGE` Unsplash sont remplacés par le placeholder local (`/images/placeholder.svg`).
+- Dashboard `delivery` : placeholders neutralisés (« Ex : 1234-5678... », « Ex : partenaire / local... ») — plus aucune suggestion de transporteur générique (DHL). Les données de test du module `delivery.service.test.ts` (`carrier: 'dhl'`, recherche « DHL ») sont conservées : fixtures internes du champ libre `carrier`, sans impact utilisateur.
+- Le module `delivery` garde `carrier` comme champ libre (aucun enum) ; aucune règle métier modifiée.
+
+**Resultats** : plus aucun URL Unsplash dans le code source (seulement la mention dans les commentaires d'explication) ; plus de transporteur générique dans le contenu visible ; lint OK, tsc OK, tests OK (287), build OK. Runtime : `/` → HTTP 200 avec vignettes catégories, `has-unsplash: false`, `/images/placeholder.svg` → 200 `image/svg+xml`.
+
+**Impact** : `public/images/placeholder.svg` (nouveau), `src/components/{PartsCatalog,BrandGrid}.tsx`, `src/app/dashboard/{marketplace,vehicles,delivery,page}.tsx`, `docs/{03-PAGES,DECISIONS}.md`.
+
 
 
 

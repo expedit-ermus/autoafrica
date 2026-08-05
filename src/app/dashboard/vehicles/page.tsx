@@ -16,7 +16,7 @@ const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
 const IVORIAN_CITIES = ['Abidjan', 'Bouaké', 'Yamoussoukro', 'Korhogo', 'San-Pédro', 'Daloa', 'Man', 'Gagnoa'];
 
-const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&h=450&fit=crop';
+const DEFAULT_IMAGE = '/images/placeholder.svg';
 
 interface VehicleSeller {
   id: string;

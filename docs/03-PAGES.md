@@ -287,8 +287,8 @@ Footer (e-commerce)
 
 - CarSelector : marques et modèles (statique)
 - PromoBanner : 4 slides neutres et véridiques (aucun chiffre/offre inventé, aucune image distante)
-- PartsCatalog : 12 catégories (statique)
-- BrandGrid : 12 logos (statique)
+- PartsCatalog : 12 catégories (vignettes dégradé + icône SVG, aucune image distante)
+- BrandGrid : 13 logos officiels de marques (Wikimedia) — sans compteurs inventés
 - TrustBar : 4 items (statique)
 - BestSellers : désactivé (retourne `null`, TODO) — réactiver quand des ventes réelles (`salesCount`) et des images validées existent (voir `DECISIONS.md` D37)
 - Footer : contenu i18n

@@ -799,7 +799,7 @@ export default function DeliveryPage() {
                   <input
                     value={shipmentForm.trackingNumber}
                     onChange={e => setShipmentForm(f => ({ ...f, trackingNumber: e.target.value }))}
-                    placeholder="DHL123..."
+                    placeholder="Ex : 1234-5678..."
                     className="input-field !text-sm"
                   />
                 </div>
@@ -808,7 +808,7 @@ export default function DeliveryPage() {
                   <input
                     value={shipmentForm.carrier}
                     onChange={e => setShipmentForm(f => ({ ...f, carrier: e.target.value }))}
-                    placeholder="dhl / local / gabriel..."
+                    placeholder="Ex : partenaire / local..."
                     className="input-field !text-sm"
                   />
                 </div>
