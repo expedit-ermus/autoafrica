@@ -53,7 +53,7 @@
 | Evenement | Trigger | Parametres |
 |-----------|---------|------------|
 | `login` | Connexion reussie | `method` |
-| `register` | Inscription reussie | `role`, `country` |
+| `register` | Inscription reussie | `role` (`BUYER` par defaut, `SELLER` si choisi a l'inscription), `country` |
 | `logout` | Deconnexion | - |
 
 ## KPIs business
@@ -94,6 +94,15 @@
 - Tracking automatique des pages
 - Evenements custom via gtag
 - Conversion tracking
+
+#### Implementation GA4 (gtag.js)
+
+Le tag GA4 est charge cote client par `src/components/GoogleAnalytics.tsx`, branche dans le layout racine `src/app/layout.tsx`. Il necessite la variable d'environnement `NEXT_PUBLIC_GA_MEASUREMENT_ID` (ex. `G-46T65CMVH0`), documentee dans `.env.example`.
+
+Comportement :
+- `page_view` : envoye a chaque navigation (y compris routage cote client) via `gtag('config', id, { page_path })` ; `send_page_view: false` dans l'init pour eviter un doublon sur le premier chargement.
+- Evenements custom : le module `src/lib/tracking.ts` (`track`) renvoie automatiquement chaque evenement du schema vers GA4 via `gtag('event', ...)` (module `src/lib/gtag.ts`, `trackGAEvent`). L'evenement `page_view` est exclu du renvoi car deja gere par `gtag('config')`.
+- Consentement : `setGAConsent` pousse le mode `analytics_storage: granted` / `ad_storage: denied` (aucune publicite ciblee).
 
 ### Metriques internes
 - Tableau de bord `/dashboard/analytics`

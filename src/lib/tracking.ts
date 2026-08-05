@@ -1,3 +1,5 @@
+import { trackGAEvent } from './gtag'
+
 let cachedSessionId: string | null = null
 
 export function getSessionId(): string {
@@ -14,8 +16,11 @@ export function getSessionId(): string {
   return id
 }
 
+const GA4_EXCLUDED = new Set(['page_view'])
+
 export function track(name: string, props?: Record<string, unknown>) {
   if (typeof window === 'undefined') return
+  if (!GA4_EXCLUDED.has(name)) trackGAEvent(name, props)
   const body = {
     event: name,
     sessionId: getSessionId(),
