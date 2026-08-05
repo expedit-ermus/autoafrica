@@ -82,7 +82,56 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.5,
     },
+    ...categoryUrls(),
+    ...brandUrls(),
   ];
 
   return indexablePages;
+}
+
+function categoryUrls(): MetadataRoute.Sitemap {
+  const slugs = [
+    "pneus-jantes",
+    "frein",
+    "moteur",
+    "courroies-chaines",
+    "embrayage",
+    "amortissement",
+    "suspension",
+    "filtre",
+    "carrosserie",
+    "huiles-fluides",
+    "electricite",
+    "autres",
+  ];
+  return slugs.map((slug) => ({
+    url: `${BASE_URL}/marketplace/categorie/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+}
+
+function brandUrls(): MetadataRoute.Sitemap {
+  const slugs = [
+    "toyota",
+    "hyundai",
+    "kia",
+    "peugeot",
+    "mercedes-benz",
+    "renault",
+    "suzuki",
+    "nissan",
+    "ford",
+    "volkswagen",
+    "bmw",
+    "citroen",
+    "opel",
+  ];
+  return slugs.map((slug) => ({
+    url: `${BASE_URL}/marketplace/marque/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.6,
+  }));
 }

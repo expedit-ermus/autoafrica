@@ -1,0 +1,42 @@
+import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
+import { resolveCategory } from '@/lib/marketplace-catalog';
+import { productsService } from '@/modules/products/products.service';
+import CatalogPage from '@/components/CatalogPage';
+import { Product } from '@/shared/types';
+
+export const dynamic = 'force-dynamic';
+
+interface PageProps {
+  params: Promise<{ slug: string }>;
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const cat = resolveCategory(slug);
+  if (!cat) return {};
+  return {
+    title: `Pièces détachées ${cat.name} à Abidjan`,
+    description: `${cat.description} Paiement Mobile Money, livraison 24-72h.`,
+    alternates: { canonical: `/marketplace/categorie/${cat.slug}` },
+  };
+}
+
+export default async function CategorieCataloguePage({ params }: PageProps) {
+  const { slug } = await params;
+  const cat = resolveCategory(slug);
+  if (!cat) notFound();
+
+  const res = await productsService.list({ category: cat.slug }, { page: 1, pageSize: 24 });
+
+  return (
+    <CatalogPage
+      kind="categorie"
+      slug={cat.slug}
+      name={cat.name}
+      description={cat.description}
+      count={res.total}
+      products={res.data as unknown as Product[]}
+    />
+  );
+}

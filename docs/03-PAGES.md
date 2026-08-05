@@ -213,6 +213,40 @@ Instaurer la confiance, réduire le besoin de support, améliorer le maillage in
 ### États
 - Statique, sans état vide/erreur applicatif.
 
+## Modèle : Page catalogue SEO (`/marketplace/categorie/[slug]`, `/marketplace/marque/[slug]`)
+
+### Routes concernées
+- R033-R044 (`/marketplace/categorie/{slug}` — 12 catégories)
+- R045-R057 (`/marketplace/marque/{slug}` — 13 marques)
+
+### Objectif utilisateur
+Trouver des pièces détachées par catégorie ou par marque sur une page indexable.
+
+### Objectif commercial
+Acquisition SEO (mots-clés « pièces {catégorie/marque} Abidjan »), maillage interne vers le marketplace.
+
+### Sections obligatoires
+1. Fil d'Ariane (Accueil › Marketplace › {nom})
+2. H1 « Pièces détachées {X} à Abidjan »
+3. Description
+4. Décompte de pièces
+5. Grille de `ProductCard`
+6. État vide « Catalogue en cours de préparation » + CTA vers `/dashboard/marketplace`
+7. CTA « Voir toutes les pièces sur le marketplace »
+
+### Données attendues
+- Produits filtrés depuis le catalogue réel : `productsService.list({ category: slug })` ou `list({ brand: <nom> })`.
+
+### SEO
+- Routes `index, follow`, pages serveur `force-dynamic`, `generateMetadata` par page (titre + description + canonical), sitemap oui.
+- Titre/H1 mentionnent Abidjan ; slog mapping centralisé dans `src/lib/marketplace-catalog.ts`.
+
+### Tracking
+- `page_view` via le `TrackingProvider` global (aucun événement dédié).
+
+### États
+- Chargement : rendu serveur (pas de squelette). Vide : état honnête « Catalogue en cours de préparation ». Erreur : slug inconnu → `notFound()` (404).
+
 ---
 
 # Templates de pages

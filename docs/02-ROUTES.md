@@ -36,6 +36,31 @@
 | R030 | `/retours` | Public | Page informationnelle | Comprendre les retours | Confiance | Informationnelle | Retours et remboursements | index | oui | aucun | publique |
 | R031 | `/blog` | Public | Page informationnelle | Lire les articles | Rétention | Informationnelle | Le blog AutoAfrique | index | oui | aucun | publique |
 | R032 | `/manuels-reparation` | Public | Page informationnelle | Consulter les manuels | Rétention | Informationnelle | Manuels de réparation et tutoriels | index | oui | aucun | publique |
+| R033 | `/marketplace/categorie/pneus-jantes` | Public | Page catalogue | Trouver des pneus/jantes | Vente | Commerciale | Pièces détachées Pneus & Jantes à Abidjan | index | oui | aucun | publique |
+| R034 | `/marketplace/categorie/frein` | Public | Page catalogue | Trouver des pièces de frein | Vente | Commerciale | Pièces détachées Frein à Abidjan | index | oui | aucun | publique |
+| R035 | `/marketplace/categorie/moteur` | Public | Page catalogue | Trouver des pièces moteur | Vente | Commerciale | Pièces détachées Moteur à Abidjan | index | oui | aucun | publique |
+| R036 | `/marketplace/categorie/courroies-chaines` | Public | Page catalogue | Trouver courroies/chaînes | Vente | Commerciale | Pièces détachées Courroies & Chaînes à Abidjan | index | oui | aucun | publique |
+| R037 | `/marketplace/categorie/embrayage` | Public | Page catalogue | Trouver des pièces d'embrayage | Vente | Commerciale | Pièces détachées Embrayage à Abidjan | index | oui | aucun | publique |
+| R038 | `/marketplace/categorie/amortissement` | Public | Page catalogue | Trouver des amortisseurs | Vente | Commerciale | Pièces détachées Amortissement à Abidjan | index | oui | aucun | publique |
+| R039 | `/marketplace/categorie/suspension` | Public | Page catalogue | Trouver des pièces de suspension | Vente | Commerciale | Pièces détachées Suspension à Abidjan | index | oui | aucun | publique |
+| R040 | `/marketplace/categorie/filtre` | Public | Page catalogue | Trouver des filtres | Vente | Commerciale | Pièces détachées Filtre à Abidjan | index | oui | aucun | publique |
+| R041 | `/marketplace/categorie/carrosserie` | Public | Page catalogue | Trouver des pièces carrosserie | Vente | Commerciale | Pièces détachées Carrosserie à Abidjan | index | oui | aucun | publique |
+| R042 | `/marketplace/categorie/huiles-fluides` | Public | Page catalogue | Trouver huiles/fluides | Vente | Commerciale | Pièces détachées Huiles & Fluides à Abidjan | index | oui | aucun | publique |
+| R043 | `/marketplace/categorie/electricite` | Public | Page catalogue | Trouver des pièces électriques | Vente | Commerciale | Pièces détachées Électricité à Abidjan | index | oui | aucun | publique |
+| R044 | `/marketplace/categorie/autres` | Public | Page catalogue | Trouver d'autres pièces | Vente | Commerciale | Pièces détachées Autres catégories à Abidjan | index | oui | aucun | publique |
+| R045 | `/marketplace/marque/toyota` | Public | Page catalogue | Trouver des pièces Toyota | Vente | Commerciale | Pièces détachées auto Toyota à Abidjan | index | oui | aucun | publique |
+| R046 | `/marketplace/marque/hyundai` | Public | Page catalogue | Trouver des pièces Hyundai | Vente | Commerciale | Pièces détachées auto Hyundai à Abidjan | index | oui | aucun | publique |
+| R047 | `/marketplace/marque/kia` | Public | Page catalogue | Trouver des pièces Kia | Vente | Commerciale | Pièces détachées auto Kia à Abidjan | index | oui | aucun | publique |
+| R048 | `/marketplace/marque/peugeot` | Public | Page catalogue | Trouver des pièces Peugeot | Vente | Commerciale | Pièces détachées auto Peugeot à Abidjan | index | oui | aucun | publique |
+| R049 | `/marketplace/marque/mercedes-benz` | Public | Page catalogue | Trouver des pièces Mercedes-Benz | Vente | Commerciale | Pièces détachées auto Mercedes-Benz à Abidjan | index | oui | aucun | publique |
+| R050 | `/marketplace/marque/renault` | Public | Page catalogue | Trouver des pièces Renault | Vente | Commerciale | Pièces détachées auto Renault à Abidjan | index | oui | aucun | publique |
+| R051 | `/marketplace/marque/suzuki` | Public | Page catalogue | Trouver des pièces Suzuki | Vente | Commerciale | Pièces détachées auto Suzuki à Abidjan | index | oui | aucun | publique |
+| R052 | `/marketplace/marque/nissan` | Public | Page catalogue | Trouver des pièces Nissan | Vente | Commerciale | Pièces détachées auto Nissan à Abidjan | index | oui | aucun | publique |
+| R053 | `/marketplace/marque/ford` | Public | Page catalogue | Trouver des pièces Ford | Vente | Commerciale | Pièces détachées auto Ford à Abidjan | index | oui | aucun | publique |
+| R054 | `/marketplace/marque/volkswagen` | Public | Page catalogue | Trouver des pièces Volkswagen | Vente | Commerciale | Pièces détachées auto Volkswagen à Abidjan | index | oui | aucun | publique |
+| R055 | `/marketplace/marque/bmw` | Public | Page catalogue | Trouver des pièces BMW | Vente | Commerciale | Pièces détachées auto BMW à Abidjan | index | oui | aucun | publique |
+| R056 | `/marketplace/marque/citroen` | Public | Page catalogue | Trouver des pièces Citroën | Vente | Commerciale | Pièces détachées auto Citroën à Abidjan | index | oui | aucun | publique |
+| R057 | `/marketplace/marque/opel` | Public | Page catalogue | Trouver des pièces Opel | Vente | Commerciale | Pièces détachées auto Opel à Abidjan | index | oui | aucun | publique |
 
 ## Routes API
 

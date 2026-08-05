@@ -62,6 +62,17 @@ Routes publiques indexables, `robots: index, follow`, canonical auto (URL de la 
 
 Contrainte « aucun faux chiffre / aucune fausse preuve » : les pages de contact et préfixées n'exposent pas de numéro de téléphone, d'adresse email ou de coordonnées inventées ; les canaux de contact sont présentés comme « à confirmer avant mise en production ».
 
+### Pages catalogue SEO (catégorie / marque) — R033-R057
+
+Routes publiques rendues dynamiquement (`force-dynamic`), `robots: index, follow`, canonical auto = URL de la page (ex. `/marketplace/categorie/pneus-jantes`), sitemap oui. Titre final selon le template racine `%s | AutoAfrique`.
+
+| Type de page | `<title>` | `<meta name="description">` | H1 |
+|--------------|-----------|------------------------------|----|
+| Catégorie (`/marketplace/categorie/{slug}`) | Pièces détachées {Catégorie} à Abidjan \| AutoAfrique | {Description de la catégorie} Paiement Mobile Money, livraison 24-72h. | Pièces détachées {Catégorie} à Abidjan |
+| Marque (`/marketplace/marque/{slug}`) | Pièces détachées auto {Marque} à Abidjan \| AutoAfrique | {Description de la marque} Paiement Mobile Money, livraison 24-72h. | Pièces détachées auto {Marque} à Abidjan |
+
+Le mapping slug → libellé → filtre est centralisé dans `src/lib/marketplace-catalog.ts` (source de vérité, cf. `15-CATALOGUE.md`).
+
 ## Open Graph
 
 | Property | Valeur |

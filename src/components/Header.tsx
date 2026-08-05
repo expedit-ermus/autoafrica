@@ -4,14 +4,14 @@ import Link from 'next/link';
 import { useApp } from '@/contexts/AppContext';
 
 const categoryNav = [
-  { name: { fr: 'Pneus', en: 'Tyres' }, icon: '🛞', href: '/dashboard/marketplace' },
-  { name: { fr: 'Frein', en: 'Brakes' }, icon: '🔴', href: '/dashboard/marketplace' },
-  { name: { fr: 'Moteur', en: 'Engine' }, icon: '⚙️', href: '/dashboard/marketplace' },
-  { name: { fr: 'Filtre', en: 'Filters' }, icon: '🔧', href: '/dashboard/marketplace' },
-  { name: { fr: 'Huile moteur', en: 'Engine oil' }, icon: '🛢️', href: '/dashboard/marketplace' },
-  { name: { fr: 'Jantes', en: 'Rims' }, icon: '⭕', href: '/dashboard/marketplace' },
-  { name: { fr: 'Accessoires', en: 'Accessories' }, icon: '📦', href: '/dashboard/marketplace' },
-  { name: { fr: 'Outillage', en: 'Tools' }, icon: '🔨', href: '/dashboard/marketplace' },
+  { name: { fr: 'Pneus', en: 'Tyres' }, icon: '🛞', href: '/marketplace/categorie/pneus-jantes' },
+  { name: { fr: 'Frein', en: 'Brakes' }, icon: '🔴', href: '/marketplace/categorie/frein' },
+  { name: { fr: 'Moteur', en: 'Engine' }, icon: '⚙️', href: '/marketplace/categorie/moteur' },
+  { name: { fr: 'Filtre', en: 'Filters' }, icon: '🔧', href: '/marketplace/categorie/filtre' },
+  { name: { fr: 'Huile moteur', en: 'Engine oil' }, icon: '🛢️', href: '/marketplace/categorie/huiles-fluides' },
+  { name: { fr: 'Jantes', en: 'Rims' }, icon: '⭕', href: '/marketplace/categorie/pneus-jantes' },
+  { name: { fr: 'Accessoires', en: 'Accessories' }, icon: '📦', href: '/marketplace/categorie/autres' },
+  { name: { fr: 'Outillage', en: 'Tools' }, icon: '🔨', href: '/marketplace/categorie/autres' },
 ];
 
 export default function Header() {

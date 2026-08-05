@@ -6,72 +6,84 @@ import { useApp } from '@/contexts/AppContext';
 const categories = [
   {
     id: 1,
+    slug: 'pneus-jantes',
     name: { fr: 'Pneus & Jantes', en: 'Tyres & Rims' },
     image: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=300&h=300&fit=crop',
     subcategories: ['Pneus été', 'Pneus hiver', 'Jantes aluminium', 'Jantes acier'],
   },
   {
     id: 2,
+    slug: 'frein',
     name: { fr: 'Frein', en: 'Brakes' },
     image: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=300&h=300&fit=crop',
     subcategories: ['Disques de frein', 'Plaquettes', 'Étriers', 'Câbles de frein'],
   },
   {
     id: 3,
+    slug: 'moteur',
     name: { fr: 'Moteur', en: 'Engine' },
     image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=300&h=300&fit=crop',
     subcategories: ['Pièces moteur', 'Joint de culasse', 'Piston', 'Vilebrequin'],
   },
   {
     id: 4,
+    slug: 'courroies-chaines',
     name: { fr: 'Courroies & Chaînes', en: 'Belts & Chains' },
     image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=300&h=300&fit=crop',
     subcategories: ['Courroie distribution', 'Courroie accessoire', 'Galet tendeur', 'Chaîne de distribution'],
   },
   {
     id: 5,
+    slug: 'embrayage',
     name: { fr: 'Embrayage', en: 'Clutch' },
     image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=300&h=300&fit=crop',
     subcategories: ['Kit d\'embrayage', 'Disque d\'embrayage', 'Récepteur', 'Vilebrequin'],
   },
   {
     id: 6,
+    slug: 'amortissement',
     name: { fr: 'Amortissement', en: 'Shock Absorbers' },
     image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=300&h=300&fit=crop',
     subcategories: ['Amortisseurs', 'Supports d\'amortisseurs', 'Biellettes', 'Rotules'],
   },
   {
     id: 7,
+    slug: 'suspension',
     name: { fr: 'Suspension', en: 'Suspension' },
     image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=300&h=300&fit=crop',
     subcategories: ['Ressorts', 'Baladeurs', 'Barres antiroulis', 'Bras de suspension'],
   },
   {
     id: 8,
+    slug: 'filtre',
     name: { fr: 'Filtre', en: 'Filters' },
     image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=300&h=300&fit=crop',
     subcategories: ['Filtre à huile', 'Filtre à air', 'Filtre à carburant', 'Filtre habitacle'],
   },
   {
     id: 9,
+    slug: 'carrosserie',
     name: { fr: 'Carrosserie', en: 'Body Parts' },
     image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=300&h=300&fit=crop',
     subcategories: ['Pare-chocs', 'Rétroviseurs', 'Phares', 'Calandre'],
   },
   {
     id: 10,
+    slug: 'huiles-fluides',
     name: { fr: 'Huiles & Fluides', en: 'Oils & Fluids' },
     image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=300&h=300&fit=crop',
     subcategories: ['Huile moteur', 'Liquide de refroidissement', 'Liquide de frein', 'Huile de transmission'],
   },
   {
     id: 11,
+    slug: 'electricite',
     name: { fr: 'Électricité', en: 'Electrics' },
     image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=300&h=300&fit=crop',
     subcategories: ['Alternateur', 'Démarreur', 'Batterie', 'Bougies d\'allumage'],
   },
   {
     id: 12,
+    slug: 'autres',
     name: { fr: 'Autres catégories', en: 'Other categories' },
     image: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=300&h=300&fit=crop',
     subcategories: ['Échappement', 'Climatisation', 'Direction', 'Système de refroidissement'],
@@ -93,7 +105,7 @@ export default function PartsCatalog() {
           {categories.map((cat) => (
             <Link
               key={cat.id}
-              href="/dashboard/marketplace"
+              href={`/marketplace/categorie/${cat.slug}`}
               className="group relative bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--color-primary)]/10 transition-all duration-300 overflow-hidden"
             >
               <div className="relative aspect-square overflow-hidden bg-[var(--color-bg-warm)]">

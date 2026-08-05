@@ -72,6 +72,81 @@
     <changefreq>yearly</changefreq>
     <priority>0.4</priority>
   </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/marketplace/categorie/pneus-jantes</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/marketplace/categorie/frein</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/marketplace/categorie/moteur</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/marketplace/categorie/courroies-chaines</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/marketplace/categorie/embrayage</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/marketplace/categorie/amortissement</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/marketplace/categorie/suspension</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/marketplace/categorie/filtre</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/marketplace/categorie/carrosserie</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/marketplace/categorie/huiles-fluides</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/marketplace/categorie/electricite</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/marketplace/categorie/autres</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/marketplace/marque/toyota</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/marketplace/marque/mercedes-benz</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/marketplace/marque/peugeot</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>
 ```
 
@@ -89,6 +164,8 @@
 - `/manuels-reparation` (R032, priority 0.5)
 - `/conditions-generales` (R024, priority 0.4)
 - `/politique-de-confidentialite` (R025, priority 0.4)
+- `/marketplace/categorie/*` (R033-R044, priority 0.7, URL fixes : `{R033..pneus-jantes, R034..frein, R035..moteur, R036..courroies-chaines, R037..embrayage, R038..amortissement, R039..suspension, R040..filtre, R041..carrosserie, R042..huiles-fluides, R043..electricite, R044..autres}`)
+- `/marketplace/marque/*` (R045-R057, priority 0.6, URL fixes : `{R045..toyota, R046..hyundai, R047..kia, R048..peugeot, R049..mercedes-benz, R050..renault, R051..suzuki, R052..nissan, R053..ford, R054..volkswagen, R055..bmw, R056..citroen, R057..opel}`)
 
 ### Exclure
 - `/auth/*` (R002, R003 — noindex)

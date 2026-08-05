@@ -632,6 +632,26 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `src/app/(public)/layout.tsx` (nouveau), `src/app/(public)/{a-propos,conditions-generales,politique-de-confidentialite,aide,paiement,livraison,contact,retours,blog,manuels-reparation}/page.tsx` (10 nouveaux), `src/components/{LegalPage,ContactForm}.tsx` (nouveaux), `src/components/{Footer,CarSelector}.tsx`, `src/app/sitemap.ts`, docs `{02-ROUTES,03-PAGES,06-SEO,07-CRAWL-INDEXATION,DECISIONS}.md`. Effacer `check-db.cjs` (fichier temporaire) avant commit. Lint/typecheck/tests/build à valider.
 
+## D36 : Refonte accueil/layout — groupe 2 « routes SEO par marque/catégorie »
+
+**Contexte** : la home (PartsCatalog, BrandGrid), le footer (colonne Produits) et le header (navigation catégories) pointaient les catégories et marques vers `/dashboard/marketplace` sans URL dédiée indexable. Demande utilisateur : créer des pages SEO par catégorie et par marque avec titres uniques mentionnant Abidjan, H1 cohérents, et filtrer le catalogue existant. Slugs demandés explicitement (12 catégories, 13 marques).
+
+**Decision** (groupe 2, commit séparé) :
+- Créer `src/lib/marketplace-catalog.ts` (source de vérité du mapping slug → libellé → filtre) : `CATEGORY_SLUGS` (12) et `BRAND_SLUGS` (13) avec `name`, `description` (« aucun faux chiffre »), et helpers `resolveCategory`/`resolveBrand`.
+- Routes serveur dynamiques sous `(public)` pour reutiliser le layout Header+Footer : `src/app/(public)/marketplace/categorie/[slug]/page.tsx` (R033-R044) et `src/app/(public)/marketplace/marque/[slug]/page.tsx` (R045-R057). `export const dynamic = 'force-dynamic'` (réflètent le catalogue au moment de la requête), `generateMetadata` (titre + description + canonical, mentionnent Abidjan), `notFound()` (HTTP 404) pour slug inconnu, filtre via `productsService.list({ category: slug })` / `list({ brand: name })`.
+- Composant serveur réutilisable `src/components/CatalogPage.tsx` : fil d'Ariane, H1 « Pièces détachées {X} à Abidjan », description, décompte, grille `ProductCard`, état vide honnête « Catalogue en cours de préparation », CTA vers `/dashboard/marketplace`.
+- Mise à jour des liens : `PartsCatalog` et `BrandGrid` (homepage), `Footer` (colonne Produits → routes catégorie), `Header` (navigation catégories → routes catégorie les plus proches). Footer converti de `<a>` à `<Link>` (`next/link`) pour satisfaire `@next/next/no-html-link-for-pages`.
+- Sitemap étendu (25 URLs SEO) ; `robots.ts` inchangé (`Allow: /` couvre `/marketplace/*`).
+- Docs : `02-ROUTES.md` (R033-R057), `15-CATALOGUE.md` (slug catégorie = filtre slug ; brand slug → nom pour le filtre), `06-SEO.md`, `07-CRAWL-INDEXATION.md`, `DECISIONS.md`.
+
+**Divergence documentée** : le filtre API produits s'applique sur `brand = nom exact` (pas slug) et sur `category = slug`. Les URLs SEO utilisent les slugs demandés (`mercedes-benz`, `citroen`) ; chaque slug de marque est mappé au nom attendu par le service (ex. `mercedes-benz` → `Mercedes-Benz`, `citroen` → `Citroën`). Le mapping est centralisé dans `marketplace-catalog.ts`.
+
+**Limite** : la base n'est pas seedée (Catégorie/Marque vides) → les pages affichent l'état vide mais sont indexables avec H1/meta corrects ; elles refléteront les pièces dès qu'un seed peuplera le catalogue.
+
+**Resultats** : lint OK, typecheck OK, tests OK (287), build de production OK. Vérification runtime : `/marketplace/categorie/pneus-jantes` et `/marketplace/marque/toyota` → HTTP 200 ; `/marketplace/categorie/inconnu` → HTTP 404. Migration des liens `<a>` → `<Link>` dans le footer validée par lint.
+
+**Impact** : `src/lib/marketplace-catalog.ts` (nouveau), `src/app/(public)/marketplace/{categorie,marque}/[slug]/page.tsx` (nouveaux), `src/components/{CatalogPage,Footer,Header,PartsCatalog,BrandGrid}.tsx`, `src/app/sitemap.ts`, docs `{02-ROUTES,06-SEO,07-CRAWL-INDEXATION,15-CATALOGUE,DECISIONS}.md`.
+
 
 
 

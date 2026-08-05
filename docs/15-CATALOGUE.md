@@ -58,8 +58,61 @@ Le marché CI (Abidjan, Bouaké, Yamoussoukro, Korhogo, San-Pedro) est prioritai
 
 - `/dashboard/marketplace` — catalogue pièces
 - `/dashboard/vehicles` — annonces véhicules (index, oui)
+- `/marketplace/categorie/[slug]` — page SEO par catégorie (R033-R044)
+- `/marketplace/marque/[slug]` — page SEO par marque (R045-R057)
 
 ## SEO
 
 - `/dashboard/marketplace` : index, follow, schémas Product / ItemList
 - `/dashboard/vehicles` : index, follow, schémas Vehicle / ItemList
+- `/marketplace/categorie/[slug]` et `/marketplace/marque/[slug]` : index, follow ; titres et descriptions mentionnent Abidjan (« Pièces détachées {X} à Abidjan ») ; rendues dynamiquement (`force-dynamic`) depuis le catalogue réel ; sitemap oui.
+
+## Routes SEO catalogue (groupe 2)
+
+### Catégories (slugs R033-R044)
+
+Les 12 slugs demandés et leur libellé affiché sur les pages SEO :
+
+| Slug | Libellé |
+|------|---------|
+| `pneus-jantes` | Pneus & Jantes |
+| `frein` | Frein |
+| `moteur` | Moteur |
+| `courroies-chaines` | Courroies & Chaînes |
+| `embrayage` | Embrayage |
+| `amortissement` | Amortissement |
+| `suspension` | Suspension |
+| `filtre` | Filtre |
+| `carrosserie` | Carrosserie |
+| `huiles-fluides` | Huiles & Fluides |
+| `electricite` | Électricité |
+| `autres` | Autres catégories |
+
+Le filtre API produits s'applique par `category = slug` : la route `/marketplace/categorie/{slug}` appelle le service avec `{ category: slug }`, exactement le champ `Category.slug` (cf. `products.service.ts`).
+
+### Marques (slugs R045-R057)
+
+| Slug | Marque (nom pour le filtre) |
+|------|----------------------------|
+| `toyota` | Toyota |
+| `hyundai` | Hyundai |
+| `kia` | Kia |
+| `peugeot` | Peugeot |
+| `mercedes-benz` | Mercedes-Benz |
+| `renault` | Renault |
+| `suzuki` | Suzuki |
+| `nissan` | Nissan |
+| `ford` | Ford |
+| `volkswagen` | Volkswagen |
+| `bmw` | BMW |
+| `citroen` | Citroën |
+| `opel` | Opel |
+
+> **Note** : le filtre API produits s'applique par `brand = nom exact` (pas par slug) : `productsService.list({ brand: "<nom>" })`. Les routes `/marketplace/marque/{slug}` mappent donc chaque slug vers le nom de marque (ex. `mercedes-benz` → `Mercedes-Benz`, `citroen` → `Citroën`). Le tableau est centralisé dans `src/lib/marketplace-catalog.ts` (seule source de vérité du mapping slugs ↔ libellés ↔ filtre).
+
+### Contenu
+
+- Pages serveur `force-dynamic` (asynchrones, réflètent le catalogue réel au moment de la requête), `generateMetadata` par page, `notFound()` (HTTP 404) pour un slug inconnu.
+- Composant serveur réutilisable `src/components/CatalogPage.tsx` (fil d'Ariane, H1 mentionnant Abidjan, description, décompte, grille `ProductCard`, état vide « Catalogue en cours de préparation », CTA vers le marketplace complet).
+- Liens mis à jour vers les routes SEO : `PartsCatalog`, `BrandGrid` (homepage), footer (colonne Produits), `Header` (navigation catégories).
+- Limite : la base n'est pas encore seedée (Catégorie/Marque vides) → les pages s'affichent avec l'état vide mais restent indexables.
