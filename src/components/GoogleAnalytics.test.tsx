@@ -33,10 +33,11 @@ describe('GoogleAnalytics', () => {
     vi.unstubAllEnvs()
   })
 
-  it('sends config with page_path on mount', async () => {
+  it('does not re-send config on the initial mount (init script handles it)', async () => {
     render(<GoogleAnalytics />)
     await flush()
-    expect(gtagMock).toHaveBeenCalledWith('config', 'G-TEST-123', expect.objectContaining({ page_path: '/' }))
+    const configCalls = gtagMock.mock.calls.filter((c) => c[0] === 'config')
+    expect(configCalls).toHaveLength(0)
   })
 
   it('sends config again when the route changes', async () => {
