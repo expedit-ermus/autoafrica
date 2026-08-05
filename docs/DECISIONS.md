@@ -652,6 +652,19 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `src/lib/marketplace-catalog.ts` (nouveau), `src/app/(public)/marketplace/{categorie,marque}/[slug]/page.tsx` (nouveaux), `src/components/{CatalogPage,Footer,Header,PartsCatalog,BrandGrid}.tsx`, `src/app/sitemap.ts`, docs `{02-ROUTES,06-SEO,07-CRAWL-INDEXATION,15-CATALOGUE,DECISIONS}.md`.
 
+## D37 : Refonte accueil/layout — groupe 3 « contenus manquants/factices »
+
+**Contexte** : la home affichait des contenus factices ou trompeurs : « Meilleures ventes » basé sur `sortBy=salesCount` sans ventes réelles en base (squelettes de chargement infinis), bannières promo inventées (« Jusqu'à -60 % », « Parrainez un ami, gagnez 5 000 FCFA », « Livraison gratuite dès 50 000 FCFA ») et « Téléchargez l'appli AutoAfrique » (appli inexistante, CTA « Télécharger » actif), le tout illustré par des images distantes Unsplash non validées.
+
+**Decision** (groupe 3) :
+- `PromoBanner` : suppression de toutes les images distantes (`RemoteImage`, Unsplash) et des offres inventées ; remplacement par 4 slides neutres et véridiques — catalogue, « Application mobile bientôt disponible » (CTA inactif, `<span>` non cliquable), paiement Mobile Money (Orange Money, MTN MoMo, Wave), livraison 24-72h. Intervalles de rotation 5 s, boutons de navigation avec `aria-label`.
+- `Bestsellers` : composant neutralisé — retourne `null` avec TODO. Raison : pas de données de vente fiables (`salesCount`) ni d'images validées ; afficher des squelettes infinis ou des pièces imaginaires violerait « aucun faux chiffre / aucune image trompeuse ». Réactivable quand un seed peuple des produits avec ventes réelles et images conformes à `17-IMAGES-MEDIA.md`.
+- Restent hors périmètre Groupe 3 : les images Unsplash de `PartsCatalog` (vignettes catégories) et des pages dashboard internes (placeholders produits), à traiter dans un lot dédié.
+
+**Resultats** : lint OK, tsc OK, tests OK (287), build de production OK. Aucune image distante Unsplash restante dans `PromoBanner` ni `Bestsellers`.
+
+**Impact** : `src/components/{PromoBanner,Bestsellers}.tsx`, `docs/{03-PAGES,DECISIONS}.md`.
+
 
 
 

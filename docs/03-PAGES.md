@@ -268,7 +268,7 @@ Hero split
 │   ├── Select marque
 │   ├── Select modèle
 │   └── CTA "Trouver"
-└── Droite : PromoBanner (carousel 3 slides)
+└── Droite : PromoBanner (carousel 4 slides, neutres)
 
 PartsCatalog (12 catégories)
 
@@ -286,11 +286,11 @@ Footer (e-commerce)
 ### Données à charger
 
 - CarSelector : marques et modèles (statique)
-- PromoBanner : 3 images carousel (statique)
+- PromoBanner : 4 slides neutres et véridiques (aucun chiffre/offre inventé, aucune image distante)
 - PartsCatalog : 12 catégories (statique)
 - BrandGrid : 12 logos (statique)
 - TrustBar : 4 items (statique)
-- BestSellers : 6 produits (API /api/v1/products?limit=6)
+- BestSellers : désactivé (retourne `null`, TODO) — réactiver quand des ventes réelles (`salesCount`) et des images validées existent (voir `DECISIONS.md` D37)
 - Footer : contenu i18n
 
 ---
