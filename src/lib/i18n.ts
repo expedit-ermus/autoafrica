@@ -146,6 +146,11 @@ export const translations = {
       noAccount: 'Pas encore de compte ?',
       hasAccount: 'Déjà un compte ?',
       forgotPassword: 'Mot de passe oublié ?',
+      roleLabel: 'Je crée mon compte pour',
+      roleBuyer: 'Acheteur',
+      roleBuyerDesc: 'Acheter des pièces détachées',
+      roleSeller: 'Vendeur',
+      roleSellerDesc: 'Vendre mes pièces en ligne',
     },
     countries: {
       CI: 'Côte d\'Ivoire',
@@ -325,6 +330,11 @@ export const translations = {
       noAccount: "Don't have an account?",
       hasAccount: 'Already have an account?',
       forgotPassword: 'Forgot Password?',
+      roleLabel: 'I am creating my account to',
+      roleBuyer: 'Buyer',
+      roleBuyerDesc: 'Buy spare parts',
+      roleSeller: 'Seller',
+      roleSellerDesc: 'Sell parts online',
     },
     countries: {
       CI: 'Ivory Coast',

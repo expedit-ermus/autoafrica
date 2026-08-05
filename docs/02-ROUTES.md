@@ -18,7 +18,7 @@
 | R012 | `/dashboard/analytics` | App | Analytics | Rapports | Rétention | Navigationnelle | Analytics | noindex | non | aucun | privée |
 | R013 | `/dashboard/admin` | App | Admin | Administration | Rétention | Navigationnelle | Administration | noindex | non | aucun | privée |
 | R014 | `/dashboard/settings` | App | Settings | Paramètres | Rétention | Navigationnelle | Paramètres | noindex | non | aucun | privée |
-| R015 | `/dashboard/profile` | App | Profile | Profil | Rétention | Navigationnelle | Mon profil | noindex | non | aucun | privée |
+| R015 | `/dashboard/profile` | App | Profile | Compte acheteur + vendeur | Rétention | Navigationnelle | Mon compte | noindex | non | aucun | privée |
 | R016 | `/dashboard/help` | App | Help | Aide | Support | Informationnelle | Aide | noindex | non | FAQPage | privée |
 | R017 | `/dashboard/vehicles` | App | Vehicles | Voir annonces véhicules | Vente | Commerciale | Véhicules — Annonces Côte d'Ivoire | index | oui | Vehicle, ItemList | publique |
 | R018 | `/dashboard/suppliers` | App | Suppliers | Gérer fournisseurs | Rétention | Navigationnelle | Fournisseurs | noindex | non | aucun | privée |
@@ -26,6 +26,16 @@
 | R020 | `/dashboard/containers` | App | Containers | Suivre conteneurs | Rétention | Navigationnelle | Conteneurs | noindex | non | aucun | privée |
 | R021 | `/dashboard/customs` | App | Customs | Suivre dossiers douane | Rétention | Navigationnelle | Douanes | noindex | non | aucun | privée |
 | R022 | `/dashboard/delivery` | App | Delivery | Suivre livraisons | Rétention | Navigationnelle | Livraison | noindex | non | aucun | privée |
+| R023 | `/a-propos` | Public | Page informationnelle | Découvrir l'équipe | Confiance | Navigationnelle | Qui sommes-nous ? | index | oui | aucun | publique |
+| R024 | `/conditions-generales` | Public | Page informationnelle | Lire les CGV | Confiance | Informationnelle | Conditions générales de vente | index | oui | aucun | publique |
+| R025 | `/politique-de-confidentialite` | Public | Page informationnelle | Lire la politique de confidentialité | Confiance | Informationnelle | Politique de confidentialité | index | oui | aucun | publique |
+| R026 | `/aide` | Public | Page informationnelle | Obtenir de l'aide | Support | Informationnelle | Centre d'aide | index | oui | aucun | publique |
+| R027 | `/paiement` | Public | Page informationnelle | Comprendre le paiement | Conversion | Informationnelle | Paiement | index | oui | aucun | publique |
+| R028 | `/livraison` | Public | Page informationnelle | Comprendre la livraison | Conversion | Informationnelle | Livraison | index | oui | aucun | publique |
+| R029 | `/contact` | Public | Page informationnelle | Contacter l'équipe | Support | Navigationnelle | Nous contacter | index | oui | aucun | publique |
+| R030 | `/retours` | Public | Page informationnelle | Comprendre les retours | Confiance | Informationnelle | Retours et remboursements | index | oui | aucun | publique |
+| R031 | `/blog` | Public | Page informationnelle | Lire les articles | Rétention | Informationnelle | Le blog AutoAfrique | index | oui | aucun | publique |
+| R032 | `/manuels-reparation` | Public | Page informationnelle | Consulter les manuels | Rétention | Informationnelle | Manuels de réparation et tutoriels | index | oui | aucun | publique |
 
 ## Routes API
 
@@ -135,6 +145,9 @@
 | R208 | `/api/v1/analytics/events` | POST | Public* | Enregistrer un événement de tracking (page_view, search_product...) |
 | R209 | `/api/v1/analytics/events` | GET | Required | Lister les événements de tracking (filtres + limite) |
 | R210 | `/api/v1/analytics/stats` | GET | Required | Statistiques agrégées pour le dashboard Analytics |
+| R211 | `/api/v1/seller/activate` | POST | Required | Activer l'espace vendeur (crée le SellerProfile, passe sellerEnabled=true) |
+| R212 | `/api/v1/seller/profile` | GET | Required | Profil vendeur (sellerEnabled + SellerProfile) |
+| R213 | `/api/v1/seller/profile` | PUT | Required | Mettre à jour le profil vendeur |
 
 *R208 est public pour permettre le tracking anonyme (visiteurs non connectés du marketplace) ; si un cookie de session JWT est présent, l'événement est rattaché à l'utilisateur (`userId`).
 

@@ -23,7 +23,8 @@ export default function RegisterPage() {
   const { t, setUser } = useApp();
   const { addToast } = useToast();
   const router = useRouter();
-  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', shopName: '', country: 'CI', password: '', confirmPassword: '', role: 'SELLER' });
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', country: 'CI', password: '', confirmPassword: '' });
+  const [role, setRole] = useState<'BUYER' | 'SELLER'>('BUYER');
   const [loading, setLoading] = useState(false);
 
   const selectedCountry = COUNTRIES.find(c => c.code === form.country);
@@ -57,16 +58,15 @@ export default function RegisterPage() {
           lastName: form.lastName,
           email: form.email,
           phone: form.phone || undefined,
-          shopName: form.shopName || undefined,
           country: form.country,
           password: form.password,
-          role: form.role,
+          role,
         }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Registration failed');
       setUser(data.data.user);
-      track('register', { role: form.role, country: form.country });
+      track('register', { role, country: form.country });
       addToast('success', 'Compte créé avec succès ! Bienvenue sur AutoAfrique');
       router.push('/dashboard');
     } catch (err) {
@@ -214,6 +214,37 @@ export default function RegisterPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Account type selector */}
+              <div className="auth-fade-in-delay-1">
+                <p className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.roleLabel}</p>
+                <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label={t.auth.roleLabel}>
+                  <button type="button" role="radio" aria-checked={role === 'BUYER'}
+                    onClick={() => setRole('BUYER')}
+                    className={`auth-role-card relative w-full p-4 rounded-xl border-2 text-left cursor-pointer ${role === 'BUYER' ? 'selected' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <span className="auth-role-check absolute top-3 right-3 w-5 h-5 rounded-full bg-orange-500 border-orange-500 flex items-center justify-center">
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    </span>
+                    <span className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2 ${role === 'BUYER' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'}`}>
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>
+                    </span>
+                    <span className="block text-sm font-semibold text-gray-900">{t.auth.roleBuyer}</span>
+                    <span className="block text-xs text-gray-500 mt-0.5">{t.auth.roleBuyerDesc}</span>
+                  </button>
+                  <button type="button" role="radio" aria-checked={role === 'SELLER'}
+                    onClick={() => setRole('SELLER')}
+                    className={`auth-role-card relative w-full p-4 rounded-xl border-2 text-left cursor-pointer ${role === 'SELLER' ? 'selected' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <span className="auth-role-check absolute top-3 right-3 w-5 h-5 rounded-full bg-orange-500 border-orange-500 flex items-center justify-center">
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
+                    </span>
+                    <span className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2 ${role === 'SELLER' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'}`}>
+                      <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .414.336.75.75.75z" /></svg>
+                    </span>
+                    <span className="block text-sm font-semibold text-gray-900">{t.auth.roleSeller}</span>
+                    <span className="block text-xs text-gray-500 mt-0.5">{t.auth.roleSellerDesc}</span>
+                  </button>
+                </div>
+              </div>
+
               {/* Name fields */}
               <div className="grid grid-cols-2 gap-4 auth-fade-in-delay-1">
                 <div>
@@ -263,47 +294,6 @@ export default function RegisterPage() {
                     </select>
                     <svg className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                   </div>
-                </div>
-              </div>
-
-              {/* Shop name */}
-              <div className="auth-fade-in-delay-2">
-                <label htmlFor="reg-shopName" className="block text-sm font-semibold text-gray-700 mb-2">Nom de la boutique</label>
-                <div className="auth-input-group">
-                  <div className="auth-input-icon">
-                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" /></svg>
-                  </div>
-                  <input id="reg-shopName" type="text" value={form.shopName} onChange={(e) => setForm({ ...form, shopName: e.target.value })}
-                    className="input-field !min-h-[52px] rounded-xl" placeholder="Garage Moussa Pièces" />
-                </div>
-              </div>
-
-              {/* Role selector */}
-              <div className="auth-fade-in-delay-3">
-                <label className="block text-sm font-semibold text-gray-700 mb-3">Type de compte</label>
-                <div role="group" aria-label="Type de compte" className="grid grid-cols-2 gap-3">
-                  <button type="button" onClick={() => setForm({ ...form, role: 'SELLER' })}
-                    className={`auth-role-card relative p-5 rounded-2xl border-2 text-sm font-semibold flex flex-col items-center gap-3 ${form.role === 'SELLER' ? 'selected border-orange-500 text-orange-700' : 'border-gray-200 hover:border-gray-300 text-gray-600 bg-white hover:bg-gray-50'}`}>
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 ${form.role === 'SELLER' ? 'bg-orange-100 scale-110' : 'bg-gray-100'}`}>
-                      <span className="text-2xl">🏪</span>
-                    </div>
-                    <span className="font-semibold">Vendeur</span>
-                    <span className={`text-xs ${form.role === 'SELLER' ? 'text-orange-600' : 'text-gray-400'}`}>Vendez vos pièces</span>
-                    <div className="auth-role-check absolute top-3 right-3 w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center">
-                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                    </div>
-                  </button>
-                  <button type="button" onClick={() => setForm({ ...form, role: 'BUYER' })}
-                    className={`auth-role-card relative p-5 rounded-2xl border-2 text-sm font-semibold flex flex-col items-center gap-3 ${form.role === 'BUYER' ? 'selected border-orange-500 text-orange-700' : 'border-gray-200 hover:border-gray-300 text-gray-600 bg-white hover:bg-gray-50'}`}>
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 ${form.role === 'BUYER' ? 'bg-orange-100 scale-110' : 'bg-gray-100'}`}>
-                      <span className="text-2xl">🔧</span>
-                    </div>
-                    <span className="font-semibold">Garagiste</span>
-                    <span className={`text-xs ${form.role === 'BUYER' ? 'text-orange-600' : 'text-gray-400'}`}>Achetez des pièces</span>
-                    <div className="auth-role-check absolute top-3 right-3 w-5 h-5 rounded-full bg-orange-500 flex items-center justify-center">
-                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
-                    </div>
-                  </button>
                 </div>
               </div>
 

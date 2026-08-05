@@ -113,9 +113,9 @@ export default function PartsCatalog() {
 
               <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-secondary)]/95 to-[var(--color-warm-navy-deep)]/95 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
                 <div className="text-center">
-                  <h3 className="text-white font-bold text-sm mb-3">
+                  <div className="text-white font-bold text-sm mb-3">
                     {cat.name[locale as 'fr' | 'en']}
-                  </h3>
+                  </div>
                   <ul className="space-y-2">
                     {cat.subcategories.map((sub) => (
                       <li key={sub}>

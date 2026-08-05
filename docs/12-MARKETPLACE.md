@@ -15,7 +15,7 @@ Le marketplace AutoAfrique connecte acheteurs et vendeurs de pièces détachées
 
 ## Vendeurs
 
-- Inscription avec rôle SELLER
+- Activation de la vente dans « Mon compte » (`/dashboard/profile`) via POST `/api/v1/seller/activate` (`sellerEnabled=true`) — pas de compte séparé
 - Publication de produits (`Product`) liés à un tenant et à un vendeur
 - Gestion des produits, du stock et des ventes
 - Frais de commission transparents

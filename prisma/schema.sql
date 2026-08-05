@@ -1,4 +1,4 @@
-﻿-- CreateTable
+-- CreateTable
 CREATE TABLE "Tenant" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
@@ -33,6 +33,7 @@ CREATE TABLE "User" (
     "city" TEXT,
     "address" TEXT,
     "shopName" TEXT,
+    "sellerEnabled" BOOLEAN NOT NULL DEFAULT false,
     "specialties" JSONB,
     "mfaEnabled" BOOLEAN NOT NULL DEFAULT false,
     "mfaSecret" TEXT,
@@ -88,7 +89,12 @@ CREATE TABLE "SellerProfile" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "userId" TEXT NOT NULL,
     "businessName" TEXT NOT NULL,
+    "displayName" TEXT,
     "businessType" TEXT,
+    "city" TEXT,
+    "phoneForOrders" TEXT,
+    "payoutMethod" TEXT,
+    "payoutNumber" TEXT,
     "rcNumber" TEXT,
     "taxId" TEXT,
     "rating" REAL NOT NULL DEFAULT 0,
@@ -1309,3 +1315,11 @@ CREATE INDEX "VehicleListing_sellerId_idx" ON "VehicleListing"("sellerId");
 -- CreateIndex
 CREATE INDEX "VehicleListing_status_idx" ON "VehicleListing"("status");
 
+
+-- Compte unifie acheteur/vendeur : colonnes ajoutees pour les bases existantes (idempotent a l'init)
+ALTER TABLE "User" ADD COLUMN "sellerEnabled" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "SellerProfile" ADD COLUMN "displayName" TEXT;
+ALTER TABLE "SellerProfile" ADD COLUMN "city" TEXT;
+ALTER TABLE "SellerProfile" ADD COLUMN "phoneForOrders" TEXT;
+ALTER TABLE "SellerProfile" ADD COLUMN "payoutMethod" TEXT;
+ALTER TABLE "SellerProfile" ADD COLUMN "payoutNumber" TEXT;

@@ -39,6 +39,7 @@ model User {
   avatar      String?
   country     String?
   city        String?
+  sellerEnabled Boolean @default(false)
   isVerified  Boolean  @default(false)
   lastLoginAt DateTime?
   createdAt   DateTime @default(now())
@@ -51,6 +52,40 @@ model User {
   leads       Lead[]
   reviews     Review[]
 }
+```
+
+### SellerProfile
+```
+model SellerProfile {
+  id             String         @id @default(cuid())
+  userId         String         @unique
+  businessName   String
+  displayName    String?        // Nom affiché aux acheteurs
+  businessType   String?        // "garage", "casse", "revendeur", "distributeur"
+  city           String?        // Ville du vendeur
+  phoneForOrders String?        // Téléphone pour les commandes
+  payoutMethod   PayoutMethod?  // ORANGE_MONEY, MTN_MOMO, WAVE
+  payoutNumber   String?        // Numéro Mobile Money pour les versements
+  rcNumber       String?        // Registre du Commerce
+  taxId          String?        // Numéro fiscal
+  rating         Float          @default(0)
+  reviewCount    Int            @default(0)
+  verified       Boolean        @default(false)
+  verifiedAt     DateTime?
+  totalSales     Int            @default(0)
+  totalRevenue   Int            @default(0)
+  responseTime   Float?
+  shippingRate   Float?
+  policies       Json?
+  operatingHours Json?
+  certifications Json?
+  metadata       Json?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+```
+
+> Compte unifié acheteur/vendeur : `User.sellerEnabled` (défaut `false`) indique si la vente est activée. Le `SellerProfile` (1-1 avec `User`) n'est créé qu'à l'activation (POST `/api/v1/seller/activate`) et fusionne les champs vendeur grand public (`displayName`, `city`, `phoneForOrders`, `payoutMethod`, `payoutNumber`) avec les champs pro/garagiste existants (`businessName`, `rcNumber`, `taxId`, `verified`, `certifications`).
 ```
 
 ### Product
@@ -397,6 +432,9 @@ Les événements sont définis dans `09-TRACKING.md`. Le service `src/modules/an
 
 ### Role
 BUYER, SELLER, ADMIN
+
+### PayoutMethod
+ORANGE_MONEY, MTN_MOMO, WAVE
 
 ### Condition
 NEUF, OCCASION, REMANUFACTURE

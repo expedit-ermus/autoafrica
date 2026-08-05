@@ -100,6 +100,14 @@ export class AuthService {
         id: true, email: true, firstName: true, lastName: true,
         phone: true, country: true, city: true, shopName: true,
         role: true, status: true, mfaEnabled: true, createdAt: true,
+        sellerEnabled: true,
+        sellerProfile: {
+          select: {
+            id: true, businessName: true, displayName: true,
+            city: true, phoneForOrders: true, payoutMethod: true,
+            payoutNumber: true, verified: true, rating: true, reviewCount: true,
+          },
+        },
       },
     })
     if (!user) throw new NotFoundError('User', userId)

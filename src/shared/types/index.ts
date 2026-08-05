@@ -157,5 +157,18 @@ export interface AuthUser {
   description?: string | null;
   status?: string;
   mfaEnabled?: boolean;
+  sellerEnabled?: boolean;
+  sellerProfile?: {
+    id?: string;
+    businessName?: string | null;
+    displayName?: string | null;
+    city?: string | null;
+    phoneForOrders?: string | null;
+    payoutMethod?: string | null;
+    payoutNumber?: string | null;
+    verified?: boolean;
+    rating?: number;
+    reviewCount?: number;
+  } | null;
   createdAt?: string | Date;
 }

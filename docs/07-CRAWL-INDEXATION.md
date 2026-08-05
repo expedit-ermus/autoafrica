@@ -22,6 +22,56 @@
     <changefreq>daily</changefreq>
     <priority>0.8</priority>
   </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/aide</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/paiement</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/livraison</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/contact</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/a-propos</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/retours</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/blog</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/manuels-reparation</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/conditions-generales</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://autoafrique-saas.vercel.app/politique-de-confidentialite</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
 </urlset>
 ```
 
@@ -29,6 +79,16 @@
 - `/` (R001, priority 1.0)
 - `/dashboard/marketplace` (R005, priority 0.9)
 - `/dashboard/vehicles` (R017, priority 0.8)
+- `/aide` (R026, priority 0.6)
+- `/paiement` (R027, priority 0.6)
+- `/livraison` (R028, priority 0.6)
+- `/contact` (R029, priority 0.6)
+- `/a-propos` (R023, priority 0.5)
+- `/retours` (R030, priority 0.5)
+- `/blog` (R031, priority 0.5)
+- `/manuels-reparation` (R032, priority 0.5)
+- `/conditions-generales` (R024, priority 0.4)
+- `/politique-de-confidentialite` (R025, priority 0.4)
 
 ### Exclure
 - `/auth/*` (R002, R003 — noindex)

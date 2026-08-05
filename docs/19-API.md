@@ -23,10 +23,11 @@ Response 401: { "error": "Invalid credentials" }
 ### Register
 POST /api/v1/auth/register
 ```json
-Request: { "name", "email", "phone", "country", "role", "password" }
-Response 201: { "user": { "id", "name", "email" } }
+Request: { "firstName", "lastName", "email", "phone", "country", "password" }
+Response 201: { "user": { "id", "firstName", "lastName", "email", "role": "BUYER" } }
 Response 400: { "error": "Email already exists" }
 ```
+Aucun choix de type de compte à l'inscription : `role` par défaut `BUYER`, `sellerEnabled` par défaut `false`.
 
 ### Logout
 POST /api/v1/auth/logout
@@ -34,7 +35,28 @@ Response 200: { "message": "Logged out" }
 
 ### Get Current User
 GET /api/v1/auth/me
-Response 200: { "user": { "id", "name", "email", "role", "tenant" } }
+Response 200: { "user": { "id", "name", "email", "role", "tenant", "sellerEnabled", "sellerProfile" } }
+
+### Activate Seller
+POST /api/v1/seller/activate
+```json
+Request: { "displayName", "city", "phoneForOrders", "payoutMethod", "payoutNumber" }
+Response 201: { "user": { "id", "sellerEnabled": true }, "sellerProfile": { ... } }
+Response 404: { "error": "User not found" }
+```
+Passe `sellerEnabled=true` et crée/attache le `SellerProfile`.
+
+### Get Seller Profile
+GET /api/v1/seller/profile
+Response 200: { "id", "firstName", "sellerEnabled", "sellerProfile": { "displayName", "city", "phoneForOrders", "payoutMethod", "payoutNumber" } }
+
+### Update Seller Profile
+PUT /api/v1/seller/profile
+```json
+Request: { "displayName"?, "city"?, "phoneForOrders"?, "payoutMethod"?, "payoutNumber"? }
+Response 200: { "sellerProfile": { ... } }
+Response 404: { "error": "SellerProfile not found" }
+```
 
 ---
 

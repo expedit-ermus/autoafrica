@@ -1,13 +1,27 @@
 'use client';
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
-import { Order } from '@/shared/types';
+import { Order, AuthUser } from '@/shared/types';
+
+interface SellerProfileData {
+  id?: string;
+  businessName?: string | null;
+  displayName?: string | null;
+  city?: string | null;
+  phoneForOrders?: string | null;
+  payoutMethod?: string | null;
+  payoutNumber?: string | null;
+  verified?: boolean;
+  rating?: number;
+  reviewCount?: number;
+}
 
 export default function ProfilePage() {
-  const { t, user } = useApp();
+  const { t, user, setUser } = useApp();
   const { addToast } = useToast();
   const [form, setForm] = useState({ firstName: '', lastName: '', phone: '', shopName: '', city: '', country: 'CI', description: '' });
   const [passwords, setPasswords] = useState({ current: '', newPass: '', confirm: '' });
@@ -18,6 +32,10 @@ export default function ProfilePage() {
   const [showCurrentPass, setShowCurrentPass] = useState(false);
   const [showNewPass, setShowNewPass] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
+  const [sellerState, setSellerState] = useState<{ enabled: boolean; profile: SellerProfileData | null }>({ enabled: false, profile: null });
+  const [sellerForm, setSellerForm] = useState({ displayName: '', city: '', phoneForOrders: '', payoutMethod: 'ORANGE_MONEY', payoutNumber: '' });
+  const [showSellerForm, setShowSellerForm] = useState(false);
+  const [activating, setActivating] = useState(false);
 
   const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
@@ -36,18 +54,34 @@ export default function ProfilePage() {
     let cancelled = false;
     (async () => {
       try {
-        const [p, o] = await Promise.all([
+        const [p, o, s] = await Promise.all([
           fetch('/api/v1/products?pageSize=100', { credentials: 'include' }),
           fetch('/api/v1/orders?pageSize=100', { credentials: 'include' }),
+          fetch('/api/v1/seller/profile', { credentials: 'include' }),
         ]);
         const pd = await p.json();
         const od = await o.json();
+        const sd = await s.json();
         if (!cancelled) {
           if (pd.success) setStats(s => ({ ...s, products: pd.data.total || pd.data.data?.length || 0 }));
           if (od.success) {
             const orders = od.data.data || [];
             const revenue = orders.filter((o: Order) => o.status === 'DELIVERED' || o.status === 'COMPLETED').reduce((s: number, o: Order) => s + (o.totalAmount || o.total || 0), 0);
             setStats(s => ({ ...s, orders: orders.length, revenue }));
+          }
+          if (sd.success) {
+            const profile = sd.data.sellerProfile;
+            setSellerState({ enabled: !!sd.data.sellerEnabled, profile });
+            if (profile) {
+              setSellerForm(f => ({
+                ...f,
+                displayName: profile.displayName || profile.businessName || '',
+                city: profile.city || '',
+                phoneForOrders: profile.phoneForOrders || '',
+                payoutMethod: profile.payoutMethod || 'ORANGE_MONEY',
+                payoutNumber: profile.payoutNumber || '',
+              }));
+            }
           }
         }
       } catch {}
@@ -74,7 +108,38 @@ export default function ProfilePage() {
     } catch { addToast('error', 'Erreur'); } finally { setSaving(false); }
   };
 
+  const handleActivateSeller = async () => {
+    if (!sellerForm.displayName) { addToast('error', 'Indiquez le nom affiché aux acheteurs'); return; }
+    if (!sellerForm.payoutNumber) { addToast('error', 'Indiquez votre numéro de paiement Mobile Money'); return; }
+    setActivating(true);
+    try {
+      const res = await fetch('/api/v1/seller/activate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          displayName: sellerForm.displayName,
+          city: sellerForm.city || undefined,
+          phoneForOrders: sellerForm.phoneForOrders || undefined,
+          payoutMethod: sellerForm.payoutMethod,
+          payoutNumber: sellerForm.payoutNumber,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Activation échouée');
+      setSellerState({ enabled: true, profile: data.data.sellerProfile });
+      setShowSellerForm(false);
+      setUser({ ...user, sellerEnabled: true, sellerProfile: data.data.sellerProfile } as AuthUser);
+      addToast('success', 'Espace vendeur activé ! Vous pouvez maintenant vendre sur AutoAfrique.');
+    } catch (err) {
+      addToast('error', err instanceof Error ? err.message : 'Erreur lors de l\'activation');
+    } finally {
+      setActivating(false);
+    }
+  };
+
   const initials = user ? `${(user.firstName || '')[0] || ''}${(user.lastName || '')[0] || ''}` : 'U';
+  const isSeller = sellerState.enabled || user?.role === 'SELLER';
 
   const tabs = [
     { id: 'profile' as const, label: 'Profil', icon: (
@@ -123,7 +188,7 @@ export default function ProfilePage() {
                     </h1>
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-[var(--color-primary-dark)]/10 to-[var(--color-warm-red)]/10 text-[var(--color-warm-red)] border border-[var(--color-warm-red)]/10 w-fit">
                       <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-warm-red)] animate-pulse" />
-                      {user?.role === 'SELLER' ? 'Vendeur' : 'Acheteur'}
+                      {isSeller ? 'Acheteur + Vendeur' : 'Acheteur'}
                     </span>
                   </div>
                   <p className="text-sm text-gray-500 mt-1 flex items-center gap-1.5">
@@ -151,6 +216,166 @@ export default function ProfilePage() {
                   <p className="text-2xl sm:text-3xl font-extrabold text-amber-600">{formatCFA(stats.revenue)}</p>
                   <p className="text-xs text-gray-500 mt-0.5 font-medium">FCFA</p>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── Mon compte : Espace Acheteur / Espace Vendeur ── */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h2 className="text-xl font-extrabold text-gray-900">Mon compte</h2>
+                <p className="text-sm text-gray-500 mt-0.5">Achetez et vendez avec le même compte</p>
+              </div>
+            </div>
+
+            <div className="grid gap-4 lg:grid-cols-2">
+              {/* Espace Acheteur */}
+              <div className="bg-white rounded-3xl border border-black/[0.04] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.02)] p-6 sm:p-8">
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900">Espace Acheteur</h3>
+                      <p className="text-xs text-gray-400">Toujours actif</p>
+                    </div>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                    Actif
+                  </span>
+                </div>
+                <p className="text-sm text-gray-500 mb-5">
+                  Recherchez des pièces, passez des commandes et suivez vos achats depuis un seul endroit.
+                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <Link href="/dashboard/orders" className="group flex items-center justify-between p-4 rounded-2xl bg-gray-50/80 border border-gray-100/60 hover:border-blue-200 hover:bg-blue-50/60 transition-all">
+                    <span className="text-sm font-semibold text-gray-700 group-hover:text-blue-700">Mes commandes</span>
+                    <svg className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                  </Link>
+                  <Link href="/dashboard/vehicles" className="group flex items-center justify-between p-4 rounded-2xl bg-gray-50/80 border border-gray-100/60 hover:border-blue-200 hover:bg-blue-50/60 transition-all">
+                    <span className="text-sm font-semibold text-gray-700 group-hover:text-blue-700">Véhicules</span>
+                    <svg className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" /></svg>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Espace Vendeur */}
+              <div className="bg-white rounded-3xl border border-black/[0.04] shadow-[0_1px_3px_rgba(0,0,0,0.04),0_4px_12px_rgba(0,0,0,0.02)] p-6 sm:p-8">
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center">
+                      <svg className="w-5 h-5 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .415.336.75.75.75z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900">Espace Vendeur</h3>
+                      <p className="text-xs text-gray-400">{isSeller ? 'Actif' : 'À activer'}</p>
+                    </div>
+                  </div>
+                  {isSeller ? (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-600 border border-emerald-100">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      Actif
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-500 border border-gray-200">
+                      Inactif
+                    </span>
+                  )}
+                </div>
+
+                {!isSeller ? (
+                  <div>
+                    <div className="rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-6 text-center mb-5">
+                      <div className="w-14 h-14 rounded-2xl bg-orange-100 flex items-center justify-center mx-auto mb-3">
+                        <span className="text-2xl">🏪</span>
+                      </div>
+                      <p className="font-semibold text-gray-800 mb-1">Vous n&apos;avez pas encore activé la vente</p>
+                      <p className="text-sm text-gray-500">
+                        Vendez des pièces et des véhicules depuis votre compte, sans créer de compte séparé.
+                      </p>
+                    </div>
+                    {!showSellerForm ? (
+                      <button onClick={() => setShowSellerForm(true)}
+                        className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-warm-red)] text-white shadow-lg shadow-[var(--color-primary-dark)]/25 hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.97] transition-all">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>
+                        Vendre sur AutoAfrique
+                      </button>
+                    ) : (
+                      <div className="space-y-4">
+                        <div>
+                          <label htmlFor="seller-displayName" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Nom affiché aux acheteurs</label>
+                          <input id="seller-displayName" className="input-field" value={sellerForm.displayName} onChange={e => setSellerForm({ ...sellerForm, displayName: e.target.value })} placeholder="Garage Moussa Pièces" />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label htmlFor="seller-city" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Ville</label>
+                            <input id="seller-city" className="input-field" value={sellerForm.city} onChange={e => setSellerForm({ ...sellerForm, city: e.target.value })} placeholder="Abidjan" />
+                          </div>
+                          <div>
+                            <label htmlFor="seller-phoneForOrders" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Téléphone commandes</label>
+                            <input id="seller-phoneForOrders" className="input-field" value={sellerForm.phoneForOrders} onChange={e => setSellerForm({ ...sellerForm, phoneForOrders: e.target.value })} placeholder="+225 07 08 09 10" />
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <label htmlFor="seller-payoutMethod" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Méthode de paiement</label>
+                            <select id="seller-payoutMethod" className="input-field" value={sellerForm.payoutMethod} onChange={e => setSellerForm({ ...sellerForm, payoutMethod: e.target.value })}>
+                              <option value="ORANGE_MONEY">Orange Money</option>
+                              <option value="MTN_MOMO">MTN MoMo</option>
+                              <option value="WAVE">Wave</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label htmlFor="seller-payoutNumber" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Numéro de paiement</label>
+                            <input id="seller-payoutNumber" className="input-field" value={sellerForm.payoutNumber} onChange={e => setSellerForm({ ...sellerForm, payoutNumber: e.target.value })} placeholder="+225 07 00 00 00" />
+                          </div>
+                        </div>
+                        <div className="flex gap-3 pt-1">
+                          <button onClick={handleActivateSeller} disabled={activating}
+                            className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-warm-red)] text-white shadow-lg shadow-[var(--color-primary-dark)]/25 hover:shadow-xl active:scale-[0.97] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                            {activating ? (
+                              <>
+                                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                                Activation...
+                              </>
+                            ) : 'Activer la vente'}
+                          </button>
+                          <button onClick={() => setShowSellerForm(false)}
+                            className="px-5 py-3 rounded-xl font-semibold text-sm text-gray-500 border border-gray-200 hover:bg-gray-50 transition-colors">
+                            Annuler
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div>
+                    <div className="rounded-2xl bg-orange-50/60 border border-orange-100/60 p-4 mb-5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-xl shadow-sm shrink-0">🏪</div>
+                        <div className="min-w-0">
+                          <p className="font-bold text-gray-900 truncate">{sellerForm.displayName || sellerState.profile?.displayName || sellerState.profile?.businessName || 'Ma boutique'}</p>
+                          <p className="text-xs text-gray-500 truncate">
+                            {sellerState.profile?.city || form.city || '—'}
+                            {sellerState.profile?.payoutMethod ? ` • Paiement : ${sellerState.profile.payoutMethod === 'ORANGE_MONEY' ? 'Orange Money' : sellerState.profile.payoutMethod === 'MTN_MOMO' ? 'MTN MoMo' : 'Wave'}` : ''}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <Link href="/dashboard/marketplace" className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-[var(--color-primary-dark)] to-[var(--color-warm-red)] text-white shadow-lg shadow-[var(--color-primary-dark)]/25 hover:shadow-xl active:scale-[0.97] transition-all">
+                        Gérer mes pièces
+                      </Link>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

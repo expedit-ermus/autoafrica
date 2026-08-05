@@ -584,6 +584,52 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `src/components/RemoteImage.tsx` (nouveau), `src/components/{BrandGrid,PromoBanner,ProductCard,PartsCatalog,TestimonialCarousel}.tsx`, `src/app/dashboard/{marketplace,vehicles,cart,page,crm}/page.tsx`, `src/components/LandingPage.tsx`, `docs/DECISIONS.md`.
 
+## D33 : Compte unifie acheteur/vendeur (`sellerEnabled` + `SellerProfile` fusionne)
+
+**Contexte** : le produit vise un modele hybride (Leboncoin × Autodoc) : un particulier achete ET vend (ex. revente de pieces recuperees) depuis le meme compte, sans compte "pro" separe. Or le systeme existant reposait sur `User.role` (SELLER/BUYER) avec une inscription forçant un choix de type de compte ("Vendeur / Garagiste" + "Nom de la boutique"), et un `SellerProfile` oriente pro/garagiste (`businessName`, `rcNumber`, `taxId`, `verified`, `certifications`).
+
+**Decision** :
+- Ajouter `User.sellerEnabled` (`Boolean @default(false)`) : la vente est activable a tout moment depuis "Mon compte", pas choisie a l'inscription. Le formulaire d'inscription est reduit aux infos de base (nom, email, telephone, pays, mot de passe) — suppression du selecteur de role et du champ "Nom de la boutique".
+- **Fusion dans le `SellerProfile` existant** (pas de doublon) : ajout de `displayName`, `city`, `phoneForOrders`, `payoutMethod`, `payoutNumber` (enum `PayoutMethod` : `ORANGE_MONEY`, `MTN_MOMO`, `WAVE`). Les champs pro/garagiste restent optionnels et intacts. Le profil n'est cree qu'a l'activation.
+- **`role` conserve** : `role` reste le mecanisme RBAC (defaut `BUYER`, pas modifie a l'activation) ; `sellerEnabled` pilote l'etat UI vendeur. Les deux coexistent, sans changement des guards/tokens existants.
+- Activation : `POST /api/v1/seller/activate` (auth) → `sellerEnabled=true` + `SellerProfile` (upsert) ; lecture `GET /api/v1/seller/profile` ; maj `PUT /api/v1/seller/profile`. `GET /api/v1/auth/me` expose desormais `sellerEnabled` et `sellerProfile`.
+- UI : page "Mon compte" (`/dashboard/profile`) avec deux blocs — **Espace Acheteur** (toujours actif : infos perso, commandes, vehicules) et **Espace Vendeur** (etat vide clair "Vous n'avez pas encore active la vente" + CTA "Vendre sur AutoAfrique" → mini-formulaire nom/ville/telephone/paiement).
+- Schema applique : `schema.prisma` + `src/lib/schema.sql` et `prisma/schema.sql` (ALTER TABLE idempotents pour les bases existantes) + dev.db.
+- Gestion des annonces vendeur non incluse : module de publication d'annonces = tache separee (les routes produits/vehicles existantes restent independantes du statut vendeur).
+
+**Resultats** : lint, typecheck, 281 tests (275 existants + 6 nouveau service seller), build de production OK. Aucune regression sur l'inscription (API register accepte toujours `role`/`shopName` en optionnel pour retrocompatibilite) ni sur l'espace acheteur (vehicles/orders inchanges).
+
+**Impact** : `prisma/schema.prisma`, `prisma/schema.sql`, `src/lib/schema.sql`, `dev.db`, `src/modules/seller/*` (nouveau service + DTO + tests), `src/app/api/v1/seller/{activate,profile}/route.ts` (nouveaux), `src/modules/auth/auth.service.ts`, `src/app/auth/register/page.tsx`, `src/app/dashboard/profile/page.tsx`, `src/shared/types/index.ts`, `docs/{02-ROUTES,03-PAGES,10-AUTHENTIFICATION,12-MARKETPLACE,18-DATABASE,19-API,09-TRACKING,DECISIONS}.md`.
+
+## D34 : Retour de la selection de role a l'inscription (acheteur/vendeur)
+
+**Contexte** : demande produit : choisir « Acheteur » ou « Vendeur » directement a la creation de compte, sur la meme page.
+
+**Decision** :
+- Ajouter un selecteur de role (cartes « Acheteur » / « Vendeur ») sur `/auth/register`. « Vendeur » envoie `role=SELLER` a `POST /api/v1/auth/register` (deja supporte par le DTO/service) ; l'utilisateur est vendeur des l'inscription (RBAC).
+- `sellerEnabled` et le `SellerProfile` restent pilotes par « Mon compte » (`POST /api/v1/seller/activate`) : l'inscription ne cree pas de `SellerProfile` (le formulaire ne collecte pas les donnees boutique).
+- **Contradiction avec D33 et `10-AUTHENTIFICATION.md` (lignes 52/77) resolue** : le choix de type de compte revient a l'inscription ; le reste du modele unifie (`sellerEnabled` + `SellerProfile` fusionne) est conserve.
+
+**Resultats** : lint, typecheck, build de production OK. Aucun changement backend (register accepte deja `role`).
+
+**Impact** : `src/app/auth/register/page.tsx`, `src/lib/i18n.ts`, `docs/{10-AUTHENTIFICATION,03-PAGES,09-TRACKING,DECISIONS}.md`.
+
+## D35 : Refonte accueil/layout — groupe 1 « liens légaux et de confiance »
+
+**Contexte** : le footer et quelques composants de la landing contenaient des liens factices (`href="#"`) vers des pages légales/confiance inexistantes, des icônes réseaux sociaux sans compte réel, des transporteurs génériques (DHL/UPS/GLS/Chronopost) non contractualisés, et un lien « Contactez-nous » mort dans le sélecteur de véhicule. Regle « aucune fausse preuve » (`AGENTS.md`) et demande utilisateur : créer de vraies pages et retirer l'information trompeuse.
+
+**Decision** (groupe 1, commit séparé) :
+- Créer un layout public partagé `src/app/(public)/layout.tsx` (Header + Footer) et 10 routes publiques (R023-R032 dans `02-ROUTES.md`) : `/a-propos`, `/conditions-generales`, `/politique-de-confidentialite`, `/aide`, `/paiement`, `/livraison`, `/contact`, `/retours`, `/blog`, `/manuels-reparation`.
+- Composant serveur réutilisable `src/components/LegalPage.tsx` (titre, date de mise à jour, blocs-section) ; les documents à teneur légale (`conditions-generales`, `politique-de-confidentialite`) affichent un warning « gabarit rédigé pour présenter la structure, à faire relire par un juriste avant mise en production ».
+- Contact : `src/components/ContactForm.tsx` ouvre la messagerie (mailto) vers une adresse de support **provisoire**, affichée explicitement comme « à confirmer avant la mise en production » + page `/contact` sans téléphone/coordonnées inventés.
+- Footer : liens `#` remplacés par les vraies routes ; retrait des 3 icônes réseaux sociaux (FB/X/IG) et du bloc Appli Mobile/YouTube/Instagram ; retrait de « Programme Bonus » ; transporteurs remplacés par « Livraison locale partenaire ».
+- `CarSelector.tsx` : lien « Contactez-nous » `#` → `/contact`.
+- SEO/indexation : sitemap étendu (13 URLs), `robots.ts` inchangé (`Allow: /` couvre les nouvelles routes racine), `02-ROUTES.md`, `03-PAGES.md` (modèle « Page informationnelle »), `06-SEO.md` (métadonnées R023-R032), `07-CRAWL-INDEXATION.md` (sitemap + listes).
+
+**Contradiction signalée** : `07-CRAWL-INDEXATION.md` listait uniquement 3 pages indexables alors que `02-ROUTES.md` (source de vérité des routes, `AGENTS.md`) documente désormais les nouvelles pages publiques indexables. Résolue en faveur de la matrice : toutes les pages « index / sitemap oui » (R023-R032) sont ajoutées au sitemap et au document.
+
+**Impact** : `src/app/(public)/layout.tsx` (nouveau), `src/app/(public)/{a-propos,conditions-generales,politique-de-confidentialite,aide,paiement,livraison,contact,retours,blog,manuels-reparation}/page.tsx` (10 nouveaux), `src/components/{LegalPage,ContactForm}.tsx` (nouveaux), `src/components/{Footer,CarSelector}.tsx`, `src/app/sitemap.ts`, docs `{02-ROUTES,03-PAGES,06-SEO,07-CRAWL-INDEXATION,DECISIONS}.md`. Effacer `check-db.cjs` (fichier temporaire) avant commit. Lint/typecheck/tests/build à valider.
+
 
 
 

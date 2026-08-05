@@ -24,7 +24,7 @@ const trustFeatures = [
       </svg>
     ),
     title: { fr: 'Paiement sécurisé', en: 'Secure payment' },
-    desc: { fr: 'Mobile Money, Visa, Mastercard', en: 'Mobile Money, Visa, Mastercard' },
+    desc: { fr: 'Orange Money, MTN MoMo, Wave', en: 'Orange Money, MTN MoMo, Wave' },
   },
   {
     icon: (
@@ -234,8 +234,8 @@ export default function LandingPage() {
               </p>
               <p>
                 {L(
-                  'Que vous soyez garagiste, revendeur ou particulier, trouvez les pièces dont vous avez besoin au meilleur prix. Paiement par Orange Money, MTN MoMo, Wave ou carte bancaire. Livraison rapide en 24-72h partout en Afrique de l\'Ouest.',
-                  'Whether you\'re a mechanic, dealer or individual, find the parts you need at the best price. Pay with Orange Money, MTN MoMo, Wave or credit card. Fast delivery in 24-72h across West Africa.'
+                  'Que vous soyez garagiste, revendeur ou particulier, trouvez les pièces dont vous avez besoin au meilleur prix. Paiement par Mobile Money (Orange Money, MTN MoMo, Wave). Livraison rapide en 24-72h partout en Afrique de l\'Ouest.',
+                  'Whether you\'re a mechanic, dealer or individual, find the parts you need at the best price. Pay with Mobile Money (Orange Money, MTN MoMo, Wave). Fast delivery in 24-72h across West Africa.'
                 )}
               </p>
               <button className="text-[var(--color-primary)] font-bold text-base hover:underline">

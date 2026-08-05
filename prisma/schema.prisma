@@ -68,6 +68,7 @@ model User {
   city          String?
   address       String?
   shopName      String?
+  sellerEnabled Boolean  @default(false)
   specialties   Json?    // ["Toyota", "Peugeot", ...]
   mfaEnabled    Boolean  @default(false)
   mfaSecret     String?
@@ -114,6 +115,12 @@ enum UserStatus {
   INACTIVE
   SUSPENDED
   PENDING_VERIFICATION
+}
+
+enum PayoutMethod {
+  ORANGE_MONEY
+  MTN_MOMO
+  WAVE
 }
 
 model RefreshToken {
@@ -167,7 +174,12 @@ model SellerProfile {
   userId          String   @unique
   user            User     @relation(fields: [userId], references: [id])
   businessName    String
+  displayName     String?  // Nom affiché aux acheteurs
   businessType    String?  // "garage", "casse", "revendeur", "distributeur"
+  city            String?  // Ville du vendeur
+  phoneForOrders  String?  // Téléphone pour les commandes
+  payoutMethod    PayoutMethod? // Moyen de paiement Mobile Money pour recevoir les fonds
+  payoutNumber    String?  // Numéro Mobile Money pour les versements
   rcNumber        String?  // Registre du Commerce
   taxId           String?  // Numéro fiscal
   rating          Float    @default(0)

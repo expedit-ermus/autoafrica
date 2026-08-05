@@ -131,9 +131,9 @@ export default function CarSelector() {
   return (
     <div className="bg-white rounded-3xl shadow-xl shadow-[var(--color-earth)]/8 border border-[var(--color-warm-border)] overflow-hidden">
       <div className="bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-warm-navy-deep)] px-7 pt-9 pb-7">
-        <h3 className="text-white font-extrabold text-xl mb-2">
+        <h2 className="text-white font-extrabold text-xl mb-2">
           {L('Trouvez les pièces pour votre véhicule', 'Find parts for your vehicle')}
-        </h3>
+        </h2>
         <p className="text-white/85 text-base">
           {L('Recherchez par numéro d\'immatriculation ou sélectionnez votre modèle', 'Search by registration number or select your model')}
         </p>
@@ -248,7 +248,7 @@ export default function CarSelector() {
 
         <p className="text-center text-sm text-[var(--color-warm-muted)] mt-5 font-medium">
           {L('Vous ne trouvez pas votre voiture ?', 'Can\'t find your car?')}{' '}
-          <a href="#" className="text-[var(--color-primary)] hover:underline font-bold">
+          <a href="/contact" className="text-[var(--color-primary)] hover:underline font-bold">
             {L('Contactez-nous', 'Contact us')}
           </a>
         </p>

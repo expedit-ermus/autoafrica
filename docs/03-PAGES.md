@@ -172,11 +172,46 @@ Créer un compte
 Inscription → Activation
 
 ### Sections obligatoires
-1. Formulaire (nom, email, téléphone, mot de passe)
-2. Sélection rôle (vendeur/acheteur)
+1. Sélection du type de compte (cartes Acheteur / Vendeur, même page)
+2. Formulaire (nom, email, téléphone, mot de passe)
 3. Sélection pays
 4. Conditions d'utilisation
 5. CTA "S'inscrire"
+
+> Sélection du type de compte à l'inscription : deux cartes « Acheteur » / « Vendeur » sur la même page. « Vendeur » enregistre `role=SELLER` immédiatement ; le profil boutique se complète ensuite dans « Mon compte ».
+
+## Modèle : Page informationnelle (`/a-propos`, `/conditions-generales`, `/politique-de-confidentialite`, `/aide`, `/paiement`, `/livraison`, `/contact`, `/retours`, `/blog`, `/manuels-reparation`)
+
+### Objectif utilisateur
+Lire une information de confiance, obtenir de l'aide ou contacter l'équipe.
+
+### Objectif commercial
+Instaurer la confiance, réduire le besoin de support, améliorer le maillage interne et l'indexation (routes R023-R032).
+
+### Sections obligatoires
+1. Layout public partagé (`src/app/(public)/layout.tsx` : Header + Footer)
+2. Titre de page (H1)
+3. Date de dernière mise à jour
+4. Disclaimer pour les documents à teneur légale
+5. Contenu en français, formaté en sections-bloc
+
+### Composants
+- `LegalPage` : composant serveur réutilisable (titre, date, avertissement juriste optionnel, sections). Utilisé par toutes les pages sauf `/contact`.
+- `ContactForm` : composant client, ouvre la messagerie (mailto) avec une adresse de support provisoire clairement indiquée comme « à confirmer » ; aucun envoi automatique (service non encore en place).
+
+### Données attendues
+- Aucune donnée dynamique : contenu statique.
+
+### SEO
+- Routes `index, follow` ; canonical auto (URL de la page) ; sitemap oui (priorité 0.6).
+- Titres/descriptions dédiés par page (`06-SEO.md`).
+- Contenu honnête : pas de numéro de téléphone, d'adresse email ni de coordonnées inventées ; les canaux de contact sont présentés comme « à confirmer avant mise en production ».
+
+### Tracking
+- `page_view` via le `TrackingProvider` global (aucun événement dédié).
+
+### États
+- Statique, sans état vide/erreur applicatif.
 
 ---
 
@@ -376,7 +411,6 @@ Conteneur centré
 │   ├── Email
 │   ├── Téléphone
 │   ├── Pays (select)
-│   ├── Rôle (vendeur/acheteur)
 │   ├── Mot de passe
 │   ├── Confirmer mot de passe
 │   ├── Conditions d'utilisation
@@ -472,14 +506,45 @@ Footer (light)
 | email | email | oui | Format email valide | Email invalide |
 | phone | tel | non | Format international | Telephone invalide |
 | country | select | oui | Valeur de la liste | Selectionnez un pays |
-| role | select | oui | BUYER ou SELLER | Selectionnez un role |
 | password | password | oui | Min 8, 1 maj, 1 chiffre | Mot de passe trop faible |
 | confirmPassword | password | oui | = password | Les mots de passe ne correspondent pas |
 | acceptTerms | checkbox | oui | Coche | Acceptez les conditions |
 
 ### Actions
 - Inscription via POST /api/v1/auth/register
-- Redirection vers /auth/login avec message succes
+- Redirection vers /dashboard (connexion directe)
+
+---
+
+## Mon compte (`/dashboard/profile`)
+
+### Objectif utilisateur
+Gérer ses deux espaces (acheteur et vendeur) depuis un seul compte
+
+### Objectif commercial
+Activation de la vente → publication de produits
+
+### Sections obligatoires
+1. **Espace Acheteur** (toujours actif) : informations personnelles, commandes, véhicules
+2. **Espace Vendeur** (à activer) : état vide clair « Vous n'avez pas encore activé la vente » + CTA « Vendre sur AutoAfrique » → mini-formulaire (nom affiché, ville, téléphone, méthode de paiement Mobile Money, numéro) → `sellerEnabled=true` + création du `SellerProfile`
+3. Une fois activée, l'espace Vendeur affiche le résumé du profil vendeur (nom, ville, paiement)
+
+### Formulaires
+
+#### Activation vendeur
+
+| Champ | Type | Obligatoire | Validation |
+|-------|------|-------------|------------|
+| displayName | text | oui | Min 1 caractere (nom affiché aux acheteurs) |
+| city | text | non | - |
+| phoneForOrders | tel | non | Format international |
+| payoutMethod | select | oui | ORANGE_MONEY, MTN_MOMO, WAVE |
+| payoutNumber | text | oui | Min 4 caracteres |
+
+### Actions
+- Activation via POST /api/v1/seller/activate
+- Lecture via GET /api/v1/seller/profile
+- Mise à jour via PUT /api/v1/seller/profile
 
 ---
 
@@ -766,13 +831,17 @@ common.*
 | auth.register.name | Nom complet | Full name |
 | auth.register.phone | Telephone | Phone |
 | auth.register.country | Pays | Country |
-| auth.register.role | Je suis... | I am... |
-| auth.register.buyer | Acheteur | Buyer |
-| auth.register.seller | Vendeur | Seller |
 | auth.register.password | Mot de passe | Password |
 | auth.register.confirmPassword | Confirmer le mot de passe | Confirm password |
 | auth.register.terms | J'accepte les conditions d'utilisation | I accept the terms of use |
 | auth.register.submit | S'inscrire | Sign up |
+| auth.register.sellerCta | Vendre sur AutoAfrique | Sell on AutoAfrique |
+| auth.register.sellerEmpty | Vous n'avez pas encore active la vente | You have not activated selling yet |
+| auth.register.sellerName | Nom affiche aux acheteurs | Name shown to buyers |
+| auth.register.sellerCity | Ville | City |
+| auth.register.sellerPhone | Telephone commandes | Order phone |
+| auth.register.sellerPayout | Methode de paiement | Payment method |
+| auth.register.sellerNumber | Numero de paiement | Payment number |
 
 ### Dashboard
 
