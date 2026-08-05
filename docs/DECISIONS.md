@@ -426,6 +426,8 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `src/app/sitemap.ts`, `src/app/robots.ts`, `src/app/layout.tsx`, `docs/07-CRAWL-INDEXATION.md`, `docs/DECISIONS.md`. A noter : le verificateur Google Search Console (metadonnee `verification.google`) reste a renseigner par le proprietaire avec son vrai code.
 
+**Mise a jour (verification GSC)** : la propriete Google Search Console est desormais verifiee — meta `google-site-verification` `google67878e31d8998189` dans `src/app/layout.tsx` et fichier `/google67878e31d8998189.html` dans `public/` (cf. `07-CRAWL-INDEXATION.md`).
+
 ## D22 : Metadonnees par page (titres, canonical, robots)
 
 **Contexte** : `06-SEO.md` documente des titres, descriptions, canonicals et directives robots par page (Landing, Marketplace, Connexion, Inscription, Dashboard). Or les pages concernes (`/dashboard/marketplace`, `/dashboard/vehicles`, `/auth/login`, `/auth/register` et le reste du dashboard) sont des composants client (`'use client'`) : ils ne peuvent pas exporter `metadata`/`generateMetadata`. Resultat avant cette decision : toutes ces pages heritaient du titre par defaut du layout racine et etaient `index,follow` par defaut (y compris les pages privees du dashboard).

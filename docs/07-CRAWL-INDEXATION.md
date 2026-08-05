@@ -143,6 +143,16 @@ Note : les pages publiques indexables sous `/dashboard/` (R005 marketplace, R017
 - Aucune page stratégique ne doit être orpheline
 - Le fil d'Ariane doit suivre la hiérarchie réelle
 
+## Google Search Console
+
+### Vérification du site
+
+- Métadonnée `google-site-verification` dans `src/app/layout.tsx` (`<head>`) :
+  - `content="google67878e31d8998189"`
+- Fichier de vérification servis depuis le dossier `public/` :
+  - `/google67878e31d8998189.html` (contenu `google-site-verification: google67878e31d8998189.html`)
+- Propriété à vérifier dans Google Search Console : `https://autoafrique-saas.vercel.app/`
+
 ## Recherche interne
 
 - Route : `/dashboard/marketplace?search=...`
