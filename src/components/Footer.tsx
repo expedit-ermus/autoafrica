@@ -45,6 +45,7 @@ export default function Footer() {
               <h4 className="text-white font-bold mb-5 text-sm tracking-wide">{L('À PROPOS D\'AUTAFRIQUE', 'ABOUT AUTAFRIQUE')}</h4>
               <ul className="space-y-3 text-sm text-white/70">
                 <li><Link href="/a-propos" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Qui sommes-nous ?', 'About us?')}</Link></li>
+                <li><Link href="/tarifs" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Tarifs & Abonnements SaaS', 'Pricing & Subscriptions')}</Link></li>
                 <li><Link href="/dashboard/marketplace" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Marketplace', 'Marketplace')}</Link></li>
               </ul>
             </div>

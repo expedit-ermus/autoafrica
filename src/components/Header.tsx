@@ -49,6 +49,11 @@ export default function Header() {
               {L('BOUTIQUE', 'SHOP')}
             </Link>
             <span className="text-white/30">|</span>
+            <Link href="/tarifs" className="hover:text-[var(--color-primary)] transition-colors font-semibold text-[var(--color-primary)] flex items-center gap-1">
+              <span>🏷️</span>
+              {L('TARIFS SAAS', 'PRICING')}
+            </Link>
+            <span className="text-white/30">|</span>
             <Link href="/dashboard" className="hover:text-[var(--color-primary)] transition-colors font-medium">
               {L('CLUB', 'CLUB')}
             </Link>
