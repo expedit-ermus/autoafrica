@@ -103,11 +103,11 @@ export default function Sidebar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Closing the menu on route change is a single, non-cascading update; there is no
-  // simpler pattern that satisfies both this rule and react-hooks/refs (which forbids
-  // the ref-comparison alternative).
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => { setMoreOpen(false); }, [pathname]);
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
+    setMoreOpen(false);
+  }
 
   const isActive = (href: string) => pathname === href || (href !== '/dashboard' && pathname.startsWith(href));
   const tabItems = menuItems.filter((item) => mobileTabKeys.includes(item.key));

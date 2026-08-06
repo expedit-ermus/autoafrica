@@ -64,7 +64,7 @@ export function ProductReviews({ productId }: ReviewsProps) {
 
   useEffect(() => {
     let cancelled = false;
-    (async () => {
+    async function load() {
       try {
         const res = await fetch(`/api/v1/reviews?productId=${productId}`);
         const data = await res.json();
@@ -73,8 +73,11 @@ export function ProductReviews({ productId }: ReviewsProps) {
           setAvgRating(data.data.averageRating || 0);
           setTotal(data.data.total);
         }
-      } catch {} finally { if (!cancelled) setLoading(false); }
-    })();
+      } catch {} finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+    load();
     return () => { cancelled = true; };
   }, [productId, refreshKey]);
 

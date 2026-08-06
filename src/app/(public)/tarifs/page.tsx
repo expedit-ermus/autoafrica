@@ -204,7 +204,7 @@ export default function TarifsPage() {
             </div>
             <h3 className="font-bold text-slate-900 text-base">Multi-Entrepôts & Casse</h3>
             <p className="text-xs text-slate-600 mt-1">
-              Gérez plusieurs magasins, ateliers ou hangars de pièces de réemploi avec suivi d'emplacement précis.
+              Gérez plusieurs magasins, ateliers ou hangars de pièces de réemploi avec suivi d&apos;emplacement précis.
             </p>
           </div>
 
@@ -214,7 +214,7 @@ export default function TarifsPage() {
             </div>
             <h3 className="font-bold text-slate-900 text-base">Approvisionnement & Douanes</h3>
             <p className="text-xs text-slate-600 mt-1">
-              Suivez vos conteneurs de pièces de Chine, Dubaï ou Europe, de l'embarquement jusqu'au dédouanement à Abidjan ou Dakar.
+              Suivez vos conteneurs de pièces de Chine, Dubaï ou Europe, de l&apos;embarquement jusqu&apos;au dédouanement à Abidjan ou Dakar.
             </p>
           </div>
         </div>
@@ -224,7 +224,7 @@ export default function TarifsPage() {
       <div className="max-w-4xl mx-auto mt-12 md:mt-20">
         <div className="text-center mb-10">
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">Foire Aux Questions (FAQ)</h2>
-          <p className="text-slate-600 mt-2">Tout ce que vous devez savoir sur nos formules d'abonnement et de paiement.</p>
+          <p className="text-slate-600 mt-2">Tout ce que vous devez savoir sur nos formules d&apos;abonnement et de paiement.</p>
         </div>
 
         <div className="space-y-4">
@@ -256,7 +256,7 @@ export default function TarifsPage() {
           Prêt à digitaliser votre garage ou magasin de pièces ?
         </h2>
         <p className="text-emerald-100 text-base sm:text-lg max-w-2xl mx-auto mb-8">
-          Rejoignez des centaines de garagistes, casseaurs et revendeurs en Côte d'Ivoire, au Sénégal et dans toute l'Afrique de l'Ouest.
+          Rejoignez des centaines de garagistes, casseaurs et revendeurs en Côte d&apos;Ivoire, au Sénégal et dans toute l&apos;Afrique de l&apos;Ouest.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Link

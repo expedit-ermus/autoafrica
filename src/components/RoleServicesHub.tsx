@@ -93,7 +93,7 @@ export default function RoleServicesHub() {
                 </span>
               </div>
               <div className="text-xs text-gray-500 font-medium">{L('Commande Pièce d\'occasion', 'Used Part Order')}</div>
-              <div className="text-sm font-extrabold text-gray-900 mt-1">Amortisseur N\'Dotré #14</div>
+              <div className="text-sm font-extrabold text-gray-900 mt-1">Amortisseur N&apos;Dotré #14</div>
               <div className="text-[11px] text-emerald-700 font-semibold mt-2">Livreur Tiak-Tiak en route</div>
             </div>
 
@@ -105,7 +105,7 @@ export default function RoleServicesHub() {
                 </span>
               </div>
               <div className="text-xs text-gray-500 font-medium">{L('Double Garantie SAV', 'Dual Warranty')}</div>
-              <div className="text-sm font-extrabold text-gray-900 mt-1">Pièce ET Main d\'œuvre</div>
+              <div className="text-sm font-extrabold text-gray-900 mt-1">Pièce ET Main d&apos;œuvre</div>
               <div className="text-[11px] text-purple-700 font-semibold mt-2">Paiement séquestre Wave sécurisé</div>
             </div>
 
@@ -129,7 +129,7 @@ export default function RoleServicesHub() {
                 <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 pb-3 border-b border-gray-100">
                   <div>
                     <div className="text-xs text-gray-400 font-bold uppercase">{L('Service demandé', 'Requested Service')}</div>
-                    <div className="font-extrabold text-gray-900">Remplacement Paire d\'Amortisseurs + Rotules</div>
+                    <div className="font-extrabold text-gray-900">Remplacement Paire d&apos;Amortisseurs + Rotules</div>
                   </div>
                   <div className="text-right">
                     <div className="text-xs text-gray-400 font-bold uppercase">{L('Montant bloqué', 'Held Amount')}</div>
@@ -144,7 +144,7 @@ export default function RoleServicesHub() {
                   </div>
                   <div>
                     <span className="text-gray-400 block">{L('Vendeur Casse :', 'Scrapyard Vendor:')}</span>
-                    <span className="font-bold text-gray-800">Ferraille N\'Dotré Magasin #14</span>
+                    <span className="font-bold text-gray-800">Ferraille N&apos;Dotré Magasin #14</span>
                   </div>
                   <div>
                     <span className="text-gray-400 block">{L('Garantie :', 'Warranty:')}</span>
@@ -241,7 +241,7 @@ export default function RoleServicesHub() {
               </div>
               <div className="text-xs text-gray-500 font-medium">{L('Demandes d\'Intervention', 'Job Requests')}</div>
               <div className="text-lg font-extrabold text-gray-900 mt-1">3 Demandes</div>
-              <div className="text-[11px] text-blue-700 font-semibold mt-1">Yopougon & Abobo N\'Dotré</div>
+              <div className="text-[11px] text-blue-700 font-semibold mt-1">Yopougon & Abobo N&apos;Dotré</div>
             </div>
 
             <div className="bg-gradient-to-br from-purple-50 to-indigo-50/50 rounded-2xl p-4 border border-purple-100">
@@ -277,10 +277,10 @@ export default function RoleServicesHub() {
                       <span className="text-xs text-gray-500 font-semibold">Toyota Hilux 2014</span>
                     </div>
                     <h4 className="text-sm font-extrabold text-gray-900 mt-1">
-                      Vidange complète + Remplacement Kit d\'embrayage
+                      Vidange complète + Remplacement Kit d&apos;embrayage
                     </h4>
                     <p className="text-xs text-gray-500 mt-0.5">
-                      Client : Kouassi (VTC Yango) • Lieu : Cocody Angré • Main d\'œuvre : 25 000 FCFA
+                      Client : Kouassi (VTC Yango) • Lieu : Cocody Angré • Main d&apos;œuvre : 25 000 FCFA
                     </p>
                   </div>
                   <div className="flex gap-2 w-full sm:w-auto">
@@ -305,7 +305,7 @@ export default function RoleServicesHub() {
                       Voyant Moteur & Contrôle Alternateur
                     </h4>
                     <p className="text-xs text-gray-500 mt-0.5">
-                      Client : Société BTP • Lieu : Yopougon Zone • Main d\'œuvre : 15 000 FCFA
+                      Client : Société BTP • Lieu : Yopougon Zone • Main d&apos;œuvre : 15 000 FCFA
                     </p>
                   </div>
                   <div className="flex gap-2 w-full sm:w-auto">

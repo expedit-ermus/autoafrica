@@ -69,10 +69,6 @@ const ussdMenus = [
   },
 ];
 
-function makeTxRef(prefix: string): string {
-  return `${prefix}-${Date.now()}`;
-}
-
 export default function UssdPaymentFlow() {
   const [currentMenu, setCurrentMenu] = useState('home');
   const [history, setHistory] = useState<string[]>(['home']);
@@ -88,6 +84,7 @@ export default function UssdPaymentFlow() {
   const menu = ussdMenus.find(m => m.id === currentMenu);
 
   const handleOption = useCallback((action: string) => {
+    const timestamp = Date.now();
     if (action === 'home' || action === 'search' || action === 'pay' || action === 'transactions' || action === 'account' || action === 'help') {
       setCurrentMenu(action);
       setHistory((prev) => [...prev, action]);
@@ -98,13 +95,13 @@ export default function UssdPaymentFlow() {
       setShowPhoneInput(true);
     } else if (action === 'brand' || action === 'city' || action === 'price' || action === 'featured') {
       setTxComplete(true);
-      setTxRef(makeTxRef('SEARCH'));
+      setTxRef(`SEARCH-${timestamp}`);
     } else if (action === 'last_tx' || action === 'history' || action === 'receipt') {
       setTxComplete(true);
-      setTxRef(makeTxRef('TX'));
+      setTxRef(`TX-${timestamp}`);
     } else if (action === 'balance') {
       setTxComplete(true);
-      setTxRef(makeTxRef('BAL'));
+      setTxRef(`BAL-${timestamp}`);
     } else if (action === 'how_to_pay' || action === 'escrow_info' || action === 'support') {
       setTxComplete(true);
     }

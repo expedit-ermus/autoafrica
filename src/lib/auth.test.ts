@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { hashPassword, verifyPassword, generateToken, verifyToken } from '@/lib/auth';
 
 describe('auth lib', () => {
@@ -22,12 +22,11 @@ describe('auth lib', () => {
     expect(verifyToken('')).toBeNull();
   });
 
-  it('throws when JWT_SECRET is missing', async () => {
-    vi.resetModules();
+  it('throws when JWT_SECRET is missing', () => {
     const previous = process.env.JWT_SECRET;
     delete process.env.JWT_SECRET;
     try {
-      await expect(import('@/lib/auth')).rejects.toThrow('JWT_SECRET is not set');
+      expect(() => generateToken('user-1')).toThrow('JWT_SECRET');
     } finally {
       process.env.JWT_SECRET = previous;
     }
