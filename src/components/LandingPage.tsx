@@ -251,6 +251,38 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* Section CTA Final (Devenir Vendeur) */}
+      <section className="py-14 bg-gradient-to-r from-emerald-800 to-teal-900 text-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <span className="text-xs font-extrabold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 px-3.5 py-1.5 rounded-full border border-emerald-400/30">
+            {L('Espace Vendeurs & Garagistes', 'Sellers & Mechanics Space')}
+          </span>
+          <h2 className="text-2xl sm:text-4xl font-extrabold mt-4 mb-4">
+            {L('Vous êtes garagiste ou vendeur de pièces ?', 'Are you a mechanic or parts seller?')}
+          </h2>
+          <p className="text-emerald-100 text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+            {L(
+              'Digitalisez votre magasin de pièces neuves ou d\'occasion contrôlée à Abidjan et en Afrique de l\'Ouest. Recevez vos commandes avec séquestre Mobile Money garanti.',
+              'Digitize your new or certified used parts shop in Abidjan and West Africa. Receive orders with guaranteed Mobile Money escrow.'
+            )}
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Link
+              href="/devenir-vendeur"
+              className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-extrabold rounded-2xl shadow-lg transition-all border border-emerald-400/30"
+            >
+              {L('Devenir Vendeur Partenaire', 'Become a Partner Seller')}
+            </Link>
+            <Link
+              href="/tarifs"
+              className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl border border-white/20 transition-all"
+            >
+              {L('Découvrir les Tarifs & Formules SaaS', 'Discover SaaS Plans & Pricing')}
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
