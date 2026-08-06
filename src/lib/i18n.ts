@@ -48,7 +48,7 @@ export const translations = {
       },
       payments: {
         title: 'Paiements Mobile Money',
-        desc: 'Acceptez Orange Money, MTN, Wave et Moov Money. Paiements sécurisés avec système escrow intégré.',
+        desc: 'Acceptez Wave, Djamo, Orange Money, MTN et Moov Money. Paiements sécurisés avec système escrow intégré.',
       },
       crm: {
         title: 'CRM Intégré',
