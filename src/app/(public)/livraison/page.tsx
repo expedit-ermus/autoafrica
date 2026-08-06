@@ -32,7 +32,8 @@ export default function LivraisonPage() {
         {
           heading: 'Modes de livraison',
           body: [
-            'Livraison locale partenaire : un transporteur local partenaire assure l\'acheminement de la pièce jusqu\'à votre adresse ou un point de retrait proche de chez vous.',
+            'Livraison locale partenaire : un livreur ou transporteur local assure l\'acheminement de la pièce jusqu\'à votre adresse (domicile/garage) dans les grandes villes.',
+            'Expédition par Gare Routière : pour les expéditions vers l\'intérieur du pays, nous collaborons avec les compagnies de transport interurbaines (UTB, STC, 7 places, Ndiaga Ndiaye, etc.) pour une livraison rapide en gare.',
             'Les frais de livraison sont calculés en FCFA lors de la validation de la commande, selon la zone et le type de pièce.',
           ],
         },

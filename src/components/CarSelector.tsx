@@ -4,14 +4,16 @@ import { useApp } from '@/contexts/AppContext';
 import { track } from '@/lib/tracking';
 
 const carMakes = [
-  { id: 13, name: 'Suzuki', popular: true },
   { id: 1, name: 'Toyota', popular: true },
-  { id: 6, name: 'Renault', popular: true },
   { id: 4, name: 'Peugeot', popular: true },
-  { id: 9, name: 'Nissan', popular: true },
   { id: 2, name: 'Hyundai', popular: true },
   { id: 3, name: 'Kia', popular: true },
-  { id: 5, name: 'Mercedes-Benz', popular: true },
+  { id: 14, name: 'Mitsubishi', popular: true },
+  { id: 9, name: 'Nissan', popular: true },
+  { id: 6, name: 'Renault', popular: true },
+  { id: 15, name: 'Dacia', popular: true },
+  { id: 13, name: 'Suzuki', popular: true },
+  { id: 5, name: 'Mercedes-Benz', popular: false },
   { id: 7, name: 'Ford', popular: false },
   { id: 8, name: 'Volkswagen', popular: false },
   { id: 10, name: 'BMW', popular: false },
@@ -59,12 +61,29 @@ const carModels: Record<number, { id: number; name: string }[]> = {
     { id: 602, name: 'Duster' },
     { id: 603, name: 'Clio' },
     { id: 604, name: 'Scénic' },
+    { id: 605, name: 'Logan' },
+  ],
+  9: [
+    { id: 901, name: 'Hardbody' },
+    { id: 902, name: 'Patrol' },
+    { id: 903, name: 'Qashqai' },
+    { id: 904, name: 'Almera' },
   ],
   13: [
     { id: 1301, name: 'Alto' },
     { id: 1302, name: 'Swift' },
     { id: 1303, name: 'Carry' },
     { id: 1304, name: 'Desire' },
+  ],
+  14: [
+    { id: 1401, name: 'L200' },
+    { id: 1402, name: 'Pajero' },
+    { id: 1403, name: 'Outlander' },
+  ],
+  15: [
+    { id: 1501, name: 'Logan' },
+    { id: 1502, name: 'Duster' },
+    { id: 1503, name: 'Sandero' },
   ],
 };
 

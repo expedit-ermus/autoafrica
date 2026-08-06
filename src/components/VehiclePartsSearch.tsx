@@ -229,6 +229,40 @@ const VEHICLE_DB: VehicleModel[] = [
     ],
   },
   {
+    brand: 'Mitsubishi',
+    models: [
+      {
+        name: 'L200',
+        years: [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017],
+        engines: [
+          { code: '4D56', label: '2.5L DI-D (4D56)', fuel: 'Diesel', displacement: '2477 cm³' },
+          { code: '4N15', label: '2.4L DI-D (4N15)', fuel: 'Diesel', displacement: '2442 cm³' },
+        ],
+      },
+      {
+        name: 'Pajero',
+        years: [2021, 2020, 2019, 2018, 2017, 2016, 2015],
+        engines: [
+          { code: '4M41', label: '3.2L DI-D (4M41)', fuel: 'Diesel', displacement: '3200 cm³' },
+          { code: '6G72', label: '3.0L V6 (6G72)', fuel: 'Essence', displacement: '2972 cm³' },
+        ],
+      },
+    ],
+  },
+  {
+    brand: 'Dacia',
+    models: [
+      {
+        name: 'Logan',
+        years: [2024, 2023, 2022, 2021, 2020, 2019, 2018],
+        engines: [
+          { code: 'K7M', label: '1.6L Essence (K7M)', fuel: 'Essence', displacement: '1598 cm³' },
+          { code: 'K9K', label: '1.5L Diesel (K9K)', fuel: 'Diesel', displacement: '1461 cm³' },
+        ],
+      },
+    ],
+  },
+  {
     brand: 'Hyundai',
     models: [
       {

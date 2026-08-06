@@ -63,18 +63,18 @@ export default function PromoBanner() {
             key={banner.id}
             className={`w-full shrink-0 bg-gradient-to-r ${banner.bg} relative`}
           >
-            <div className="flex items-center p-8 md:p-10 min-h-[280px]">
+            <div className="flex items-center p-5 sm:p-8 md:p-10 min-h-[200px] sm:min-h-[280px]">
               <div className="flex-1 z-10">
-                <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-2 sm:mb-3">
                   {banner.title[locale as 'fr' | 'en']}
                 </h3>
-                <p className="text-white/80 mb-6 max-w-sm">
+                <p className="text-white/80 text-sm sm:text-base mb-4 sm:mb-6 max-w-sm">
                   {banner.subtitle[locale as 'fr' | 'en']}
                 </p>
                 {banner.link ? (
                   <Link
                     href={banner.link}
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-colors shadow-lg"
+                    className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-gray-900 font-semibold rounded-lg hover:bg-gray-100 transition-colors shadow-lg text-sm sm:text-base"
                   >
                     {banner.cta[locale as 'fr' | 'en']}
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,7 +82,7 @@ export default function PromoBanner() {
                     </svg>
                   </Link>
                 ) : (
-                  <span className="inline-flex items-center gap-2 px-6 py-3 bg-white/90 text-gray-700 font-semibold rounded-lg cursor-default">
+                  <span className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white/90 text-gray-700 font-semibold rounded-lg cursor-default text-sm sm:text-base">
                     {banner.cta[locale as 'fr' | 'en']}
                   </span>
                 )}

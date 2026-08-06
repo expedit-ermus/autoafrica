@@ -264,7 +264,7 @@ export default function CartPage() {
                       </button>
 
                       <div className="mt-3 text-center">
-                        <p className="text-xs text-gray-400">Paiement à la livraison</p>
+                        <p className="text-xs text-gray-400">Paiement à la livraison ou Expédition par Gare Routière</p>
                       </div>
 
                       <div className="mt-5 pt-4 border-t border-gray-100 text-center">

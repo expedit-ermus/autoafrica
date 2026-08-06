@@ -32,7 +32,7 @@ export default function WhatsAppIntegration() {
   };
 
   return (
-    <div className="max-w-sm mx-auto">
+    <div className="w-full max-w-sm mx-auto">
       {/* WhatsApp Frame */}
       <div className="bg-[#075E54] rounded-t-2xl p-3 flex items-center gap-3">
         <button className="text-white text-lg" aria-label="Retour">←</button>
@@ -45,7 +45,7 @@ export default function WhatsAppIntegration() {
       </div>
 
       {/* Chat area */}
-      <div className="bg-[#ECE5DD] min-h-[400px] p-4 space-y-3">
+      <div className="bg-[#ECE5DD] min-h-[300px] sm:min-h-[400px] p-3 sm:p-4 space-y-3">
         {messages.map((msg, i) => (
           <div key={i} className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[80%] rounded-xl px-3 py-2 ${
@@ -64,7 +64,7 @@ export default function WhatsAppIntegration() {
       <div className="bg-[#F0F0F0] rounded-b-2xl p-3 flex items-center gap-2">
         <input aria-label="Tapez un message" value={input} onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-          className="flex-1 bg-white rounded-full px-4 py-2 text-sm outline-none"
+          className="flex-1 bg-white rounded-full px-4 py-2 text-base sm:text-sm outline-none"
           placeholder="Tapez un message..." />
         <button onClick={handleSend} className="w-10 h-10 rounded-full bg-[#075E54] flex items-center justify-center text-white text-lg" aria-label="Envoyer">
           ➤

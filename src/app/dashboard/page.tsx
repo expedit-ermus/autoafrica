@@ -6,6 +6,7 @@ import DashboardTopBar from '@/components/DashboardTopBar';
 import { useApp } from '@/contexts/AppContext';
 import Link from 'next/link';
 import BarChart, { DonutChart, SparkLine } from '@/components/Charts';
+import RoleServicesHub from '@/components/RoleServicesHub';
 import { Product, Order, Payment } from '@/shared/types';
 
 const PLACEHOLDER_IMAGE = '/images/placeholder.svg';
@@ -176,7 +177,7 @@ export default function DashboardPage() {
     return (
       <div className="flex min-h-screen bg-warm">
         <Sidebar />
-        <div className="flex-1 lg:ml-[260px]">
+        <div className="flex-1 min-w-0 lg:ml-[260px]">
           <DashboardTopBar />
           <div className="flex items-center justify-center h-96">
             <div className="text-center">
@@ -197,7 +198,7 @@ export default function DashboardPage() {
       <Sidebar />
       <div className="flex-1 min-w-0 lg:ml-[260px]">
         <DashboardTopBar />
-        <main className="p-4 lg:p-8 pb-24 lg:pb-8 max-w-[1400px] mx-auto">
+        <main className="p-3 sm:p-4 lg:p-8 pb-24 lg:pb-8 max-w-[1400px] mx-auto">
 
           {/* ═══════════════════ HERO BANNER ═══════════════════ */}
           <div className="relative rounded-3xl overflow-hidden mb-8" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
@@ -207,7 +208,7 @@ export default function DashboardPage() {
               <div className="absolute bottom-0 left-1/4 w-80 h-80 rounded-full bg-red-500 blur-[100px] translate-y-1/3" />
               <div className="absolute top-1/2 right-1/3 w-48 h-48 rounded-full bg-purple-400 blur-[80px]" />
             </div>
-            <div className="relative z-10 p-6 lg:p-10">
+            <div className="relative z-10 p-4 sm:p-6 lg:p-10">
               <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
@@ -215,7 +216,7 @@ export default function DashboardPage() {
                     <span className="text-emerald-400 text-xs font-semibold tracking-wide uppercase">En ligne</span>
                   </div>
                   <p className="text-orange-300 text-sm font-semibold mb-1 tracking-wide">{getGreeting()}</p>
-                  <h1 className="text-3xl lg:text-4xl font-extrabold text-white mb-2 tracking-tight">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-2 tracking-tight">
                     {user?.firstName || 'Vendeur'}
                   </h1>
                   <p className="text-gray-400 text-sm max-w-md leading-relaxed">{t.dashboard.welcome} — voici un aperçu de votre activité en temps réel.</p>
@@ -226,19 +227,19 @@ export default function DashboardPage() {
                     </Link>
                   )}
                 </div>
-                <div className="flex items-center gap-6 lg:gap-8">
+                <div className="flex items-center justify-between sm:justify-start gap-3 sm:gap-6 lg:gap-8 overflow-x-auto sm:overflow-visible pb-1 sm:pb-0">
                   <div className="text-center">
-                    <p className="text-3xl lg:text-4xl font-extrabold text-white tracking-tight">{totalOrders}</p>
+                    <p className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">{totalOrders}</p>
                     <p className="text-xs text-gray-400 mt-1 font-medium">Commandes</p>
                   </div>
                   <div className="w-px h-12 bg-white/10" />
                   <div className="text-center">
-                    <p className="text-3xl lg:text-4xl font-extrabold text-orange-400 tracking-tight">{formatCFA(totalRevenue)}</p>
+                    <p className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-orange-400 tracking-tight">{formatCFA(totalRevenue)}</p>
                     <p className="text-xs text-gray-400 mt-1 font-medium">FCFA</p>
                   </div>
                   <div className="w-px h-12 bg-white/10" />
                   <div className="text-center">
-                    <p className="text-3xl lg:text-4xl font-extrabold text-emerald-400 tracking-tight">
+                    <p className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-emerald-400 tracking-tight">
                       {totalOrders > 0 ? `${((deliveredOrders / totalOrders) * 100).toFixed(0)}%` : '—'}
                     </p>
                     <p className="text-xs text-gray-400 mt-1 font-medium">Succès</p>
@@ -248,13 +249,16 @@ export default function DashboardPage() {
             </div>
           </div>
 
+          {/* ═══════════════════ ESPACE SERVICES (ACHETEUR / PRESTATAIRE) ═══════════════════ */}
+          <RoleServicesHub />
+
           {/* ═══════════════════ STATS CARDS ═══════════════════ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-            {statsCards.map((s, i) => (
+            {statsCards.map((s, idx) => (
               <div
-                key={s.label}
-                className="card-modern p-5 group cursor-default"
-                style={{ animation: `fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${0.1 + i * 0.08}s both` }}
+                key={idx}
+                className="card-modern p-4 sm:p-5 group cursor-default"
+                style={{ animation: `fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${0.1 + idx * 0.08}s both` }}
               >
                 <div className="flex items-start justify-between mb-4">
                   <div className={`w-12 h-12 rounded-2xl ${s.iconBg} flex items-center justify-center ${s.iconColor} transition-transform duration-300 group-hover:scale-110`}>
@@ -266,7 +270,7 @@ export default function DashboardPage() {
                     </div>
                   )}
                 </div>
-                <div className="text-3xl font-extrabold text-gray-900 tracking-tight mb-0.5">
+                <div className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight mb-0.5 truncate">
                   {s.value}{s.isCurrency && <span className="text-xs font-semibold text-gray-400 ml-1.5">FCFA</span>}
                 </div>
                 <div className="text-sm font-medium text-gray-500 mb-2">{s.label}</div>
@@ -277,7 +281,7 @@ export default function DashboardPage() {
 
           {/* ═══════════════════ CHARTS ROW ═══════════════════ */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.4s both' }}>
-            <div className="glass-card p-6 min-w-0">
+            <div className="glass-card p-4 sm:p-6 min-w-0">
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <h3 className="font-bold text-gray-900 text-sm">Stock par catégorie</h3>
@@ -287,7 +291,7 @@ export default function DashboardPage() {
               </div>
               <BarChart data={categoryData} height={160} />
             </div>
-            <div className="glass-card p-6 min-w-0">
+            <div className="glass-card p-4 sm:p-6 min-w-0">
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <h3 className="font-bold text-gray-900 text-sm">Statut des commandes</h3>
@@ -304,7 +308,7 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
-            <div className="glass-card p-6 min-w-0">
+            <div className="glass-card p-4 sm:p-6 min-w-0">
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <h3 className="font-bold text-gray-900 text-sm">Répartition des prix</h3>
@@ -318,7 +322,7 @@ export default function DashboardPage() {
 
           {/* ═══════════════════ RECENT ACTIVITY + PAYMENT METHODS ═══════════════════ */}
           <div className="grid lg:grid-cols-3 gap-5 mb-8" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.5s both' }}>
-            <div className="glass-card p-6">
+            <div className="glass-card p-4 sm:p-6">
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <h3 className="font-bold text-gray-900 text-sm">Méthodes de paiement</h3>
@@ -336,7 +340,7 @@ export default function DashboardPage() {
               )}
             </div>
 
-            <div className="lg:col-span-2 glass-card p-6">
+            <div className="lg:col-span-2 glass-card p-4 sm:p-6">
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <h3 className="font-bold text-gray-900 text-sm">Commandes récentes</h3>
@@ -355,7 +359,7 @@ export default function DashboardPage() {
                     <Link
                       key={o.id}
                       href={`/dashboard/orders`}
-                      className={`flex items-center gap-4 p-3.5 rounded-2xl hover:bg-white/80 hover:shadow-sm transition-all duration-200 border-l-4 ${statusBorderLeft[o.status] || 'border-l-gray-200'} group`}
+                      className={`flex items-center gap-2.5 sm:gap-4 p-2.5 sm:p-3.5 rounded-2xl hover:bg-white/80 hover:shadow-sm transition-all duration-200 border-l-4 ${statusBorderLeft[o.status] || 'border-l-gray-200'} group`}
                     >
                       <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center text-sm shrink-0 group-hover:scale-105 transition-transform">
                         <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="var(--color-primary-dark)" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
@@ -381,18 +385,18 @@ export default function DashboardPage() {
               <h2 className="section-title text-xl text-gray-900">Actions rapides</h2>
               <p className="section-subtitle text-sm mt-0.5">Accédez rapidement aux fonctionnalités clés</p>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 sm:gap-4">
               {[
                 { href: '/dashboard/inventory', icon: <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>, label: 'Ajouter une pièce', bg: 'from-orange-500 to-amber-500', lightBg: 'bg-orange-50', textColor: 'text-orange-600' },
                 { href: '/dashboard/marketplace', icon: <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>, label: 'Marketplace', bg: 'from-blue-500 to-blue-600', lightBg: 'bg-blue-50', textColor: 'text-blue-600' },
                 { href: '/dashboard/orders', icon: <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>, label: `${pendingOrders} commandes`, bg: 'from-emerald-500 to-emerald-600', lightBg: 'bg-emerald-50', textColor: 'text-emerald-600' },
                 { href: '/dashboard/cart', icon: <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>, label: 'Mon panier', bg: 'from-violet-500 to-purple-600', lightBg: 'bg-violet-50', textColor: 'text-violet-600' },
                 { href: '/dashboard/orders', icon: <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>, label: 'Voir paiements', bg: 'from-rose-500 to-red-500', lightBg: 'bg-rose-50', textColor: 'text-rose-600' },
-              ].map((a, i) => (
+              ].map((a, idx) => (
                 <Link
-                  key={`${a.href}-${i}`}
+                  key={`${a.href}-${idx}`}
                   href={a.href}
-                  className="card-modern p-5 flex flex-col items-center gap-3 text-center group cursor-pointer"
+                  className="card-modern p-3 sm:p-5 flex flex-col items-center gap-2 sm:gap-3 text-center group cursor-pointer"
                 >
                   <div className={`w-12 h-12 rounded-2xl ${a.lightBg} flex items-center justify-center ${a.textColor} transition-all duration-300 group-hover:scale-110 group-hover:shadow-lg`}>
                     {a.icon}
@@ -405,7 +409,7 @@ export default function DashboardPage() {
 
           {/* ═══════════════════ PRODUCTS + STOCK ALERTS ═══════════════════ */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both' }}>
-            <div className="lg:col-span-2 card-modern p-6 min-w-0">
+            <div className="lg:col-span-2 card-modern p-4 sm:p-6 min-w-0">
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <h2 className="font-bold text-gray-900 text-sm">Dernières pièces</h2>
@@ -422,7 +426,7 @@ export default function DashboardPage() {
               ) : (
                 <div className="space-y-1">
                   {products.slice(0, 5).map((p) => (
-                    <div key={p.id} className="flex items-center gap-4 p-3.5 rounded-2xl hover:bg-gray-50 hover:shadow-sm transition-all duration-200 group cursor-pointer">
+                    <div key={p.id} className="flex items-center gap-2.5 sm:gap-4 p-2.5 sm:p-3.5 rounded-2xl hover:bg-gray-50 hover:shadow-sm transition-all duration-200 group cursor-pointer">
                       <RemoteImage src={PLACEHOLDER_IMAGE} alt={p.title} width={48} height={48} className="w-12 h-12 rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow" />
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-gray-900 text-sm truncate group-hover:text-orange-600 transition-colors">{p.title}</p>
@@ -441,7 +445,7 @@ export default function DashboardPage() {
             {/* Stock Alerts */}
             <div className="space-y-5 min-w-0">
               {(lowStockProducts.length > 0 || outOfStock.length > 0) && (
-                <div className="card-modern p-6">
+                <div className="card-modern p-4 sm:p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <div className="w-8 h-8 rounded-xl bg-red-50 flex items-center justify-center">
                       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#DC2626" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
@@ -468,18 +472,18 @@ export default function DashboardPage() {
               )}
 
               {/* Markets */}
-              <div className="card-modern p-6">
+              <div className="card-modern p-4 sm:p-6">
                 <div className="flex items-center gap-2 mb-4">
                   <div className="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center">
                     <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#3B82F6" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   </div>
                   <h2 className="font-bold text-gray-900 text-sm">Marchés Actifs</h2>
                 </div>
-                <div className="grid grid-cols-3 min-w-0 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 min-w-0 gap-2">
                   {[
                     { name: 'Côte d\'Ivoire', code: 'CI' }, { name: 'Sénégal', code: 'SN' }, { name: 'Mali', code: 'ML' }, { name: 'Burkina', code: 'BF' }, { name: 'Nigeria', code: 'NG' },
-                  ].map(m => (
-                    <div key={m.code} className="min-w-0 text-center p-3 rounded-xl bg-gray-50 hover:bg-orange-50 transition-all duration-200 cursor-pointer hover:shadow-sm group">
+                  ].map((m, idx) => (
+                    <div key={idx} className="min-w-0 text-center p-2 sm:p-3 rounded-xl bg-gray-50 hover:bg-orange-50 transition-all duration-200 cursor-pointer hover:shadow-sm group">
                       <RemoteImage src={`https://flagcdn.com/w80/${m.code.toLowerCase()}.png`} alt={m.name} width={80} height={56} className="w-full h-7 object-cover rounded-md mb-1.5 shadow-sm group-hover:shadow-md transition-shadow" />
                       <p className="text-[10px] font-bold text-gray-600 group-hover:text-gray-800 transition-colors leading-tight">{m.name}</p>
                     </div>

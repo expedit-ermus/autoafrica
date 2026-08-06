@@ -110,10 +110,11 @@ export default function Footer() {
               </h4>
               <div className="flex flex-wrap gap-2.5 mb-5">
                 {[
+                  { name: 'Wave', color: '#00B4D8', icon: '🔵' },
+                  { name: 'Djamo', color: '#6366F1', icon: '💳' },
                   { name: 'Orange Money', color: '#FF6600', icon: '🟠' },
                   { name: 'MTN MoMo', color: '#FFCC00', icon: '🟡' },
                   { name: 'Moov Money', color: '#0066CC', icon: '🔷' },
-                  { name: 'Wave', color: '#00B4D8', icon: '🔵' },
                 ].map((p) => (
                   <div
                     key={p.name}
@@ -130,6 +131,9 @@ export default function Footer() {
               <div className="flex flex-wrap gap-2.5">
                 <div className="px-4 py-2 bg-white/10 rounded-xl text-sm text-white/85 font-semibold border border-white/10">
                   {L('Livraison locale partenaire', 'Local partner delivery')}
+                </div>
+                <div className="px-4 py-2 bg-white/10 rounded-xl text-sm text-white/85 font-semibold border border-white/10">
+                  {L('Expédition Gare Routière', 'Bus station shipping')}
                 </div>
               </div>
             </div>

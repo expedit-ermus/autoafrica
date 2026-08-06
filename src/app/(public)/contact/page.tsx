@@ -10,25 +10,27 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="bg-[var(--color-bg)]">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
         <p className="text-xs font-bold uppercase tracking-wider text-[var(--color-primary)] mb-2">AutoAfrique</p>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-[var(--color-warm-ink)] mb-3 tracking-tight">Nous contacter</h1>
-        <p className="text-[var(--color-warm-muted)] mb-10 max-w-2xl">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[var(--color-warm-ink)] mb-3 tracking-tight">
+          Contactez AutoAfrique
+        </h1>
+        <p className="text-sm sm:text-base text-[var(--color-warm-muted)] mb-6 sm:mb-10 max-w-2xl">
           Une question sur une pièce, une commande, un paiement Mobile Money ou une livraison ? Notre équipe vous
           accompagne via ce formulaire ; les horaires seront communiqués avant la mise en production.
         </p>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           <div>
             <div className="bg-white rounded-3xl border border-[var(--color-warm-border)] p-6 sm:p-8 shadow-sm">
-              <h2 className="text-lg font-bold text-[var(--color-warm-ink)] mb-4">Écrivez-nous</h2>
+              <h2 className="text-base sm:text-lg font-bold text-[var(--color-warm-ink)] mb-4">Moyens de contact</h2>
               <ContactForm />
             </div>
           </div>
 
           <div className="space-y-4">
             <div className="bg-white rounded-3xl border border-[var(--color-warm-border)] p-6 sm:p-8 shadow-sm">
-              <h2 className="text-lg font-bold text-[var(--color-warm-ink)] mb-4">Informations pratiques</h2>
+              <h2 className="text-base sm:text-lg font-bold text-[var(--color-warm-ink)] mb-3">Besoin d&apos;assistance immédiate ?</h2>
               <ul className="space-y-4 text-sm text-[var(--color-warm-faint)]">
                 <li className="flex gap-3">
                   <span className="w-8 h-8 rounded-xl bg-[var(--color-bg-warm)] flex items-center justify-center shrink-0 text-base">@</span>

@@ -15,6 +15,7 @@ interface ProductCardProps {
   inStock: boolean;
   location?: string;
   priority?: boolean;
+  condition?: 'new' | 'aftermarket' | 'used_imported' | 'used_local';
 }
 
 export default function ProductCard({
@@ -30,6 +31,7 @@ export default function ProductCard({
   inStock,
   location,
   priority = false,
+  condition = 'new',
 }: ProductCardProps) {
   const { locale } = useApp();
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
@@ -74,6 +76,29 @@ export default function ProductCard({
             </svg>
           ))}
           <span className="text-xs text-[var(--color-warm-muted)] ml-1 font-medium">({reviewCount})</span>
+        </div>
+
+        <div className="flex items-center gap-2 mb-2">
+          {condition === 'new' && (
+            <span className="bg-[#059669]/10 text-[#059669] px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide">
+              {L('Neuf (OEM)', 'New (OEM)')}
+            </span>
+          )}
+          {condition === 'aftermarket' && (
+            <span className="bg-[#D97706]/10 text-[#D97706] px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide">
+              {L('Adaptable', 'Aftermarket')}
+            </span>
+          )}
+          {condition === 'used_imported' && (
+            <span className="bg-[var(--color-primary)]/10 text-[var(--color-primary)] px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide">
+              {L('Venant (Occasion)', 'Imported Used')}
+            </span>
+          )}
+          {condition === 'used_local' && (
+            <span className="bg-[var(--color-warm-muted)]/10 text-[var(--color-warm-muted)] px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide">
+              {L('Occasion Locale', 'Local Used')}
+            </span>
+          )}
         </div>
 
         <div className="text-xs text-[var(--color-primary)] mb-1 font-bold">{brand}</div>

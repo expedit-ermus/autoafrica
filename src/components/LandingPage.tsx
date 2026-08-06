@@ -6,6 +6,8 @@ import PromoBanner from '@/components/PromoBanner';
 import PartsCatalog from '@/components/PartsCatalog';
 import BrandGrid from '@/components/BrandGrid';
 import Bestsellers from '@/components/Bestsellers';
+import VtcCircuitCourtSection from '@/components/VtcCircuitCourtSection';
+import DiagnosticEstimator from '@/components/DiagnosticEstimator';
 
 const trustFeatures = [
   {
@@ -24,7 +26,7 @@ const trustFeatures = [
       </svg>
     ),
     title: { fr: 'Paiement sécurisé', en: 'Secure payment' },
-    desc: { fr: 'Orange Money, MTN MoMo, Wave et Moov Money', en: 'Orange Money, MTN MoMo, Wave and Moov Money' },
+    desc: { fr: 'Wave, Djamo, Orange Money, MTN MoMo et Moov Money', en: 'Wave, Djamo, Orange Money, MTN MoMo and Moov Money' },
   },
   {
     icon: (
@@ -96,6 +98,10 @@ export default function LandingPage() {
 
       <Bestsellers />
 
+      <VtcCircuitCourtSection />
+
+      <DiagnosticEstimator />
+
       <section className="py-8 md:py-14 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] mb-8 text-center">
@@ -127,8 +133,8 @@ export default function LandingPage() {
           </div>
           <p className="mt-8 text-center text-sm md:text-base text-[var(--color-warm-faint)] leading-relaxed">
             {L(
-              'Le prix affiché est toujours le prix final : pas de surprise au moment de payer. Règlement en Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave) et livraison en 24-72h.',
-              'The displayed price is always the final price: no surprises at checkout. Pay by Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave) and get delivery in 24-72h.'
+              'Le prix affiché est toujours le prix final : pas de surprise au moment de payer. Règlement en Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money) et livraison en 24-72h.',
+              'The displayed price is always the final price: no surprises at checkout. Pay by Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money) and get delivery in 24-72h.'
             )}
           </p>
         </div>

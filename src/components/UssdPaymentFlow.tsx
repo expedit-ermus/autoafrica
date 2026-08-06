@@ -32,6 +32,7 @@ const ussdMenus = [
       { label: 'Payer par Orange Money', action: 'pay_om' },
       { label: 'Payer par MTN MoMo', action: 'pay_mtn' },
       { label: 'Payer par Wave', action: 'pay_wave' },
+      { label: 'Payer par Djamo', action: 'pay_djamo' },
       { label: 'Payer par Moov Money', action: 'pay_moov' },
       { label: '0. Retour', action: 'home' },
     ],

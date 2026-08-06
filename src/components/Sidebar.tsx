@@ -345,7 +345,7 @@ export default function Sidebar() {
                     )}
                   </div>
 
-                  <span className={`text-[10px] mt-1.5 leading-none font-medium transition-colors ${active ? 'text-orange-500' : ''}`}>
+                  <span className={`text-[10px] mt-1.5 leading-none font-medium transition-colors truncate w-full text-center px-1 ${active ? 'text-orange-500' : ''}`}>
                     {t.nav[key as keyof typeof t.nav]}
                   </span>
                 </Link>
@@ -363,7 +363,7 @@ export default function Sidebar() {
                 <div className={`transition-transform duration-200 ${moreOpen ? 'rotate-90' : ''}`}>
                   <SvgIcon name={moreOpen ? 'x' : 'more-horizontal'} className="w-[22px] h-[22px]" />
                 </div>
-                <span className="text-[10px] mt-1.5 font-medium leading-none">Plus</span>
+                <span className="text-[10px] mt-1.5 font-medium leading-none truncate w-full text-center px-1">Plus</span>
               </button>
 
               {/* More menu popup */}
