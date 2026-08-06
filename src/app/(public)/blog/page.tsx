@@ -20,7 +20,7 @@ export default function BlogPage() {
           body: [
             'Guides d\'entretien et de diagnostic : courroies, freins, embrayage, suspension, filtres, électricité automobile et plus encore.',
             'Conseils d\'achat : comment choisir une pièce neuve ou une pièce d\'occasion contrôlée, vérifier une référence, comparer les prix en FCFA.',
-            'Nos services : paiement Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave), livraison 24-72h et programme de fidélité.',
+            'Nos services : paiement Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money), livraison 24-72h et programme de fidélité.',
           ],
         },
         {

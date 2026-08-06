@@ -26,7 +26,7 @@ const banners = [
   {
     id: 3,
     title: { fr: 'Paiement sécurisé par Mobile Money', en: 'Secure Mobile Money payment' },
-    subtitle: { fr: 'Orange Money, MTN MoMo, Moov Money et Wave', en: 'Orange Money, MTN MoMo, Moov Money and Wave' },
+    subtitle: { fr: 'Wave, Djamo, Orange Money, MTN MoMo et Moov Money', en: 'Wave, Djamo, Orange Money, MTN MoMo and Moov Money' },
     cta: { fr: 'Voir le catalogue', en: 'Browse catalogue' },
     bg: 'from-[var(--color-warm-teal)] to-[#00A88C]',
     link: '/dashboard/marketplace',

@@ -30,7 +30,7 @@ export default function AidePage() {
         {
           heading: 'Comment payer ?',
           body: [
-            'Les paiements se font par Mobile Money : Orange Money, MTN MoMo, Moov Money ou Wave. Le prix affiché est le prix final en FCFA. Vous recevez une notification sur votre téléphone pour confirmer le paiement. Détails sur la page Paiement.',
+            'Les paiements se font par Mobile Money : Wave, Djamo, Orange Money, MTN MoMo ou Moov Money. Le prix affiché est le prix final en FCFA. Vous recevez une notification sur votre téléphone pour confirmer le paiement. Détails sur la page Paiement.',
           ],
         },
         {

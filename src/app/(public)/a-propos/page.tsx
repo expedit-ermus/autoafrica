@@ -19,7 +19,7 @@ export default function AProposPage() {
           heading: 'Notre mission',
           body: [
             "AutoAfrique connecte les garagistes, revendeurs et particuliers autour des pièces détachées automobiles. Notre marché prioritaire est Abidjan, en Côte d'Ivoire, avec un lancement prévu à Dakar (Sénégal) dans un second temps.",
-            'Nous proposons des pièces neuves et d\'occasion contrôlée, avec un prix affiché transparent, un paiement en Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave) et une livraison locale en 24-72h.',
+            'Nous proposons des pièces neuves et d\'occasion contrôlée, avec un prix affiché transparent, un paiement en Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money) et une livraison locale ou par Gare Routière en 24-72h.',
           ],
         },
         {
