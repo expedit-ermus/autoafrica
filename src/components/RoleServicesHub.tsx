@@ -9,6 +9,30 @@ export default function RoleServicesHub() {
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
   const [activeRole, setActiveRole] = useState<'buyer' | 'provider'>('buyer');
+  const [modalType, setModalType] = useState<'voice' | 'photo' | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisStep, setAnalysisStep] = useState(0);
+
+  const openModal = (type: 'voice' | 'photo') => {
+    setModalType(type);
+    setIsAnalyzing(true);
+    setAnalysisStep(1);
+
+    setTimeout(() => {
+      setAnalysisStep(2);
+    }, 1200);
+
+    setTimeout(() => {
+      setIsAnalyzing(false);
+      setAnalysisStep(3);
+    }, 2400);
+  };
+
+  const closeModal = () => {
+    setModalType(null);
+    setIsAnalyzing(false);
+    setAnalysisStep(0);
+  };
 
   return (
     <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[var(--color-warm-border)] shadow-sm mb-8">
@@ -29,6 +53,7 @@ export default function RoleServicesHub() {
         {/* Commutateur d'Espace */}
         <div className="bg-gray-100 p-1 rounded-2xl flex items-center w-full sm:w-auto">
           <button
+            type="button"
             onClick={() => setActiveRole('buyer')}
             className={`flex-1 sm:flex-initial py-2.5 px-5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
               activeRole === 'buyer'
@@ -41,6 +66,7 @@ export default function RoleServicesHub() {
           </button>
 
           <button
+            type="button"
             onClick={() => setActiveRole('provider')}
             className={`flex-1 sm:flex-initial py-2.5 px-5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
               activeRole === 'provider'
@@ -153,29 +179,37 @@ export default function RoleServicesHub() {
                 </div>
 
                 <div className="pt-2 flex flex-wrap gap-2">
-                  <button className="py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition-colors">
-                    💬 WhatsApp Garagiste
-                  </button>
-                  <button className="py-2 px-4 bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs rounded-xl transition-colors">
-                    📞 Appeler le Livreur Moto
-                  </button>
+                  <a
+                    href="https://wa.me/2250708091011"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-1.5 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-bold text-xs rounded-lg transition-colors flex items-center gap-1.5"
+                  >
+                    <span>💬</span> {L('WhatsApp Maître Diallo', 'WhatsApp Mechanic')}
+                  </a>
+                  <Link
+                    href="/dashboard/orders"
+                    className="py-1.5 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-lg transition-colors"
+                  >
+                    {L('Voir le reçu & Séquestre', 'View Receipt & Escrow')}
+                  </Link>
                 </div>
               </div>
             </div>
 
             {/* Actions Rapides Acheteur */}
-            <div className="lg:col-span-4 bg-gradient-to-b from-gray-900 to-gray-950 text-white rounded-2xl p-5 flex flex-col justify-between">
+            <div className="lg:col-span-4 bg-emerald-900 rounded-2xl p-5 text-white flex flex-col justify-between">
               <div>
-                <span className="text-[10px] font-bold uppercase text-amber-400 tracking-wider">
-                  {L('Assistance Express', 'Express Assistance')}
+                <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider">
+                  {L('Besoin d\'une pièce urgente ?', 'Need an urgent part?')}
                 </span>
-                <h4 className="text-base font-bold text-white mt-1 mb-3">
-                  {L('Besoin d\'une pièce ou d\'un dépannage ?', 'Need a part or emergency repair?')}
+                <h4 className="text-base font-extrabold mt-1 mb-2">
+                  {L('Recherche & Assistant IA Vocale', 'Search & Voice AI Assistant')}
                 </h4>
-                <p className="text-xs text-gray-300 leading-relaxed mb-4">
+                <p className="text-xs text-emerald-100 leading-relaxed mb-4">
                   {L(
-                    'Envoyez une photo de votre pièce cassée ou une note vocale. Notre IA et nos experts s\'occupent de tout.',
-                    'Send a photo of your broken part or a voice note. Our team handles the rest.'
+                    'Prenez une photo de votre pièce cassée ou dictez votre besoin vocalement en Français, Dioula ou Wolof.',
+                    'Take a photo of your broken part or dictate your request in French, Dioula or Wolof.'
                   )}
                 </p>
               </div>
@@ -188,10 +222,11 @@ export default function RoleServicesHub() {
                   <span>🔍</span> {L('Rechercher une pièce d\'occasion', 'Search used part')}
                 </Link>
                 <button
-                  onClick={() => alert('Veuillez dicter votre besoin ou joindre une photo sur WhatsApp.')}
-                  className="w-full py-2.5 px-4 bg-gray-800 hover:bg-gray-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 border border-gray-700 transition-colors"
+                  type="button"
+                  onClick={() => openModal('voice')}
+                  className="w-full py-2.5 px-4 bg-gray-800 hover:bg-gray-700 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 border border-gray-700 transition-colors cursor-pointer"
                 >
-                  <span>🎤</span> {L('Demande par Note Vocale WhatsApp', 'WhatsApp Voice Request')}
+                  <span>🎤</span> {L('Assistant Vocale IA AutoAfrique', 'AutoAfrique AI Voice Assistant')}
                 </button>
               </div>
             </div>
@@ -210,33 +245,33 @@ export default function RoleServicesHub() {
             
             <div className="bg-gradient-to-br from-emerald-50 to-teal-50/50 rounded-2xl p-4 border border-emerald-100">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl">💵</span>
+                <span className="text-2xl">💰</span>
                 <span className="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
                   Ce mois
                 </span>
               </div>
-              <div className="text-xs text-gray-500 font-medium">{L('Gains Débloqués', 'Unlocked Earnings')}</div>
-              <div className="text-lg font-extrabold text-emerald-700 mt-1">245 000 FCFA</div>
-              <div className="text-[11px] text-gray-500 font-medium mt-1">Versés via Wave / Orange Money</div>
+              <div className="text-xs text-gray-500 font-medium">{L('Revenus Séquestre Débloqués', 'Unlocked Escrow Revenue')}</div>
+              <div className="text-lg font-extrabold text-emerald-900 mt-1">485 000 FCFA</div>
+              <div className="text-[11px] text-emerald-700 font-semibold mt-1">12 montages & ventes validés</div>
             </div>
 
             <div className="bg-gradient-to-br from-amber-50 to-orange-50/50 rounded-2xl p-4 border border-amber-100">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl">⏳</span>
+                <span className="text-2xl">🔒</span>
                 <span className="text-xs font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
-                  En séquestre
+                  En attente
                 </span>
               </div>
-              <div className="text-xs text-gray-500 font-medium">{L('Fonds en Attente de Test', 'Funds Pending Test')}</div>
-              <div className="text-lg font-extrabold text-amber-700 mt-1">65 000 FCFA</div>
-              <div className="text-[11px] text-amber-800 font-medium mt-1">2 montages en cours de validation</div>
+              <div className="text-xs text-gray-500 font-medium">{L('En Séquestre Client', 'In Customer Escrow')}</div>
+              <div className="text-lg font-extrabold text-amber-900 mt-1">140 000 FCFA</div>
+              <div className="text-[11px] text-amber-700 font-semibold mt-1">Déblocage après test 24h</div>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50/50 rounded-2xl p-4 border border-blue-100">
+            <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 rounded-2xl p-4 border border-blue-100">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-2xl">📥</span>
+                <span className="text-2xl">📋</span>
                 <span className="text-xs font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
-                  3 Nouvelles
+                  Nouveaux
                 </span>
               </div>
               <div className="text-xs text-gray-500 font-medium">{L('Demandes d\'Intervention', 'Job Requests')}</div>
@@ -284,10 +319,10 @@ export default function RoleServicesHub() {
                     </p>
                   </div>
                   <div className="flex gap-2 w-full sm:w-auto">
-                    <button className="flex-1 sm:flex-initial py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors">
+                    <button type="button" className="flex-1 sm:flex-initial py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors">
                       Accepter (25k)
                     </button>
-                    <button className="flex-1 sm:flex-initial py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-colors">
+                    <button type="button" className="flex-1 sm:flex-initial py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-colors">
                       Proposer Devis
                     </button>
                   </div>
@@ -309,10 +344,10 @@ export default function RoleServicesHub() {
                     </p>
                   </div>
                   <div className="flex gap-2 w-full sm:w-auto">
-                    <button className="flex-1 sm:flex-initial py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors">
+                    <button type="button" className="flex-1 sm:flex-initial py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors">
                       Accepter (15k)
                     </button>
-                    <button className="flex-1 sm:flex-initial py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-colors">
+                    <button type="button" className="flex-1 sm:flex-initial py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-colors">
                       Proposer Devis
                     </button>
                   </div>
@@ -320,13 +355,13 @@ export default function RoleServicesHub() {
               </div>
             </div>
 
-            {/* Outils Ferrailleur & Garagiste */}
-            <div className="lg:col-span-4 bg-gradient-to-b from-emerald-900 to-teal-950 text-white rounded-2xl p-5 flex flex-col justify-between">
+            {/* Publication rapide de pièces par photo/vocal */}
+            <div className="lg:col-span-4 bg-gradient-to-br from-emerald-900 to-teal-900 rounded-2xl p-5 text-white flex flex-col justify-between border border-emerald-800">
               <div>
-                <span className="text-[10px] font-bold uppercase text-emerald-300 tracking-wider">
-                  {L('Espace Revendeur & Garagiste', 'Seller & Garage Tools')}
+                <span className="text-xs font-bold text-emerald-300 uppercase tracking-wider">
+                  {L('Espace Vendeur Casse / Magasin', 'Store / Scrapyard Seller')}
                 </span>
-                <h4 className="text-base font-bold text-white mt-1 mb-3">
+                <h4 className="text-base font-extrabold mt-1 mb-2">
                   {L('Publier une pièce ou un service', 'Post a part or service')}
                 </h4>
                 <p className="text-xs text-emerald-100 leading-relaxed mb-4">
@@ -339,14 +374,16 @@ export default function RoleServicesHub() {
 
               <div className="space-y-2">
                 <button
-                  onClick={() => alert('Prise de photo pièce en cours...')}
-                  className="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-400 text-white font-extrabold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-950/40 border border-emerald-300/30"
+                  type="button"
+                  onClick={() => openModal('photo')}
+                  className="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-400 text-white font-extrabold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-950/40 border border-emerald-300/30 cursor-pointer"
                 >
-                  <span>📷</span> {L('Ajouter une Pièce en photo', 'Add Part Photo')}
+                  <span>📷</span> {L('Publier par Photo IA (10s)', 'Post via AI Photo (10s)')}
                 </button>
                 <button
-                  onClick={() => alert('Enregistrement vocal d\'annonce activé...')}
-                  className="w-full py-2.5 px-4 bg-emerald-950 hover:bg-emerald-900 text-emerald-200 font-bold text-xs rounded-xl flex items-center justify-center gap-2 border border-emerald-700 transition-colors"
+                  type="button"
+                  onClick={() => openModal('voice')}
+                  className="w-full py-2.5 px-4 bg-emerald-950 hover:bg-emerald-900 text-emerald-200 font-bold text-xs rounded-xl flex items-center justify-center gap-2 border border-emerald-700 transition-colors cursor-pointer"
                 >
                   <span>🎙️</span> {L('Dictée Vocale d\'Annonce (Dioula/Wolof/FR)', 'Voice Ad Dictation')}
                 </button>
@@ -355,6 +392,126 @@ export default function RoleServicesHub() {
 
           </div>
 
+        </div>
+      )}
+
+      {/* MODAL INTERACTIF ASSISTANT IA VOCAL & PHOTO */}
+      {modalType && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 border border-gray-100 shadow-2xl space-y-5">
+            
+            {/* Header Modal */}
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-2xl">{modalType === 'voice' ? '🎙️' : '📷'}</span>
+                <div>
+                  <h3 className="font-extrabold text-gray-900 text-base">
+                    {modalType === 'voice'
+                      ? L('Assistant IA Vocale (Multilingue)', 'AI Voice Assistant (Multilingual)')
+                      : L('Reconnaissance IA Photo Pièce', 'AI Photo Part Recognition')}
+                  </h3>
+                  <p className="text-xs text-gray-500">
+                    {modalType === 'voice'
+                      ? L('Français, Dioula, Wolof & Baoulé pris en charge', 'French, Dioula, Wolof & Baoule supported')
+                      : L('Analyse visuelle et auto-catégorisation en 10s', 'Visual analysis & auto-categorization in 10s')}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={closeModal}
+                className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center font-bold text-sm transition-colors"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Corps Modal : Phase 1 / 2 (Analyse) */}
+            {isAnalyzing ? (
+              <div className="py-8 text-center space-y-4">
+                <div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl animate-pulse border border-emerald-200">
+                  {modalType === 'voice' ? '🔊' : '🔍'}
+                </div>
+                <div>
+                  <h4 className="font-extrabold text-gray-900 text-base">
+                    {analysisStep === 1
+                      ? (modalType === 'voice' ? L('Écoute de votre note vocale...', 'Listening to voice note...') : L('Scannage de la photo...', 'Scanning photo...'))
+                      : L('Analyse et identification IA...', 'AI analysis & identification...')}
+                  </h4>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {modalType === 'voice'
+                      ? L('Détection de la langue et de la référence véhicule', 'Detecting language & vehicle reference')
+                      : L('Détection du composant auto et de l\'état d\'usure', 'Detecting auto component & wear condition')}
+                  </p>
+                </div>
+                <div className="w-48 mx-auto h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-emerald-600 rounded-full transition-all duration-700"
+                    style={{ width: analysisStep === 1 ? '45%' : '90%' }}
+                  />
+                </div>
+              </div>
+            ) : (
+              /* Phase 3 : Résultat IA */
+              <div className="space-y-4">
+                <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-extrabold uppercase text-emerald-800">
+                      {L('Résultat IA Validé', 'Validated AI Result')}
+                    </span>
+                    <span className="text-xs font-bold text-emerald-600 bg-white px-2 py-0.5 rounded-full border border-emerald-200">
+                      Précision 99%
+                    </span>
+                  </div>
+
+                  {modalType === 'voice' ? (
+                    <>
+                      <div className="text-xs text-gray-600 italic">
+                        &quot;Je cherche une paire d&apos;amortisseurs avant et rotules pour ma Toyota Corolla 2012&quot;
+                      </div>
+                      <div className="text-sm font-extrabold text-emerald-950 pt-1">
+                        Paire d&apos;Amortisseurs Avant + Rotules • Toyota Corolla (2007 - 2014)
+                      </div>
+                      <div className="text-xs text-emerald-800 font-semibold">
+                        Estimation Occasion Contrôle : 45 000 FCFA | Neuf OEM : 110 000 FCFA
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="text-xs text-gray-600 italic">
+                        Photo analysée : Alternateur Diesel Reconditionné
+                      </div>
+                      <div className="text-sm font-extrabold text-emerald-950 pt-1">
+                        Alternateur 12V 90A • Peugeot 307 / 407 HDi (2004 - 2011)
+                      </div>
+                      <div className="text-xs text-emerald-800 font-semibold">
+                        Prix conseillé de mise en ligne : 35 000 FCFA (Garantie 30 jours)
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {/* Actions de confirmation */}
+                <div className="space-y-2 pt-1">
+                  <a
+                    href="https://wa.me/2250708091011"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-950/30 border border-emerald-400/30"
+                  >
+                    <span>💬</span> {L('Envoyer la demande sur WhatsApp', 'Send request on WhatsApp')}
+                  </a>
+                  <Link
+                    href="/dashboard/marketplace"
+                    className="w-full py-2.5 px-4 bg-gray-900 hover:bg-gray-800 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors text-center"
+                  >
+                    <span>🛒</span> {L('Voir les pièces disponibles en stock', 'View available stock parts')}
+                  </Link>
+                </div>
+              </div>
+            )}
+
+          </div>
         </div>
       )}
 
