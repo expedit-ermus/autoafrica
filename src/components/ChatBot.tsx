@@ -174,7 +174,7 @@ export default function ChatBot() {
     <>
       {!isOpen && (
         <button onClick={openChat}
-          className="fixed bottom-24 lg:bottom-6 right-4 lg:right-6 z-[80] w-14 h-14 rounded-full gradient-primary flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-110"
+          className="fixed bottom-20 sm:bottom-24 md:bottom-6 right-3 sm:right-4 lg:right-6 z-[80] w-14 h-14 rounded-full gradient-primary flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-110"
           aria-label={L('Ouvrir l\'assistant AutoBot', 'Open AutoBot assistant')}>
           <span className="text-white text-xl">💬</span>
           {unread > 0 && (
@@ -185,7 +185,7 @@ export default function ChatBot() {
       )}
 
       {isOpen && (
-        <div className="fixed bottom-24 lg:bottom-6 right-4 lg:right-6 z-[80] w-[calc(100vw-2rem)] lg:w-[400px] h-[calc(100vh-8rem)] lg:h-[650px] max-h-[calc(100vh-3rem)] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden animate-fade-in"
+        <div className="fixed bottom-20 sm:bottom-24 md:bottom-6 right-3 sm:right-4 lg:right-6 z-[80] w-[calc(100vw-1.5rem)] sm:w-[380px] lg:w-[400px] h-[calc(100vh-7rem)] sm:h-[550px] lg:h-[650px] max-h-[calc(100vh-3rem)] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden animate-fade-in"
           role="dialog" aria-label={L('Assistant AutoBot', 'AutoBot assistant')}>
           <div className="gradient-primary p-4 flex items-center gap-3">
             <div className="relative">
@@ -267,7 +267,7 @@ export default function ChatBot() {
               </button>
               <input ref={inputRef} value={input} onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                className="flex-1 bg-gray-100 rounded-xl px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-orange-300 transition"
+                className="flex-1 bg-gray-100 rounded-xl px-3 sm:px-4 py-2.5 text-base sm:text-sm outline-none focus:ring-2 focus:ring-orange-300 transition"
                 placeholder={isListening ? L('🎤 Écoute en cours...', '🎤 Listening...') : L('Tapez ou dictez...', 'Type or speak...')} />
               <button onClick={handleSend} aria-label={L('Envoyer', 'Send')}
                 className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center text-white hover:opacity-90 transition shadow-md disabled:opacity-50"

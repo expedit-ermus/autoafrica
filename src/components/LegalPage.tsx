@@ -14,10 +14,10 @@ interface LegalPageProps {
 export default function LegalPage({ title, updatedAt, intro, sections, disclaimer = true }: LegalPageProps) {
   return (
     <div className="bg-[var(--color-bg)]">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
         <p className="text-xs font-bold uppercase tracking-wider text-[var(--color-primary)] mb-2">AutoAfrique</p>
-        <h1 className="text-3xl md:text-4xl font-extrabold text-[var(--color-warm-ink)] mb-2 tracking-tight">{title}</h1>
-        <p className="text-sm text-[var(--color-warm-muted)] mb-8">Dernière mise à jour : {updatedAt}</p>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[var(--color-warm-ink)] mb-2 tracking-tight">{title}</h1>
+        <p className="text-sm text-[var(--color-warm-muted)] mb-5 sm:mb-8">Dernière mise à jour : {updatedAt}</p>
 
         {disclaimer && (
           <div className="mb-8 p-4 rounded-2xl border border-amber-300 bg-amber-50 text-sm text-amber-900 leading-relaxed">
@@ -29,12 +29,12 @@ export default function LegalPage({ title, updatedAt, intro, sections, disclaime
           </div>
         )}
 
-        {intro && <p className="text-base text-[var(--color-warm-faint)] leading-relaxed mb-8">{intro}</p>}
+        {intro && <p className="text-base text-[var(--color-warm-faint)] leading-relaxed mb-5 sm:mb-8">{intro}</p>}
 
-        <div className="space-y-8">
+        <div className="space-y-5 sm:space-y-8">
           {sections.map((s, i) => (
             <section key={i}>
-              <h2 className="text-xl font-bold text-[var(--color-warm-ink)] mb-3">
+              <h2 className="text-lg sm:text-xl font-bold text-[var(--color-warm-ink)] mb-2 sm:mb-3">
                 {sections.length > 1 ? `${i + 1}. ` : ''}{s.heading}
               </h2>
               {s.body.map((p, j) => (

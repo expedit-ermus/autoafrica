@@ -106,9 +106,9 @@ export default function PartsCatalog() {
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
   return (
-    <section className="py-14 bg-[var(--color-bg)]">
+    <section className="py-8 md:py-14 bg-[var(--color-bg)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] mb-10">
+        <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] mb-6 md:mb-10">
           {L('Catégories de pièces', 'Parts categories')}
         </h2>
 
@@ -151,10 +151,10 @@ export default function PartsCatalog() {
           ))}
         </div>
 
-        <div className="text-center mt-10">
+        <div className="text-center mt-6 md:mt-10">
           <Link
             href="/dashboard/marketplace"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-[var(--color-bg-warm)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-warm-ink)] font-bold rounded-xl transition-all duration-300 border border-[var(--color-warm-border)]"
+            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-[var(--color-bg-warm)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-warm-ink)] font-bold rounded-xl transition-all duration-300 border border-[var(--color-warm-border)] text-sm sm:text-base"
           >
             {L('Plus de pièces détachées', 'More spare parts')}
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

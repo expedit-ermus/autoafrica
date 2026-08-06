@@ -25,9 +25,9 @@ export default function BrandGrid() {
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
   return (
-    <section className="py-14 bg-[var(--color-bg-warm)]">
+    <section className="py-8 md:py-14 bg-[var(--color-bg-warm)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] mb-10">
+        <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] mb-6 md:mb-10">
           {L('Marques populaires', 'Popular brands')}
         </h2>
 
@@ -37,7 +37,7 @@ export default function BrandGrid() {
               key={brand.name}
               href={`/marketplace/marque/${brand.slug}`}
               onClick={() => track('click_brand', { brand_name: brand.name })}
-              className="group bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--color-primary)]/10 p-6 flex flex-col items-center justify-center transition-all duration-300"
+              className="group bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--color-primary)]/10 p-4 sm:p-6 flex flex-col items-center justify-center transition-all duration-300"
             >
               <div className="relative w-18 h-18 mb-3 flex items-center justify-center">
                 <RemoteImage
@@ -56,10 +56,10 @@ export default function BrandGrid() {
           ))}
         </div>
 
-        <div className="text-center mt-10">
+        <div className="text-center mt-6 md:mt-10">
           <Link
             href="/dashboard/marketplace"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-white hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-warm-ink)] font-bold rounded-xl transition-all duration-300 border border-[var(--color-warm-border)] shadow-sm"
+            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-white hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-warm-ink)] font-bold rounded-xl transition-all duration-300 border border-[var(--color-warm-border)] shadow-sm text-sm sm:text-base"
           >
             {L('Plus de constructeurs automobiles', 'More car manufacturers')}
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

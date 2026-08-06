@@ -133,21 +133,21 @@ export default function CarSelector() {
 
   return (
     <div className="bg-white rounded-3xl shadow-xl shadow-[var(--color-earth)]/8 border border-[var(--color-warm-border)] overflow-hidden">
-      <div className="bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-warm-navy-deep)] px-7 pt-9 pb-7">
-        <h2 className="text-white font-extrabold text-xl mb-2">
+      <div className="bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-warm-navy-deep)] px-5 sm:px-7 pt-7 sm:pt-9 pb-5 sm:pb-7">
+        <h2 className="text-white font-extrabold text-lg sm:text-xl mb-2">
           {L('Trouvez les pièces pour votre véhicule', 'Find parts for your vehicle')}
         </h2>
-        <p className="text-white/85 text-base">
-          {L('Recherchez par numéro d\'immatriculation ou sélectionnez votre modèle', 'Search by registration number or select your model')}
+        <p className="text-white/85 text-sm sm:text-base">
+          {L('Recherchez par immatriculation ou sélectionnez votre modèle', 'Search by registration or select your model')}
         </p>
       </div>
 
-      <div className="p-7">
+      <div className="p-5 sm:p-7">
         <div className="mb-7">
           <label htmlFor="regNumber" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
             {L('Numéro d\'immatriculation', 'Registration number')}
           </label>
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex items-stretch flex-1 min-w-0">
               <div className="w-14 shrink-0 bg-blue-600 rounded-xl flex items-center justify-center shadow-sm">
                 <span className="text-white text-xs font-bold tracking-wide">CI</span>
@@ -244,7 +244,7 @@ export default function CarSelector() {
             </select>
           </div>
 
-          <button onClick={() => track('search_vehicle', { brand: selectedBrandName, model: selectedModelName })} className="w-full px-7 py-4 bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-secondary-light)] hover:from-[var(--color-secondary-light)] hover:to-[var(--color-secondary)] text-white font-bold rounded-xl transition-all shadow-lg text-lg">
+          <button onClick={() => track('search_vehicle', { brand: selectedBrandName, model: selectedModelName })} className="w-full px-7 py-3.5 sm:py-4 bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-secondary-light)] hover:from-[var(--color-secondary-light)] hover:to-[var(--color-secondary)] text-white font-bold rounded-xl transition-all shadow-lg text-base sm:text-lg">
             {L('Rechercher les pièces', 'Search parts')}
           </button>
         </div>

@@ -96,7 +96,7 @@ export default function LandingPage() {
 
       <Bestsellers />
 
-      <section className="py-14 bg-white">
+      <section className="py-8 md:py-14 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] mb-8 text-center">
             {L('Neuf ou occasion, à vous de choisir', 'New or used, you choose')}
@@ -134,9 +134,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-14 bg-[var(--color-bg)]">
+      <section className="py-8 md:py-14 bg-[var(--color-bg)]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-3xl p-8 md:p-10 border border-[var(--color-warm-border)] shadow-lg shadow-[var(--color-earth)]/5">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 border border-[var(--color-warm-border)] shadow-lg shadow-[var(--color-earth)]/5">
             <h2 className="text-xl md:text-2xl font-extrabold text-[var(--color-warm-ink)] mb-5">
               {L('Une alternative fiable à la casse auto', 'A reliable alternative to scrapyards')}
             </h2>
@@ -164,9 +164,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-14 bg-white">
+      <section className="py-8 md:py-14 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-3xl p-8 md:p-10 border border-[var(--color-warm-border)] shadow-lg shadow-[var(--color-earth)]/5">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 border border-[var(--color-warm-border)] shadow-lg shadow-[var(--color-earth)]/5">
             <h2 className="text-xl md:text-2xl font-extrabold text-[var(--color-warm-ink)] mb-5">
               {L('Questions fréquentes', 'Frequently asked questions')}
             </h2>
