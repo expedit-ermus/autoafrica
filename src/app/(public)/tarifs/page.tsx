@@ -95,7 +95,7 @@ export default function TarifsPage() {
         </p>
 
         {/* Toggle Annual / Monthly */}
-        <div className="mt-8 flex items-center justify-center gap-4">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3 sm:gap-4">
           <span className={`text-sm font-medium ${!annualBilling ? 'text-slate-900 font-bold' : 'text-slate-500'}`}>
             Paiement Mensuel
           </span>
@@ -123,12 +123,12 @@ export default function TarifsPage() {
       </div>
 
       {/* Pricing Cards Grid */}
-      <div className="max-w-7xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+      <div className="max-w-7xl mx-auto mt-10 md:mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 items-stretch">
         {plans.map((plan) => (
           <div
             key={plan.key}
-            className={`relative rounded-2xl bg-white p-6 shadow-sm border transition-all duration-300 flex flex-col justify-between hover:shadow-xl ${
-              plan.popular ? 'border-2 border-amber-400 ring-2 ring-amber-400/20 scale-105 z-10' : 'border-slate-200 hover:border-slate-300'
+            className={`relative rounded-2xl bg-white p-5 sm:p-6 shadow-sm border transition-all duration-300 flex flex-col justify-between hover:shadow-xl ${
+              plan.popular ? 'border-2 border-amber-400 ring-2 ring-amber-400/20 lg:scale-105 z-10' : 'border-slate-200 hover:border-slate-300'
             }`}
           >
             {/* Top Badge */}
@@ -181,7 +181,7 @@ export default function TarifsPage() {
       </div>
 
       {/* Feature Comparison Table Highlight */}
-      <div className="max-w-5xl mx-auto mt-20 bg-white rounded-2xl p-8 border border-slate-200 shadow-sm">
+      <div className="max-w-5xl mx-auto mt-12 md:mt-20 bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-slate-900">Pourquoi choisir le SaaS ERP AutoAfrique ?</h2>
           <p className="text-slate-600 mt-2">La seule plateforme conçue spécifiquement pour le commerce automobile africain.</p>
@@ -221,7 +221,7 @@ export default function TarifsPage() {
       </div>
 
       {/* FAQ Section */}
-      <div className="max-w-4xl mx-auto mt-20">
+      <div className="max-w-4xl mx-auto mt-12 md:mt-20">
         <div className="text-center mb-10">
           <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">Foire Aux Questions (FAQ)</h2>
           <p className="text-slate-600 mt-2">Tout ce que vous devez savoir sur nos formules d'abonnement et de paiement.</p>
@@ -251,7 +251,7 @@ export default function TarifsPage() {
       </div>
 
       {/* Bottom CTA */}
-      <div className="max-w-5xl mx-auto mt-20 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-3xl p-8 sm:p-12 text-center text-white shadow-xl">
+      <div className="max-w-5xl mx-auto mt-12 md:mt-20 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 text-center text-white shadow-xl">
         <h2 className="text-2xl sm:text-4xl font-extrabold mb-4">
           Prêt à digitaliser votre garage ou magasin de pièces ?
         </h2>

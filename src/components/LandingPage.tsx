@@ -57,12 +57,12 @@ export default function LandingPage() {
           <h1 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] text-center mb-8">
             {L('Pièces détachées auto neuves et occasion à Abidjan — AutoAfrique', 'New and used auto parts in Abidjan — AutoAfrique')}
           </h1>
-          <div className="grid lg:grid-cols-5 gap-6">
+          <div className="grid lg:grid-cols-5 gap-5">
+            <div className="lg:col-span-3 min-w-0 order-first">
+              <PromoBanner />
+            </div>
             <div className="lg:col-span-2 min-w-0">
               <CarSelector />
-            </div>
-            <div className="lg:col-span-3 min-w-0">
-              <PromoBanner />
             </div>
           </div>
         </div>
@@ -74,17 +74,17 @@ export default function LandingPage() {
 
       <section className="py-8 bg-white border-y border-[var(--color-warm-border)]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {trustFeatures.map((feat, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-[var(--color-bg-warm)] transition-colors">
-                <div className="shrink-0 w-12 h-12 bg-[var(--color-bg-warm)] rounded-xl flex items-center justify-center">
+              <div key={i} className="flex items-center gap-3 p-4 rounded-xl hover:bg-[var(--color-bg-warm)] transition-colors border border-[var(--color-warm-border)]/50">
+                <div className="shrink-0 w-11 h-11 bg-[var(--color-bg-warm)] rounded-xl flex items-center justify-center">
                   {feat.icon}
                 </div>
-                <div>
-                  <div className="text-sm font-bold text-[var(--color-warm-ink)]">
+                <div className="min-w-0">
+                  <div className="text-sm font-bold text-[var(--color-warm-ink)] leading-tight">
                     {feat.title[locale as 'fr' | 'en']}
                   </div>
-                  <div className="text-xs text-[var(--color-warm-muted-strong)] font-medium">
+                  <div className="text-xs text-[var(--color-warm-muted-strong)] font-medium mt-0.5 leading-snug">
                     {feat.desc[locale as 'fr' | 'en']}
                   </div>
                 </div>

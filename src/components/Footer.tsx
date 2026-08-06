@@ -89,7 +89,7 @@ export default function Footer() {
               <h4 className="text-white font-bold mb-4 text-base">
                 {L('Abonnez-vous pour suivre l\'actualité AutoAfrique', 'Subscribe to follow AutoAfrique news')}
               </h4>
-              <div className="flex gap-3">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <input
                   type="email"
                   placeholder={L('Votre adresse email', 'Your email address')}
@@ -140,9 +140,10 @@ export default function Footer() {
       <div className="bg-[var(--color-warm-navy-deep)] border-t border-white/10 py-7">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4 text-sm text-white/50">
+            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm text-white/50 text-center sm:text-left">
               <span>© {new Date().getFullYear()} AutoAfrique.</span>
-              <span>{L('Service client : horaires à confirmer avant la mise en production', 'Customer service: hours to be confirmed before launch')}</span>
+              <span className="hidden sm:inline text-white/20">|</span>
+              <span>{L('Service client : horaires à confirmer', 'Customer service: hours TBD')}</span>
             </div>
             <select className="bg-white/10 border border-white/15 rounded-xl px-4 py-2 text-sm text-white/85 focus:outline-none font-medium">
               {countries.map((c) => (
