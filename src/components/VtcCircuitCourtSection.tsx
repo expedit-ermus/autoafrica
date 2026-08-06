@@ -159,7 +159,7 @@ export default function VtcCircuitCourtSection() {
           </div>
           <Link
             href="/paiement"
-            className="shrink-0 py-3 px-6 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold text-xs md:text-sm transition-all shadow-lg shadow-emerald-500/20"
+            className="shrink-0 py-3 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs md:text-sm transition-all shadow-lg shadow-emerald-950/40 border border-emerald-400/30"
           >
             {L('En savoir plus sur la sécurité', 'Learn more about security')}
           </Link>

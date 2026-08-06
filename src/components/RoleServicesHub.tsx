@@ -183,7 +183,7 @@ export default function RoleServicesHub() {
               <div className="space-y-2">
                 <Link
                   href="/dashboard/marketplace"
-                  className="w-full py-2.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-gray-950 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors"
+                  className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-950/40 border border-emerald-400/30"
                 >
                   <span>🔍</span> {L('Rechercher une pièce Venante', 'Search Venant Part')}
                 </Link>
@@ -340,7 +340,7 @@ export default function RoleServicesHub() {
               <div className="space-y-2">
                 <button
                   onClick={() => alert('Prise de photo pièce en cours...')}
-                  className="w-full py-2.5 px-4 bg-emerald-400 hover:bg-emerald-300 text-gray-950 font-extrabold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors"
+                  className="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-400 text-white font-extrabold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-950/40 border border-emerald-300/30"
                 >
                   <span>📷</span> {L('Ajouter une Pièce en photo', 'Add Part Photo')}
                 </button>
