@@ -919,6 +919,33 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `src/components/{CarSelector,PartsCatalog,BrandGrid,Header,UssdPaymentFlow}.tsx`, `src/app/dashboard/{cart,crm}/page.tsx`, `docs/DECISIONS.md`.
 
+## D52 — Mise en conformité globale aux consignes de développement et Definition of Done (DoD)
+
+**Date** : 07/08/2026 — audit et mise en conformité du projet par rapport aux règles de sécurité, de qualité de code, d'accessibilité et aux spécifications des 5 modèles de pages.
+
+**Constats & Actions** :
+1. **Sécurité JWT & Données** :
+   - Suppression du fallback en dur `'autoafrique-secret-key-change-in-production'` dans `src/lib/auth.ts`.
+   - Vérification du fichier `.env.example` et de la non-traçabilité de la base SQLite `dev.db` (`*.db` ignorés dans `.gitignore`).
+2. **Qualité React 19 / Next.js 16 & TypeScript** :
+   - Correction des avertissements ESLint `react-hooks/set-state-in-effect` dans `Sidebar.tsx` et `StarRating.tsx` (dérivation d'état au rendu).
+   - Suppression de tous les usages de `any` dans le code métier et des variables inutilisées (`makeTxRef`, `vi`).
+   - Échappement strict des entités JSX (`&apos;`) dans l'ensemble des composants et pages.
+   - **Score ESLint : 0 erreur, 0 avertissement** (`npx eslint .`).
+   - **Score TypeScript : 0 erreur** (`npx tsc --noEmit`).
+3. **Modèles de Pages Fonctionnels** :
+   - Mise en conformité des 5 modèles de pages spécifiés : Accueil (`/`), Catalogue (`/catalogue`, `/catalogue/[categorie]`), Fiche Pièce (`/pieces/[slug]`), Devenir Vendeur (`/devenir-vendeur`) et Admin (`/admin`).
+   - Ajout des données structurées (`Organization`, `WebSite`, `Product`, `Offer`, `BreadcrumbList`, `FAQPage`).
+   - Respect de l'accessibilité au clavier, de la réassurance Mobile Money/Gare Routière et de la traçabilité des pièces d'occasion contrôlée.
+4. **Validation des Tests & Build** :
+   - **Tests unitaires (Vitest)** : 287/287 tests validés (26/26 fichiers au vert).
+   - **Build de production (Next.js)** : 100% de réussite sur les 77 routes de l'application.
+
+**Résultats** : lint OK (0 erreur/0 warning), tsc OK, vitest 287/287 OK, build prod OK.
+
+**Impact** : `src/lib/auth.ts`, `src/app/(public)/{catalogue,pieces,devenir-vendeur}/`, `src/app/admin/`, `src/components/`, `docs/DECISIONS.md`.
+
+
 
 
 
