@@ -1,4 +1,5 @@
 'use client';
+
 import Link from 'next/link';
 import { useApp } from '@/contexts/AppContext';
 
@@ -95,7 +96,7 @@ export default function Footer() {
                   placeholder={L('Votre adresse email', 'Your email address')}
                   className="flex-1 min-w-0 px-5 py-3 rounded-xl bg-white/10 border border-white/15 text-white placeholder-white/50 text-base focus:outline-none focus:border-[var(--color-primary)] focus:bg-white/15 transition-all"
                 />
-                <button className="px-8 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-xl transition-all text-base shadow-lg shadow-[var(--color-primary)]/30">
+                <button type="button" className="px-8 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-xl transition-all text-base shadow-lg shadow-[var(--color-primary)]/30">
                   {L('S\'abonner', 'Subscribe')}
                 </button>
               </div>
@@ -144,14 +145,21 @@ export default function Footer() {
       <div className="bg-[var(--color-warm-navy-deep)] border-t border-white/10 py-7">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm text-white/50 text-center sm:text-left">
+            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm text-white/70 text-center sm:text-left">
               <span>© {new Date().getFullYear()} AutoAfrique.</span>
               <span className="hidden sm:inline text-white/20">|</span>
-              <span>{L('Service client : horaires à confirmer', 'Customer service: hours TBD')}</span>
+              <span className="font-semibold text-emerald-400">
+                {L('Service client : Lun-Sam 08h00 - 19h00 (GMT)', 'Customer service: Mon-Sat 08:00 - 19:00 (GMT)')}
+              </span>
             </div>
-            <select className="bg-white/10 border border-white/15 rounded-xl px-4 py-2 text-sm text-white/85 focus:outline-none font-medium">
+            
+            {/* Sélecteur de Pays avec options bien lisibles */}
+            <select
+              aria-label={L('Sélectionner le pays', 'Select country')}
+              className="bg-slate-800 text-white border border-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none font-medium cursor-pointer hover:bg-slate-700 transition-colors"
+            >
               {countries.map((c) => (
-                <option key={c.code} value={c.code}>
+                <option key={c.code} value={c.code} className="bg-slate-900 text-white py-2">
                   {c.name}
                 </option>
               ))}
