@@ -92,7 +92,7 @@ export default function RoleServicesHub() {
                   En livraison
                 </span>
               </div>
-              <div className="text-xs text-gray-500 font-medium">{L('Commande Pièce "Venante"', 'Venant Part Order')}</div>
+              <div className="text-xs text-gray-500 font-medium">{L('Commande Pièce d\'occasion', 'Used Part Order')}</div>
               <div className="text-sm font-extrabold text-gray-900 mt-1">Amortisseur N\'Dotré #14</div>
               <div className="text-[11px] text-emerald-700 font-semibold mt-2">Livreur Tiak-Tiak en route</div>
             </div>
@@ -185,7 +185,7 @@ export default function RoleServicesHub() {
                   href="/dashboard/marketplace"
                   className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-950/40 border border-emerald-400/30"
                 >
-                  <span>🔍</span> {L('Rechercher une pièce Venante', 'Search Venant Part')}
+                  <span>🔍</span> {L('Rechercher une pièce d\'occasion', 'Search used part')}
                 </Link>
                 <button
                   onClick={() => alert('Veuillez dicter votre besoin ou joindre une photo sur WhatsApp.')}
@@ -331,8 +331,8 @@ export default function RoleServicesHub() {
                 </h4>
                 <p className="text-xs text-emerald-100 leading-relaxed mb-4">
                   {L(
-                    'Vous avez démonté un moteur ou une boîte "Venante" ? Prenez une photo ou envoyez un vocal pour publier l\'annonce en 10 secondes.',
-                    'Dismantled an engine or gearbox? Take a photo or send a voice note to post in 10 seconds.'
+                    'Vous avez démonté un moteur ou une boîte d\'occasion ? Prenez une photo ou envoyez un vocal pour publier l\'annonce en 10 secondes.',
+                    'Dismantled a used engine or gearbox? Take a photo or send a voice note to post in 10 seconds.'
                   )}
                 </p>
               </div>
