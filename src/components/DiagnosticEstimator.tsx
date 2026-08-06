@@ -101,7 +101,7 @@ const SYMPTOMS_DB: SymptomOption[] = [
 const MECHANICS_DB = [
   {
     id: 1,
-    name: 'Mître Garage Diallo',
+    name: 'Maître Garage Diallo',
     location: 'Yopougon Selmer, Abidjan',
     rating: '4.9 ⭐ (128 avis)',
     specialty: 'Spécialiste Diesel & Châssis Toyota/Peugeot',
