@@ -1,7 +1,8 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useApp } from '@/contexts/AppContext';
+import { track } from '@/lib/tracking';
 
 const categoryNav = [
   { name: { fr: 'Pneus', en: 'Tyres' }, icon: '🛞', href: '/marketplace/categorie/pneus-jantes' },
@@ -17,7 +18,27 @@ const categoryNav = [
 export default function Header() {
   const { t, locale, setLocale, user } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
-  const [cartCount] = useState(0);
+  const [cartCount, setCartCount] = useState(0);
+  const [cartTotal, setCartTotal] = useState(0);
+
+  useEffect(() => {
+    const syncCart = () => {
+      if (typeof window === 'undefined') return;
+      const saved = window.localStorage.getItem('cart');
+      const items: { price: number; quantity: number }[] = saved ? JSON.parse(saved) : [];
+      setCartCount(items.reduce((s, i) => s + i.quantity, 0));
+      setCartTotal(items.reduce((s, i) => s + i.price * i.quantity, 0));
+    };
+    syncCart();
+    window.addEventListener('aa-cart-updated', syncCart);
+    window.addEventListener('storage', syncCart);
+    return () => {
+      window.removeEventListener('aa-cart-updated', syncCart);
+      window.removeEventListener('storage', syncCart);
+    };
+  }, []);
+
+  const formatCFA = (n: number) => `${new Intl.NumberFormat('fr-FR').format(n)} FCFA`;
 
   return (
     <header className="sticky top-0 z-50">
@@ -39,7 +60,7 @@ export default function Header() {
           <div className="hidden md:flex items-center gap-4 text-white/70">
             <span className="flex items-center gap-1.5">
               <span className="text-[var(--color-primary)]">●</span>
-              {L('Livraison gratuite dès 50 000 FCFA', 'Free delivery from 50,000 FCFA')}
+              {L('Livraison en Afrique de l\'Ouest', 'Delivery in West Africa')}
             </span>
             <span className="text-white/30">|</span>
             <span className="flex items-center gap-1.5">
@@ -97,6 +118,7 @@ export default function Header() {
 
               <Link
                 href={user ? '/dashboard' : '/auth/login'}
+                onClick={() => { if (!user) track('click_cta_login', { source: 'header' }); }}
                 className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white"
               >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,7 +146,7 @@ export default function Header() {
                 </div>
                 <div className="hidden md:block text-left">
                   <div className="text-xs text-white/60">{cartCount} {L('article(s)', 'item(s)')}</div>
-                  <div className="text-xs font-bold">0 FCFA</div>
+                  <div className="text-xs font-bold">{cartTotal > 0 ? formatCFA(cartTotal) : '0 FCFA'}</div>
                 </div>
               </Link>
 

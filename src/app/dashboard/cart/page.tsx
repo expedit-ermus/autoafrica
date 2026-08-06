@@ -4,6 +4,7 @@ import RemoteImage from '@/components/RemoteImage';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useToast } from '@/contexts/ToastContext';
+import { track } from '@/lib/tracking';
 
 interface CartItem {
   id: string;
@@ -28,6 +29,7 @@ export default function CartPage() {
   const updateCart = (newCart: CartItem[]) => {
     setCart(newCart);
     localStorage.setItem('cart', JSON.stringify(newCart));
+    window.dispatchEvent(new Event('aa-cart-updated'));
   };
 
   const updateQuantity = (id: string, qty: number) => {
@@ -36,7 +38,9 @@ export default function CartPage() {
   };
 
   const removeItem = (id: string) => {
+    const removed = cart.find(i => i.id === id);
     updateCart(cart.filter(item => item.id !== id));
+    if (removed) track('remove_from_cart', { product_id: removed.productId });
     addToast('info', 'Article retiré du panier');
   };
 
@@ -282,7 +286,7 @@ export default function CartPage() {
                     {[
                       { icon: '🔒', label: 'Paiement sécurisé' },
                       { icon: '🚚', label: 'Livraison rapide' },
-                      { icon: '↩️', label: 'Retour gratuit' },
+                      { icon: '↩️', label: 'Retour 30 jours' },
                     ].map((badge) => (
                       <div key={badge.label} className="text-center py-3 bg-white rounded-xl border border-gray-100">
                         <div className="text-lg mb-1">{badge.icon}</div>

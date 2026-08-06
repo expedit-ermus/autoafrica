@@ -39,7 +39,7 @@ export const CATEGORY_SLUGS: CategorySlugEntry[] = [
     slug: 'embrayage',
     name: 'Embrayage',
     description:
-      "Kits d'embrayage, disques, butées et récepteurs pour voitures au meilleur prix, livraison 24-72h à Abidjan.",
+      "Kits d'embrayage, disques, butées et récepteurs pour voitures, livraison 24-72h à Abidjan.",
   },
   {
     slug: 'amortissement',

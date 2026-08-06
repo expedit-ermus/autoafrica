@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import RemoteImage from '@/components/RemoteImage';
 import { useApp } from '@/contexts/AppContext';
+import { track } from '@/lib/tracking';
 
 const brands = [
   { name: 'Suzuki', slug: 'suzuki', logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Suzuki_logo_2025.svg/250px-Suzuki_logo_2025.svg.png' },
@@ -35,6 +36,7 @@ export default function BrandGrid() {
             <Link
               key={brand.name}
               href={`/marketplace/marque/${brand.slug}`}
+              onClick={() => track('click_brand', { brand_name: brand.name })}
               className="group bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--color-primary)]/10 p-6 flex flex-col items-center justify-center transition-all duration-300"
             >
               <div className="relative w-18 h-18 mb-3 flex items-center justify-center">

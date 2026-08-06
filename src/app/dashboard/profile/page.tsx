@@ -320,7 +320,7 @@ export default function ProfilePage() {
                           </div>
                           <div>
                             <label htmlFor="seller-phoneForOrders" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Téléphone commandes</label>
-                            <input id="seller-phoneForOrders" className="input-field" value={sellerForm.phoneForOrders} onChange={e => setSellerForm({ ...sellerForm, phoneForOrders: e.target.value })} placeholder="+225 07 08 09 10" />
+                            <input id="seller-phoneForOrders" className="input-field" value={sellerForm.phoneForOrders} onChange={e => setSellerForm({ ...sellerForm, phoneForOrders: e.target.value })} placeholder="+225 XX XX XX XX" />
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4">
@@ -334,7 +334,7 @@ export default function ProfilePage() {
                           </div>
                           <div>
                             <label htmlFor="seller-payoutNumber" className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Numéro de paiement</label>
-                            <input id="seller-payoutNumber" className="input-field" value={sellerForm.payoutNumber} onChange={e => setSellerForm({ ...sellerForm, payoutNumber: e.target.value })} placeholder="+225 07 00 00 00" />
+                            <input id="seller-payoutNumber" className="input-field" value={sellerForm.payoutNumber} onChange={e => setSellerForm({ ...sellerForm, payoutNumber: e.target.value })} placeholder="+225 XX XX XX XX" />
                           </div>
                         </div>
                         <div className="flex gap-3 pt-1">

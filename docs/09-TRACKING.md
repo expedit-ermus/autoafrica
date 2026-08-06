@@ -104,6 +104,23 @@ Comportement :
 - Evenements custom : le module `src/lib/tracking.ts` (`track`) renvoie automatiquement chaque evenement du schema vers GA4 via `gtag('event', ...)` (module `src/lib/gtag.ts`, `trackGAEvent`). L'evenement `page_view` est exclu du renvoi car deja gere par `gtag('config')`.
 - Consentement : `setGAConsent` pousse le mode `analytics_storage: granted` / `ad_storage: denied` (aucune publicite ciblee).
 
+#### Conversions GA4
+
+Les evenements de conversion marques dans la propriete GA4 `autoafrique-saas` (`properties/548619763`) via l'API Admin sont :
+
+| Evenement | Import conversion | Comptage | Supression autorisee |
+|-----------|-------------------|----------|----------------------|
+| `purchase` | oui | `ONCE_PER_EVENT` | non |
+| `close_convert_lead` | oui | `ONCE_PER_EVENT` | oui |
+| `qualify_lead` | oui | `ONCE_PER_EVENT` | oui |
+| `order_complete` | oui | `ONCE_PER_EVENT` | oui |
+| `add_to_cart` | oui | `ONCE_PER_EVENT` | oui |
+| `checkout_start` | oui | `ONCE_PER_EVENT` | oui |
+| `login` | oui | `ONCE_PER_EVENT` | oui |
+| `register` | oui | `ONCE_PER_EVENT` | oui |
+
+Ces marques ont ete creees via `https://www.googleapis.com/auth/analytics.edit` (script local `create_conversions.py`) ; toute modification de la liste doit passer par le flux OAuth decrit dans `09-TRACKING.md` / `DECISIONS.md`. La creation d'une nouvelle conversion est une action admin GA4 (scope `analytics.edit`), distincte de l'emission d'un evenement.
+
 ### Metriques internes
 - Tableau de bord `/dashboard/analytics`
 - Graphiques par periode

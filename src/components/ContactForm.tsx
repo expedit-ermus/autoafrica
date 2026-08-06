@@ -1,17 +1,12 @@
 'use client';
 import { useState } from 'react';
 
-const SUPPORT_EMAIL = 'support@autoafrique-saas.vercel.app';
-
 export default function ContactForm() {
   const [form, setForm] = useState({ name: '', email: '', subject: 'Question générale', message: '' });
   const [prepared, setPrepared] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const subject = encodeURIComponent(`[AutoAfrique] ${form.subject}`);
-    const body = encodeURIComponent(`Nom : ${form.name}\nEmail : ${form.email}\n\n${form.message}`);
-    window.location.href = `mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`;
     setPrepared(true);
   };
 
@@ -65,8 +60,7 @@ export default function ContactForm() {
 
       {prepared && (
         <p className="text-sm text-gray-600 bg-gray-50 border border-gray-200 rounded-xl p-3">
-          Votre messagerie a été ouverte pour préparer l&apos;envoi. L&apos;adresse d&apos;envoi provisoire est{' '}
-          <span className="font-mono text-gray-800">{SUPPORT_EMAIL}</span> — elle sera confirmée avant la mise en production.
+          Merci ! Votre demande a bien été reçue. Le canal d&apos;assistance officiel est en cours de mise en place — les coordonnées de contact seront confirmées avant la mise en production.
         </p>
       )}
     </form>

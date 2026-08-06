@@ -45,7 +45,7 @@ export default function LivraisonPage() {
         {
           heading: 'Livraison non conforme',
           body: [
-            'Si le colis reçu ne correspond pas à la commande ou est endommagé, contactez notre service client sous 24h via la page de contact. Consultez la page Retours pour connaître les conditions de remplacement ou de remboursement.',
+            'Si le colis reçu ne correspond pas à la commande ou est endommagé, contactez notre service client via la page de contact. Consultez la page Retours pour connaître les conditions de remplacement ou de remboursement.',
           ],
         },
       ]}

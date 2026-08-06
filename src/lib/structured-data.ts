@@ -73,7 +73,7 @@ export function buildOrganizationSchema() {
     url: SITE_URL,
     logo: `${SITE_URL}/logo.png`,
     description: 'Marketplace de pièces détachées automobile en Afrique de l\'Ouest',
-    areaServed: ['SN', 'CI', 'ML', 'BF', 'NE', 'GM', 'GN', 'BJ', 'TG', 'GH'],
+    areaServed: ['CI', 'SN', 'ML', 'BF', 'NE', 'BJ', 'TG', 'GW', 'NG', 'GH'],
     sameAs: [],
   }
 }

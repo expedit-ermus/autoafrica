@@ -280,7 +280,7 @@ export default function RegisterPage() {
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
                     </div>
                     <input id="reg-phone" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      className="input-field !min-h-[52px] rounded-xl" placeholder="+225 07 08 09 10" />
+                      className="input-field !min-h-[52px] rounded-xl" placeholder="+225 XX XX XX XX" />
                   </div>
                 </div>
                 <div>
@@ -376,17 +376,6 @@ export default function RegisterPage() {
               </Link>
             </p>
 
-            {/* Demo credentials */}
-            <div className="mt-6 p-4 rounded-xl border border-gray-100 auth-fade-in-delay-4" style={{ background: 'linear-gradient(135deg, rgba(249, 250, 251, 0.8) 0%, rgba(254, 243, 199, 0.3) 100%)' }}>
-              <div className="flex items-center justify-center gap-2 mb-2.5">
-                <svg className="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M11.42 15.17l-5.1-5.1m0 0L11.42 4.97m-5.1 5.1H21M3 3v18" /></svg>
-                <p className="text-xs font-semibold text-gray-700">Compte de démo</p>
-              </div>
-              <div className="text-xs text-gray-500 text-center space-y-1">
-                <p><span className="font-semibold text-gray-700">moussa@example.com</span> / password123</p>
-                <p><span className="font-semibold text-gray-700">abdoulaye@example.com</span> / password123</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>

@@ -155,13 +155,14 @@ export default function MarketplacePage() {
     const existing = cart.find(item => item.productId === product.id);
     if (existing) { existing.quantity += qty; } else {
       cart.push({
-        id: Date.now().toString(), productId: product.id, title: product.title,
+        id: crypto.randomUUID(), productId: product.id, title: product.title,
         brand: product.brand?.name || '', reference: product.reference || '',
         price: product.price, quantity: qty,
         image: getImages(product)[0],
       });
     }
     localStorage.setItem('cart', JSON.stringify(cart));
+    window.dispatchEvent(new Event('aa-cart-updated'));
     addToast('success', `${qty}× ${product.title} ajouté au panier`);
   };
 
@@ -842,12 +843,19 @@ export default function MarketplacePage() {
                         <p className="text-sm font-bold text-gray-900">{detailProduct.seller.shopName || `${detailProduct.seller.firstName} ${detailProduct.seller.lastName || ''}`}</p>
                         <p className="text-xs text-gray-500">📍 {detailProduct.seller.country}</p>
                       </div>
-                      <div className="flex gap-1">
-                        <button onClick={() => { const phone = detailProduct.seller?.phone || '+22507080910'; window.open(`tel:${phone}`, '_self'); }}
-                          className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm">📞</button>
-                        <button onClick={() => { const phone = detailProduct.seller?.phone || '+22507080910'; const msg = encodeURIComponent(`Bonjour, je suis intéressé par ${detailProduct.title}`); window.open(`https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${msg}`, '_blank'); }}
-                          className="w-8 h-8 rounded-lg bg-green-50 text-green-600 flex items-center justify-center text-sm">💬</button>
-                      </div>
+                      {detailProduct.seller.phone && (
+                        (() => {
+                          const phone = detailProduct.seller.phone;
+                          return (
+                            <div className="flex gap-1">
+                              <button onClick={() => { window.open(`tel:${phone}`, '_self'); }}
+                                className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-sm">📞</button>
+                              <button onClick={() => { const msg = encodeURIComponent(`Bonjour, je suis intéressé par ${detailProduct.title}`); window.open(`https://wa.me/${phone.replace(/[^0-9]/g, '')}?text=${msg}`, '_blank'); }}
+                                className="w-8 h-8 rounded-lg bg-green-50 text-green-600 flex items-center justify-center text-sm">💬</button>
+                            </div>
+                          );
+                        })()
+                      )}
                     </div>
                   )}
 

@@ -59,6 +59,8 @@ export interface PaymentProviderAdapter {
 - `moov-money.adapter.ts`
 - `wave.adapter.ts`
 
+> **V1 (simulateur)** : les valeurs `fees` (`percent`, `fixed`) déclarées par chaque adaptateur sont des **placeholders de simulation, non contractuels** — jamais affichées à l'utilisateur ni appliquées au montant (le flux simule uniquement succès/échec, cf. D7). Elles seront confirmées avec les opérateurs avant la mise en production.
+
 ### Registre
 
 `registry.ts` : mapping méthode → adaptateur. Permet d'ajouter un fournisseur sans toucher au service.

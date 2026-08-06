@@ -23,12 +23,12 @@ const faq: FAQEntry[] = [
   {
     question: 'Comment payer mes pièces auto sur AutoAfrique ?',
     answer:
-      'Le paiement se fait en Mobile Money (Orange Money, MTN MoMo, Wave), directement et en toute sécurité, avec un reçu conservé dans votre compte.',
+      'Le paiement se fait en Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave), directement et en toute sécurité, avec un reçu conservé dans votre compte.',
   },
 ];
 
 export const metadata: Metadata = {
-  title: 'Pièces détachées auto Abidjan, neuf & occasion',
+  title: 'Pièces détachées auto Abidjan, neuf & occasion | AutoAfrique',
   description:
     "Achetez pièces détachées auto neuves et occasion à Abidjan, Côte d'Ivoire. Prix transparents, garantie incluse, paiement Mobile Money, Afrique de l'Ouest.",
   alternates: {

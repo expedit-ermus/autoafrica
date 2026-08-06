@@ -37,7 +37,7 @@ export default function CGVPage() {
         {
           heading: 'Paiement',
           body: [
-            'Les paiements sont effectués par Mobile Money : Orange Money, MTN MoMo et Wave. La plateforme peut également prévoir d\'autres moyens de paiement qui seront communiqués dans le centre d\'aide.',
+            'Les paiements sont effectués par Mobile Money : Orange Money, MTN MoMo, Moov Money et Wave. La plateforme peut également prévoir d\'autres moyens de paiement qui seront communiqués dans le centre d\'aide.',
             'En cas d\'échec du paiement, la commande n\'est pas validée.',
           ],
         },

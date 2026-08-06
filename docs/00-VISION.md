@@ -20,11 +20,11 @@ AutoAfrique — Plateforme SaaS ERP Marketplace pour pièces détachées automob
 
 ## Problème résolu
 
-En Afrique de l'Ouest, 70% des pièces automobiles sont vendues dans des marchés en plein air, sans garantie, sans traçabilité, et souvent à prix surélevé. Les garagistes perdent des heures à chercher ce qu'une application pourrait trouver en 30 secondes.
+En Afrique de l'Ouest, une grande partie des pièces automobiles se vendent dans les marchés en plein air, sans garantie, sans traçabilité, et souvent à prix surélevé. Les garagistes perdent du temps à chercher ce qu'une plateforme pourrait traiter en quelques secondes.
 
 ## Proposition de valeur
 
-- 85,000+ pièces référencées
+- Catalogue de pièces détachées neuves et d'occasion contrôlée (volume communiqué avant la mise en production)
 - Paiement Mobile Money sécurisé
 - Livraison en 24-72h dans 10 pays
 - CRM intégré
@@ -273,7 +273,7 @@ Achat sur la marketplace.
 
 1. L'utilisateur recherche "pièces Toyota Hilux Abidjan" sur Google
 2. Il arrive sur la landing page d'AutoAfrique
-3. Il comprend immédiatement : "85,000+ pièces, livraison 24-72h"
+3. Il comprend immédiatement : "Des pièces neuves et d'occasion contrôlée, livraison 24-72h"
 4. Il voit les moyens de paiement (Orange Money, MTN MoMo)
 5. Il clique sur "Trouver une pièce"
 6. Il sélectionne Toyota → Hilux → 2.4L D-4D

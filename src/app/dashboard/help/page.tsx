@@ -9,7 +9,7 @@ const faq = [
   { q: 'Comment ajouter une pièce à mon inventaire ?', a: 'Allez dans l\'onglet Inventaire, cliquez sur "+ Ajouter", remplissez les informations (titre, marque, catégorie, prix, stock) et enregistrez. Votre pièce apparaîtra immédiatement sur le marketplace.', category: 'Inventaire' },
   { q: 'Comment fonctionne le paiement Mobile Money ?', a: 'Lorsqu\'un client passe commande, il choisit Orange Money, MTN MoMo, Wave ou Moov Money. Le paiement est sécurisé en séquestre et libéré après confirmation de livraison.', category: 'Paiement' },
   { q: 'Comment gérer mes commandes ?', a: 'Dans l\'onglet Commandes, vous pouvez confirmer, marquer comme payée, expédier ou livrer chaque commande. Un suivi visuel montre l\'avancement de chaque commande.', category: 'Commandes' },
-  { q: 'Quels pays sont supportés ?', a: 'AutoAfrique couvre 10 pays : Côte d\'Ivoire, Sénégal, Mali, Burkina Faso, Niger, Bénin, Togo, Guinée, Nigeria et Ghana. Les paiements Mobile Money sont disponibles selon les opérateurs locaux.', category: 'Général' },
+  { q: 'Quels pays sont supportés ?', a: 'AutoAfrique couvre 10 pays : Côte d\'Ivoire, Sénégal, Mali, Burkina Faso, Niger, Bénin, Togo, Guinée-Bissau, Nigeria et Ghana. Les paiements Mobile Money sont disponibles selon les opérateurs locaux.', category: 'Général' },
   { q: 'Comment contacter un vendeur ?', a: 'Sur chaque fiche produit, vous trouverez les boutons WhatsApp et Appel pour contacter directement le vendeur. Vous pouvez aussi utiliser le chat intégré.', category: 'Marketplace' },
   { q: 'Comment fonctionne le séquestre (escrow) ?', a: 'Le paiement est sécurisé par un système de séquestre. Les fonds du client sont gelés jusqu\'à ce que la livraison soit confirmée. En cas de problème, un litige peut être ouvert.', category: 'Paiement' },
   { q: 'Puis-je annuler une commande ?', a: 'Oui, tant que la commande n\'est pas expédiée. Les commandes en attente peuvent être annulées directement. Pour les commandes expédiées, contactez le support.', category: 'Commandes' },
@@ -66,7 +66,7 @@ export default function HelpPage() {
     setSending(true);
     try {
       await new Promise(r => setTimeout(r, 1000));
-      addToast('success', 'Message envoyé ! Nous vous répondrons sous 24h.');
+      addToast('success', 'Message envoyé ! Nos délais de réponse seront communiqués avant la mise en production.');
       setContactForm({ name: '', email: '', subject: '', message: '' });
     } catch { addToast('error', 'Erreur'); } finally { setSending(false); }
   };
@@ -263,7 +263,7 @@ export default function HelpPage() {
 
               {/* Contact Form */}
               <div className="bg-white rounded-2xl border border-gray-100 card-shadow p-6">
-                <p className="text-xs text-gray-500 mb-4">Remplissez le formulaire et nous vous répondrons sous 24h.</p>
+                <p className="text-xs text-gray-500 mb-4">Remplissez le formulaire pour contacter l&apos;équipe. Nos délais de réponse seront communiqués avant la mise en production.</p>
                 <div className="space-y-3">
                   <div>
                     <label htmlFor="help-name" className="block text-xs font-semibold text-gray-700 mb-1.5">Nom complet *</label>
@@ -336,39 +336,25 @@ export default function HelpPage() {
               <div className="bg-white rounded-2xl border border-gray-100 card-shadow p-6">
                 <h3 className="font-bold text-gray-900 text-sm mb-4">Autres moyens de contact</h3>
                 <div className="space-y-3">
-                  <a
-                    href="https://wa.me/22507080910"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 p-3.5 rounded-xl bg-green-50 hover:bg-green-100 border border-green-100 hover:border-green-200 transition-all duration-200 group"
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center text-white text-lg shadow-sm group-hover:scale-105 transition-transform">
+                  <div className="flex items-center gap-3 p-3.5 rounded-xl bg-green-50 border border-green-100">
+                    <div className="w-10 h-10 rounded-xl bg-green-500 flex items-center justify-center text-white text-lg shadow-sm">
                       💬
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-bold text-green-700">WhatsApp</p>
-                      <p className="text-xs text-green-600">Réponse rapide en direct</p>
+                      <p className="text-xs text-green-600">Canal en cours de mise en place — coordonnées à confirmer</p>
                     </div>
-                    <svg className="w-4 h-4 text-green-400 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </a>
+                  </div>
 
-                  <a
-                    href="mailto:support@autoafrique.com"
-                    className="flex items-center gap-3 p-3.5 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-100 hover:border-blue-200 transition-all duration-200 group"
-                  >
-                    <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center text-white text-lg shadow-sm group-hover:scale-105 transition-transform">
+                  <div className="flex items-center gap-3 p-3.5 rounded-xl bg-blue-50 border border-blue-100">
+                    <div className="w-10 h-10 rounded-xl bg-blue-500 flex items-center justify-center text-white text-lg shadow-sm">
                       ✉️
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-bold text-blue-700">Email</p>
-                      <p className="text-xs text-blue-600">support@autoafrique.com</p>
+                      <p className="text-xs text-blue-600">Adresse officielle à confirmer avant la mise en production</p>
                     </div>
-                    <svg className="w-4 h-4 text-blue-400 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </a>
+                  </div>
 
                   <div className="flex items-center gap-3 p-3.5 rounded-xl bg-purple-50 border border-purple-100">
                     <div className="w-10 h-10 rounded-xl bg-purple-500 flex items-center justify-center text-white text-lg shadow-sm">
@@ -376,7 +362,7 @@ export default function HelpPage() {
                     </div>
                     <div>
                       <p className="text-sm font-bold text-purple-700">Téléphone</p>
-                      <p className="text-xs text-purple-600">+225 07 08 09 10</p>
+                      <p className="text-xs text-purple-600">Numéro officiel à confirmer avant la mise en production</p>
                     </div>
                   </div>
                 </div>
@@ -393,7 +379,7 @@ export default function HelpPage() {
                   <div>
                     <h4 className="text-sm font-bold text-orange-800">Temps de réponse</h4>
                     <p className="text-xs text-orange-700 mt-0.5 leading-relaxed">
-                      Notre équipe répond en moyenne sous <strong>24 heures</strong>. Pour les urgences, privilégiez WhatsApp.
+                      Nos délais de réponse seront communiqués avant la mise en production. Pour les urgences, privilégiez WhatsApp.
                     </p>
                   </div>
                 </div>

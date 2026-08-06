@@ -1,5 +1,6 @@
 'use client';
 import { useState, useCallback } from 'react';
+import { track } from '@/lib/tracking';
 
 const ussdMenus = [
   {
@@ -90,7 +91,9 @@ export default function UssdPaymentFlow() {
       setCurrentMenu(action);
       setHistory((prev) => [...prev, action]);
     } else if (action.startsWith('pay_')) {
-      setSelectedProvider(action.replace('pay_', '').toUpperCase());
+      const provider = action.replace('pay_', '').toUpperCase();
+      setSelectedProvider(provider);
+      track('payment_method', { method: provider });
       setShowPhoneInput(true);
     } else if (action === 'brand' || action === 'city' || action === 'price' || action === 'featured') {
       setTxComplete(true);
@@ -114,7 +117,9 @@ export default function UssdPaymentFlow() {
   const handlePinSubmit = () => {
     setShowPinInput(false);
     setTxComplete(true);
-    setTxRef(`MM-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`);
+    const ref = `MM-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`;
+    setTxRef(ref);
+    track('payment_success', { order_id: ref, amount: Number(amount) || 0, method: selectedProvider });
   };
 
   const handleBack = () => {

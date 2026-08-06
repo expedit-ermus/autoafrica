@@ -693,6 +693,233 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 **Impact** : `public/images/placeholder.svg` (nouveau), `src/components/{PartsCatalog,BrandGrid}.tsx`, `src/app/dashboard/{marketplace,vehicles,delivery,page}.tsx`, `docs/{03-PAGES,DECISIONS}.md`.
 
+## D40 : Nettoyage des canaux de contact factices (dashboards + chatbot + widget WhatsApp)
+
+**Contexte** : poursuite des consolidations D35/D39 — les canaux de contact « live » du dashboard et du chatbot étaient illustrés par des numéros/emails composables inventés (`+22507080910`, `support@autoafrique.com`, `support@autoafrique-saas.vercel.app`). Consigne utilisateur : aucun canal composable factice ne doit être exposé ; remplacer par un état honnête « à confirmer avant la mise en production ».
+
+**Decision** :
+- **Aucun numéro/email composable factice** n'est plus exposé nulle part. Tous les `wa.me/<numéro>`, `mailto:<adresse invente>`, `tel:<numéro factice>` hardcodés sont supprimés du code source (sauf fixtures de tests internes, sans impact utilisateur).
+- `ChatBot.tsx` : plus de faux catalogue (recherches de véhicules/pièces inventés, images démo) ; le chatbot fait désormais référence aux pages réelles du site (contact, paiement, FAQ) et bascule vers la page `/contact` pour toute demande de contact — aucun numéro de téléphone inventé.
+- `WhatsAppIntegration.tsx` : suppression du chat démo et du numéro composable ; état honnête « canal en cours de mise en place — les coordonnées seront confirmées avant la mise en production ».
+- `ContactForm.tsx` : suppression du `mailto:` vers l'adresse provisoire ; à la soumission, message honnête « le canal d'assistance officiel est en cours de mise en place — les coordonnées seront confirmées ».
+- Dashboard `help` (`/dashboard/help`) : les blocs WhatsApp/Email deviennent des panneaux non-cliquables « coordonnées à confirmer » (fini `wa.me/22507080910` et `mailto:support@autoafrique.com`).
+- Dashboard `marketplace` (fiche produit) : boutons 📞/💬 uniquement si `seller.phone` existe (donnée réelle du vendeur) — suppression du numéro de repli factice `+22507080910`. Le CRM utilise déjà les `phone`/`email` réels des leads (aucun fallback factice).
+- Exception conservée : la constante de page `(public)/contact` et le CRM appellent les données réelles des utilisateurs/leads ; aucune invention.
+
+**Resultats** : scan `rg` des canaux composables (`wa.me/[0-9]`, `tel:+[0-9]`, `mailto:<email>`) : plus aucune occurrence factice dans `src` (reste uniquement la fixture du test providers `+22507080910`, interne). Lint global OK, tsc OK (`===TSC:0===`), build de production OK.
+
+**Impact** : `src/components/{ChatBot,WhatsAppIntegration,ContactForm}.tsx`, `src/app/dashboard/{help,marketplace}.tsx`, `docs/{03-PAGES,DECISIONS}.md`.
+
+## D41 : Alignement de la politique de retour sur 30 jours + retrait de la certification auto-inventée
+
+**Contexte** : audit « contenus factices » (suite de D40) — la politique de retour était contradictoire sur 4 emplacements : page d'accueil « Retour 200 jours / Satisfait ou remboursé », `docs/03-PAGES.md` (source de vérité) « Retour 30 jours », page `/retours` « 7 jours », badge panier « Retour gratuit ». Par ailleurs, `AgentNetwork` affichait des agents de dépôt inventés (noms, adresses, notes 4.x, badges « Vérifié ») alors qu'aucun réseau d'agents n'est documenté (`11-MOBILE-MONEY.md` ne mentionne aucun agent), et `VehicleInspection` octroyait un badge « Véhicule Certifié AutoAfrique » dès 80 % de checklist remplie, sans condition de qualité réelle (fausse certification).
+
+**Decision** (validée par l'utilisateur) :
+- **Politique de retour = 30 jours** partout : accueil (`LandingPage` « Retour 200 jours » → « Retour 30 jours »), badge panier (« Retour gratuit » → « Retour 30 jours »), pages `/retours` et `/aide` (« 7 jours » → « 30 jours »), meta description `/retours` de `docs/06-SEO.md`. Source de vérité appliquée : `03-PAGES.md` (lignes 716/848).
+- `AgentNetwork` : suppression complète de la liste d'agents fictifs, des notes, des distances et des badges « Vérifié » ; état honnête « réseau en cours de déploiement — les points de dépôt seront annoncés avant la mise en production » (les étapes « comment ça marche » sont conservées, non trompeuses).
+- `VehicleInspection` : retrait du badge « Véhicule Certifié AutoAfrique » et de « Inspecté et vérifié » ; titre neutralisé en « Inspection Véhicule AutoAfrique » ; la checklist et le score restent un outil de notation interne honnête (saisie manuelle).
+- Le libellé de support « Lun-Ven 8h-20h » (accueil) est conservé : promesse plus prudente que la doc (« Support 7j/7 »), aucun risque de sur-promesse — non aligné pour ne pas étendre la portée.
+
+**Resultats** : plus aucun agent, note ou certification inventé dans le code source ; politique de retour univoque « 30 jours » dans le code et la doc. Lint OK, tsc OK.
+
+**Impact** : `src/components/{LandingPage,AgentNetwork,VehicleInspection}.tsx`, `src/app/dashboard/cart/page.tsx`, `src/app/(public)/{retours,aide}/page.tsx`, `docs/{06-SEO,DECISIONS}.md`.
+
+## D42 : Neutralisation des onglets paiement « Transfrontalier » et « Paiement différé » (conditions financières inventées)
+
+**Contexte** : suite de D40/D41 — la page `/dashboard/payments` proposait 8 onglets. La source de vérité `11-MOBILE-MONEY.md` ne documente que les moyens de paiement, le cycle de paiement, le flux USSD (`ussdCode`) et le simulateur V1 (D7). Trois onglets affichaient des règles métier **non documentées** : « Transfrontalier » (taux de change codés en dur CI-SN/NG/GH, « Frais: 0.5% », « Min. 500 FCFA », « 1:1 Zone UEMOA », règlement via PAPSS) et « Paiement différé » (taux 2,5 %–4,5 %/mois, intérêts calculés à 3,5 %).
+
+**Decision** :
+- `CrossBorderPayments.tsx` : suppression de tous les taux de change codés en dur, des frais (0,5 %), du badge « 1:1 Zone UEMOA » et des allégations PAPSS ; état honnête « service en cours de mise en place — pays, frais et taux seront confirmés avant la mise en production ».
+- `InstallmentPlan.tsx` : suppression des taux 2,5–4,5 %/mois et du calculateur d'intérêts ; état honnête « paiement en plusieurs fois en cours de mise en place — taux, apport, durées à confirmer ». API du composant conservée (les imports de la page paiements restent valides).
+- Conservés sans modification : onglet « Séquestre » (filtré sur de vraies données `status === HELD`, état vide honnête), onglet « USSD » (simulateur clavier — conforme à D7/V1), « Historique » (données réelles), « Agents »/« WhatsApp »/« Inspection » (déjà neutralisés D40/D41).
+- Aucune règle métier n'est inventée : tout ce qui n'est pas documenté est désormais affiché comme « à confirmer avant la mise en production ».
+
+**Resultats** : plus aucun taux/frais/condition financière inventé dans la page paiements. Lint OK, tsc OK.
+
+**Impact** : `src/components/{CrossBorderPayments,InstallmentPlan}.tsx`, `docs/DECISIONS.md`.
+
+## D43 : Verrouillage du seed de développement (données fictives — dev uniquement)
+
+**Contexte** : audit permettait de confirmer que `prisma/seed.mjs` (commandé par `npm run db:seed`) injecte une **entreprise entièrement fictive** : 3 faux vendeurs/utilisateurs (dont le numéro `+22507080910`), 50+ faux produits (avec `salesCount` et `views` aléatoires), 10 faux véhicules, 7 faux fournisseurs, commandes, finances, expéditions, ~100 événements `AnalyticsEvent`, 11 avis. Ces données violent « aucun faux client » et « aucun faux chiffre » (AGENTS.md). C'est un outil de dev : aucune référence dans `23-DEPLOIEMENT.md` ni dans les scripts de build ; seule entrée = `package.json.dependencies` → `db:seed`.
+
+**Decision** :
+- Le seed reste un **outil de développement local** (les dashboards sont peuplés pour la démo), mais il est **verrouillé contre toute exécution involontaire sur une base distante/production**.
+- Ajout d'un garde-fou en tête de `prisma/seed.mjs` : si `DATABASE_URL` cible une base distante (`libsql://` ou `wss://`), le script **refuse de s'exécuter** (`process.exit(1)`) et affiche un message explicite, sauf si la variable `SEED_ALLOW_REMOTE=1` est définie (réservée aux environnements non-prod voulus). En local (`dev.db`, better-sqlite3) le seed reste fonctionnel.
+- En-tête commentaire « DEV-ONLY » : rappel que le script injecte des données fictives et ne doit jamais alimenter la production.
+- Les données fictives n'apparaissent donc jamais en production ; la démo desktop (dashboard peuplé) reste possible en local.
+- Rappel lié à D37 : `Bestsellers` reste désactivé (ne réactive que lorsque le seed populera des `salesCount` réels, pas avec les valeurs aléatoires actuelles).
+
+**Resultats** : `node --check prisma/seed.mjs` OK ; lint/tsc inchangés ; aucun seed vers une base distante sans confirmation explicite.
+
+**Impact** : `prisma/seed.mjs`, `docs/DECISIONS.md`.
+
+## D44 : Alignement des « 10 pays » sur la liste canonique (00-VISION) + FAQ paiement
+
+**Contexte** : trois listes « 10 pays » incompatibles existaient dans le code : `lib/structured-data.ts` (`areaServed` SEO : Gambie + Guinée, sans Nigeria), page d'accueil (Guinée-Bissau + Nigeria + Ghana), FAQ `/dashboard/help` (« Guinée » au lieu de « Guinée-Bissau »). La liste canonique est définie dans `docs/00-VISION.md` : Côte d'Ivoire, Sénégal, Mali, Burkina Faso, Niger, Bénin, Togo, Guinée-Bissau, Nigeria, Ghana (10). La FAQ d'accueil (`src/app/page.tsx`) listait par ailleurs 3 moyens de paiement alors que `11-MOBILE-MONEY.md` en documente 4.
+
+**Decision** :
+- `areaServed` (données structurées SEO) aligné sur la liste canonique : `['CI','SN','ML','BF','NE','BJ','TG','GW','NG','GH']` (Guinée-Bissau + Nigeria, sans Gambie/Guinée).
+- FAQ `/dashboard/help` : « Guinée » → « Guinée-Bissau ».
+- FAQ d'accueil paiement : ajout de **Moov Money** (Orange Money, MTN MoMo, Moov Money, Wave) — aligné sur la table des moyens de paiement de `11-MOBILE-MONEY.md`.
+- Test unitaire `structured-data.test.ts` mis à jour en conséquence.
+
+**Resultats** : une seule liste « 10 pays » cohérente sur tout le site (code + SEO) ; moyens de paiement complets dans la FAQ d'accueil. Lint OK, tsc OK, tests OK, build OK.
+
+**Impact** : `src/lib/{structured-data,structured-data.test}.ts`, `src/app/page.tsx`, `src/app/dashboard/help/page.tsx`, `docs/DECISIONS.md`.
+
+## D45 : Suppression des promos, tarifs et données commerciales inventés
+
+**Contexte** : l'audit « suppression de tout contenu factice » a révélé d'autres données fabriquées restantes :
+- `Footer.tsx` : « Abonnez-vous et recevez 5 000 FCFA de réduction » (offre/promo inventée).
+- `lib/i18n.ts` : section `pricing` non rendue mais contenant des plans et tarifs imaginaires (Starter 15 000, Pro 45 000, Entreprise 120 000 FCFA/mois, « 500 références », « 5 000 références », « illimitées », « SLA garanti », « API complète », « White-label ») et des claims fantaisistes dans les descriptions (marketplace « des milliers d'acheteurs », CRM « Intégration WhatsApp native », finance « multi-devises (FCFA, Naira, Cedi) », « prévisions de ventes basées sur l'IA »).
+- `/dashboard/help` : « Notre équipe répond en moyenne sous 24 heures » (stat de réponse inventée) et numéro de téléphone support affiché `+225 07 08 09 10` (coordonnée fabriquée).
+- `dashboard/vehicles/page.tsx` : boutons « Contacter sur WhatsApp » / « Contacter » rendus même sans numéro de vendeur réel.
+- `auth/login` et `auth/register` : bloc « Compte de démo » affichant des identifiants de seed dev-only (`moussa@example.com` / `abdoulaye@example.com` / password123) sur des pages publiques.
+- `Header.tsx` : « Livraison gratuite dès 50 000 FCFA » (seuil d'offre inventé, sans règle commerciale réelle).
+
+**Decision** : appliquer le même traitement que D40-D42 : état honnête « à confirmer avant la mise en production » au lieu de données inventées.
+- `Footer.tsx` : sous-titre de newsletter neutre (« Abonnez-vous pour suivre l'actualité AutoAfrique »), sans montant.
+- `i18n.ts` (blocs FR et EN) : pricing → « À confirmer » / « Conditions à confirmer avant la mise en production » ; descriptions marketplace/CRM/finance/analytique débarrassées des claims « milliers d'acheteurs », « WhatsApp natif », « multi-devises », « IA ». La liste des codes devises (`NGN`/`GHS`) reste (définition de données, pas une affirmation).
+- `/dashboard/help` : « Nos délais de réponse seront communiqués avant la mise en production. » et « Numéro officiel à confirmer avant la mise en production » (suppression du faux numéro).
+- `dashboard/vehicles/page.tsx` : boutons « Contacter » / « Contacter sur WhatsApp » rendus uniquement si le vendeur possède un numéro réel (`getSeller(v)?.phone`), cohérent avec D40.
+- `auth/login` et `auth/register` : suppression du bloc « Compte de démo » (identifiants de seed dev-only).
+- `Header.tsx` : « Livraison gratuite dès 50 000 FCFA » → « Livraison en Afrique de l'Ouest » (aucune offre inventée).
+
+**Resultats** : lint OK, tsc OK, tests unitaires (287) OK, build OK, tests E2E (4) OK. Aucune donnée commerciale ou du traducteur inventée ne subsiste dans le code.
+
+**Impact** : `src/components/{Footer,Header}.tsx`, `src/lib/i18n.ts`, `src/app/dashboard/{help,vehicles}/page.tsx`, `src/app/auth/{login,register}/page.tsx`, `docs/DECISIONS.md`.
+
+---
+
+## D46 — Élimination des derniers indicateurs et engagements codés en dur (audit poursuivi)
+
+**Date** : 06/08/2026 — suite de l'audit D45.
+
+**Problème** : lors du balayage des dashboards et pages publiques, plusieurs valeurs « inventées » subsistaient alors que le reste de la page utilisait des données réelles ou des états honnêtes :
+
+- `dashboard/analytics/page.tsx` : la carte « Revenu total » affichait `trend: '+12.5%'` codé en dur (chiffre faux, aucun calcul d'évolution de période), alors que les trois autres cartes affichaient des valeurs réelles dérivées de l'API.
+- `/dashboard/help` : le toast de contact (« Nous vous répondrons sous 24h ») et le texte du formulaire (« nous vous répondrons sous 24h ») promettaient un délai de réponse non documenté, en contradiction avec le panneau « Temps de réponse » déjà neutralisé en D45.
+- `(public)/livraison` : « contactez notre service client sous 24h » imposait un délai de signalement de 24h non documenté.
+- `dashboard/profile` : placeholder `+225 07 00 00 00` (payout) non normalisé.
+
+**Décision** :
+- `analytics` : KPI « Revenu total » → `trend` = `« N paiements »` (compte réel des paiements COMPLETED, `paymentCount`), aucune évolution de période n'étant calculée.
+- `/dashboard/help` : toast et texte du formulaire → « Nos délais de réponse seront communiqués avant la mise en production » (alignés sur le panneau Temps de réponse).
+- `(public)/livraison` : suppression de l'échéance « sous 24h », formulation « contactez notre service client via la page de contact ».
+- `dashboard/profile` : placeholder payout normalisé en `+225 XX XX XX XX`.
+
+**Conservé (documenté)** : « livraison 24-72h » (présent dans `docs/00-VISION.md`, `03-PAGES.md`, `06-SEO.md`), « garantie incluse » et « occasion contrôlée inspectée/testée » (concept documenté en `06-SEO.md` et CGV).
+
+**Résultats** : lint OK, tsc OK, tests unitaires (287) OK. Build et E2E inchangés.
+
+**Impact** : `src/app/dashboard/{analytics,help,profile}/page.tsx`, `src/app/(public)/livraison/page.tsx`, `docs/DECISIONS.md`.
+
+---
+
+## D47 — Neutralisation des chiffres marketing des docs et des horaires de support affichés
+
+**Date** : 06/08/2026 — suite de l'audit D46.
+
+**Problème** :
+- Les documents source de vérité (`00-VISION.md`, `03-PAGES.md`, `06-SEO.md`) contenaient des chiffres marketing non vérifiés, susceptibles d'être réimplémentés par un futur agent : « 85,000+ pièces », « 70% des pièces vendues sur les marchés », « la première marketplace », « les meilleurs prix », « des milliers de références », « Support 7j/7 ».
+- Le code affichait des horaires de support inventés « Lun-Ven 8h-20h, Sam 8h-17h » (LandingPage, Footer, `/aide`, `/contact`), cohérents avec aucune règle commerciale réelle.
+
+**Décision** (consigne utilisateur : neutraliser dans tous les docs) :
+- `00-VISION.md` : « 70% … » → « une grande partie des pièces… » ; « 85,000+ pièces référencées » → « Catalogue de pièces détachées neuves et d'occasion contrôlée (volume communiqué avant la mise en production) » ; parcours Google : « 85,000+ pièces, livraison 24-72h » → « Des pièces neuves et d'occasion contrôlée, livraison 24-72h ».
+- `03-PAGES.md` : meta description accueil alignée sur le code ; sous-titre hero et clé `landing.hero.subtitle` → « Pièces détachées neuves et occasion… » ; texte SEO bas de page réécrit sans « première marketplace », « meilleurs prix », « milliers de références » et avec 4 moyens de paiement (ajout Moov Money) ; « Support 7j/7 » → « Support (coordonnées à confirmer) ».
+- `06-SEO.md` : description `/dashboard/marketplace` sans « 85,000+ pièces ».
+- Code : horaires « Lun-Ven 8h-20h, Sam 8h-17h » → « horaires à confirmer avant la mise en production » (LandingPage support client, Footer, `/contact` intro + carte Horaires, `/aide` « Autre question »).
+
+**Conservé** : specs techniques (expiration token 24h, HSTS max-age, couverture de branches >70 % de `22-TESTS.md`, ID propriété GA4, jeton de vérification GSC), figures validées (« livraison 24-72h », « retour 30 jours », « 10 pays »), et l'historique d'audit de `DECISIONS.md`.
+
+**Résultats** : lint OK, tsc OK, tests unitaires (287) OK, tests E2E (4) OK, build OK.
+
+**Impact** : `docs/{00-VISION,03-PAGES,06-SEO}.md`, `src/components/{LandingPage,Footer}.tsx`, `src/lib/marketplace-catalog.ts`, `src/app/(public)/{contact,aide}/page.tsx`, `docs/DECISIONS.md`.
+
+**Complément (même itération)** : suppression des superlatifs non vérifiables restants — « au meilleur prix » → retiré dans la description de catégorie `embrayage` (`marketplace-catalog.ts`) et « à prix transparents » dans le texte SEO garagistes (`LandingPage.tsx`, FR/EN).
+
+---
+
+## D48 — Clarification des constantes du simulateur de paiement V1
+
+**Date** : 06/08/2026 — audit des constantes métier (`src/modules`, `src/contexts`).
+
+**Constat** :
+- Les adaptateurs Mobile Money (`src/modules/payments/providers/*.adapter.ts`) déclarent des frais `fees = { percent: 1.0 / 1.5 / 1.8, fixed: 0 }` et `failureRate = 0.05`.
+- `failureRate` (5 %) et le contrat `ProviderFee` sont **documentés** (`11-MOBILE-MONEY.md`, D7) → conservés.
+- Les **pourcentages de frais spécifiques ne sont documentés nulle part** et constituent des valeurs de simulation non contractuelles. Vérification : ils ne sont **ni affichés** dans l'UI (aucune lecture de `fees.percent` hors adaptateurs/tests) **ni appliqués** au montant (`payments.service.ts` utilise `input.amount` directement).
+
+**Décision** : aucune donnée inventée n'étant exposée, les constantes sont conservées (contrat d'adaptateur documenté, test `fees.percent > 0`). La documentation est rendue explicite : note dans `11-MOBILE-MONEY.md` (section Adaptateurs) précisant que les valeurs `fees` sont des placeholders de simulation, non contractuels, jamais affichés ni appliqués, à confirmer avec les opérateurs avant la mise en production.
+
+**Conservé** : TVA 18 % (documentée `13-ERP.md` et DECISIONS, taux standard ivoirien), `failureRate` 5 % (D7), contrat `ProviderFee`.
+
+**Résultats** : lint OK, tsc OK, tests unitaires (287) OK. Aucune modification de code.
+
+**Impact** : `docs/11-MOBILE-MONEY.md`, `docs/DECISIONS.md`.
+
+---
+
+## D49 — Routes de pages manquantes dans la matrice (documentation)
+
+**Date** : 06/08/2026 — vérification de conformité AGENTS.md « les routes sont définies exclusivement dans `02-ROUTES.md` ».
+
+**Constat** : deux routes de pages fonctionnelles n'apparaissaient pas dans la matrice `docs/02-ROUTES.md` (le code les expose, le build passe, elles sont liées depuis la navigation/le SEO) :
+- `/dashboard/notifications` (page Notifications, alimentée par R126/R127)
+- `/dashboard/parts-search` (recherche de pièces par immatriculation/modèle, `VehiclePartsSearch`)
+
+**Décision** : conformément à l'interdiction « ne créer aucune route non documentée » et au principe « ne supprimer aucune route sans consigne », les deux routes sont **documentées** dans `02-ROUTES.md` (nouvelles lignes R058 et R059, privées, `noindex`, hors sitemap) plutôt que supprimées. Aucune autre route du code n'est manquante (recensement code ↔ matrice vérifié : 21 pages dashboard = 19 documentées + 2 ajoutées).
+
+**Résultats** : lint OK, tsc OK, tests (287) OK, build OK — aucune modification de code.
+
+**Impact** : `docs/02-ROUTES.md`, `docs/DECISIONS.md`.
+
+---
+
+## D50 — Alignement titre SEO `/a-propos` + vérification méta/couverture
+
+**Date** : 06/08/2026 — vérification de conformité des métadonnées (source de vérité `06-SEO.md`) et de la couverture de tests (`22-TESTS.md`).
+
+**Constat** :
+- La page `/a-propos` avait un H1 « Qui sommes-nous ? » mais un titre meta « Qui sommes-nous » — divergence avec `06-SEO.md` (l.52 « Qui sommes-nous ? | AutoAfrique »).
+
+**Décision** :
+- Titre meta `/a-propos` → « Qui sommes-nous ? » (aligné sur le H1 et la doc).
+- Vérification globale des titres de toutes les routes publiques (R023-R032, accueil, marketplace, véhicules, catégories/marques) : tous cohérents avec `06-SEO.md` (les pages utilisent le template racine `%s | AutoAfrique`).
+
+**Couverture (22-TESTS.md : branches > 70 %)** : Branches 72,25 % ✓, Statements 85 %, Functions 89,56 %, Lines 89,71 %.
+
+**Résultats** : lint OK, tsc OK.
+
+**Impact** : `src/app/(public)/a-propos/page.tsx`, `docs/DECISIONS.md`.
+
+## D51 — Câblage des événements de tracking manquants (audit de conformité 09-TRACKING.md)
+
+**Date** : 06/08/2026 — vérification de conformité du schéma de tracking (`09-TRACKING.md`) par rapport aux appels `track(...)` dans le code client.
+
+**Constat** :
+- Le module `src/lib/tracking.ts` (`track`, `trackPageView`) et le `TrackingProvider` couvrent bien les événements de page (`page_view`, `scroll_depth`, `time_on_page`).
+- En revanche, 12 événements du schéma documenté n'étaient pas émis depuis l'UI :
+  - landing : `search_vehicle`, `click_category`, `click_brand`, `click_cta_register`, `click_cta_login` ;
+  - marketplace : `remove_from_cart` ;
+  - commande : `payment_method`, `payment_success`, `payment_fail` ;
+  - CRM : `lead_created`, `lead_converted`, `customer_created`.
+
+**Décision** (câbler ce qui possède un point d'appel réel, sans inventer d'UI) :
+- `search_vehicle` : les deux boutons de recherche du `CarSelector` (immatriculation et marque/modèle), avec `brand`/`model` résolus (vides si non sélectionnés).
+- `click_category` : clic sur une carte catégorie de `PartsCatalog`.
+- `click_brand` : clic sur une marque de `BrandGrid`.
+- `click_cta_login` : lien « Se connecter » du `Header` (uniquement si l'utilisateur n'est pas connecté, `source: 'header'`).
+- `click_cta_register` : **aucun point d'appel** — le CTA « Ouvrir ma boutique » n'existe pas dans l'UI (l'inscription passe par `/auth/register`, couverte par l'événement `register`). Non câblé, documenté.
+- `remove_from_cart` : suppression d'un article dans `/dashboard/cart` (`product_id`).
+- `payment_method` / `payment_success` : flux USSD (`UssdPaymentFlow`) — émis à la sélection d'un opérateur et à la confirmation PIN ; `payment_success` avec `order_id` (référence générée), `amount`, `method`.
+- `payment_fail` : **aucun chemin d'échec** dans le flux de paiement actuel (le simulateur ne produit pas d'échec). Non câblé, documenté.
+- CRM : `customer_created` (`source`) à la création d'un contact, `lead_created` (`source`) à la création d'un lead, `lead_converted` (`lead_id`, `value`) lors du passage d'un lead au statut `converted`.
+
+**Résultats** : lint OK, tsc OK, 287/287 tests OK, build production OK.
+
+**Impact** : `src/components/{CarSelector,PartsCatalog,BrandGrid,Header,UssdPaymentFlow}.tsx`, `src/app/dashboard/{cart,crm}/page.tsx`, `docs/DECISIONS.md`.
+
+
 
 
 

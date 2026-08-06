@@ -16,7 +16,7 @@
 | Balise | Valeur |
 |--------|--------|
 | `<title>` | Marketplace — Pièces détachées automobile \| AutoAfrique |
-| `<meta name="description">` | Parcourez notre catalogue de 85,000+ pièces auto. Filtrez par marque, modèle et prix. Paiement Mobile Money. |
+| `<meta name="description">` | Parcourez notre catalogue de pièces détachées auto neuves et occasion. Filtrez par marque, modèle et prix. Paiement Mobile Money. |
 | `<link rel="canonical">` | `/dashboard/marketplace` |
 | `<meta name="robots">` | index, follow |
 
@@ -53,10 +53,10 @@ Routes publiques indexables, `robots: index, follow`, canonical auto (URL de la 
 | `/conditions-generales` | Conditions générales de vente \| AutoAfrique | Conditions générales de vente d'AutoAfrique : commandes, paiement Mobile Money, livraison 24-72h, retours et garanties en Afrique de l'Ouest. |
 | `/politique-de-confidentialite` | Politique de confidentialité \| AutoAfrique | Politique de confidentialité d'AutoAfrique : quelles données nous collectons, pourquoi, comment elles sont protégées et quels sont vos droits (loi ivoirienne 2013-450). |
 | `/aide` | Centre d'aide \| AutoAfrique | Centre d'aide AutoAfrique : créer un compte Acheteur ou Vendeur, commander, payer en Mobile Money, suivre la livraison 24-72h et retourner une pièce. |
-| `/paiement` | Paiement Mobile Money sécurisé \| AutoAfrique | Paiement sécurisé par Mobile Money sur AutoAfrique : Orange Money, MTN MoMo, Wave. Prix en FCFA affiché, aucune donnée bancaire, reçu dans votre compte. |
+| `/paiement` | Paiement Mobile Money sécurisé \| AutoAfrique | Paiement sécurisé par Mobile Money sur AutoAfrique : Orange Money, MTN MoMo, Moov Money, Wave. Prix en FCFA affiché, aucune donnée bancaire, reçu dans votre compte. |
 | `/livraison` | Livraison 24-72h \| AutoAfrique | Livraison AutoAfrique : expédition en 24-72h, priorité Abidjan et grandes villes d'Afrique de l'Ouest, point de retrait, suivi de commande. |
 | `/contact` | Nous contacter \| AutoAfrique | Contactez l'équipe AutoAfrique : questions, commandes, paiements, livraisons, retours ou devenir vendeur. Service client Afrique de l'Ouest. |
-| `/retours` | Retours et remboursements \| AutoAfrique | Retours et remboursements AutoAfrique : pièce non conforme, non adaptée ou endommagée. Conditions de retour sous 7 jours, remboursement en Mobile Money. |
+| `/retours` | Retours et remboursements \| AutoAfrique | Retours et remboursements AutoAfrique : pièce non conforme, non adaptée ou endommagée. Conditions de retour sous 30 jours, remboursement en Mobile Money. |
 | `/blog` | Le blog AutoAfrique \| AutoAfrique | Conseils automobiles : entretien, achat de pièces détachées, guide des prix, Mobile Money et livraison en Afrique de l'Ouest. Le blog AutoAfrique. |
 | `/manuels-reparation` | Manuels de réparation et tutoriels \| AutoAfrique | Manuels de réparation et tutoriels AutoAfrique pour les véhicules des marques disponibles en Afrique de l'Ouest. Guides pratiques à destination des garagistes et particuliers. |
 

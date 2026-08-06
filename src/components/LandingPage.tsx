@@ -24,7 +24,7 @@ const trustFeatures = [
       </svg>
     ),
     title: { fr: 'Paiement sécurisé', en: 'Secure payment' },
-    desc: { fr: 'Orange Money, MTN MoMo, Wave', en: 'Orange Money, MTN MoMo, Wave' },
+    desc: { fr: 'Orange Money, MTN MoMo, Wave et Moov Money', en: 'Orange Money, MTN MoMo, Wave and Moov Money' },
   },
   {
     icon: (
@@ -32,7 +32,7 @@ const trustFeatures = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
       </svg>
     ),
-    title: { fr: 'Retour 200 jours', en: '200-day return' },
+    title: { fr: 'Retour 30 jours', en: '30-day return' },
     desc: { fr: 'Satisfait ou remboursé', en: 'Satisfaction guaranteed' },
   },
   {
@@ -42,7 +42,7 @@ const trustFeatures = [
       </svg>
     ),
     title: { fr: 'Support client', en: 'Customer support' },
-    desc: { fr: 'Lun-Ven 8h-20h', en: 'Mon-Fri 8am-8pm' },
+    desc: { fr: 'Horaires de contact à confirmer avant la mise en production', en: 'Contact hours to be confirmed before launch' },
   },
 ];
 
@@ -127,8 +127,8 @@ export default function LandingPage() {
           </div>
           <p className="mt-8 text-center text-sm md:text-base text-[var(--color-warm-faint)] leading-relaxed">
             {L(
-              'Le prix affiché est toujours le prix final : pas de surprise au moment de payer. Règlement en Mobile Money (Orange Money, MTN MoMo, Wave) et livraison en 24-72h.',
-              'The displayed price is always the final price: no surprises at checkout. Pay by Mobile Money (Orange Money, MTN MoMo, Wave) and get delivery in 24-72h.'
+              'Le prix affiché est toujours le prix final : pas de surprise au moment de payer. Règlement en Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave) et livraison en 24-72h.',
+              'The displayed price is always the final price: no surprises at checkout. Pay by Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave) and get delivery in 24-72h.'
             )}
           </p>
         </div>
@@ -199,8 +199,8 @@ export default function LandingPage() {
                 </h3>
                 <p className="text-sm md:text-base text-[var(--color-warm-faint)] leading-relaxed">
                   {L(
-                    'Le paiement se fait par Mobile Money (Orange Money, MTN MoMo, Wave), directement et en toute sécurité, avec un reçu conservé dans votre compte.',
-                    'Payment is made by Mobile Money (Orange Money, MTN MoMo, Wave), directly and securely, with a receipt kept in your account.'
+                    'Le paiement se fait par Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave), directement et en toute sécurité, avec un reçu conservé dans votre compte.',
+                    'Payment is made by Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave), directly and securely, with a receipt kept in your account.'
                   )}
                 </p>
               </div>
@@ -234,8 +234,8 @@ export default function LandingPage() {
               </p>
               <p>
                 {L(
-                  'Que vous soyez garagiste, revendeur ou particulier, trouvez les pièces dont vous avez besoin au meilleur prix. Paiement par Mobile Money (Orange Money, MTN MoMo, Wave). Livraison rapide en 24-72h partout en Afrique de l\'Ouest.',
-                  'Whether you\'re a mechanic, dealer or individual, find the parts you need at the best price. Pay with Mobile Money (Orange Money, MTN MoMo, Wave). Fast delivery in 24-72h across West Africa.'
+                  'Que vous soyez garagiste, revendeur ou particulier, trouvez les pièces dont vous avez besoin à prix transparents. Paiement par Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave). Livraison rapide en 24-72h partout en Afrique de l\'Ouest.',
+                  'Whether you\'re a mechanic, dealer or individual, find the parts you need at transparent prices. Pay with Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave). Fast delivery in 24-72h across West Africa.'
                 )}
               </p>
               <button className="text-[var(--color-primary)] font-bold text-base hover:underline">

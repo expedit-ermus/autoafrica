@@ -36,6 +36,7 @@
 | R030 | `/retours` | Public | Page informationnelle | Comprendre les retours | Confiance | Informationnelle | Retours et remboursements | index | oui | aucun | publique |
 | R031 | `/blog` | Public | Page informationnelle | Lire les articles | Rétention | Informationnelle | Le blog AutoAfrique | index | oui | aucun | publique |
 | R032 | `/manuels-reparation` | Public | Page informationnelle | Consulter les manuels | Rétention | Informationnelle | Manuels de réparation et tutoriels | index | oui | aucun | publique |
+| R060 | `/tarifs` | Public | Page commerciale | Consulter les formules SaaS | Conversion | Commerciale | Tarifs et Abonnements SaaS — AutoAfrique | index | oui | Product, Offer | publique |
 | R033 | `/marketplace/categorie/pneus-jantes` | Public | Page catalogue | Trouver des pneus/jantes | Vente | Commerciale | Pièces détachées Pneus & Jantes à Abidjan | index | oui | aucun | publique |
 | R034 | `/marketplace/categorie/frein` | Public | Page catalogue | Trouver des pièces de frein | Vente | Commerciale | Pièces détachées Frein à Abidjan | index | oui | aucun | publique |
 | R035 | `/marketplace/categorie/moteur` | Public | Page catalogue | Trouver des pièces moteur | Vente | Commerciale | Pièces détachées Moteur à Abidjan | index | oui | aucun | publique |
@@ -61,6 +62,8 @@
 | R055 | `/marketplace/marque/bmw` | Public | Page catalogue | Trouver des pièces BMW | Vente | Commerciale | Pièces détachées auto BMW à Abidjan | index | oui | aucun | publique |
 | R056 | `/marketplace/marque/citroen` | Public | Page catalogue | Trouver des pièces Citroën | Vente | Commerciale | Pièces détachées auto Citroën à Abidjan | index | oui | aucun | publique |
 | R057 | `/marketplace/marque/opel` | Public | Page catalogue | Trouver des pièces Opel | Vente | Commerciale | Pièces détachées auto Opel à Abidjan | index | oui | aucun | publique |
+| R058 | `/dashboard/notifications` | App | Notifications | Voir les notifications | Rétention | Navigationnelle | Notifications | noindex | non | aucun | privée |
+| R059 | `/dashboard/parts-search` | App | PartsSearch | Trouver les pièces compatibles de mon véhicule | Vente | Navigationnelle | Trouvez les pièces pour votre véhicule | noindex | non | aucun | privée |
 
 ## Routes API
 

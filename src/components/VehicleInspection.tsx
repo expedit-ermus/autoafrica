@@ -32,7 +32,7 @@ export default function VehicleInspection({ vehicleName, vehicleId }: Props) {
         <div className="flex items-center gap-3 mb-2">
           <span className="text-2xl">🔍</span>
           <div>
-            <h3 className="font-bold">Certification d&apos;Inspection AutoAfrique</h3>
+            <h3 className="font-bold">Inspection Véhicule AutoAfrique</h3>
             <p className="text-emerald-100 text-sm">{vehicleName} • #{vehicleId}</p>
           </div>
         </div>
@@ -120,15 +120,6 @@ export default function VehicleInspection({ vehicleName, vehicleId }: Props) {
             })}
           </div>
         </div>
-
-        {/* Certification badge */}
-        {ratedItems >= totalItems * 0.8 && (
-          <div className="mt-4 bg-gradient-to-r from-yellow-400 to-orange-400 rounded-xl p-4 text-center">
-            <p className="text-3xl mb-2">🏆</p>
-            <p className="font-bold text-white">Véhicule Certifié AutoAfrique</p>
-            <p className="text-xs text-yellow-100">Score global: {averageScore}/5 - Inspecté et vérifié</p>
-          </div>
-        )}
 
         <button className="mt-4 btn-primary w-full text-center !py-3">
           Enregistrer l&apos;inspection

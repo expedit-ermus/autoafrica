@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useApp } from '@/contexts/AppContext';
+import { track } from '@/lib/tracking';
 
 // Vignettes neutres : dégradés de la palette + icône SVG, aucune image distante
 // (remplace les anciennes photos Unsplash non validées, cf. DECISIONS.md D39).
@@ -116,6 +117,7 @@ export default function PartsCatalog() {
             <Link
               key={cat.id}
               href={`/marketplace/categorie/${cat.slug}`}
+              onClick={() => track('click_category', { category_name: cat.name[locale as 'fr' | 'en'] })}
               className="group relative bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--color-primary)]/10 transition-all duration-300 overflow-hidden"
             >
               <div className={`relative aspect-square overflow-hidden bg-gradient-to-br ${cat.bg}`}>

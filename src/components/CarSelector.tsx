@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
+import { track } from '@/lib/tracking';
 
 const carMakes = [
   { id: 13, name: 'Suzuki', popular: true },
@@ -127,6 +128,8 @@ export default function CarSelector() {
 
   const availableModels = selectedMake ? carModels[selectedMake] || [] : [];
   const availableEngines = selectedModel ? carEngines[selectedModel] || [] : [];
+  const selectedBrandName = selectedMake ? carMakes.find(m => m.id === selectedMake)?.name ?? '' : '';
+  const selectedModelName = selectedModel ? (carModels[selectedMake ?? -1] || []).find(m => m.id === selectedModel)?.name ?? '' : '';
 
   return (
     <div className="bg-white rounded-3xl shadow-xl shadow-[var(--color-earth)]/8 border border-[var(--color-warm-border)] overflow-hidden">
@@ -159,7 +162,7 @@ export default function CarSelector() {
                 className="flex-1 min-w-0 px-4 py-3.5 border-2 border-l-0 border-[var(--color-warm-border)] rounded-r-xl rounded-l-none text-lg font-mono uppercase focus:border-[var(--color-primary)] focus:outline-none transition-colors text-[var(--color-warm-ink)] placeholder-[var(--color-warm-muted)]"
               />
             </div>
-            <button className="shrink-0 px-5 sm:px-7 py-3.5 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-xl transition-all shadow-lg shadow-[var(--color-primary)]/30 whitespace-nowrap">
+            <button onClick={() => track('search_vehicle', { brand: '', model: '' })} className="shrink-0 px-5 sm:px-7 py-3.5 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-xl transition-all shadow-lg shadow-[var(--color-primary)]/30 whitespace-nowrap">
               {L('Rechercher', 'Search')}
             </button>
           </div>
@@ -241,7 +244,7 @@ export default function CarSelector() {
             </select>
           </div>
 
-          <button className="w-full px-7 py-4 bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-secondary-light)] hover:from-[var(--color-secondary-light)] hover:to-[var(--color-secondary)] text-white font-bold rounded-xl transition-all shadow-lg text-lg">
+          <button onClick={() => track('search_vehicle', { brand: selectedBrandName, model: selectedModelName })} className="w-full px-7 py-4 bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-secondary-light)] hover:from-[var(--color-secondary-light)] hover:to-[var(--color-secondary)] text-white font-bold rounded-xl transition-all shadow-lg text-lg">
             {L('Rechercher les pièces', 'Search parts')}
           </button>
         </div>

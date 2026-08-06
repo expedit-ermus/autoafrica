@@ -15,7 +15,7 @@ export default function ContactPage() {
         <h1 className="text-3xl md:text-4xl font-extrabold text-[var(--color-warm-ink)] mb-3 tracking-tight">Nous contacter</h1>
         <p className="text-[var(--color-warm-muted)] mb-10 max-w-2xl">
           Une question sur une pièce, une commande, un paiement Mobile Money ou une livraison ? Notre équipe vous
-          accompagne du lundi au vendredi de 8h à 20h et le samedi de 8h à 17h.
+          accompagne via ce formulaire ; les horaires seront communiqués avant la mise en production.
         </p>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -55,7 +55,7 @@ export default function ContactPage() {
                   <span className="w-8 h-8 rounded-xl bg-[var(--color-bg-warm)] flex items-center justify-center shrink-0 text-base">H</span>
                   <div>
                     <p className="font-semibold text-gray-800">Horaires</p>
-                    <p className="mt-0.5">Lun-Ven : 8h-20h · Sam : 8h-17h · Zone Afrique de l&apos;Ouest.</p>
+                    <p className="mt-0.5">Horaires à confirmer avant la mise en production · Zone Afrique de l&apos;Ouest.</p>
                   </div>
                 </li>
               </ul>

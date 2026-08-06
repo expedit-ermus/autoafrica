@@ -28,7 +28,7 @@ export default function Footer() {
               <h3 className="text-white font-extrabold text-xl mb-3">
                 {L('Réparer sa voiture n\'a jamais été aussi simple', 'Fixing your car has never been easier')}
               </h3>
-              <p className="text-white/70 text-base">{L('Rejoignez des milliers de garagistes en Afrique de l\'Ouest', 'Join thousands of mechanics in West Africa')}</p>
+              <p className="text-white/70 text-base">{L('Rejoignez les garagistes en Afrique de l\'Ouest', 'Join the mechanic community in West Africa')}</p>
             </div>
             <div className="text-center md:text-right">
               <div className="text-3xl font-extrabold tracking-tight">Auto<span className="text-[var(--color-primary)]">Afrique</span></div>
@@ -86,7 +86,7 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
               <h4 className="text-white font-bold mb-4 text-base">
-                {L('Abonnez-vous et recevez 5 000 FCFA de réduction', 'Subscribe and get 5,000 FCFA off')}
+                {L('Abonnez-vous pour suivre l\'actualité AutoAfrique', 'Subscribe to follow AutoAfrique news')}
               </h4>
               <div className="flex gap-3">
                 <input
@@ -111,6 +111,7 @@ export default function Footer() {
                 {[
                   { name: 'Orange Money', color: '#FF6600', icon: '🟠' },
                   { name: 'MTN MoMo', color: '#FFCC00', icon: '🟡' },
+                  { name: 'Moov Money', color: '#0066CC', icon: '🔷' },
                   { name: 'Wave', color: '#00B4D8', icon: '🔵' },
                 ].map((p) => (
                   <div
@@ -140,7 +141,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4 text-sm text-white/50">
               <span>© {new Date().getFullYear()} AutoAfrique.</span>
-              <span>{L('Service client : Lun-Ven 8h-20h, Sam 8h-17h', 'Customer service: Mon-Fri 8am-8pm, Sat 8am-5pm')}</span>
+              <span>{L('Service client : horaires à confirmer avant la mise en production', 'Customer service: hours to be confirmed before launch')}</span>
             </div>
             <select className="bg-white/10 border border-white/15 rounded-xl px-4 py-2 text-sm text-white/85 focus:outline-none font-medium">
               {countries.map((c) => (

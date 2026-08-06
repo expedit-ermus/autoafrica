@@ -4,7 +4,7 @@ import LegalPage from '@/components/LegalPage';
 export const metadata: Metadata = {
   title: 'Retours et remboursements',
   description:
-    "Retours et remboursements AutoAfrique : pièce non conforme, non adaptée ou endommagée. Conditions de retour sous 7 jours, remboursement en Mobile Money.",
+    "Retours et remboursements AutoAfrique : pièce non conforme, non adaptée ou endommagée. Conditions de retour sous 30 jours, remboursement en Mobile Money.",
 };
 
 export default function RetoursPage() {
@@ -24,7 +24,7 @@ export default function RetoursPage() {
         {
           heading: 'Délais',
           body: [
-            'Le retour doit être demandé dans les 7 jours suivant la réception du colis, via la page de contact ou la section Commandes de votre compte. Au-delà, le retour pourra être refusé.',
+            'Le retour doit être demandé dans les 30 jours suivant la réception du colis, via la page de contact ou la section Commandes de votre compte. Au-delà, le retour pourra être refusé.',
           ],
         },
         {
@@ -36,7 +36,7 @@ export default function RetoursPage() {
         {
           heading: 'Remboursement',
           body: [
-            'Une fois la pièce réceptionnée et contrôlée, le remboursement est effectué sous 48h par Mobile Money (Orange Money, MTN MoMo ou Wave) sur le numéro ayant servi au paiement.',
+            'Une fois la pièce réceptionnée et contrôlée, le remboursement est effectué sous 48h par Mobile Money (Orange Money, MTN MoMo, Moov Money ou Wave) sur le numéro ayant servi au paiement.',
             'En cas de pièce éligible, un échange peut être proposé si la pièce équivalente est disponible.',
           ],
         },

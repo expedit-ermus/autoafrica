@@ -30,7 +30,7 @@ export default function AidePage() {
         {
           heading: 'Comment payer ?',
           body: [
-            'Les paiements se font par Mobile Money : Orange Money, MTN MoMo ou Wave. Le prix affiché est le prix final en FCFA. Vous recevez une notification sur votre téléphone pour confirmer le paiement. Détails sur la page Paiement.',
+            'Les paiements se font par Mobile Money : Orange Money, MTN MoMo, Moov Money ou Wave. Le prix affiché est le prix final en FCFA. Vous recevez une notification sur votre téléphone pour confirmer le paiement. Détails sur la page Paiement.',
           ],
         },
         {
@@ -42,7 +42,7 @@ export default function AidePage() {
         {
           heading: 'Retourner une pièce',
           body: [
-            'Vous disposez de 7 jours après réception pour demander un retour si la pièce est non conforme, endommagée ou non adaptée (sous conditions). Le remboursement est effectué sous 48h en Mobile Money. Détails sur la page Retours.',
+            'Vous disposez de 30 jours après réception pour demander un retour si la pièce est non conforme, endommagée ou non adaptée (sous conditions). Le remboursement est effectué sous 48h en Mobile Money. Détails sur la page Retours.',
           ],
         },
         {
@@ -60,7 +60,7 @@ export default function AidePage() {
         {
           heading: 'Autre question',
           body: [
-            'Pour toute question non couverte ici, utilisez le formulaire de la page de contact. Notre équipe vous répond du lundi au vendredi de 8h à 20h et le samedi de 8h à 17h.',
+            'Pour toute question non couverte ici, utilisez le formulaire de la page de contact. Notre équipe vous répond via ce formulaire ; les horaires seront communiqués avant la mise en production.',
           ],
         },
       ]}

@@ -169,12 +169,14 @@ export default function VehiclesPage() {
           </p>
           <div className="flex items-center justify-between mt-auto pt-3">
             <p className="text-lg font-extrabold text-gray-900">{formatCFA(v.price)} <span className="text-xs font-normal text-gray-400">FCFA</span></p>
-            <button
-              onClick={(e) => { e.stopPropagation(); contactSeller(v); }}
-              className="px-3 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:from-orange-600 hover:to-amber-600 transition text-xs font-semibold"
-            >
-              Contacter
-            </button>
+            {getSeller(v)?.phone && (
+              <button
+                onClick={(e) => { e.stopPropagation(); contactSeller(v); }}
+                className="px-3 py-2 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:from-orange-600 hover:to-amber-600 transition text-xs font-semibold"
+              >
+                Contacter
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -386,9 +388,11 @@ export default function VehiclesPage() {
                   <p className="text-sm font-bold text-gray-900">{getSeller(detail)?.shopName || `${getSeller(detail)?.firstName || ''} ${getSeller(detail)?.lastName || ''}`.trim() || 'Vendeur'}</p>
                   <p className="text-xs text-gray-500 mt-0.5">{getSeller(detail)?.city ? `📍 ${getSeller(detail)?.city}` : 'Côte d\'Ivoire'}</p>
                 </div>
-                <button onClick={() => contactSeller(detail)} className="px-4 py-2.5 rounded-xl bg-[#25D366] text-white text-sm font-semibold hover:opacity-90 transition">
-                  Contacter sur WhatsApp
-                </button>
+                {getSeller(detail)?.phone && (
+                  <button onClick={() => contactSeller(detail)} className="px-4 py-2.5 rounded-xl bg-[#25D366] text-white text-sm font-semibold hover:opacity-90 transition">
+                    Contacter sur WhatsApp
+                  </button>
+                )}
               </div>
             )}
           </div>

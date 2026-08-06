@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import { analyticsService } from '@/modules/analytics/analytics.service'
+import type { TrackEventInput } from '@/modules/analytics/analytics.service'
 import { optionalAuth, requireAuth } from '@/modules/auth/auth.guard'
 import { successResponse, handleApiError } from '@/shared/utils/response'
 
@@ -41,11 +42,16 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const auth = await optionalAuth(request)
-    const body = await request.json()
+    let body: Partial<TrackEventInput> = {}
+    try {
+      body = await request.json()
+    } catch {
+      body = {}
+    }
     const ua = request.headers.get('user-agent')
 
     const event = await analyticsService.trackEvent({
-      event: body.event,
+      event: body.event ?? '',
       userId: body.userId || auth?.userId || undefined,
       sessionId: body.sessionId,
       entity: body.entity,

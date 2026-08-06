@@ -48,7 +48,7 @@ Inscription vendeur/acheteur
 ### SEO
 - Un seul H1 : "AutoAfrique — Pièces Auto Marketplace Afrique de l'Ouest"
 - Title : "AutoAfrique : Pièces détachées auto & Marketplace Afrique de l'Ouest"
-- Meta description : "85,000+ pièces pour Toyota, Hyundai, Kia, Peugeot. Paiement Mobile Money. Livraison 24-72h en Afrique de l'Ouest."
+- Meta description : "Achetez pièces détachées auto neuves et occasion à Abidjan, Côte d'Ivoire. Prix transparents, garantie incluse, paiement Mobile Money, Afrique de l'Ouest."
 - URL canonique : `/`
 - Données structurées : Organization, WebSite
 - Fil d'Ariane : non (page d'accueil)
@@ -707,17 +707,17 @@ Activation de la vente → publication de produits
 
 #### Hero
 - Titre : "Trouvez la pièce qu'il vous faut"
-- Sous-titre : "85,000+ pièces pour Toyota, Hyundai, Kia, Peugeot"
+- Sous-titre : "Pièces détachées neuves et occasion pour Toyota, Hyundai, Kia, Peugeot"
 - CTA : "Trouver une pièce"
 
 #### Barre de confiance
 - Livraison 24-72h
 - Paiement sécurisé
 - Retour 30 jours
-- Support 7j/7
+- Support (délais et coordonnées à confirmer avant la mise en production)
 
 #### Texte SEO (bas de page)
-> AutoAfrique est la première marketplace de pièces détachées automobile en Afrique de l'Ouest. Nous connectons directement les acheteurs aux fournisseurs, éliminant les intermédiaires pour vous offrir les meilleurs prix sur des milliers de références. Que vous cherchiez des freins, des filtres, de l'électronique ou des pièces moteur, notre catalogue couvre toutes les catégories pour les marques les plus populaires du marché africain : Toyota, Hyundai, Kia, Peugeot, Mercedes, Renault et bien d'autres. Payez facilement par Mobile Money — Orange Money, MTN MoMo ou Wave — et recevez vos pièces en 24 à 72 heures partout en Afrique de l'Ouest.
+> AutoAfrique est une plateforme de pièces détachées automobile en Afrique de l'Ouest. Nous connectons directement les acheteurs aux fournisseurs. Que vous cherchiez des freins, des filtres, de l'électronique ou des pièces moteur, notre catalogue couvre plusieurs catégories pour les marques populaires du marché africain : Toyota, Hyundai, Kia, Peugeot, Mercedes, Renault et d'autres. Payez par Mobile Money — Orange Money, MTN MoMo, Moov Money ou Wave — et recevez vos pièces en 24 à 72 heures en Afrique de l'Ouest.
 
 ### Catégories
 
@@ -841,12 +841,12 @@ common.*
 | Cle | FR | EN |
 |-----|----|----|
 | landing.hero.title | Trouvez la piece qu'il vous faut | Find the part you need |
-| landing.hero.subtitle | 85,000+ pieces pour Toyota, Hyundai, Kia, Peugeot | 85,000+ parts for Toyota, Hyundai, Kia, Peugeot |
+| landing.hero.subtitle | Pieces detachees neuves et occasion pour Toyota, Hyundai, Kia, Peugeot | New and used parts for Toyota, Hyundai, Kia, Peugeot |
 | landing.hero.cta | Trouver une piece | Find a part |
 | landing.trust.shipping | Livraison 24-72h | Delivery 24-72h |
 | landing.trust.payment | Paiement securise | Secure payment |
 | landing.trust.return | Retour 30 jours | 30-day returns |
-| landing.trust.support | Support 7j/7 | Support 7 days/week |
+| landing.trust.support | Support (coordonnees a confirmer) | Support (contact details to be confirmed) |
 | landing.cta.register | Ouvrir ma boutique gratuitement | Open my shop for free |
 | landing.cta.login | Se connecter | Log in |
 | landing.footer.description | Marketplace de pieces auto en Afrique de l'Ouest | Auto parts marketplace in West Africa |

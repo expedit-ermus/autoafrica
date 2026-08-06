@@ -7,6 +7,7 @@ import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
 import Modal from '@/components/Modal';
 import QRCodeDisplay from '@/components/QRCodeDisplay';
+import { track } from '@/lib/tracking';
 
 type Customer = {
   id: string;
@@ -160,6 +161,7 @@ export default function CRMPage() {
       });
       const data = await res.json();
       if (data.success) {
+        track('customer_created', { source: form.source });
         addToast('success', `${form.name} ajouté aux contacts`);
         setShowAdd(false);
         setForm({ name: '', email: '', phone: '', country: 'CI', type: 'garage', notes: '', source: 'web' });
@@ -225,6 +227,7 @@ export default function CRMPage() {
       });
       const data = await res.json();
       if (data.success) {
+        track('lead_created', { source: leadForm.source });
         addToast('success', `Lead "${leadForm.name}" créé`);
         setShowAdd(false);
         setLeadForm({ name: '', phone: '', email: '', source: 'web', value: 0, notes: '' });
@@ -248,6 +251,10 @@ export default function CRMPage() {
       });
       const data = await res.json();
       if (data.success) {
+        if (newStatus === 'converted') {
+          const convertedLead = leads.find(l => l.id === id);
+          track('lead_converted', { lead_id: id, value: convertedLead?.value ?? 0 });
+        }
         addToast('success', 'Statut mis à jour');
         setRefreshKey(k => k + 1);
       } else {

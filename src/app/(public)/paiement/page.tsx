@@ -4,7 +4,7 @@ import LegalPage from '@/components/LegalPage';
 export const metadata: Metadata = {
   title: 'Paiement Mobile Money sécurisé',
   description:
-    "Paiement sécurisé par Mobile Money sur AutoAfrique : Orange Money, MTN MoMo, Wave. Prix en FCFA affiché, aucune donnée bancaire, reçu dans votre compte.",
+    "Paiement sécurisé par Mobile Money sur AutoAfrique : Orange Money, MTN MoMo, Moov Money, Wave. Prix en FCFA affiché, aucune donnée bancaire, reçu dans votre compte.",
 };
 
 export default function PaiementPage() {
@@ -18,7 +18,7 @@ export default function PaiementPage() {
         {
           heading: 'Moyens de paiement acceptés',
           body: [
-            'Orange Money (Côte d\'Ivoire, Sénégal, Mali, Burkina Faso, Niger, Guinée-Bissau), MTN MoMo (Côte d\'Ivoire, Bénin, Togo, Ghana, Nigeria) et Wave (Côte d\'Ivoire, Sénégal, Mali, Burkina Faso, Niger, Guinée-Bissau).',
+            'Orange Money (Côte d\'Ivoire, Sénégal, Mali, Burkina Faso, Bénin, Niger, Togo), MTN MoMo (Côte d\'Ivoire, Sénégal, Ghana, Cameroun, Nigeria), Moov Money (Côte d\'Ivoire, Bénin, Togo, Burkina Faso) et Wave (Sénégal, Mali, Burkina Faso, Côte d\'Ivoire).',
             'D\'autres moyens de paiement pourront être ajoutés au fil du temps ; ils seront annoncés dans le centre d\'aide.',
           ],
         },

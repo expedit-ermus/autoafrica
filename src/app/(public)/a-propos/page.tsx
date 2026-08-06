@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import LegalPage from '@/components/LegalPage';
 
 export const metadata: Metadata = {
-  title: 'Qui sommes-nous',
+  title: 'Qui sommes-nous ?',
   description:
     "Découvrez AutoAfrique, la marketplace de pièces détachées automobiles en Afrique de l'Ouest, priorité Abidjan (Côte d'Ivoire). Paiement Mobile Money, livraison 24-72h.",
 };
@@ -19,7 +19,7 @@ export default function AProposPage() {
           heading: 'Notre mission',
           body: [
             "AutoAfrique connecte les garagistes, revendeurs et particuliers autour des pièces détachées automobiles. Notre marché prioritaire est Abidjan, en Côte d'Ivoire, avec un lancement prévu à Dakar (Sénégal) dans un second temps.",
-            'Nous proposons des pièces neuves et d\'occasion contrôlée, avec un prix affiché transparent, un paiement en Mobile Money (Orange Money, MTN MoMo, Wave) et une livraison locale en 24-72h.',
+            'Nous proposons des pièces neuves et d\'occasion contrôlée, avec un prix affiché transparent, un paiement en Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave) et une livraison locale en 24-72h.',
           ],
         },
         {

@@ -5,7 +5,20 @@ import path from 'path'
 import crypto from 'crypto'
 import { fileURLToPath } from 'url'
 
+// ⚠️ SEED DEV-ONLY — ce script injecte des données fictives (clients, produits,
+// fournisseurs, ventes, avis, analytics…) destinées au développement local.
+// Il est FORMELLEMENT interdit de l'exécuter sur une base de production
+// (cf. DECISIONS.md D43). Le garde ci-dessous bloque tout seed sur une base
+// distante sauf confirmation explicite via SEED_ALLOW_REMOTE=1 (environnement
+// non-prod uniquement).
+
 const isRemote = process.env.DATABASE_URL && (process.env.DATABASE_URL.startsWith('libsql://') || process.env.DATABASE_URL.startsWith('wss://'))
+
+if (isRemote && process.env.SEED_ALLOW_REMOTE !== '1') {
+  console.error('[seed] Refus : base distante détectée. Ce seed est réservé au développement local. Pour un environnement distant volontairement ciblé (non-prod uniquement), relancez avec SEED_ALLOW_REMOTE=1.')
+  process.exit(1)
+}
+
 let db
 if (isRemote) {
   const client = createClient({ url: process.env.DATABASE_URL, authToken: process.env.TURSO_AUTH_TOKEN })

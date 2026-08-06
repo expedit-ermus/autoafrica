@@ -25,7 +25,7 @@ describe('buildOrganizationSchema', () => {
   it('lists all served countries from the documentation', () => {
     const schema = buildOrganizationSchema()
 
-    expect(schema.areaServed).toEqual(['SN', 'CI', 'ML', 'BF', 'NE', 'GM', 'GN', 'BJ', 'TG', 'GH'])
+    expect(schema.areaServed).toEqual(['CI', 'SN', 'ML', 'BF', 'NE', 'BJ', 'TG', 'GW', 'NG', 'GH'])
   })
 
   it('contains no fake social profiles', () => {
