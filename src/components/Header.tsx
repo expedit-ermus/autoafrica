@@ -5,6 +5,7 @@ import { useApp } from '@/contexts/AppContext';
 import { track } from '@/lib/tracking';
 
 const categoryNav = [
+  { name: { fr: 'Tarifs & Abonnements', en: 'Pricing' }, icon: '🏷️', href: '/tarifs', highlight: true },
   { name: { fr: 'Pneus', en: 'Tyres' }, icon: '🛞', href: '/marketplace/categorie/pneus-jantes' },
   { name: { fr: 'Frein', en: 'Brakes' }, icon: '🔴', href: '/marketplace/categorie/frein' },
   { name: { fr: 'Moteur', en: 'Engine' }, icon: '⚙️', href: '/marketplace/categorie/moteur' },
@@ -173,7 +174,11 @@ export default function Header() {
               <Link
                 key={cat.name.fr}
                 href={cat.href}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm text-white/75 hover:text-white hover:bg-[var(--color-primary)]/15 transition-all whitespace-nowrap font-medium"
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm transition-all whitespace-nowrap font-medium ${
+                  cat.highlight
+                    ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] text-white font-bold shadow-md shadow-[var(--color-primary)]/20 hover:brightness-110'
+                    : 'text-white/75 hover:text-white hover:bg-[var(--color-primary)]/15'
+                }`}
               >
                 <span className="text-base">{cat.icon}</span>
                 <span>{cat.name[locale as 'fr' | 'en']}</span>
