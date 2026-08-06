@@ -230,6 +230,17 @@ Note : les pages publiques indexables sous `/dashboard/` (R005 marketplace, R017
   - `/google67878e31d8998189.html` (contenu `google-site-verification: google67878e31d8998189.html`)
 - Propriété à vérifier dans Google Search Console : `https://autoafrique-saas.vercel.app/`
 
+### Session SEO — 2026-08-06
+
+Audit via le serveur MCP GSC (`gsc-server`, scope `webmasters`) :
+
+- **Propriété** : `https://autoafrique-saas.vercel.app/` (permission `siteOwner`, vérifiée).
+- **Accueil** : indexé (`PASS`, soumis et indexé, crawl mobile 05/08/2026, robots autorisé, canonical OK).
+- **Sitemap soumis** : `https://autoafrique-saas.vercel.app/sitemap.xml` → soumis le 06/08/2026 02:23 UTC, statut *Pending processing* (37 URLs). A relancer une inspection une fois le traitement terminé.
+- **Pages `/dashboard/*` privées** (analytics, inventory, orders, crm…) : `URL is unknown to Google` — attendu (espaces authentifiés, `Disallow` + noindex).
+- **Données Search** (28 jours) : 0 clic / 0 impression — normal : propriété récente, crawl en cours via le sitemap.
+- **Audit dynamique : à refaire après ~48 h** pour vérifier l'indexation des 37 URLs publiques puis surveiller clics/impressions.
+
 ## Recherche interne
 
 - Route : `/dashboard/marketplace?search=...`
