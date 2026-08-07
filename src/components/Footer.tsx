@@ -134,25 +134,32 @@ export default function Footer() {
                   { name: 'MTN MoMo', color: '#FFCC00', icon: '🟡' },
                   { name: 'Moov Money', color: '#0066CC', icon: '🔷' },
                 ].map((p) => (
-                  <div
+                  <Link
                     key={p.name}
-                    className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-xl text-sm text-white/85 font-semibold border border-white/10"
+                    href="/paiement"
+                    className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-sm text-white font-semibold border border-white/15 transition-all cursor-pointer hover:scale-105"
                   >
                     <span>{p.icon}</span>
                     {p.name}
-                  </div>
+                  </Link>
                 ))}
               </div>
               <h4 className="text-white font-bold mb-4 text-base">
                 {L('Transporteurs', 'Carriers')}
               </h4>
               <div className="flex flex-wrap gap-2.5">
-                <div className="px-4 py-2 bg-white/10 rounded-xl text-sm text-white/85 font-semibold border border-white/10">
+                <Link
+                  href="/livraison"
+                  className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-sm text-white font-semibold border border-white/15 transition-all cursor-pointer hover:scale-105"
+                >
                   {L('Livraison locale partenaire', 'Local partner delivery')}
-                </div>
-                <div className="px-4 py-2 bg-white/10 rounded-xl text-sm text-white/85 font-semibold border border-white/10">
+                </Link>
+                <Link
+                  href="/livraison"
+                  className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-sm text-white font-semibold border border-white/15 transition-all cursor-pointer hover:scale-105"
+                >
                   {L('Expédition Gare Routière', 'Bus station shipping')}
-                </div>
+                </Link>
               </div>
             </div>
           </div>
