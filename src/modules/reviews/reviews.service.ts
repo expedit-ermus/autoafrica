@@ -50,16 +50,16 @@ export class ReviewsService {
 
     const averageRating = agg._avg.rating ? Math.round(agg._avg.rating * 10) / 10 : 0
 
-    const userIds = [...new Set(reviews.map(r => r.userId))]
+    const userIds = [...new Set(reviews.map((r: { userId: string }) => r.userId))]
     const users = userIds.length > 0
       ? await prisma.user.findMany({
           where: { id: { in: userIds } },
           select: { id: true, firstName: true, lastName: true, shopName: true },
         })
       : []
-    const userMap = new Map(users.map(u => [u.id, u]))
+    const userMap = new Map(users.map((u: { id: string; firstName?: string; lastName?: string; shopName?: string | null }) => [u.id, u]))
 
-    const enriched = reviews.map(r => ({
+    const enriched = reviews.map((r: { content?: string | null; userId: string; [key: string]: unknown }) => ({
       ...r,
       comment: r.content,
       author: userMap.get(r.userId) || { firstName: 'Utilisateur', lastName: '' },

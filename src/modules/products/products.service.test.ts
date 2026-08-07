@@ -43,7 +43,7 @@ describe('ProductsService', () => {
           }),
         }),
       );
-      expect(result.data[0].id).toBe('p1');
+      expect((result.data as unknown as { id: string }[])[0].id).toBe('p1');
     });
 
     it('searches title, reference and description', async () => {

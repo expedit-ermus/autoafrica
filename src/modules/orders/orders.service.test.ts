@@ -39,7 +39,7 @@ describe('OrdersService', () => {
       expect(mockPrisma.order.findMany).toHaveBeenCalledWith(
         expect.objectContaining({ where: expect.objectContaining({ items: { some: { sellerId: 'seller-1' } } }) }),
       );
-      expect(result.data[0].id).toBe('o1');
+      expect((result.data as { id: string }[])[0].id).toBe('o1');
     });
 
     it('filters by date range', async () => {

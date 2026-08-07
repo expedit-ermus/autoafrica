@@ -90,7 +90,7 @@ export class ProductsService {
       prisma.product.count({ where }),
     ])
 
-    const withRatings = products.map(p => {
+    const withRatings = products.map((p: Record<string, unknown>) => {
       const { reviews } = p as { reviews?: { rating: number }[] }
       const list = reviews || []
       const _avgRating = list.length > 0

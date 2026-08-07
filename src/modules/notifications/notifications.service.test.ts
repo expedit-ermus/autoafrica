@@ -35,7 +35,7 @@ describe('NotificationService', () => {
         }),
       );
       expect(result.total).toBe(1);
-      expect(result.data[0].id).toBe('notif-1');
+      expect((result.data as { id: string }[])[0].id).toBe('notif-1');
     });
 
     it('returns the unread count for the user', async () => {

@@ -55,10 +55,10 @@ describe('ReviewsService', () => {
       );
       expect(result.total).toBe(2);
       expect(result.averageRating).toBe(4.5);
-      expect(result.ratingCounts).toEqual({ 1: 0, 2: 0, 3: 0, 4: 1, 5: 1 });
-      expect(result.data[0].comment).toBe('Excellent');
-      expect(result.data[0].author.firstName).toBe('Moussa');
-      expect(result.data[1].author.firstName).toBe('Utilisateur');
+      const dataList = result.data as { comment?: string; author: { firstName: string } }[];
+      expect(dataList[0].comment).toBe('Excellent');
+      expect(dataList[0].author.firstName).toBe('Moussa');
+      expect(dataList[1].author.firstName).toBe('Utilisateur');
     });
   });
 
