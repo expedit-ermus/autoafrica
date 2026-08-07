@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+// @vitest-environment happy-dom
 import { describe, it, expect, afterEach } from 'vitest';
 import { cleanup, renderHook } from '@testing-library/react';
 import { buildDocumentTitle, useDocumentTitle } from './useDocumentTitle';

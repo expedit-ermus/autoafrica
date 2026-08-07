@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+// @vitest-environment happy-dom
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { cleanup, render, screen, fireEvent } from '@testing-library/react';
 import Modal from './Modal';
