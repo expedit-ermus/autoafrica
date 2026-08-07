@@ -6,7 +6,8 @@ import { useApp } from '@/contexts/AppContext';
 import { track } from '@/lib/tracking';
 
 const categoryNav = [
-  { name: { fr: 'Tarifs & Abonnements', en: 'Pricing' }, icon: '🏷️', href: '/tarifs', highlight: true },
+  { name: { fr: 'Catalogue complet', en: 'Full catalogue' }, icon: '🔍', href: '/catalogue', highlight: true },
+  { name: { fr: 'Tarifs & Abonnements', en: 'Pricing' }, icon: '🏷️', href: '/tarifs' },
   { name: { fr: 'Pneus', en: 'Tyres' }, icon: '🛞', href: '/marketplace/categorie/pneus-jantes' },
   { name: { fr: 'Frein', en: 'Brakes' }, icon: '🔴', href: '/marketplace/categorie/frein' },
   { name: { fr: 'Moteur', en: 'Engine' }, icon: '⚙️', href: '/marketplace/categorie/moteur' },
@@ -14,7 +15,6 @@ const categoryNav = [
   { name: { fr: 'Huile moteur', en: 'Engine oil' }, icon: '🛢️', href: '/marketplace/categorie/huiles-fluides' },
   { name: { fr: 'Jantes', en: 'Rims' }, icon: '⭕', href: '/marketplace/categorie/pneus-jantes' },
   { name: { fr: 'Accessoires', en: 'Accessories' }, icon: '📦', href: '/marketplace/categorie/autres' },
-  { name: { fr: 'Outillage', en: 'Tools' }, icon: '🔨', href: '/marketplace/categorie/autres' },
 ];
 
 export default function Header() {
@@ -72,6 +72,10 @@ export default function Header() {
           <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto scrollbar-hide">
             <Link href="/" className="hover:text-[var(--color-primary)] transition-colors font-bold tracking-wide whitespace-nowrap">
               {L('BOUTIQUE', 'SHOP')}
+            </Link>
+            <span className="text-white/30">|</span>
+            <Link href="/catalogue" className="hover:text-[var(--color-primary)] transition-colors font-bold tracking-wide text-[var(--color-primary)] whitespace-nowrap">
+              {L('CATALOGUE', 'CATALOGUE')}
             </Link>
             <span className="text-white/30">|</span>
             <Link href="/dashboard" className="hover:text-[var(--color-primary)] transition-colors font-medium whitespace-nowrap">
@@ -318,7 +322,8 @@ export default function Header() {
               <ul className="space-y-1">
                 {[
                   { href: '/', label: { fr: '🏠 Boutique', en: '🏠 Shop' } },
-                  { href: '/tarifs', label: { fr: '🏷️ Tarifs & Abonnements', en: '🏷️ Pricing' }, highlight: true },
+                  { href: '/catalogue', label: { fr: '🔍 Catalogue pièces', en: '🔍 Parts catalogue' }, highlight: true },
+                  { href: '/tarifs', label: { fr: '🏷️ Tarifs & Abonnements', en: '🏷️ Pricing' } },
                   { href: '/dashboard', label: { fr: '⚡ Mon Club', en: '⚡ My Club' } },
                   { href: '/dashboard/vehicles', label: { fr: '🚗 Mes Véhicules', en: '🚗 My Vehicles' } },
                   { href: '/dashboard/cart', label: { fr: `🛒 Panier (${cartCount})`, en: `🛒 Cart (${cartCount})` } },
