@@ -9,22 +9,24 @@ interface Make {
   id: number;
   name: string;
   popular: boolean;
-  icon: string;
 }
 
 const carMakes: Make[] = [
-  { id: 1, name: 'Toyota', popular: true, icon: '🏎️' },
-  { id: 4, name: 'Peugeot', popular: true, icon: '🦁' },
-  { id: 2, name: 'Hyundai', popular: true, icon: '⚡' },
-  { id: 3, name: 'Kia', popular: true, icon: '🇰🇷' },
-  { id: 9, name: 'Nissan', popular: true, icon: '🚘' },
-  { id: 6, name: 'Renault', popular: true, icon: '🚗' },
-  { id: 14, name: 'Mitsubishi', popular: true, icon: '💎' },
-  { id: 13, name: 'Suzuki', popular: true, icon: '🏍️' },
-  { id: 5, name: 'Mercedes-Benz', popular: false, icon: '⭐' },
-  { id: 7, name: 'Ford', popular: false, icon: '🔷' },
-  { id: 8, name: 'Volkswagen', popular: false, icon: '⚙️' },
-  { id: 10, name: 'BMW', popular: false, icon: '🔵' },
+  { id: 1, name: 'Toyota', popular: true },
+  { id: 4, name: 'Peugeot', popular: true },
+  { id: 2, name: 'Hyundai', popular: true },
+  { id: 3, name: 'Kia', popular: true },
+  { id: 14, name: 'Mitsubishi', popular: true },
+  { id: 9, name: 'Nissan', popular: true },
+  { id: 6, name: 'Renault', popular: true },
+  { id: 15, name: 'Dacia', popular: true },
+  { id: 13, name: 'Suzuki', popular: true },
+  { id: 5, name: 'Mercedes-Benz', popular: false },
+  { id: 7, name: 'Ford', popular: false },
+  { id: 8, name: 'Volkswagen', popular: false },
+  { id: 10, name: 'BMW', popular: false },
+  { id: 11, name: 'Citroën', popular: false },
+  { id: 12, name: 'Opel', popular: false },
 ];
 
 interface Model {
@@ -112,10 +114,12 @@ export default function CarSelector() {
   const [selectedModel, setSelectedModel] = useState<number | null>(null);
   const [selectedEngine, setSelectedEngine] = useState<number | null>(null);
 
+  // Modèles filtrés par marque si choisie, sinon tous les modèles
   const availableModels = selectedMake
     ? carModelsList.filter((m) => m.makeId === selectedMake)
     : carModelsList;
 
+  // Motorisations filtrées par modèle si choisi, sinon toutes les motorisations
   const availableEngines = selectedModel
     ? carEnginesList.filter((e) => e.modelId === selectedModel)
     : carEnginesList;
@@ -168,195 +172,157 @@ export default function CarSelector() {
   };
 
   return (
-    <div className="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
-      {/* En-tête du sélecteur */}
-      <div className="bg-gradient-to-r from-slate-900 to-slate-800 px-6 py-6 sm:py-8 text-white">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xl border border-emerald-400/30">
-            🚗
-          </div>
-          <div>
-            <h2 className="font-extrabold text-xl sm:text-2xl text-white tracking-tight">
-              {L('Trouvez les pièces de votre véhicule', 'Find your vehicle parts')}
-            </h2>
-            <p className="text-slate-300 text-xs sm:text-sm">
-              {L('Compatibilité garantie pour l\'Afrique de l\'Ouest', 'Guaranteed compatibility for West Africa')}
-            </p>
-          </div>
-        </div>
+    <div className="bg-white rounded-3xl shadow-xl shadow-[var(--color-earth)]/8 border border-[var(--color-warm-border)] overflow-hidden">
+      <div className="bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-warm-navy-deep)] px-5 sm:px-7 pt-7 sm:pt-9 pb-5 sm:pb-7">
+        <h2 className="text-white font-extrabold text-lg sm:text-xl mb-2">
+          {L('Trouvez les pièces pour votre véhicule', 'Find parts for your vehicle')}
+        </h2>
+        <p className="text-white/85 text-sm sm:text-base">
+          {L('Recherchez par immatriculation ou sélectionnez votre modèle', 'Search by registration or select your model')}
+        </p>
       </div>
 
-      <div className="p-5 sm:p-7 space-y-6">
-
-        {/* Option 1 : Recherche par immatriculation */}
-        <div className="bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200">
-          <label htmlFor="regNumber" className="block text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-700 mb-2">
-            {L('💡 Option 1 : Par immatriculation (CI / SN / ML)', 'Option 1: By registration')}
+      <div className="p-5 sm:p-7">
+        {/* Immatriculation */}
+        <div className="mb-7">
+          <label htmlFor="regNumber" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
+            {L('Numéro d\'immatriculation (Afrique de l\'Ouest)', 'Registration number')}
           </label>
-          <div className="flex flex-col sm:flex-row gap-2.5">
+          <div className="flex flex-col sm:flex-row gap-3">
             <div className="flex items-stretch flex-1 min-w-0">
-              <div className="w-12 shrink-0 bg-blue-600 rounded-l-xl flex items-center justify-center font-bold text-white text-xs">
-                CI / SN
+              <div className="w-14 shrink-0 bg-blue-600 rounded-xl flex items-center justify-center shadow-sm">
+                <span className="text-white text-xs font-bold tracking-wide">CI / SN</span>
               </div>
               <input
                 id="regNumber"
                 type="text"
                 value={regNumber}
                 onChange={(e) => setRegNumber(e.target.value.toUpperCase())}
-                placeholder="Ex: 1234-AB-01"
-                maxLength={14}
-                className="flex-1 min-w-0 px-4 py-3 border-2 border-l-0 border-slate-300 rounded-r-xl text-base font-mono uppercase bg-white focus:border-emerald-600 focus:outline-none"
+                placeholder="AB-123-CD"
+                maxLength={12}
+                className="flex-1 min-w-0 px-4 py-3.5 border-2 border-l-0 border-[var(--color-warm-border)] rounded-r-xl rounded-l-none text-lg font-mono uppercase focus:border-[var(--color-primary)] focus:outline-none transition-colors text-[var(--color-warm-ink)] placeholder-[var(--color-warm-muted)]"
               />
             </div>
             <button
               type="button"
               onClick={handleSearch}
-              className="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl transition-all shadow-md cursor-pointer whitespace-nowrap"
+              className="shrink-0 px-5 sm:px-7 py-3.5 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-xl transition-all shadow-lg shadow-[var(--color-primary)]/30 whitespace-nowrap cursor-pointer"
             >
               {L('Rechercher', 'Search')}
             </button>
           </div>
         </div>
 
-        {/* Séparateur visuel */}
-        <div className="relative flex items-center gap-4 my-2">
-          <div className="flex-1 h-px bg-slate-200"></div>
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider whitespace-nowrap bg-white px-2">
-            {L('ou choisissez votre modèle en 1-clic', 'or select your model in 1-click')}
+        <div className="relative flex items-center gap-4 my-7">
+          <div className="flex-1 h-px bg-[var(--color-warm-border)]"></div>
+          <span className="text-sm text-[var(--color-warm-muted)] font-bold leading-none whitespace-nowrap">
+            {L('ou sélectionnez votre modèle', 'or select your model')}
           </span>
-          <div className="flex-1 h-px bg-slate-200"></div>
+          <div className="flex-1 h-px bg-[var(--color-warm-border)]"></div>
         </div>
 
-        {/* Raccourcis Marques Populaires (Icons 1-clic) */}
-        <div>
-          <span className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2.5">
-            {L('Marques les plus recherchées :', 'Popular makes:')}
-          </span>
-          <div className="flex flex-wrap gap-2">
-            {carMakes.filter((m) => m.popular).map((make) => {
-              const isSelected = selectedMake === make.id;
-              return (
-                <button
-                  key={make.id}
-                  type="button"
-                  onClick={() => handleMakeChange(isSelected ? null : make.id)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-extrabold transition-all cursor-pointer border ${
-                    isSelected
-                      ? 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-200 scale-105'
-                      : 'bg-white text-slate-700 border-slate-200 hover:border-emerald-500 hover:bg-emerald-50'
-                  }`}
-                >
-                  <span>{make.icon}</span>
-                  <span>{make.name}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Grille Horizontale Ergonomique (3 colonnes sur desktop) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50/70 p-4 sm:p-5 rounded-2xl border border-slate-200">
-          
-          {/* 1. Sélecteur Marque */}
-          <div className="space-y-1.5">
-            <label htmlFor="carMake" className="block text-xs font-extrabold uppercase tracking-wider text-slate-700">
-              {L('1. Marque', '1. Make')}
+        {/* Sélecteurs Marque, Modèle, Motorisation */}
+        <div className="space-y-5">
+          {/* Marque */}
+          <div>
+            <label htmlFor="carMake" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
+              {L('1. Marque du véhicule', '1. Vehicle Make')}
             </label>
             <div className="relative">
               <select
                 id="carMake"
                 value={selectedMake || ''}
                 onChange={(e) => handleMakeChange(Number(e.target.value) || null)}
-                className="w-full pl-4 pr-10 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm font-semibold text-slate-900 appearance-none focus:border-emerald-600 focus:outline-none cursor-pointer"
+                className="w-full pl-5 pr-10 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-gray-900 focus:border-emerald-600 focus:outline-none transition-colors bg-white font-medium cursor-pointer appearance-none"
               >
-                <option value="">{L('Toutes les marques...', 'All makes...')}</option>
-                {carMakes.map((make) => (
-                  <option key={make.id} value={make.id}>
-                    {make.name}
-                  </option>
-                ))}
+                <option value="">{L('Choisissez une marque (ex: Toyota, Peugeot)', 'Choose a make')}</option>
+                <optgroup label={L('Populaires en Afrique de l\'Ouest', 'Popular in West Africa')}>
+                  {carMakes.filter((m) => m.popular).map((make) => (
+                    <option key={make.id} value={make.id}>{make.name}</option>
+                  ))}
+                </optgroup>
+                <optgroup label={L('Toutes les marques', 'All makes')}>
+                  {carMakes.filter((m) => !m.popular).map((make) => (
+                    <option key={make.id} value={make.id}>{make.name}</option>
+                  ))}
+                </optgroup>
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
             </div>
           </div>
 
-          {/* 2. Sélecteur Modèle */}
-          <div className="space-y-1.5">
-            <label htmlFor="carModel" className="block text-xs font-extrabold uppercase tracking-wider text-slate-700">
-              {L('2. Modèle', '2. Model')}
+          {/* Modèle (Toujours cliquable et fonctionnel) */}
+          <div>
+            <label htmlFor="carModel" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
+              {L('2. Modèle de véhicule', '2. Vehicle Model')}
             </label>
             <div className="relative">
               <select
                 id="carModel"
                 value={selectedModel || ''}
                 onChange={(e) => handleModelChange(Number(e.target.value) || null)}
-                className="w-full pl-4 pr-10 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm font-semibold text-slate-900 appearance-none focus:border-emerald-600 focus:outline-none cursor-pointer"
+                className="w-full pl-5 pr-10 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-gray-900 focus:border-emerald-600 focus:outline-none transition-colors bg-white font-medium cursor-pointer appearance-none"
               >
-                <option value="">{L('Tous les modèles...', 'All models...')}</option>
+                <option value="">{L('Choisissez un modèle (ex: Hilux, Corolla, 308)', 'Choose a model')}</option>
                 {availableModels.map((model) => (
                   <option key={model.id} value={model.id}>
-                    {model.name} {!selectedMake ? `(${carMakes.find((m) => m.id === model.makeId)?.name})` : ''}
+                    {model.name} {!selectedMake ? `(${carMakes.find(m => m.id === model.makeId)?.name})` : ''}
                   </option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
             </div>
           </div>
 
-          {/* 3. Sélecteur Motorisation */}
-          <div className="space-y-1.5">
-            <label htmlFor="carEngine" className="block text-xs font-extrabold uppercase tracking-wider text-slate-700">
-              {L('3. Motorisation', '3. Engine')}
+          {/* Motorisation (Toujours cliquable et fonctionnelle) */}
+          <div>
+            <label htmlFor="carEngine" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
+              {L('3. Motorisation & Cylindrée', '3. Engine & Displacement')}
             </label>
             <div className="relative">
               <select
                 id="carEngine"
                 value={selectedEngine || ''}
                 onChange={(e) => handleEngineChange(Number(e.target.value) || null)}
-                className="w-full pl-4 pr-10 py-3 bg-white border-2 border-slate-300 rounded-xl text-sm font-semibold text-slate-900 appearance-none focus:border-emerald-600 focus:outline-none cursor-pointer"
+                className="w-full pl-5 pr-10 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-gray-900 focus:border-emerald-600 focus:outline-none transition-colors bg-white font-medium cursor-pointer appearance-none"
               >
-                <option value="">{L('Toutes motorisations...', 'All engines...')}</option>
+                <option value="">{L('Choisissez une motorisation (ex: 2.4L D-4D, 1.6L BlueHDi)', 'Choose an engine')}</option>
                 {availableEngines.map((engine) => (
-                  <option key={engine.id} value={engine.id}>
-                    {engine.name}
-                  </option>
+                  <option key={engine.id} value={engine.id}>{engine.name}</option>
                 ))}
               </select>
-              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
                 </svg>
               </div>
             </div>
           </div>
 
+          {/* Bouton de confirmation de recherche */}
+          <button
+            type="button"
+            onClick={handleSearch}
+            className="w-full px-7 py-3.5 sm:py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold rounded-xl transition-all shadow-lg shadow-emerald-950/30 text-base sm:text-lg cursor-pointer flex items-center justify-center gap-2"
+          >
+            <span>🔍</span> {L('Rechercher les pièces compatibles', 'Search compatible parts')}
+          </button>
         </div>
 
-        {/* Bouton de confirmation de recherche principal */}
-        <button
-          type="button"
-          onClick={handleSearch}
-          className="w-full py-4 px-6 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-base sm:text-lg rounded-2xl transition-all shadow-lg shadow-emerald-950/20 cursor-pointer flex items-center justify-center gap-2 border border-emerald-400/30"
-        >
-          <span>🔍</span> {L('Rechercher les pièces compatibles', 'Search compatible parts')}
-        </button>
-
-        {/* Pied de composant réassurant */}
-        <div className="text-center text-xs text-slate-500 font-medium pt-1">
-          {L('Besoin d\'aide pour trouver votre pièce ?', 'Need help finding your part?')}{' '}
-          <a href="/contact" className="text-emerald-700 hover:underline font-extrabold">
-            {L('Assistance WhatsApp directe 💬', 'Direct WhatsApp Assistance 💬')}
+        <p className="text-center text-sm text-[var(--color-warm-muted)] mt-5 font-medium">
+          {L('Vous ne trouvez pas votre véhicule ?', 'Can\'t find your vehicle?')}{' '}
+          <a href="/contact" className="text-emerald-600 hover:underline font-bold">
+            {L('Contactez-nous sur WhatsApp', 'Contact us on WhatsApp')}
           </a>
-        </div>
-
+        </p>
       </div>
     </div>
   );
