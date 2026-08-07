@@ -11,6 +11,7 @@ import CrossBorderPayments from '@/components/CrossBorderPayments';
 import WhatsAppIntegration from '@/components/WhatsAppIntegration';
 import VehicleInspection from '@/components/VehicleInspection';
 import { Payment } from '@/shared/types';
+import { PaymentLogo } from '@/components/PaymentLogos';
 
 export default function PaymentsPage() {
   const { t } = useApp();
@@ -179,9 +180,7 @@ export default function PaymentsPage() {
                   <div key={key} className="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-lg transition-all duration-200 group">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
-                        <div className={`w-12 h-12 rounded-xl ${config.bgColor} flex items-center justify-center text-white font-bold text-sm shadow-lg`} style={{ boxShadow: `0 4px 14px ${config.color}40` }}>
-                          {config.icon}
-                        </div>
+                        <PaymentLogo name={key} size={44} />
                         <div>
                           <p className="font-semibold text-slate-900">{config.label}</p>
                           <p className="text-xs text-slate-500">{stats.count} transactions</p>

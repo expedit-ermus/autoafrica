@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useToast } from '@/contexts/ToastContext';
+import { PaymentLogo } from '@/components/PaymentLogos';
 
 export default function PaiementPage() {
   const { addToast } = useToast();
@@ -12,11 +13,11 @@ export default function PaiementPage() {
   const [loading, setLoading] = useState(false);
 
   const operators = [
-    { name: 'Wave', icon: '🔵', color: 'bg-cyan-500 text-white', code: '*144#' },
-    { name: 'Djamo Visa', icon: '💳', color: 'bg-indigo-600 text-white', code: 'App Djamo' },
-    { name: 'Orange Money', icon: '🟠', color: 'bg-orange-500 text-white', code: '#144#' },
-    { name: 'MTN MoMo', icon: '🟡', color: 'bg-yellow-500 text-black', code: '*133#' },
-    { name: 'Moov Money', icon: '🔷', color: 'bg-blue-600 text-white', code: '*155#' },
+    { name: 'Wave', key: 'wave', code: '*144#' },
+    { name: 'Djamo Visa', key: 'djamo', code: 'App Djamo' },
+    { name: 'Orange Money', key: 'orange', code: '#144#' },
+    { name: 'MTN MoMo', key: 'mtn', code: '*133#' },
+    { name: 'Moov Money', key: 'moov', code: '*155#' },
   ];
 
   const handleSimulatePayment = () => {
@@ -87,7 +88,7 @@ export default function PaiementPage() {
                           : 'border-slate-200 hover:border-slate-300 bg-white'
                       }`}
                     >
-                      <span className="text-2xl">{op.icon}</span>
+                      <PaymentLogo name={op.key} size={36} />
                       <span className="text-xs font-bold text-slate-800">{op.name}</span>
                     </button>
                   ))}

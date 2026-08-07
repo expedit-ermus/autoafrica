@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
+import { PaymentLogo } from '@/components/PaymentLogos';
 
 export default function Footer() {
   const { locale } = useApp();
@@ -137,18 +138,19 @@ export default function Footer() {
               </h4>
               <div className="flex flex-wrap gap-2.5 mb-5">
                 {[
-                  { name: 'Wave', color: '#00B4D8', icon: '🔵' },
-                  { name: 'Djamo', color: '#6366F1', icon: '💳' },
-                  { name: 'Orange Money', color: '#FF6600', icon: '🟠' },
-                  { name: 'MTN MoMo', color: '#FFCC00', icon: '🟡' },
-                  { name: 'Moov Money', color: '#0066CC', icon: '🔷' },
+                  { name: 'Wave', key: 'wave' },
+                  { name: 'Djamo', key: 'djamo' },
+                  { name: 'Orange Money', key: 'orange' },
+                  { name: 'MTN MoMo', key: 'mtn' },
+                  { name: 'Moov Money', key: 'moov' },
+                  { name: 'Visa / MC', key: 'visa' },
                 ].map((p) => (
                   <Link
                     key={p.name}
                     href="/paiement"
-                    className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl text-sm text-white font-semibold border border-white/15 transition-all cursor-pointer hover:scale-105"
+                    className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 rounded-xl text-sm text-white font-semibold border border-white/15 transition-all cursor-pointer hover:scale-105"
                   >
-                    <span>{p.icon}</span>
+                    <PaymentLogo name={p.key} size={22} />
                     {p.name}
                   </Link>
                 ))}

@@ -13,6 +13,7 @@ import {
   ProductStructuredData,
 } from '@/components/StructuredData';
 import { MARKETPLACE_URL, SITE_URL } from '@/lib/structured-data';
+import { PaymentLogo } from '@/components/PaymentLogos';
 import { Product } from '@/shared/types';
 import { track } from '@/lib/tracking';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
@@ -921,9 +922,9 @@ export default function MarketplacePage() {
                 <div className="space-y-2">
                   <p className="text-sm font-bold text-gray-700">Moyen de paiement :</p>
                   <div className="grid grid-cols-2 gap-2">
-                    {[{ name: 'Orange Money', color: '#FF6600', icon: 'OM' }, { name: 'MTN MoMo', color: '#FFCC00', icon: 'MTN' }, { name: 'Wave', color: '#00B4D8', icon: 'W' }, { name: 'Moov Money', color: '#0066CC', icon: 'M' }].map(pm => (
-                      <button key={pm.name} onClick={() => setSelectedOp(pm.name)} className={`flex items-center gap-2 p-3 rounded-xl border transition cursor-pointer ${selectedOp === pm.name ? 'border-orange-500 bg-orange-50 ring-2 ring-orange-300' : 'border-gray-200 hover:border-orange-300'}`}>
-                        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-[10px] font-bold" style={{ background: pm.color }}>{pm.icon}</div>
+                    {[{ name: 'Orange Money', key: 'orange' }, { name: 'MTN MoMo', key: 'mtn' }, { name: 'Wave', key: 'wave' }, { name: 'Moov Money', key: 'moov' }].map(pm => (
+                      <button key={pm.name} onClick={() => setSelectedOp(pm.name)} className={`flex items-center gap-2.5 p-3 rounded-xl border transition cursor-pointer ${selectedOp === pm.name ? 'border-orange-500 bg-orange-50 ring-2 ring-orange-300' : 'border-gray-200 hover:border-orange-300'}`}>
+                        <PaymentLogo name={pm.key} size={28} />
                         <span className="text-sm font-medium">{pm.name}</span>
                       </button>
                     ))}

@@ -7,6 +7,7 @@ import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useToast } from '@/contexts/ToastContext';
 import { track } from '@/lib/tracking';
+import { PaymentLogo } from '@/components/PaymentLogos';
 
 interface CartItem {
   id: string;
@@ -297,7 +298,7 @@ export default function CartPage() {
                             : 'border-gray-200 hover:border-gray-300 text-gray-700'
                         }`}
                       >
-                        <span className="text-base">{op.icon}</span>
+                        <PaymentLogo name={op.id} size={24} />
                         {op.name}
                       </button>
                     ))}
