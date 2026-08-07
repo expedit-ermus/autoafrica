@@ -216,7 +216,7 @@ export default function LandingPage() {
                 'Encore une question ? Parcourez le',
                 'Still have a question? Browse the'
               )}{' '}
-              <Link href="/dashboard/marketplace" className="font-bold text-[var(--color-primary)] hover:underline">
+              <Link href="/catalogue" className="font-bold text-[var(--color-primary)] hover:underline">
                 {L('catalogue de pièces', 'parts catalogue')}
               </Link>
               {L(' ou recherchez une pièce compatible avec votre véhicule en ligne.', ' or search for a compatible part for your vehicle online.')}
@@ -244,9 +244,9 @@ export default function LandingPage() {
                   'Whether you\'re a mechanic, dealer or individual, find the parts you need at transparent prices. Pay with Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave). Fast delivery in 24-72h across West Africa.'
                 )}
               </p>
-              <button className="text-[var(--color-primary)] font-bold text-base hover:underline">
-                {L('Lire la suite', 'Read more')} ↓
-              </button>
+              <Link href="/a-propos" className="inline-flex items-center gap-1.5 text-[var(--color-primary)] font-bold text-base hover:underline transition-colors">
+                {L('Lire la suite', 'Read more')} <span aria-hidden>&#8594;</span>
+              </Link>
             </div>
           </div>
         </div>

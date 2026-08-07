@@ -2,14 +2,23 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
 
 export default function Footer() {
   const { locale } = useApp();
   const { addToast } = useToast();
+  const router = useRouter();
   const [nlEmail, setNlEmail] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('ci');
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
+
+  const handleCountryChange = (code: string) => {
+    setSelectedCountry(code);
+    addToast('info', `Marché changé : ${countries.find(c => c.code === code)?.name || code}`);
+    router.push(`/dashboard/marketplace?country=${code.toUpperCase()}`);
+  };
 
   const countries = [
     { code: 'ci', name: 'Côte d\'Ivoire' },
@@ -180,6 +189,8 @@ export default function Footer() {
             {/* Sélecteur de Pays avec options bien lisibles */}
             <select
               aria-label={L('Sélectionner le pays', 'Select country')}
+              value={selectedCountry}
+              onChange={(e) => handleCountryChange(e.target.value)}
               className="bg-slate-800 text-white border border-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none font-medium cursor-pointer hover:bg-slate-700 transition-colors"
             >
               {countries.map((c) => (

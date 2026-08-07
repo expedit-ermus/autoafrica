@@ -118,6 +118,7 @@ export default function DashboardPage() {
     {
       label: 'Pièces',
       value: String(totalProducts),
+      href: '/dashboard/inventory',
       icon: (
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
       ),
@@ -132,6 +133,7 @@ export default function DashboardPage() {
     {
       label: 'Commandes',
       value: String(totalOrders),
+      href: '/dashboard/orders',
       icon: (
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>
       ),
@@ -146,6 +148,7 @@ export default function DashboardPage() {
     {
       label: 'Revenu',
       value: formatCFA(totalRevenue),
+      href: '/dashboard/payments',
       icon: (
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
       ),
@@ -160,6 +163,7 @@ export default function DashboardPage() {
     {
       label: 'Taux succès',
       value: totalOrders > 0 ? `${((deliveredOrders / totalOrders) * 100).toFixed(0)}%` : '—',
+      href: '/dashboard/orders',
       icon: (
         <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
       ),
@@ -255,9 +259,10 @@ export default function DashboardPage() {
           {/* ═══════════════════ STATS CARDS ═══════════════════ */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
             {statsCards.map((s, idx) => (
-              <div
+              <Link
                 key={idx}
-                className="card-modern p-4 sm:p-5 group cursor-default"
+                href={s.href}
+                className="card-modern p-4 sm:p-5 group cursor-pointer hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 block"
                 style={{ animation: `fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) ${0.1 + idx * 0.08}s both` }}
               >
                 <div className="flex items-start justify-between mb-4">
@@ -275,7 +280,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="text-sm font-medium text-gray-500 mb-2">{s.label}</div>
                 <div className={`text-xs font-semibold ${s.subColor}`}>{s.sub}</div>
-              </div>
+              </Link>
             ))}
           </div>
 
@@ -426,7 +431,7 @@ export default function DashboardPage() {
               ) : (
                 <div className="space-y-1">
                   {products.slice(0, 5).map((p) => (
-                    <div key={p.id} className="flex items-center gap-2.5 sm:gap-4 p-2.5 sm:p-3.5 rounded-2xl hover:bg-gray-50 hover:shadow-sm transition-all duration-200 group cursor-pointer">
+                    <Link key={p.id} href={`/dashboard/inventory`} className="flex items-center gap-2.5 sm:gap-4 p-2.5 sm:p-3.5 rounded-2xl hover:bg-orange-50/60 hover:shadow-sm transition-all duration-200 group cursor-pointer">
                       <RemoteImage src={PLACEHOLDER_IMAGE} alt={p.title} width={48} height={48} className="w-12 h-12 rounded-xl object-cover shadow-sm group-hover:shadow-md transition-shadow" />
                       <div className="flex-1 min-w-0">
                         <p className="font-bold text-gray-900 text-sm truncate group-hover:text-orange-600 transition-colors">{p.title}</p>
@@ -436,7 +441,7 @@ export default function DashboardPage() {
                         <p className="font-bold text-orange-600 text-sm">{formatCFA(p.price)} <span className="text-xs font-medium text-gray-400">FCFA</span></p>
                         <p className={`text-xs font-semibold mt-0.5 ${p.stock > 5 ? 'text-emerald-600' : p.stock > 0 ? 'text-amber-500' : 'text-red-500'}`}>Stock: {p.stock}</p>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               )}
@@ -483,10 +488,10 @@ export default function DashboardPage() {
                   {[
                     { name: 'Côte d\'Ivoire', code: 'CI' }, { name: 'Sénégal', code: 'SN' }, { name: 'Mali', code: 'ML' }, { name: 'Burkina', code: 'BF' }, { name: 'Nigeria', code: 'NG' },
                   ].map((m, idx) => (
-                    <div key={idx} className="min-w-0 text-center p-2 sm:p-3 rounded-xl bg-gray-50 hover:bg-orange-50 transition-all duration-200 cursor-pointer hover:shadow-sm group">
+                    <Link key={idx} href={`/dashboard/marketplace?country=${m.code}`} className="min-w-0 text-center p-2 sm:p-3 rounded-xl bg-gray-50 hover:bg-orange-50 transition-all duration-200 cursor-pointer hover:shadow-sm group block">
                       <RemoteImage src={`https://flagcdn.com/w80/${m.code.toLowerCase()}.png`} alt={m.name} width={80} height={56} className="w-full h-7 object-cover rounded-md mb-1.5 shadow-sm group-hover:shadow-md transition-shadow" />
-                      <p className="text-[10px] font-bold text-gray-600 group-hover:text-gray-800 transition-colors leading-tight">{m.name}</p>
-                    </div>
+                      <p className="text-[10px] font-bold text-gray-600 group-hover:text-orange-600 transition-colors leading-tight">{m.name}</p>
+                    </Link>
                   ))}
                 </div>
               </div>

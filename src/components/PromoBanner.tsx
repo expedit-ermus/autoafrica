@@ -82,7 +82,8 @@ export default function PromoBanner() {
                     </svg>
                   </Link>
                 ) : (
-                  <span className="inline-flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white/90 text-gray-700 font-semibold rounded-lg cursor-default text-sm sm:text-base">
+                  <span className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 bg-white/20 backdrop-blur-sm text-white/90 font-semibold rounded-full border border-white/30 text-sm cursor-default select-none">
+                    <svg className="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     {banner.cta[locale as 'fr' | 'en']}
                   </span>
                 )}
