@@ -60,9 +60,12 @@ function CatalogueFiltersContent({ products }: CatalogueFiltersProps) {
   const [minPrice, setMinPrice] = useState<string>(searchParams.get('minPrix') || '');
   const [maxPrice, setMaxPrice] = useState<string>(searchParams.get('maxPrix') || '');
   const [onlyInStock, setOnlyInStock] = useState<boolean>(searchParams.get('enStock') === '1');
-  const [sortBy, setSortBy] = useState<'recent' | 'price-asc' | 'price-desc' | 'rating'>(
-    (searchParams.get('sort') as any) || 'recent'
-  );
+  const sortParam = searchParams.get('sort');
+  const initialSort: 'recent' | 'price-asc' | 'price-desc' | 'rating' =
+    sortParam === 'price-asc' || sortParam === 'price-desc' || sortParam === 'rating'
+      ? sortParam
+      : 'recent';
+  const [sortBy, setSortBy] = useState<'recent' | 'price-asc' | 'price-desc' | 'rating'>(initialSort);
   const [showAllMakes, setShowAllMakes] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
@@ -132,7 +135,7 @@ function CatalogueFiltersContent({ products }: CatalogueFiltersProps) {
     // Sort
     if (sortBy === 'price-asc') result.sort((a, b) => (a.price || 0) - (b.price || 0));
     else if (sortBy === 'price-desc') result.sort((a, b) => (b.price || 0) - (a.price || 0));
-    else if (sortBy === 'rating') result.sort((a, b) => ((b as any).rating || 5) - ((a as any).rating || 5));
+    else if (sortBy === 'rating') result.sort((a, b) => ((b as Product & { rating?: number }).rating || 5) - ((a as Product & { rating?: number }).rating || 5));
 
     return result;
   }, [products, search, selectedMake, selectedCategory, selectedCondition, minPrice, maxPrice, onlyInStock, sortBy]);
