@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
+import PieceDetailCTA from '@/components/PieceDetailCTA';
 import { ProductStructuredData, BreadcrumbStructuredData } from '@/components/StructuredData';
 import { SITE_URL } from '@/lib/structured-data';
 import { productsService } from '@/modules/products/products.service';
@@ -135,23 +136,15 @@ export default async function PieceDetailPage({ params }: Props) {
               </p>
             </div>
 
-            {/* CTA Contact Vendeur (Action Principale) */}
-            <div className="space-y-3 pt-2">
-              <a
-                href={`https://wa.me/2250708091011?text=Bonjour,%20je%20suis%20intéressé%20par%20la%20pièce%20${encodeURIComponent(product.title)}%20(${product.price}%20FCFA)`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-4 px-6 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm sm:text-base rounded-2xl flex items-center justify-center gap-3 transition-all shadow-lg shadow-emerald-950/30 border border-emerald-400/30"
-              >
-                <span>💬</span> Contacter le Vendeur sur WhatsApp
-              </a>
-              <Link
-                href="/dashboard/cart"
-                className="w-full py-3 px-6 bg-gray-900 hover:bg-gray-800 text-white font-bold text-sm rounded-2xl flex items-center justify-center gap-2 transition-colors text-center"
-              >
-                <span>🛒</span> Commander avec Séquestre Mobile Money
-              </Link>
-            </div>
+            {/* CTA Contact Vendeur & Paiement Séquestre Interactif */}
+            <PieceDetailCTA
+              productId={product.id}
+              title={product.title}
+              brand={brandName}
+              reference={product.reference || product.id}
+              price={product.price}
+              image={firstImg}
+            />
           </div>
         </div>
 
@@ -183,6 +176,7 @@ export default async function PieceDetailPage({ params }: Props) {
               return (
                 <ProductCard
                   key={rel.id}
+                  id={rel.id}
                   name={rel.title}
                   reference={rel.reference || rel.id}
                   price={rel.price}
