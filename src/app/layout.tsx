@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/contexts/AppContext";
+import { WishlistProvider } from "@/contexts/WishlistContext";
 import { ToastProvider } from "@/contexts/ToastContext";
 import GlobalWidgets from "@/components/GlobalWidgets";
 import TrackingProvider from "@/components/TrackingProvider";
@@ -97,12 +98,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Aller au contenu
         </a>
         <AppProvider>
-          <ToastProvider>
-            <div id="main-content" tabIndex={-1}>
-              {children}
-            </div>
-            <GlobalWidgets />
-          </ToastProvider>
+          <WishlistProvider>
+            <ToastProvider>
+              <div id="main-content" tabIndex={-1}>
+                {children}
+              </div>
+              <GlobalWidgets />
+            </ToastProvider>
+          </WishlistProvider>
         </AppProvider>
         <TrackingProvider />
         <GoogleAnalytics />

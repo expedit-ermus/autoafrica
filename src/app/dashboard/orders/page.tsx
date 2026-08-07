@@ -774,6 +774,14 @@ export default function OrdersPage() {
 
                 {/* Quick Actions in Modal */}
                 <div className="flex flex-wrap gap-2 pt-2 border-t border-gray-100">
+                  <a
+                    href={`/api/v1/invoices/${selectedOrder.id}/download`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg border border-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-50 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1.5"
+                  >
+                    📄 Facture PDF
+                  </a>
                   {selectedOrder.status === 'PENDING' && (
                     <>
                       <button onClick={() => { handleUpdateStatus(selectedOrder.id, 'CONFIRMED'); setSelectedOrder(null); }} className="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-blue-500 text-white text-sm font-medium hover:bg-blue-600 active:scale-[0.98] transition-all inline-flex items-center justify-center gap-1.5">

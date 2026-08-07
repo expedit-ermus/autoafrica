@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
+import { useWishlist } from '@/contexts/WishlistContext';
 import { track } from '@/lib/tracking';
 
 const categoryNav = [
@@ -19,6 +20,7 @@ const categoryNav = [
 
 export default function Header() {
   const { t, locale, setLocale, user } = useApp();
+  const { wishlist } = useWishlist();
   const [searchQuery, setSearchQuery] = useState('');
   const [cartCount, setCartCount] = useState(0);
   const [cartTotal, setCartTotal] = useState(0);
@@ -175,6 +177,28 @@ export default function Header() {
                 <div className="hidden lg:block text-left">
                   <div className="text-xs text-white/60">AutoAfrique</div>
                   <div className="text-xs font-bold">{user ? t.nav.dashboard : L('Se connecter', 'Log in')}</div>
+                </div>
+              </Link>
+
+              {/* Wishlist */}
+              <Link
+                href="/favoris"
+                className="flex items-center gap-2 px-2.5 sm:px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white relative"
+                title={L('Mes Favoris', 'My Favorites')}
+              >
+                <div className="relative">
+                  <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                  </svg>
+                  {wishlist.length > 0 && (
+                    <span className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white text-[11px] font-bold rounded-full flex items-center justify-center shadow-md">
+                      {wishlist.length}
+                    </span>
+                  )}
+                </div>
+                <div className="hidden lg:block text-left">
+                  <div className="text-xs text-white/60">{wishlist.length} {L('favori(s)', 'favorite(s)')}</div>
+                  <div className="text-xs font-bold">{L('Mes Favoris', 'Favorites')}</div>
                 </div>
               </Link>
 

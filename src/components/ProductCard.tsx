@@ -5,6 +5,7 @@ import Link from 'next/link';
 import RemoteImage from '@/components/RemoteImage';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
+import { useWishlist } from '@/contexts/WishlistContext';
 
 interface ProductCardProps {
   id?: string;
@@ -41,7 +42,7 @@ export default function ProductCard({
 }: ProductCardProps) {
   const { locale } = useApp();
   const { addToast } = useToast();
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { isWishlisted, toggleWishlist } = useWishlist();
   const [addedToCart, setAddedToCart] = useState(false);
 
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
@@ -50,16 +51,26 @@ export default function ProductCard({
     return new Intl.NumberFormat('fr-FR').format(p) + ' FCFA';
   };
 
-  const productSlug = id || name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const productId = id || reference || name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  const productSlug = productId;
   const productUrl = `/pieces/${productSlug}`;
 
-  const toggleFavorite = (e: React.MouseEvent) => {
+  const isFav = isWishlisted(productId);
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    setIsFavorite(!isFavorite);
+    toggleWishlist({
+      id: productId,
+      title: name,
+      price,
+      image,
+      category: brand,
+      inStock,
+    });
     addToast(
       'info',
-      !isFavorite
+      !isFav
         ? L('Ajouté à vos pièces favorites !', 'Added to your favorite parts!')
         : L('Retiré de vos favoris', 'Removed from favorites')
     );
@@ -101,15 +112,15 @@ export default function ProductCard({
         {/* Bouton Favori */}
         <button
           type="button"
-          onClick={toggleFavorite}
+          onClick={handleFavoriteClick}
           title={L('Ajouter aux favoris', 'Add to favorites')}
           className="absolute top-3 right-3 w-10 h-10 bg-white/90 hover:bg-white rounded-xl flex items-center justify-center transition-all duration-300 shadow-sm z-10 cursor-pointer"
         >
           <svg
             className={`w-5 h-5 transition-colors ${
-              isFavorite ? 'text-red-500 fill-red-500' : 'text-gray-400 hover:text-red-500'
+              isFav ? 'text-red-500 fill-red-500' : 'text-gray-400 hover:text-red-500'
             }`}
-            fill={isFavorite ? 'currentColor' : 'none'}
+            fill={isFav ? 'currentColor' : 'none'}
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
