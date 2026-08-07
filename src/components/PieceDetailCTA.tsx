@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/contexts/ToastContext';
+import { PaymentLogosGroup } from '@/components/PaymentLogos';
 
 interface PieceDetailCTAProps {
   productId: string;
@@ -88,6 +89,12 @@ export default function PieceDetailCTA({
         <span>🛒</span>
         {loading ? 'Préparation de la commande...' : 'Commander avec Séquestre Mobile Money'}
       </button>
+
+      {/* Payment Logos Bar */}
+      <div className="pt-2 flex flex-col items-center gap-1.5 border-t border-gray-100">
+        <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Paiements par Séquestre Sécurisé :</span>
+        <PaymentLogosGroup className="flex flex-wrap items-center justify-center gap-2" />
+      </div>
     </div>
   );
 }
