@@ -13,7 +13,7 @@ interface CatalogPageProps {
   products: Product[];
 }
 
-export default function CatalogPage({ kind, slug, name, description, count, products }: CatalogPageProps) {
+export default function CatalogPage({ kind, slug, name, description, products }: CatalogPageProps) {
   const canonicalPath = kind === 'categorie' ? `/marketplace/categorie/${slug}` : `/marketplace/marque/${slug}`;
   const fullUrl = `${SITE_URL}${canonicalPath}`;
 
