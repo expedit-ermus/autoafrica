@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
 import { track } from '@/lib/tracking';
 
@@ -23,6 +24,16 @@ export default function Header() {
   const [cartTotal, setCartTotal] = useState(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const router = useRouter();
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      router.push(`/catalogue?q=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      router.push('/catalogue');
+    }
+    setMobileSearchOpen(false);
+  };
 
   useEffect(() => {
     const syncCart = () => {
@@ -111,7 +122,7 @@ export default function Header() {
                   placeholder={L('Rechercher une pièce (ex: filtre Toyota Hilux)', 'Search for a part (ex: filter Toyota Hilux)')}
                   className="flex-1 px-5 py-3 rounded-l-xl text-base text-[var(--color-warm-ink)] placeholder-[var(--color-warm-muted)] focus:outline-none border-2 border-transparent focus:border-[var(--color-primary)]"
                 />
-                <button className="px-5 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-r-xl transition-all flex items-center gap-2 shadow-lg shadow-[var(--color-primary)]/30">
+                <button onClick={handleSearch} className="px-5 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-r-xl transition-all flex items-center gap-2 shadow-lg shadow-[var(--color-primary)]/30 cursor-pointer">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
@@ -226,7 +237,7 @@ export default function Header() {
               autoFocus
               className="flex-1 px-4 py-3 rounded-xl text-sm text-[var(--color-warm-ink)] placeholder-[var(--color-warm-muted)] focus:outline-none border-2 border-transparent focus:border-[var(--color-primary)]"
             />
-            <button className="px-4 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] text-white font-bold rounded-xl transition-all shadow-lg shadow-[var(--color-primary)]/30">
+            <button onClick={handleSearch} className="px-4 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] text-white font-bold rounded-xl transition-all shadow-lg shadow-[var(--color-primary)]/30 cursor-pointer">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>

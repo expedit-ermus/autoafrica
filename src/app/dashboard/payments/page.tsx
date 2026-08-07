@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useApp } from '@/contexts/AppContext';
+import { useToast } from '@/contexts/ToastContext';
 import UssdPaymentFlow from '@/components/UssdPaymentFlow';
 import AgentNetwork from '@/components/AgentNetwork';
 import InstallmentPlan from '@/components/InstallmentPlan';
@@ -13,6 +14,7 @@ import { Payment } from '@/shared/types';
 
 export default function PaymentsPage() {
   const { t } = useApp();
+  const { addToast } = useToast();
   const [activeTab, setActiveTab] = useState<'history' | 'escrow' | 'ussd' | 'agents' | 'installments' | 'crossborder' | 'whatsapp' | 'inspection'>('history');
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -328,11 +330,11 @@ export default function PaymentsPage() {
                               </td>
                               <td className="px-6 py-4">
                                 <div className="flex items-center justify-end gap-2">
-                                  <button className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors" title="Voir">
+                                  <button onClick={() => addToast('info', `Paiement #${p.id.slice(0,8)} — ${p.amount.toLocaleString()} FCFA via ${mi.label} — Statut: ${statusLabels[p.status] || p.status}`)} className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer" title="Voir">
                                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                                   </button>
                                   {(p.status === 'COMPLETED' || p.status === 'PENDING') && (
-                                    <button className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors" title="Rembourser">
+                                    <button onClick={() => addToast('warning', `Demande de remboursement envoyée pour ${p.amount.toLocaleString()} FCFA. Le vendeur sera notifié.`)} className="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer" title="Rembourser">
                                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" /></svg>
                                     </button>
                                   )}

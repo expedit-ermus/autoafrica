@@ -1,10 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useApp } from '@/contexts/AppContext';
+import { useToast } from '@/contexts/ToastContext';
 
 export default function Footer() {
   const { locale } = useApp();
+  const { addToast } = useToast();
+  const [nlEmail, setNlEmail] = useState('');
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
   const countries = [
@@ -93,10 +97,23 @@ export default function Footer() {
               <div className="flex flex-col sm:flex-row gap-3">
                 <input
                   type="email"
+                  value={nlEmail}
+                  onChange={(e) => setNlEmail(e.target.value)}
                   placeholder={L('Votre adresse email', 'Your email address')}
                   className="flex-1 min-w-0 px-5 py-3 rounded-xl bg-white/10 border border-white/15 text-white placeholder-white/50 text-base focus:outline-none focus:border-[var(--color-primary)] focus:bg-white/15 transition-all"
                 />
-                <button type="button" className="px-8 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-xl transition-all text-base shadow-lg shadow-[var(--color-primary)]/30">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (nlEmail.includes('@')) {
+                      addToast('success', L('Merci ! Vous êtes inscrit à la newsletter AutoAfrique.', 'Thanks! You are subscribed to AutoAfrique newsletter.'));
+                      setNlEmail('');
+                    } else {
+                      addToast('error', L('Veuillez entrer une adresse email valide.', 'Please enter a valid email address.'));
+                    }
+                  }}
+                  className="px-8 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-xl transition-all text-base shadow-lg shadow-[var(--color-primary)]/30 cursor-pointer"
+                >
                   {L('S\'abonner', 'Subscribe')}
                 </button>
               </div>

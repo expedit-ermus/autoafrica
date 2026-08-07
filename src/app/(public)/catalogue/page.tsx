@@ -1,6 +1,4 @@
 import type { Metadata } from 'next';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import CatalogPage from '@/components/CatalogPage';
 import { productsService } from '@/modules/products/products.service';
 import { Product } from '@/shared/types';
@@ -30,7 +28,6 @@ export default async function PublicCataloguePage() {
 
   return (
     <div>
-      <Header />
       <CatalogPage
         kind="categorie"
         slug="catalogue"
@@ -39,7 +36,6 @@ export default async function PublicCataloguePage() {
         count={products.length}
         products={products}
       />
-      <Footer />
     </div>
   );
 }

@@ -35,13 +35,13 @@ export default function WhatsAppIntegration() {
     <div className="w-full max-w-sm mx-auto">
       {/* WhatsApp Frame */}
       <div className="bg-[#075E54] rounded-t-2xl p-3 flex items-center gap-3">
-        <button className="text-white text-lg" aria-label="Retour">←</button>
+        <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-white text-lg cursor-pointer" aria-label="Retour">←</button>
         <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-bold">A</div>
         <div className="flex-1">
           <p className="text-white font-bold text-sm">AutoAfrique</p>
           <p className="text-green-200 text-[10px]">en cours de configuration</p>
         </div>
-        <button className="text-white text-lg">⋮</button>
+        <button onClick={() => setMessages([{ from: 'bot', text: 'Bonjour ! Tapez VENDRE pour recevoir la grille tarifaire ou RECHERCHE pour trouver une pièce.', time: '12:00' }])} className="text-white text-lg cursor-pointer" title="Réinitialiser la conversation">⋮</button>
       </div>
 
       {/* Chat area */}

@@ -2,10 +2,12 @@
 
 import React, { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
+import { useToast } from '@/contexts/ToastContext';
 import Link from 'next/link';
 
 export default function RoleServicesHub() {
   const { locale } = useApp();
+  const { addToast } = useToast();
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
   const [activeRole, setActiveRole] = useState<'buyer' | 'provider'>('buyer');
@@ -319,10 +321,18 @@ export default function RoleServicesHub() {
                     </p>
                   </div>
                   <div className="flex gap-2 w-full sm:w-auto">
-                    <button type="button" className="flex-1 sm:flex-initial py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors">
+                    <button
+                      type="button"
+                      onClick={() => addToast('success', 'Intervention acceptée (25 000 FCFA) ! Le client Kouassi a été notifié.')}
+                      className="flex-1 sm:flex-initial py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors cursor-pointer"
+                    >
                       Accepter (25k)
                     </button>
-                    <button type="button" className="flex-1 sm:flex-initial py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-colors">
+                    <button
+                      type="button"
+                      onClick={() => addToast('info', 'Formulaire de devis envoyé au client Kouassi.')}
+                      className="flex-1 sm:flex-initial py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-colors cursor-pointer"
+                    >
                       Proposer Devis
                     </button>
                   </div>
@@ -344,10 +354,18 @@ export default function RoleServicesHub() {
                     </p>
                   </div>
                   <div className="flex gap-2 w-full sm:w-auto">
-                    <button type="button" className="flex-1 sm:flex-initial py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors">
+                    <button
+                      type="button"
+                      onClick={() => addToast('success', 'Diagnostic accepté (15 000 FCFA) ! Le client Société BTP a été notifié.')}
+                      className="flex-1 sm:flex-initial py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors cursor-pointer"
+                    >
                       Accepter (15k)
                     </button>
-                    <button type="button" className="flex-1 sm:flex-initial py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-colors">
+                    <button
+                      type="button"
+                      onClick={() => addToast('info', 'Devis de diagnostic envoyé à la Société BTP.')}
+                      className="flex-1 sm:flex-initial py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-colors cursor-pointer"
+                    >
                       Proposer Devis
                     </button>
                   </div>

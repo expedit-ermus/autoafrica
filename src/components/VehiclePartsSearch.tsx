@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface VehicleRegistration {
   plate: string;
@@ -362,8 +363,15 @@ export default function VehiclePartsSearch() {
     }
   };
 
+  const router = useRouter();
+
   const handleModelSearch = () => {
-    if (!selectedBrand || !selectedModel || !selectedYear || !selectedEngine) return;
+    if (selectedBrand) {
+      const slug = selectedBrand.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+      router.push(`/catalogue/${slug}`);
+    } else {
+      router.push('/catalogue');
+    }
   };
 
   const resetSearch = () => {
@@ -582,7 +590,10 @@ export default function VehiclePartsSearch() {
               </div>
             </div>
             <div className="flex gap-3">
-              <button className="flex-1 py-3 px-4 rounded-xl bg-[var(--color-primary)] text-white font-bold hover:bg-[var(--color-orange-hover)] transition-all flex items-center justify-center gap-2">
+              <button
+                onClick={handleModelSearch}
+                className="flex-1 py-3 px-4 rounded-xl bg-[var(--color-primary)] text-white font-bold hover:bg-[var(--color-orange-hover)] transition-all flex items-center justify-center gap-2 cursor-pointer"
+              >
                 🔧 Voir toutes les pièces compatibles
               </button>
               <button onClick={resetSearch} className="px-6 py-3 rounded-xl border border-[var(--color-warm-border)] text-[var(--color-warm-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all">
@@ -602,7 +613,8 @@ export default function VehiclePartsSearch() {
               {POPULAR_PARTS.map(part => (
                 <button
                   key={part.id}
-                  className="group relative p-4 bg-white rounded-xl border border-[var(--color-warm-border)] hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--color-primary)]/10 transition-all duration-300 text-center"
+                  onClick={() => router.push('/catalogue')}
+                  className="group relative p-4 bg-white rounded-xl border border-[var(--color-warm-border)] hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--color-primary)]/10 transition-all duration-300 text-center cursor-pointer"
                 >
                   <span className="text-2xl mb-2 block group-hover:scale-110 transition-transform">{part.icon}</span>
                   <span className="text-sm font-medium text-[var(--color-warm-ink)] group-hover:text-[var(--color-primary)] transition-colors">{part.label}</span>

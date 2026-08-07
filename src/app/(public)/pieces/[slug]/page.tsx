@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import ProductCard from '@/components/ProductCard';
 import PieceDetailCTA from '@/components/PieceDetailCTA';
 import { ProductStructuredData, BreadcrumbStructuredData } from '@/components/StructuredData';
@@ -67,8 +65,6 @@ export default async function PieceDetailPage({ params }: Props) {
           { name: product.title, url: `${SITE_URL}/pieces/${slug}` },
         ]}
       />
-
-      <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         {/* Fil d'ariane */}
@@ -192,7 +188,6 @@ export default async function PieceDetailPage({ params }: Props) {
         </div>
       </main>
 
-      <Footer />
     </div>
   );
 }

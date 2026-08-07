@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 import { WebsiteStructuredData, FAQStructuredData } from '@/components/StructuredData';
 
 export const metadata: Metadata = {
@@ -27,11 +25,9 @@ const faqSeller = [
 
 export default function DevenirVendeurPage() {
   return (
-    <div className="bg-[var(--color-bg)] min-h-screen">
+    <div>
       <WebsiteStructuredData />
       <FAQStructuredData items={faqSeller} />
-
-      <Header />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Hero Section Vendeur */}
@@ -161,8 +157,6 @@ export default function DevenirVendeurPage() {
           </Link>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }
