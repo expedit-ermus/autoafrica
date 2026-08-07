@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Product } from '@/shared/types';
 
@@ -8,11 +9,9 @@ interface CatalogueFiltersProps {
   products: Product[];
 }
 
-// Liste des marques populaires en Afrique de l'Ouest
 const MAKES_POPULAR = ['Toyota', 'Hyundai', 'Kia', 'Peugeot', 'Mitsubishi', 'Nissan', 'Renault', 'Dacia', 'Suzuki'];
 const MAKES_ALL = [...MAKES_POPULAR, 'Mercedes-Benz', 'Ford', 'Volkswagen', 'BMW', 'Citroën', 'Opel', 'Honda', 'Mazda'];
 
-// Modèles par marque
 const MODELS_BY_MAKE: Record<string, string[]> = {
   Toyota: ['Hilux', 'Corolla', 'Land Cruiser', 'RAV4', 'Camry', 'Yaris', 'Avanza', 'Fortuner', 'Prado'],
   Hyundai: ['Tucson', 'i10', 'i20', 'i30', 'Santa Fe', 'Creta', 'Elantra', 'Sonata'],
@@ -32,7 +31,6 @@ const MODELS_BY_MAKE: Record<string, string[]> = {
 };
 
 const CATEGORIES = ['Toutes', 'Freinage', 'Moteur & Filtration', 'Suspension & Direction', 'Éclairage & Électricité', 'Carrosserie & Habillage', 'Transmission & Échappement'];
-
 const CONDITIONS = ['Tous', 'Neuf', 'Occasion', 'Reconditionné'];
 
 function firstImage(p: Product): string {
@@ -48,21 +46,48 @@ function firstImage(p: Product): string {
 
 const ITEMS_PER_PAGE = 12;
 
-export default function CatalogueFilters({ products }: CatalogueFiltersProps) {
-  const [selectedMake, setSelectedMake] = useState<string>('');
-  const [selectedModel, setSelectedModel] = useState<string>('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('Toutes');
-  const [selectedCondition, setSelectedCondition] = useState<string>('Tous');
-  const [search, setSearch] = useState('');
-  const [sortBy, setSortBy] = useState<'price-asc' | 'price-desc' | 'recent'>('recent');
+function CatalogueFiltersContent({ products }: CatalogueFiltersProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Initial State from URL
+  const [selectedMake, setSelectedMake] = useState<string>(searchParams.get('marque') || '');
+  const [selectedModel, setSelectedModel] = useState<string>(searchParams.get('modele') || '');
+  const [selectedCategory, setSelectedCategory] = useState<string>(searchParams.get('categorie') || 'Toutes');
+  const [selectedCondition, setSelectedCondition] = useState<string>(searchParams.get('condition') || 'Tous');
+  const [search, setSearch] = useState(searchParams.get('q') || '');
+  const [minPrice, setMinPrice] = useState<string>(searchParams.get('minPrix') || '');
+  const [maxPrice, setMaxPrice] = useState<string>(searchParams.get('maxPrix') || '');
+  const [onlyInStock, setOnlyInStock] = useState<boolean>(searchParams.get('enStock') === '1');
+  const [sortBy, setSortBy] = useState<'recent' | 'price-asc' | 'price-desc' | 'rating'>(
+    (searchParams.get('sort') as any) || 'recent'
+  );
   const [showAllMakes, setShowAllMakes] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-  // Modèles disponibles selon la marque sélectionnée
+  // Sync state to URL searchParams
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (search.trim()) params.set('q', search.trim());
+    if (selectedMake) params.set('marque', selectedMake);
+    if (selectedModel) params.set('modele', selectedModel);
+    if (selectedCategory !== 'Toutes') params.set('categorie', selectedCategory);
+    if (selectedCondition !== 'Tous') params.set('condition', selectedCondition);
+    if (minPrice) params.set('minPrix', minPrice);
+    if (maxPrice) params.set('maxPrix', maxPrice);
+    if (onlyInStock) params.set('enStock', '1');
+    if (sortBy !== 'recent') params.set('sort', sortBy);
+
+    const queryString = params.toString();
+    const newUrl = queryString ? `${pathname}?${queryString}` : pathname;
+    router.replace(newUrl, { scroll: false });
+  }, [search, selectedMake, selectedModel, selectedCategory, selectedCondition, minPrice, maxPrice, onlyInStock, sortBy, pathname, router]);
+
   const availableModels = selectedMake ? (MODELS_BY_MAKE[selectedMake] || []) : [];
 
-  // Filtrage des produits
+  // Filtered & Sorted Products
   const filtered = useMemo(() => {
     let result = [...products];
 
@@ -90,12 +115,27 @@ export default function CatalogueFilters({ products }: CatalogueFiltersProps) {
       result = result.filter(p => p.condition === selectedCondition);
     }
 
+    if (onlyInStock) {
+      result = result.filter(p => (p.stock || 0) > 0);
+    }
+
+    const minVal = parseFloat(minPrice);
+    if (!isNaN(minVal)) {
+      result = result.filter(p => (p.price || 0) >= minVal);
+    }
+
+    const maxVal = parseFloat(maxPrice);
+    if (!isNaN(maxVal)) {
+      result = result.filter(p => (p.price || 0) <= maxVal);
+    }
+
     // Sort
     if (sortBy === 'price-asc') result.sort((a, b) => (a.price || 0) - (b.price || 0));
-    if (sortBy === 'price-desc') result.sort((a, b) => (b.price || 0) - (a.price || 0));
+    else if (sortBy === 'price-desc') result.sort((a, b) => (b.price || 0) - (a.price || 0));
+    else if (sortBy === 'rating') result.sort((a, b) => ((b as any).rating || 5) - ((a as any).rating || 5));
 
     return result;
-  }, [products, search, selectedMake, selectedCategory, selectedCondition, sortBy]);
+  }, [products, search, selectedMake, selectedCategory, selectedCondition, minPrice, maxPrice, onlyInStock, sortBy]);
 
   const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE) || 1;
   const paginatedProducts = useMemo(() => {
@@ -111,27 +151,39 @@ export default function CatalogueFilters({ products }: CatalogueFiltersProps) {
     setSelectedCategory('Toutes');
     setSelectedCondition('Tous');
     setSearch('');
+    setMinPrice('');
+    setMaxPrice('');
+    setOnlyInStock(false);
     setSortBy('recent');
     setCurrentPage(1);
   };
 
-  const hasFilters = selectedMake || selectedCategory !== 'Toutes' || selectedCondition !== 'Tous' || search.trim();
+  const hasFilters = Boolean(
+    selectedMake ||
+    selectedCategory !== 'Toutes' ||
+    selectedCondition !== 'Tous' ||
+    search.trim() ||
+    minPrice ||
+    maxPrice ||
+    onlyInStock
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* En-tête et barre de recherche */}
+      {/* Search Header */}
       <div className="mb-6">
         <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between mb-5">
           <div>
-            <h2 className="text-lg font-extrabold text-gray-900">
-              {filtered.length} pièce{filtered.length !== 1 ? 's' : ''} trouvée{filtered.length !== 1 ? 's' : ''}
+            <h2 className="text-xl font-extrabold text-gray-900 flex items-center gap-2">
+              <span>{filtered.length} pièce{filtered.length !== 1 ? 's' : ''} disponible{filtered.length !== 1 ? 's' : ''}</span>
+              {onlyInStock && <span className="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">En stock uniquement</span>}
             </h2>
             {hasFilters && (
               <button
                 onClick={resetFilters}
-                className="text-xs text-orange-600 hover:text-orange-700 font-semibold mt-0.5 hover:underline"
+                className="text-xs text-orange-600 hover:text-orange-700 font-semibold mt-0.5 hover:underline cursor-pointer"
               >
-                Réinitialiser les filtres ×
+                Réinitialiser tous les filtres ×
               </button>
             )}
           </div>
@@ -140,16 +192,17 @@ export default function CatalogueFilters({ products }: CatalogueFiltersProps) {
             <select
               value={sortBy}
               onChange={e => setSortBy(e.target.value as typeof sortBy)}
-              className="text-sm border border-gray-200 rounded-xl px-3 py-2 font-medium text-gray-700 focus:outline-none focus:border-orange-400 bg-white cursor-pointer"
+              className="text-sm border border-gray-200 rounded-xl px-3 py-2 font-medium text-gray-700 focus:outline-none focus:border-orange-400 bg-white cursor-pointer shadow-sm"
             >
               <option value="recent">Plus récents</option>
-              <option value="price-asc">Prix croissant</option>
-              <option value="price-desc">Prix décroissant</option>
+              <option value="price-asc">Prix croissant ⬆</option>
+              <option value="price-desc">Prix décroissant ⬇</option>
+              <option value="rating">Meilleures notes ★</option>
             </select>
           </div>
         </div>
 
-        {/* Barre de recherche */}
+        {/* Search input */}
         <div className="relative mb-5">
           <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -157,14 +210,14 @@ export default function CatalogueFilters({ products }: CatalogueFiltersProps) {
           <input
             type="text"
             value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Rechercher une pièce, référence, marque..."
-            className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:outline-none focus:border-orange-400 transition-colors bg-white placeholder-gray-400"
+            onChange={e => { setSearch(e.target.value); setCurrentPage(1); }}
+            placeholder="Rechercher une pièce (ex: Plaquette Hilux, Filtre à huile, Bougie...)"
+            className="w-full pl-10 pr-4 py-3.5 border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:outline-none focus:border-orange-400 transition-colors bg-white shadow-sm placeholder-gray-400"
           />
           {search && (
             <button
               onClick={() => setSearch('')}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 hover:text-gray-600"
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg font-bold"
             >
               ×
             </button>
@@ -172,13 +225,13 @@ export default function CatalogueFilters({ products }: CatalogueFiltersProps) {
         </div>
       </div>
 
-      {/* Filtres marque/modèle + condition + catégorie */}
+      {/* Filter Box */}
       <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-5 mb-6">
-        {/* Mobile toggle button */}
+        {/* Mobile Toggle */}
         <div className="sm:hidden mb-3">
           <button
             onClick={() => setShowMobileFilters(!showMobileFilters)}
-            className="w-full flex items-center justify-between px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-700"
+            className="w-full flex items-center justify-between px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold text-gray-700 shadow-sm"
           >
             <span className="flex items-center gap-2">
               <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -186,17 +239,17 @@ export default function CatalogueFilters({ products }: CatalogueFiltersProps) {
               </svg>
               Filtres {hasFilters ? '(Actifs)' : ''}
             </span>
-            <span>{showMobileFilters ? '▲ Cacher' : '▼ Afficher'}</span>
+            <span className="text-xs text-orange-600">{showMobileFilters ? 'Cacher ▲' : 'Afficher ▼'}</span>
           </button>
         </div>
 
         <div className={`${showMobileFilters ? 'block' : 'hidden sm:block'} space-y-4`}>
-          {/* Catégories (Horizontal Pills) */}
+          {/* Category Pills */}
           <div>
             <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">
               Catégorie de pièce
             </label>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {CATEGORIES.map(cat => (
                 <button
                   key={cat}
@@ -213,20 +266,20 @@ export default function CatalogueFilters({ products }: CatalogueFiltersProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-gray-100">
-            {/* Filtre Marque */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-3 border-t border-gray-100">
+            {/* Make */}
             <div>
-              <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">
+              <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">
                 Marque du véhicule
               </label>
               <div className="relative">
                 <select
                   value={selectedMake}
                   onChange={e => { setSelectedMake(e.target.value); setSelectedModel(''); setCurrentPage(1); }}
-                  className="w-full pl-3 pr-8 py-2.5 border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:outline-none focus:border-orange-400 transition-colors bg-white cursor-pointer appearance-none"
+                  className="w-full pl-3 pr-8 py-2 border-2 border-gray-200 rounded-xl text-sm font-medium text-gray-900 focus:outline-none focus:border-orange-400 transition-colors bg-white cursor-pointer appearance-none"
                 >
                   <option value="">Toutes les marques</option>
-                  <optgroup label="Populaires en Afrique de l'Ouest">
+                  <optgroup label="Populaires en Afrique">
                     {MAKES_POPULAR.map(m => (
                       <option key={m} value={m}>{m}</option>
                     ))}
@@ -247,29 +300,29 @@ export default function CatalogueFilters({ products }: CatalogueFiltersProps) {
               </div>
               <button
                 onClick={() => setShowAllMakes(!showAllMakes)}
-                className="text-xs text-orange-600 hover:underline mt-1 font-medium"
+                className="text-[11px] text-orange-600 hover:underline mt-1 font-medium"
               >
-                {showAllMakes ? 'Voir moins' : 'Voir toutes les marques'}
+                {showAllMakes ? 'Voir moins' : 'Plus de marques'}
               </button>
             </div>
 
-            {/* Filtre Modèle */}
+            {/* Model */}
             <div>
-              <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">
-                Modèle de véhicule
+              <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">
+                Modèle
               </label>
               <div className="relative">
                 <select
                   value={selectedModel}
                   onChange={e => { setSelectedModel(e.target.value); setCurrentPage(1); }}
                   disabled={!selectedMake}
-                  className={`w-full pl-3 pr-8 py-2.5 border-2 rounded-xl text-sm font-medium focus:outline-none transition-colors bg-white appearance-none ${
+                  className={`w-full pl-3 pr-8 py-2 border-2 rounded-xl text-sm font-medium focus:outline-none transition-colors bg-white appearance-none ${
                     selectedMake
                       ? 'border-gray-200 text-gray-900 cursor-pointer focus:border-orange-400'
                       : 'border-gray-100 text-gray-400 cursor-not-allowed bg-gray-50'
                   }`}
                 >
-                  <option value="">{selectedMake ? 'Tous les modèles' : 'Choisissez d\'abord une marque'}</option>
+                  <option value="">{selectedMake ? 'Tous les modèles' : 'Sélectionnez une marque'}</option>
                   {availableModels.map(m => (
                     <option key={m} value={m}>{m}</option>
                   ))}
@@ -280,77 +333,131 @@ export default function CatalogueFilters({ products }: CatalogueFiltersProps) {
                   </svg>
                 </div>
               </div>
-              {selectedMake && (
-                <p className="text-xs text-gray-400 mt-1">{availableModels.length} modèles disponibles</p>
-              )}
             </div>
 
-            {/* Filtre Condition */}
+            {/* Price Filter */}
             <div>
-              <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">
-                Condition
+              <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">
+                Prix (FCFA)
               </label>
-              <div className="flex flex-wrap gap-2">
-                {CONDITIONS.map(c => (
-                  <button
-                    key={c}
-                    onClick={() => { setSelectedCondition(c); setCurrentPage(1); }}
-                    className={`px-3 py-2 rounded-xl text-xs font-bold border-2 transition-all cursor-pointer ${
-                      selectedCondition === c
-                        ? 'border-orange-500 bg-orange-50 text-orange-700'
-                        : 'border-gray-200 bg-white text-gray-600 hover:border-orange-300 hover:bg-orange-50/40'
-                    }`}
-                  >
-                    {c}
-                  </button>
-                ))}
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  placeholder="Min"
+                  value={minPrice}
+                  onChange={e => { setMinPrice(e.target.value); setCurrentPage(1); }}
+                  className="w-full px-2.5 py-1.5 border-2 border-gray-200 rounded-xl text-xs font-medium text-gray-900 focus:outline-none focus:border-orange-400 bg-white"
+                />
+                <span className="text-gray-400 font-bold">-</span>
+                <input
+                  type="number"
+                  placeholder="Max"
+                  value={maxPrice}
+                  onChange={e => { setMaxPrice(e.target.value); setCurrentPage(1); }}
+                  className="w-full px-2.5 py-1.5 border-2 border-gray-200 rounded-xl text-xs font-medium text-gray-900 focus:outline-none focus:border-orange-400 bg-white"
+                />
+              </div>
+            </div>
+
+            {/* Condition & Stock */}
+            <div>
+              <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">
+                Disponibilité & État
+              </label>
+              <div className="flex flex-col gap-2">
+                <label className="inline-flex items-center gap-2 cursor-pointer text-xs font-semibold text-gray-700">
+                  <input
+                    type="checkbox"
+                    checked={onlyInStock}
+                    onChange={e => { setOnlyInStock(e.target.checked); setCurrentPage(1); }}
+                    className="w-4 h-4 text-orange-500 rounded border-gray-300 focus:ring-orange-400 accent-orange-500"
+                  />
+                  En stock seulement
+                </label>
+
+                <div className="flex flex-wrap gap-1">
+                  {CONDITIONS.map(c => (
+                    <button
+                      key={c}
+                      onClick={() => { setSelectedCondition(c); setCurrentPage(1); }}
+                      className={`px-2 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer ${
+                        selectedCondition === c
+                          ? 'border-orange-500 bg-orange-50 text-orange-700'
+                          : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                      }`}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Chips filtres actifs */}
+        {/* Active Filter Chips */}
         {hasFilters && (
-          <div className="flex flex-wrap gap-2 mt-4 pt-4 border-t border-gray-100">
+          <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-gray-100">
+            <span className="text-xs font-semibold text-gray-400">Filtres actifs :</span>
             {selectedMake && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 text-orange-800 rounded-full text-xs font-bold">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-orange-100 text-orange-800 rounded-full text-xs font-bold">
                 Marque: {selectedMake}
-                <button onClick={() => { setSelectedMake(''); setSelectedModel(''); }} className="hover:text-orange-600 cursor-pointer">×</button>
+                <button onClick={() => { setSelectedMake(''); setSelectedModel(''); }} className="hover:text-orange-900 cursor-pointer">×</button>
               </span>
             )}
             {selectedModel && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 text-blue-800 rounded-full text-xs font-bold">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold">
                 Modèle: {selectedModel}
-                <button onClick={() => setSelectedModel('')} className="hover:text-blue-600 cursor-pointer">×</button>
+                <button onClick={() => setSelectedModel('')} className="hover:text-blue-900 cursor-pointer">×</button>
               </span>
             )}
             {selectedCategory !== 'Toutes' && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-purple-100 text-purple-800 rounded-full text-xs font-bold">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-purple-100 text-purple-800 rounded-full text-xs font-bold">
                 Catégorie: {selectedCategory}
-                <button onClick={() => setSelectedCategory('Toutes')} className="hover:text-purple-600 cursor-pointer">×</button>
+                <button onClick={() => setSelectedCategory('Toutes')} className="hover:text-purple-900 cursor-pointer">×</button>
               </span>
             )}
             {selectedCondition !== 'Tous' && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold">
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded-full text-xs font-bold">
                 Condition: {selectedCondition}
-                <button onClick={() => setSelectedCondition('Tous')} className="hover:text-emerald-600 cursor-pointer">×</button>
+                <button onClick={() => setSelectedCondition('Tous')} className="hover:text-emerald-900 cursor-pointer">×</button>
+              </span>
+            )}
+            {minPrice && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold">
+                Min: {formatCFA(Number(minPrice))} FCFA
+                <button onClick={() => setMinPrice('')} className="hover:text-amber-900 cursor-pointer">×</button>
+              </span>
+            )}
+            {maxPrice && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold">
+                Max: {formatCFA(Number(maxPrice))} FCFA
+                <button onClick={() => setMaxPrice('')} className="hover:text-amber-900 cursor-pointer">×</button>
+              </span>
+            )}
+            {onlyInStock && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-teal-100 text-teal-800 rounded-full text-xs font-bold">
+                Stock garanti
+                <button onClick={() => setOnlyInStock(false)} className="hover:text-teal-900 cursor-pointer">×</button>
               </span>
             )}
           </div>
         )}
       </div>
 
-      {/* Grille de produits */}
+      {/* Grid */}
       {filtered.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
-          <svg className="w-16 h-16 mx-auto text-gray-200 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="text-center py-16 bg-white rounded-2xl border border-gray-100 shadow-sm">
+          <svg className="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
-          <h3 className="text-lg font-bold text-gray-900 mb-2">Aucune pièce trouvée</h3>
-          <p className="text-sm text-gray-500 mb-4">Essayez de modifier vos filtres ou de réinitialiser la recherche.</p>
+          <h3 className="text-lg font-bold text-gray-900 mb-2">Aucune pièce ne correspond à vos critères</h3>
+          <p className="text-sm text-gray-500 mb-6 max-w-md mx-auto">
+            Essayez de relâcher un filtre de prix, de changer de catégorie ou d&apos;élargir la recherche textuelle.
+          </p>
           <button
             onClick={resetFilters}
-            className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl text-sm transition-colors cursor-pointer"
+            className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl text-sm transition-colors cursor-pointer shadow-sm"
           >
             Réinitialiser les filtres
           </button>
@@ -457,16 +564,24 @@ export default function CatalogueFilters({ products }: CatalogueFiltersProps) {
       )}
 
       {/* CTA Devenir Vendeur */}
-      <div className="mt-10 p-6 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl text-white text-center">
-        <h3 className="font-extrabold text-lg mb-1.5">Vous êtes vendeur de pièces auto ?</h3>
-        <p className="text-sm text-white/90 mb-4">Rejoignez AutoAfrique et vendez à toute l&apos;Afrique de l&apos;Ouest.</p>
+      <div className="mt-10 p-6 bg-gradient-to-r from-orange-500 to-amber-500 rounded-2xl text-white text-center shadow-sm">
+        <h3 className="font-extrabold text-lg mb-1.5">Vous êtes fournisseur ou garagiste ?</h3>
+        <p className="text-sm text-white/90 mb-4">Vendez directement vos pièces neuves et d&apos;occasion sur AutoAfrique.</p>
         <Link
           href="/devenir-vendeur"
-          className="inline-flex items-center gap-2 px-6 py-2.5 bg-white text-orange-600 font-bold rounded-xl hover:bg-orange-50 transition-colors text-sm"
+          className="inline-flex items-center gap-2 px-6 py-2.5 bg-white text-orange-600 font-bold rounded-xl hover:bg-orange-50 transition-colors text-sm shadow-sm"
         >
-          Devenir vendeur →
+          Devenir vendeur agréé →
         </Link>
       </div>
     </div>
+  );
+}
+
+export default function CatalogueFilters(props: CatalogueFiltersProps) {
+  return (
+    <Suspense fallback={<div className="text-center py-12 text-gray-500 font-medium">Chargement du catalogue...</div>}>
+      <CatalogueFiltersContent {...props} />
+    </Suspense>
   );
 }
