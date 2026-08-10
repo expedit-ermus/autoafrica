@@ -44,27 +44,36 @@ export default function ChatBot() {
   const getNow = () => new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 
   const welcomeText = L(
-    'Bonjour ! 👋 Je suis **AutoBot**, l\'assistant d\'AutoAfrique.\n\nJe peux vous orienter vers les fonctionnalités du site :\n• 🏪 Catalogue de pièces détachées\n• 🚙 Annonces de véhicules\n• 📦 Inventaire\n• 💳 Paiements Mobile Money\n• ❓ Aide\n• ✉️ Contact\n\nJe n\'affiche aucune donnée inventée : choisissez une option pour ouvrir la page correspondante.',
-    'Hello! 👋 I\'m **AutoBot**, AutoAfrique\'s assistant.\n\nI can point you to the site\'s features:\n• 🏪 Spare parts catalogue\n• 🚙 Vehicle listings\n• 📦 Inventory\n• 💳 Mobile Money payments\n• ❓ Help\n• ✉️ Contact\n\nI don\'t show any invented data: pick an option to open the relevant page.'
+    'Bonjour ! 👋 Je suis **AutoBot**, l\'assistant IA d\'AutoAfrique.\n\nComment puis-je vous aider aujourd\'hui ?\n• 🔍 Recherche par plaque ou N° VIN\n• 🏪 Catalogue de pièces détachées\n• 💳 Paiements Mobile Money (Wave, Orange, MTN, Moov)\n• 🚚 Délais de livraison 24-72h\n• 🛠️ Manuels de réparation & tutos\n• 💼 Offres Garages & Vendeurs',
+    'Hello! 👋 I\'m **AutoBot**, AutoAfrique\'s AI assistant.\n\nHow can I help you today?\n• 🔍 Search by plate or VIN number\n• 🏪 Spare parts catalogue\n• 💳 Mobile Money payments (Wave, Orange, MTN, Moov)\n• 🚚 Delivery times 24-72h\n• 🛠️ Repair manuals & tutorials\n• 💼 Garage & Seller plans'
   );
 
   const welcomeOptions: FlowOption[] = [
+    { label: L('📋 Demander un Devis Express (30s)', '📋 Request Express Quote (30s)'), action: 'open_lead_quote', icon: '📋', color: 'bg-emerald-500 text-white hover:bg-emerald-600 border-none font-bold' },
+    { label: L('📞 Être rappelé sous 15 min', '📞 Get callback in 15 min'), action: 'open_lead_callback', icon: '📞', color: 'bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:opacity-95 border-none font-bold' },
+    { label: L('🔍 Recherche par Plaque / VIN', '🔍 Search by Plate / VIN'), action: 'open_vin_search', icon: '🔍' },
     { label: L('🏪 Catalogue pièces', '🏪 Parts catalogue'), action: 'open_marketplace', icon: '🏪' },
-    { label: L('🚙 Véhicules', '🚙 Vehicles'), action: 'open_vehicles', icon: '🚙' },
-    { label: L('📦 Inventaire', '📦 Inventory'), action: 'open_inventory', icon: '📦' },
-    { label: L('💳 Paiements', '💳 Payments'), action: 'open_payments', icon: '💳' },
-    { label: L('❓ Aide', '❓ Help'), action: 'open_aide', icon: '❓' },
-    { label: L('✉️ Contact & support', '✉️ Contact & support'), action: 'open_contact', icon: '✉️' },
+    { label: L('💳 Paiements Mobile Money', '💳 Mobile Money Payments'), action: 'open_payments', icon: '💳' },
+    { label: L('🚚 Livraisons 24-72h', '🚚 24-72h Delivery'), action: 'open_livraison', icon: '🚚' },
+    { label: L('💼 Tarifs & Espace Vendeur', '💼 Plans & Seller Area'), action: 'open_tarifs', icon: '💼' },
+    { label: L('✉️ Support Client', '✉️ Support Client'), action: 'open_contact', icon: '✉️' },
   ];
 
   const flows: Record<string, Flow> = {
     welcome: { label: L('🏠 Menu principal', '🏠 Main menu'), reply: welcomeText, options: welcomeOptions },
-    open_marketplace: { label: L('🏪 Catalogue pièces', '🏪 Parts catalogue'), url: '/dashboard/marketplace' },
+    open_lead_quote: { label: L('📋 Devis Express', '📋 Express Quote'), reply: L('📋 **Demande de Devis Express**\n\nRemplissez ce court formulaire ci-dessous pour recevoir une offre sur mesure par WhatsApp ou téléphone.', '📋 **Express Quote Request**\n\nFill the form below to get a custom offer on WhatsApp or phone.') },
+    open_lead_callback: { label: L('📞 Rappel Téléphonique', '📞 Phone Callback'), reply: L('📞 **Rappel Téléphonique sous 15 min**\n\nLaissez vos coordonnées pour qu\'un conseiller commercial AutoAfrique vous rappelle immédiatement.', '📞 **Phone Callback in 15 min**\n\nLeave your details and an AutoAfrique sales rep will call you right away.') },
+    open_vin_search: { label: L('🔍 Recherche par Plaque / VIN', '🔍 Search by Plate / VIN'), url: '/dashboard/parts-search' },
+    open_marketplace: { label: L('🏪 Catalogue pièces', '🏪 Parts catalogue'), url: '/catalogue' },
     open_vehicles: { label: L('🚙 Véhicules', '🚙 Vehicles'), url: '/dashboard/vehicles' },
     open_inventory: { label: L('📦 Inventaire', '📦 Inventory'), url: '/dashboard/inventory' },
-    open_payments: { label: L('💳 Paiements', '💳 Payments'), url: '/dashboard/payments' },
+    open_payments: { label: L('💳 Paiements', '💳 Payments'), url: '/paiement' },
+    open_livraison: { label: L('🚚 Livraisons', '🚚 Delivery'), url: '/livraison' },
+    open_manuels: { label: L('🛠️ Manuels de réparation', '🛠️ Repair Manuals'), url: '/manuels-reparation' },
+    open_tarifs: { label: L('💼 Tarifs SaaS', '💼 SaaS Plans'), url: '/tarifs' },
+    open_vendeur: { label: L('📈 Devenir Vendeur', '📈 Become Seller'), url: '/devenir-vendeur' },
     open_aide: { label: L('❓ Aide', '❓ Help'), url: '/aide' },
-    open_contact: { label: L('✉️ Contact & support', '✉️ Contact & support'), url: '/contact' },
+    open_contact: { label: L('✉️ Support Client', '✉️ Support Client'), url: '/contact' },
   };
 
   const pushBot = (text: string, options?: FlowOption[]) => {
@@ -72,7 +81,7 @@ export default function ChatBot() {
     setTimeout(() => {
       setMessages((prev) => [...prev, { id: Date.now().toString(), from: 'bot', text, time: getNow(), options }]);
       setIsTyping(false);
-    }, 550);
+    }, 450);
   };
 
   const openChat = () => {
@@ -89,18 +98,92 @@ export default function ChatBot() {
     setIsOpen(false);
   };
 
-  const respondToText = (text: string) => {
-    pushBot(
-      L(
-        `Merci pour votre demande : « ${text} ».\n\nDans la conversation, je ne simule ni pièces ni véhicules disponibles. Utilisez le **catalogue de pièces** ou les **annonces de véhicules** pour des résultats réels.`,
-        `Thanks for your request: "${text}".\n\nIn chat I don\'t simulate available parts or vehicles. Use the **parts catalogue** or the **vehicle listings** for real results.`
+  const analyzeIntent = (userText: string): { reply: string; options: FlowOption[] } => {
+    const q = userText.toLowerCase();
+
+    // 1. Recherche par immatriculation / VIN
+    if (q.includes('vin') || q.includes('immatricul') || q.includes('plaque') || q.includes('chass') || q.includes('compatib')) {
+      return {
+        reply: L(
+          '🔍 **Recherche par Immatriculation ou Carte Grise**\n\nAutoAfrique intègre un moteur de décodage pour les véhicules d\'Afrique de l\'Ouest (Côte d\'Ivoire 🇨🇮, Sénégal 🇸🇳, Burkina 🇧🇫, Mali 🇲🇱, etc.).\n\nSouhaitez-vous rechercher vos pièces compatibles maintenant ?',
+          '🔍 **Plate or VIN Search**\n\nAutoAfrique includes a decoding engine for West African vehicles.\n\nWould you like to search your compatible parts now?'
+        ),
+        options: [
+          { label: L('🔍 Lancer la recherche par plaque', '🔍 Start plate search'), action: 'open_vin_search', icon: '🔍' },
+          { label: L('🏪 Parcourir le catalogue', '🏪 Browse catalogue'), action: 'open_marketplace', icon: '🏪' },
+        ],
+      };
+    }
+
+    // 2. Paiements Mobile Money
+    if (q.includes('wave') || q.includes('orange') || q.includes('mtn') || q.includes('moov') || q.includes('pay') || q.includes('argent') || q.includes('fcfa') || q.includes('factur')) {
+      return {
+        reply: L(
+          '💳 **Paiements Sécurisés en Afrique de l\'Ouest**\n\nAutoAfrique accepte les règlements par **Wave**, **Orange Money**, **MTN MoMo**, **Moov Money** ainsi que par **Carte Visa/Mastercard**.\n\n• Aucun compte bancaire requis.\n• Confirmation instantanée par code USSD.\n• Facture FCFA téléchargable dans votre espace membre.',
+          '💳 **Secure West African Payments**\n\nAutoAfrique accepts **Wave**, **Orange Money**, **MTN MoMo**, **Moov Money** and **Visa/Mastercard**.\n\n• No bank account required.\n• Instant USSD confirmation.'
+        ),
+        options: [
+          { label: L('💳 Voir la page Paiement', '💳 View Payment page'), action: 'open_payments', icon: '💳' },
+          { label: L('✉️ Poser une question sur les paiements', '✉️ Ask payment question'), action: 'open_contact', icon: '✉️' },
+        ],
+      };
+    }
+
+    // 3. Livraison & Délais
+    if (q.includes('livra') || q.includes('exped') || q.includes('colis') || q.includes('dakar') || q.includes('abidjan') || q.includes('delai')) {
+      return {
+        reply: L(
+          '🚚 **Livraison & Expédition 24h - 72h**\n\n• **Abidjan & Côte d\'Ivoire** : Livraison en 24h à domicile ou en point relais garage.\n• **Dakar, Bamako, Ouagadougou, Lomé, Cotonou** : Expédition express sous 48h à 72h.\n• Suivi en temps réel de votre colis.',
+          '🚚 **24h - 72h Delivery**\n\n• **Abidjan & Ivory Coast**: 24h delivery.\n• **Sub-region (Dakar, Bamako, etc.)**: 48-72h express.'
+        ),
+        options: [
+          { label: L('🚚 Informations de livraison', '🚚 Delivery details'), action: 'open_livraison', icon: '🚚' },
+          { label: L('❓ FAQ & Support', '❓ FAQ & Support'), action: 'open_aide', icon: '❓' },
+        ],
+      };
+    }
+
+    // 4. Manuels & Tutoriels
+    if (q.includes('manuel') || q.includes('tuto') || q.includes('repar') || q.includes('moteur') || q.includes('vidange') || q.includes('schema')) {
+      return {
+        reply: L(
+          '🛠️ **Manuels de Réparation & Fiches Techniques**\n\nConsultez gratuitement nos manuels techniques, schémas de montage et tutoriels vidéo pour l\'entretien de vos véhicules (Toyota, Suzuki, Peugeot, Hyundai, Kia...).',
+          '🛠️ **Repair Manuals & Tech Specs**\n\nAccess free manuals, wiring diagrams, and tutorials for your vehicle.'
+        ),
+        options: [
+          { label: L('🛠️ Consulter les Manuels', '🛠️ View Manuals'), action: 'open_manuels', icon: '🛠️' },
+          { label: L('🏪 Chercher des pièces', '🏪 Search parts'), action: 'open_marketplace', icon: '🏪' },
+        ],
+      };
+    }
+
+    // 5. Tarifs & Inscription Garage / Vendeur
+    if (q.includes('tarif') || q.includes('prix') || q.includes('abonnement') || q.includes('vendre') || q.includes('garage') || q.includes('casse')) {
+      return {
+        reply: L(
+          '💼 **Offres SaaS ERP & Espace Vendeur AutoAfrique**\n\nDigitalisez votre garage ou magasin de pièces :\n• Formule **Starter** (15 000 FCFA/mois) pour casseaurs & ateliers.\n• Formule **Pro** (45 000 FCFA/mois) avec gestion multi-entrepôts.\n• Formule **Enterprise** pour flottes & gros importateurs.',
+          '💼 **SaaS ERP & Seller Plans**\n\nDigitalize your garage or auto parts shop with AutoAfrique plans.'
+        ),
+        options: [
+          { label: L('💼 Voir les formules Tarifs', '💼 View SaaS Plans'), action: 'open_tarifs', icon: '💼' },
+          { label: L('📈 Devenir Vendeur', '📈 Become Seller'), action: 'open_vendeur', icon: '📈' },
+        ],
+      };
+    }
+
+    // Réponse générique intelligente
+    return {
+      reply: L(
+        `Merci pour votre message concernant : « ${userText} ».\n\nJe suis l'assistant AutoBot d'AutoAfrique. Pour trouver des informations réelles et précises, sélectionnez l'une des rubriques ci-dessous :`,
+        `Thank you for your message about: "${userText}".\n\nI am AutoBot, AutoAfrique's assistant. Select one of the topics below for real information:`
       ),
-      [
-        { label: L('🏪 Catalogue pièces', '🏪 Parts catalogue'), action: 'open_marketplace', icon: '🏪' },
-        { label: L('🚙 Véhicules', '🚙 Vehicles'), action: 'open_vehicles', icon: '🚙' },
-        { label: L('✉️ Contact', '✉️ Contact'), action: 'open_contact', icon: '✉️' },
-      ]
-    );
+      options: welcomeOptions,
+    };
+  };
+
+  const respondToText = (text: string) => {
+    const { reply, options } = analyzeIntent(text);
+    pushBot(reply, options);
   };
 
   const handleSend = () => {
@@ -111,17 +194,58 @@ export default function ChatBot() {
     respondToText(userText);
   };
 
+  const [showLeadForm, setShowLeadForm] = useState(false);
+  const [leadFormType, setLeadFormType] = useState<'quote' | 'callback'>('quote');
+  const [leadData, setLeadData] = useState({ name: '', phone: '', countryCode: '+225', need: '' });
+
   const handleOptionClick = (action: string) => {
     const flow = flows[action];
     if (!flow) return;
     const label = flow.label.replace(/^[^\s]+ /, '');
     setMessages((prev) => [...prev, { id: Date.now().toString(), from: 'user', text: label, time: getNow() }]);
+
+    if (action === 'open_lead_quote' || action === 'open_lead_callback') {
+      setLeadFormType(action === 'open_lead_quote' ? 'quote' : 'callback');
+      setShowLeadForm(true);
+      if (flow.reply) pushBot(flow.reply);
+      return;
+    }
+
     if (flow.url) {
       pushBot(L(`Ouverture de la page « ${label} » dans un nouvel onglet.`, `Opening the "${label}" page in a new tab.`));
       window.open(flow.url, '_blank', 'noopener,noreferrer');
     } else if (flow.reply) {
       pushBot(flow.reply, flow.options);
     }
+  };
+
+  const handleLeadSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!leadData.name.trim() || !leadData.phone.trim()) return;
+
+    const fullPhone = `${leadData.countryCode} ${leadData.phone.trim()}`;
+
+    setShowLeadForm(false);
+    pushBot(
+      L(
+        `✅ **Demande de Lead Enregistrée !**\n\nMerci ${leadData.name}, vos coordonnées (**${fullPhone}**) ont été transmises à notre équipe commerciale.\n\nUn conseiller vous recontactera sous 15 minutes. Vous pouvez aussi échanger directement via WhatsApp ci-dessous :`,
+        `✅ **Lead Request Captured!**\n\nThank you ${leadData.name}, your contact info (**${fullPhone}**) has been sent to our sales team.`
+      ),
+      [
+        {
+          label: L('💬 WhatsApp Direct Commercial', '💬 Direct WhatsApp Sales'),
+          action: 'whatsapp_redirect',
+          icon: '💬',
+          color: 'bg-emerald-600 text-white hover:bg-emerald-700 border-none font-bold',
+        },
+        { label: L('🏠 Retour au Menu Principal', '🏠 Back to Main Menu'), action: 'welcome', icon: '🏠' },
+      ]
+    );
+
+    // Prepare WhatsApp URL
+    const waText = encodeURIComponent(`Bonjour AutoAfrique, je souhaite un devis pour : ${leadData.need || 'Pièces auto'}. Nom : ${leadData.name}, Tel : ${fullPhone}`);
+    window.open(`https://wa.me/2250700000000?text=${waText}`, '_blank', 'noopener,noreferrer');
+    setLeadData({ name: '', phone: '', countryCode: '+225', need: '' });
   };
 
   interface SpeechLike {
@@ -170,6 +294,25 @@ export default function ChatBot() {
     recognition.start();
   };
 
+  const [speakingId, setSpeakingId] = useState<string | null>(null);
+
+  const handleSpeak = (id: string, text: string) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    if (speakingId === id) {
+      window.speechSynthesis.cancel();
+      setSpeakingId(null);
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const cleanText = text.replace(/[*_#•]/g, '');
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = locale === 'fr' ? 'fr-FR' : 'en-US';
+    utterance.onend = () => setSpeakingId(null);
+    utterance.onerror = () => setSpeakingId(null);
+    setSpeakingId(id);
+    window.speechSynthesis.speak(utterance);
+  };
+
   return (
     <>
       {!isOpen && (
@@ -195,10 +338,10 @@ export default function ChatBot() {
               <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-orange-500"></span>
             </div>
             <div className="flex-1">
-              <p className="text-white font-bold text-sm">AutoBot</p>
+              <p className="text-white font-bold text-sm">AutoBot AI</p>
               <p className="text-orange-100 text-[10px] flex items-center gap-1">
                 <span className="w-1.5 h-1.5 bg-green-400 rounded-full animate-pulse"></span>
-                {L('Assistant du site', 'Site assistant')}
+                {L('Assistant virtuel intelligent', 'Smart virtual assistant')}
               </p>
             </div>
             <button onClick={closeChat} className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center text-white hover:bg-white/30 transition text-sm" aria-label={L('Fermer', 'Close')}>✕</button>
@@ -222,7 +365,16 @@ export default function ChatBot() {
                   <div className="flex justify-start">
                     <div className="bg-white border border-gray-100 rounded-2xl rounded-bl-md px-4 py-3 max-w-[90%] shadow-sm">
                       {msg.text && <p className="text-[13px] whitespace-pre-line leading-relaxed text-gray-800">{msg.text}</p>}
-                      <p className="text-[9px] text-gray-400 text-right mt-1">{msg.time}</p>
+                      <div className="flex items-center justify-between mt-2 pt-1 border-t border-gray-50">
+                        <button
+                          onClick={() => handleSpeak(msg.id, msg.text)}
+                          className="text-[10px] text-orange-500 hover:text-orange-700 flex items-center gap-1 font-semibold transition"
+                          aria-label={L('Écouter le message', 'Listen to message')}
+                        >
+                          {speakingId === msg.id ? '⏹️ Stop' : '🔊 Écouter'}
+                        </button>
+                        <p className="text-[9px] text-gray-400">{msg.time}</p>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -253,6 +405,72 @@ export default function ChatBot() {
                     <span className="text-[10px] text-gray-400">{L('AutoBot réfléchit...', 'AutoBot thinking...')}</span>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {showLeadForm && (
+              <div className="bg-gradient-to-br from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-4 shadow-sm animate-fade-in my-2">
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-xs font-bold text-emerald-900 flex items-center gap-1.5">
+                    <span>📋</span> {leadFormType === 'quote' ? 'Formulaire de Devis Express' : 'Rappel Téléphonique 15 min'}
+                  </p>
+                  <button onClick={() => setShowLeadForm(false)} className="text-xs text-gray-400 hover:text-gray-600 font-bold" type="button">✕</button>
+                </div>
+                <form onSubmit={handleLeadSubmit} className="space-y-2.5">
+                  <div>
+                    <label className="block text-[10px] font-bold text-emerald-800 uppercase tracking-wide mb-1">Nom / Nom du Garage</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Ex: Garage Koné / Mamadou Diallo"
+                      value={leadData.name}
+                      onChange={(e) => setLeadData({ ...leadData, name: e.target.value })}
+                      className="w-full px-3 py-2 bg-white border border-emerald-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-emerald-400"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-emerald-800 uppercase tracking-wide mb-1">Téléphone WhatsApp / Mobile Money</label>
+                    <div className="flex gap-1.5">
+                      <select
+                        value={leadData.countryCode}
+                        onChange={(e) => setLeadData({ ...leadData, countryCode: e.target.value })}
+                        className="px-2 py-2 bg-white border border-emerald-200 rounded-xl text-xs font-semibold outline-none focus:ring-2 focus:ring-emerald-400 cursor-pointer"
+                      >
+                        <option value="+225">🇨🇮 +225</option>
+                        <option value="+221">🇸🇳 +221</option>
+                        <option value="+226">🇧🇫 +226</option>
+                        <option value="+223">🇲🇱 +223</option>
+                        <option value="+229">🇧🇯 +229</option>
+                        <option value="+228">🇹🇬 +228</option>
+                        <option value="+234">🇳🇬 +234</option>
+                      </select>
+                      <input
+                        type="tel"
+                        required
+                        placeholder="07 01 02 03 04"
+                        value={leadData.phone}
+                        onChange={(e) => setLeadData({ ...leadData, phone: e.target.value })}
+                        className="flex-1 px-3 py-2 bg-white border border-emerald-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-emerald-400"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] font-bold text-emerald-800 uppercase tracking-wide mb-1">Pièce ou Véhicule recherché</label>
+                    <input
+                      type="text"
+                      placeholder="Ex: Amortisseurs Toyota Corolla 2018"
+                      value={leadData.need}
+                      onChange={(e) => setLeadData({ ...leadData, need: e.target.value })}
+                      className="w-full px-3 py-2 bg-white border border-emerald-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-emerald-400"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition cursor-pointer flex items-center justify-center gap-1.5 mt-1"
+                  >
+                    <span>🚀 Envoyer ma demande de devis</span>
+                  </button>
+                </form>
               </div>
             )}
 

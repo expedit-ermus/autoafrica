@@ -4,12 +4,14 @@ import { paymentProviders } from './registry'
 import { OrangeMoneyAdapter } from './orange-money.adapter'
 import { MtnMomoAdapter } from './mtn-momo.adapter'
 import { MoovMoneyAdapter } from './moov-money.adapter'
+import { WaveAdapter } from './wave.adapter'
 
 describe('paymentProviders registry', () => {
-  it('registers Orange Money, MTN MoMo and Moov Money', () => {
+  it('registers Orange Money, MTN MoMo, Wave and Moov Money', () => {
     const ids = paymentProviders.list().map(p => p.id)
     expect(ids).toContain(PaymentMethod.ORANGE_MONEY)
     expect(ids).toContain(PaymentMethod.MTN_MOMO)
+    expect(ids).toContain(PaymentMethod.WAVE)
     expect(ids).toContain(PaymentMethod.MOOV_MONEY)
   })
 
@@ -21,12 +23,13 @@ describe('paymentProviders registry', () => {
   it('returns the same adapter for a supported method', () => {
     expect(paymentProviders.get(PaymentMethod.ORANGE_MONEY)).toBeInstanceOf(OrangeMoneyAdapter)
     expect(paymentProviders.get(PaymentMethod.MTN_MOMO)).toBeInstanceOf(MtnMomoAdapter)
+    expect(paymentProviders.get(PaymentMethod.WAVE)).toBeInstanceOf(WaveAdapter)
     expect(paymentProviders.get(PaymentMethod.MOOV_MONEY)).toBeInstanceOf(MoovMoneyAdapter)
   })
 })
 
 describe('Mobile Money adapters', () => {
-  const adapters = [new OrangeMoneyAdapter(), new MtnMomoAdapter(), new MoovMoneyAdapter()]
+  const adapters = [new OrangeMoneyAdapter(), new MtnMomoAdapter(), new WaveAdapter(), new MoovMoneyAdapter()]
 
   afterEach(() => {
     vi.restoreAllMocks()

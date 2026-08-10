@@ -252,14 +252,14 @@ function CatalogueFiltersContent({ products }: CatalogueFiltersProps) {
             <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">
               Catégorie de pièce
             </label>
-            <div className="flex flex-wrap gap-1.5 sm:gap-2">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 pt-0.5 pb-1">
               {CATEGORIES.map(cat => (
                 <button
                   key={cat}
                   onClick={() => { setSelectedCategory(cat); setCurrentPage(1); }}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     selectedCategory === cat
-                      ? 'bg-orange-500 text-white shadow-sm'
+                      ? 'bg-orange-500 text-white shadow-sm ring-2 ring-orange-400/30'
                       : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
                 >
@@ -303,9 +303,12 @@ function CatalogueFiltersContent({ products }: CatalogueFiltersProps) {
               </div>
               <button
                 onClick={() => setShowAllMakes(!showAllMakes)}
-                className="text-[11px] text-orange-600 hover:underline mt-1 font-medium"
+                className="inline-flex items-center gap-1 text-[11px] text-orange-600 hover:text-orange-700 font-semibold mt-1.5 transition-colors cursor-pointer"
               >
-                {showAllMakes ? 'Voir moins' : 'Plus de marques'}
+                <span>{showAllMakes ? 'Voir moins' : 'Plus de marques'}</span>
+                <svg className={`w-3 h-3 transition-transform ${showAllMakes ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
             </div>
 
