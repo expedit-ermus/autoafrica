@@ -10,7 +10,7 @@ L'agent ne doit pas improviser une architecture, une route, une fonctionnalité,
 
 Ce projet applique les principes d'IA agentique formalisés dans le support de consolidation (Modules IA 7 & 8) :
 - **Boucle Agentique** : `Observer → Décider → Exécuter → Vérifier`.
-- **Skill dédié** : `.claude/skills/autoafrique-agentic/SKILL.md` (Contrat procédural et règles de développement).
+- **Skills dédiés** : `.claude/skills/autoafrique-agentic/SKILL.md` (Contrat procédural AutoAfrique) et `.claude/skills/fullstack-developer/SKILL.md` (Fullstack Developer Agent).
 - **Serveurs MCP** : Notion (`@notionhq/notion-mcp-server`), Search Console, Analytics, Chrome DevTools.
 - **Principe du Moindre Privilège** : Clés API et secrets uniquement dans `.env.local` et Vercel (jamais dans le code source).
 - **Notion Sync** : Les mises à jour de documentation et cartographie de routes sont synchronisées avec la page Notion officielle.
