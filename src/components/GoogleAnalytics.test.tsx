@@ -56,9 +56,19 @@ describe('GoogleAnalytics', () => {
     )
   })
 
-  it('renders nothing when the measurement id is missing', () => {
+  it('uses default measurement id G-46T65CMVH0 when env is not explicitly set', async () => {
     vi.stubEnv('NEXT_PUBLIC_GA_MEASUREMENT_ID', '')
-    const { container } = render(<GoogleAnalytics />)
-    expect(container.firstChild).toBeNull()
+    const { rerender } = render(<GoogleAnalytics />)
+    await flush()
+    currentPath = '/catalogue'
+    await act(async () => {
+      rerender(<GoogleAnalytics />)
+    })
+    await flush()
+    expect(gtagMock).toHaveBeenCalledWith(
+      'config',
+      'G-46T65CMVH0',
+      expect.objectContaining({ page_path: '/catalogue' }),
+    )
   })
 })

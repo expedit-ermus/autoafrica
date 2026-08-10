@@ -5,10 +5,12 @@ import { Suspense, useEffect, useRef } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 import { setGAConsent } from '@/lib/gtag'
 
+const DEFAULT_GA_ID = 'G-46T65CMVH0'
+
 function AnalyticsPageViews() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+  const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || DEFAULT_GA_ID
   const isFirstRun = useRef(true)
 
   useEffect(() => {
@@ -35,7 +37,7 @@ function AnalyticsPageViews() {
 }
 
 export default function GoogleAnalytics() {
-  const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
+  const measurementId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || DEFAULT_GA_ID
 
   if (!measurementId) return null
 
