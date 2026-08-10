@@ -140,6 +140,7 @@ export default async function PieceDetailPage({ params }: Props) {
               reference={product.reference || product.id}
               price={product.price}
               image={firstImg}
+              stock={product.stock}
             />
           </div>
         </div>

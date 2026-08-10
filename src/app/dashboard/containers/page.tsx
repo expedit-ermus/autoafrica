@@ -388,6 +388,40 @@ export default function ContainersPage() {
                   </span>
                 </div>
 
+                {/* Progress Bar Timeline */}
+                <div className="my-5 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                  <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">Progression du Transit & Douanes</p>
+                  <div className="flex items-center justify-between text-xs font-semibold">
+                    {[
+                      { key: 'LOADING', label: 'Chargement' },
+                      { key: 'IN_TRANSIT', label: 'Transit' },
+                      { key: 'ARRIVED_PORT', label: 'Port' },
+                      { key: 'CUSTOMS_PROCESSING', label: 'Douane' },
+                      { key: 'DELIVERED_TO_WAREHOUSE', label: 'Entrepôt' },
+                    ].map((step, idx, arr) => {
+                      const currentIdx = CONTAINER_STATUSES.indexOf(detail.status);
+                      const stepIdx = CONTAINER_STATUSES.indexOf(step.key);
+                      const isDone = currentIdx >= stepIdx;
+
+                      return (
+                        <div key={step.key} className="flex-1 flex flex-col items-center relative text-center">
+                          <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold z-10 transition-all ${
+                            isDone ? 'bg-orange-500 text-white shadow-md shadow-orange-200' : 'bg-gray-200 text-gray-400'
+                          }`}>
+                            {isDone ? '✓' : idx + 1}
+                          </div>
+                          <span className={`text-[10px] mt-1.5 font-bold ${isDone ? 'text-orange-600' : 'text-gray-400'}`}>{step.label}</span>
+                          {idx < arr.length - 1 && (
+                            <div className={`h-1 w-full absolute top-3.5 left-1/2 -z-0 ${
+                              currentIdx > stepIdx ? 'bg-orange-500' : 'bg-gray-200'
+                            }`} />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <div className="space-y-2 text-sm mb-5">
                   <div className="flex justify-between"><span className="text-gray-500">Bon de commande</span><span className="font-medium">{detail.purchaseOrder?.poNumber || '—'}</span></div>
                   <div className="flex justify-between"><span className="text-gray-500">Trajet</span><span className="font-medium">{detail.originPort} → {detail.destinationPort}</span></div>

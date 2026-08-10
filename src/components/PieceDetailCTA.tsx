@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/contexts/ToastContext';
+import StockAlertModal from '@/components/StockAlertModal';
 import { PaymentLogosGroup } from '@/components/PaymentLogos';
 
 interface PieceDetailCTAProps {
@@ -12,6 +13,7 @@ interface PieceDetailCTAProps {
   reference: string;
   price: number;
   image: string;
+  stock?: number;
 }
 
 export default function PieceDetailCTA({
@@ -21,10 +23,12 @@ export default function PieceDetailCTA({
   reference,
   price,
   image,
+  stock = 10,
 }: PieceDetailCTAProps) {
   const router = useRouter();
   const { addToast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [showStockModal, setShowStockModal] = useState(false);
 
   const whatsappMessage = encodeURIComponent(
     `Bonjour, je suis intéressé par la pièce "${title}" (Réf: ${reference}) au prix de ${price.toLocaleString()} FCFA sur AutoAfrique.`
@@ -69,6 +73,27 @@ export default function PieceDetailCTA({
 
   return (
     <div className="space-y-3 pt-2">
+      {/* Stock Status Badge */}
+      <div className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-200 text-xs font-semibold">
+        <span className="text-gray-500">Disponibilité Magasin :</span>
+        {stock > 5 ? (
+          <span className="text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full font-extrabold flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            En Stock ({stock} dispo)
+          </span>
+        ) : stock > 0 ? (
+          <span className="text-amber-800 bg-amber-100 px-2.5 py-1 rounded-full font-extrabold flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-amber-500" />
+            Stock Limité ({stock} restante{stock > 1 ? 's' : ''})
+          </span>
+        ) : (
+          <span className="text-red-700 bg-red-100 px-2.5 py-1 rounded-full font-extrabold flex items-center gap-1">
+            <span className="w-2 h-2 rounded-full bg-red-500" />
+            Rupture de Stock
+          </span>
+        )}
+      </div>
+
       {/* Action 1 : WhatsApp Vendeur */}
       <a
         href={whatsappUrl}
@@ -79,7 +104,7 @@ export default function PieceDetailCTA({
         <span>💬</span> Contacter le Vendeur sur WhatsApp
       </a>
 
-      {/* Action 2 : Commander avec Séquestre Mobile Money (Ajoute au panier et redirige vers le paiement) */}
+      {/* Action 2 : Commander avec Séquestre Mobile Money */}
       <button
         type="button"
         onClick={handleAddToCartAndCheckout}
@@ -89,6 +114,22 @@ export default function PieceDetailCTA({
         <span>🛒</span>
         {loading ? 'Préparation de la commande...' : 'Commander avec Séquestre Mobile Money'}
       </button>
+
+      {/* Action 3 : Alerte Réassort */}
+      <button
+        type="button"
+        onClick={() => setShowStockModal(true)}
+        className="w-full py-2.5 px-4 bg-orange-50 hover:bg-orange-100 text-orange-800 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-all border border-orange-200 cursor-pointer"
+      >
+        <span>🔔</span> M&apos;alerter en cas de baisse de prix ou réassort
+      </button>
+
+      <StockAlertModal
+        isOpen={showStockModal}
+        onClose={() => setShowStockModal(false)}
+        productTitle={title}
+        productReference={reference}
+      />
 
       {/* Payment Logos Bar */}
       <div className="pt-2 flex flex-col items-center gap-1.5 border-t border-gray-100">
