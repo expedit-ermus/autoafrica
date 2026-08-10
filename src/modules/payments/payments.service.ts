@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma'
 import { PaymentMethod, PaymentTransactionStatus } from '@/generated/prisma/client'
 import { NotFoundError, ValidationError, PaymentError } from '@/shared/errors'
 import { paymentProviders } from './providers/registry'
+import { smsWhatsAppProvider } from '../notifications/providers/sms-whatsapp.provider'
 
 interface ProcessPaymentInput {
   orderId: string
@@ -88,6 +89,14 @@ export class PaymentsService {
         message: `Payment via ${provider.name}`,
         actor: userId,
       },
+    })
+
+    await smsWhatsAppProvider.sendPaymentConfirmation({
+      phone: input.phone,
+      orderNumber: order.orderNumber,
+      amount: input.amount,
+      currency: order.currency,
+      method: provider.name,
     })
 
     return { success: true, payment, transactionId: result.transactionId }
@@ -197,6 +206,16 @@ export class PaymentsService {
           link: `/dashboard/orders`,
         },
       })
+
+      if (payment.phone) {
+        await smsWhatsAppProvider.sendPaymentConfirmation({
+          phone: payment.phone,
+          orderNumber: payment.orderId,
+          amount: payment.amount,
+          currency: payment.currency,
+          method: payment.providerRef || payment.method,
+        })
+      }
 
       return { success: true, payment: updatedPayment }
     } else {
