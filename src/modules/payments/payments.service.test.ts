@@ -19,6 +19,9 @@ const mockPrisma = vi.hoisted(() => ({
   refund: {
     create: vi.fn(),
   },
+  notification: {
+    create: vi.fn(),
+  },
 }));
 
 const mockProviders = vi.hoisted(() => ({
@@ -210,6 +213,71 @@ describe('PaymentsService', () => {
         data: { status: 'REFUNDED', paymentStatus: 'REFUNDED' },
       });
       expect(result.success).toBe(true);
+    });
+  });
+
+  describe('handleWebhook', () => {
+    it('throws NotFoundError when the payment reference does not exist', async () => {
+      mockPrisma.payment.findUnique.mockResolvedValue(null);
+
+      await expect(
+        paymentsService.handleWebhook({ paymentId: 'missing', status: 'COMPLETED' }),
+      ).rejects.toBeInstanceOf(NotFoundError);
+    });
+
+    it('processes a COMPLETED webhook callback, updates order status and creates a notification', async () => {
+      mockPrisma.payment.findUnique.mockResolvedValue({
+        id: 'pay-1',
+        orderId: 'o1',
+        userId: 'user-1',
+        amount: 15000,
+        currency: 'XOF',
+        providerRef: 'WAVE',
+        transactionId: 'wave-txn-1',
+        metadata: {},
+      });
+      mockPrisma.payment.update.mockResolvedValue({ id: 'pay-1', status: 'COMPLETED' });
+
+      const result = await paymentsService.handleWebhook({
+        paymentId: 'pay-1',
+        status: 'COMPLETED',
+        transactionId: 'wave-txn-999',
+        rawPayload: { wave_id: '123' },
+      });
+
+      expect(mockPrisma.payment.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ status: 'COMPLETED', transactionId: 'wave-txn-999' }),
+        }),
+      );
+      expect(mockPrisma.order.update).toHaveBeenCalledWith({
+        where: { id: 'o1' },
+        data: { status: 'PAID', paymentStatus: 'PAID' },
+      });
+      expect(mockPrisma.notification.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ userId: 'user-1', type: 'payment' }),
+        }),
+      );
+      expect(result.success).toBe(true);
+    });
+
+    it('processes a FAILED webhook callback and updates payment status', async () => {
+      mockPrisma.payment.findUnique.mockResolvedValue({ id: 'pay-1', orderId: 'o1', userId: 'user-1', metadata: {} });
+      mockPrisma.payment.update.mockResolvedValue({ id: 'pay-1', status: 'FAILED' });
+
+      const result = await paymentsService.handleWebhook({
+        paymentId: 'pay-1',
+        status: 'FAILED',
+        failureReason: 'Solde insuffisant sur compte Mobile Money',
+      });
+
+      expect(mockPrisma.payment.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ status: 'FAILED', failureReason: 'Solde insuffisant sur compte Mobile Money' }),
+        }),
+      );
+      expect(result.success).toBe(false);
     });
   });
 });

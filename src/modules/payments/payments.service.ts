@@ -148,6 +148,71 @@ export class PaymentsService {
     return { success: true }
   }
 
+  async handleWebhook(input: {
+    paymentId: string
+    status: 'COMPLETED' | 'FAILED'
+    transactionId?: string
+    failureReason?: string
+    rawPayload?: Record<string, unknown>
+  }) {
+    const payment = await prisma.payment.findUnique({ where: { id: input.paymentId } })
+    if (!payment) throw new NotFoundError('Payment', input.paymentId)
+
+    const existingMeta = (payment.metadata as Record<string, unknown>) || {}
+    const updatedMeta = JSON.parse(
+      JSON.stringify({ ...existingMeta, webhookReceived: true, webhookPayload: input.rawPayload || {} }),
+    )
+
+    if (input.status === 'COMPLETED') {
+      const updatedPayment = await prisma.payment.update({
+        where: { id: input.paymentId },
+        data: {
+          status: PaymentTransactionStatus.COMPLETED,
+          transactionId: input.transactionId || payment.transactionId,
+          processedAt: new Date(),
+          metadata: updatedMeta,
+        },
+      })
+
+      await prisma.order.update({
+        where: { id: payment.orderId },
+        data: { status: 'PAID', paymentStatus: 'PAID' },
+      })
+
+      await prisma.orderTimeline.create({
+        data: {
+          orderId: payment.orderId,
+          status: 'PAID',
+          message: `Paiement confirmé via Webhook (${payment.providerRef || payment.method})`,
+          actor: 'SYSTEM',
+        },
+      })
+
+      await prisma.notification.create({
+        data: {
+          userId: payment.userId,
+          title: 'Paiement confirmé',
+          message: `Votre paiement de ${payment.amount} ${payment.currency} pour la commande a été confirmé avec succès.`,
+          type: 'payment',
+          link: `/dashboard/orders`,
+        },
+      })
+
+      return { success: true, payment: updatedPayment }
+    } else {
+      const updatedPayment = await prisma.payment.update({
+        where: { id: input.paymentId },
+        data: {
+          status: PaymentTransactionStatus.FAILED,
+          failureReason: input.failureReason || 'Échec du paiement reçu via Webhook',
+          metadata: updatedMeta,
+        },
+      })
+
+      return { success: false, payment: updatedPayment }
+    }
+  }
+
   private async updatePaymentStatus(paymentId: string, status: PaymentTransactionStatus) {
     return prisma.payment.update({ where: { id: paymentId }, data: { status } })
   }
