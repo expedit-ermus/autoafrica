@@ -4,6 +4,7 @@ import { useApp } from '@/contexts/AppContext';
 import CarSelector from '@/components/CarSelector';
 import PromoBanner from '@/components/PromoBanner';
 import PartsCatalog from '@/components/PartsCatalog';
+import { RepairEstimator } from '@/components/RepairEstimator';
 import BrandGrid from '@/components/BrandGrid';
 import Bestsellers from '@/components/Bestsellers';
 import VtcCircuitCourtSection from '@/components/VtcCircuitCourtSection';
@@ -167,6 +168,13 @@ export default function LandingPage() {
               </p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Estimateur de Devis & Panne Express */}
+      <section className="py-8 bg-slate-950">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <RepairEstimator />
         </div>
       </section>
 
