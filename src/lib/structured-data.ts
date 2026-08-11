@@ -177,3 +177,39 @@ export function buildFAQPageSchema(items: FAQEntry[]) {
     })),
   }
 }
+
+export interface ArticleSchemaInput {
+  title: string
+  description: string
+  authorName: string
+  datePublished: string
+  dateModified?: string
+  imageUrl?: string
+  url?: string
+}
+
+export function buildArticleSchema(input: ArticleSchemaInput) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: input.title,
+    description: input.description,
+    author: {
+      '@type': 'Person',
+      name: input.authorName,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'AutoAfrique',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://autoafrique-saas.vercel.app/logo.png',
+      },
+    },
+    datePublished: input.datePublished,
+    dateModified: input.dateModified || input.datePublished,
+    ...(input.imageUrl ? { image: [input.imageUrl] } : {}),
+    ...(input.url ? { mainEntityOfPage: input.url } : {}),
+  }
+}
+

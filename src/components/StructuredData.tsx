@@ -96,3 +96,17 @@ export function FAQStructuredData({ items }: FAQStructuredDataProps) {
   if (items.length === 0) return null;
   return <JsonLdScript id="faq-schema" data={buildFAQPageSchema(items)} />;
 }
+
+export function ArticleStructuredData(props: {
+  title: string
+  description: string
+  authorName: string
+  datePublished: string
+  dateModified?: string
+  imageUrl?: string
+  url?: string
+}) {
+  const { buildArticleSchema } = require('@/lib/structured-data')
+  return <JsonLdScript id="article-schema" data={buildArticleSchema(props)} />
+}
+
