@@ -106,20 +106,20 @@ export default function DevenirVendeurPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="p-5 bg-gray-50 rounded-2xl border border-gray-200">
-              <h4 className="font-extrabold text-gray-900 text-base">Gratuit / Casseur</h4>
+              <h3 className="font-extrabold text-gray-900 text-base">Gratuit / Casseur</h3>
               <p className="text-2xl font-extrabold text-emerald-600 my-2">0 FCFA <span className="text-xs text-gray-500 font-normal">/mois</span></p>
               <p className="text-xs text-gray-600">Commission marketplace 8% par vente. Jusqu&apos;à 20 pièces en ligne.</p>
             </div>
 
             <div className="p-5 bg-emerald-50 rounded-2xl border border-emerald-200">
               <span className="text-[10px] font-extrabold uppercase bg-emerald-600 text-white px-2 py-0.5 rounded-md">Populaire</span>
-              <h4 className="font-extrabold text-gray-900 text-base mt-1">Starter Magasin</h4>
+              <h3 className="font-extrabold text-gray-900 text-base mt-1">Starter Magasin</h3>
               <p className="text-2xl font-extrabold text-emerald-700 my-2">15 000 FCFA <span className="text-xs text-gray-500 font-normal">/mois</span></p>
               <p className="text-xs text-gray-600">Commission marketplace 5%. Jusqu&apos;à 500 pièces + support WhatsApp 5j/7.</p>
             </div>
 
             <div className="p-5 bg-gray-50 rounded-2xl border border-gray-200">
-              <h4 className="font-extrabold text-gray-900 text-base">Pro Grossiste</h4>
+              <h3 className="font-extrabold text-gray-900 text-base">Pro Grossiste</h3>
               <p className="text-2xl font-extrabold text-gray-900 my-2">45 000 FCFA <span className="text-xs text-gray-500 font-normal">/mois</span></p>
               <p className="text-xs text-gray-600">Commission réduite 3%. Stock illimité + multi-entrepôts & douanes.</p>
             </div>

@@ -90,7 +90,7 @@ export default function LoginPage() {
               <span className="text-white font-bold text-2xl">A</span>
             </div>
             <div>
-              <h1 className="text-3xl font-extrabold text-white tracking-tight">Auto<span className="text-orange-400">Afrique</span></h1>
+              <span className="text-3xl font-extrabold text-white tracking-tight block">Auto<span className="text-orange-400">Afrique</span></span>
               <p className="text-xs text-slate-400 font-medium tracking-wide uppercase">ERP Marketplace</p>
             </div>
           </div>
@@ -160,7 +160,7 @@ export default function LoginPage() {
           <div className="lg:bg-transparent lg:p-0 p-8 lg:rounded-none rounded-2xl" style={{ background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)' }}>
             {/* Header */}
             <div className="mb-8 auth-fade-in-delay-1">
-              <h2 className="text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">{t.auth.loginTitle}</h2>
+              <h1 className="text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">{t.auth.loginTitle}</h1>
               <p className="text-gray-500">Connectez-vous à votre espace vendeur</p>
             </div>
 
