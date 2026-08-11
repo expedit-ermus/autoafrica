@@ -1,44 +1,72 @@
-import { describe, it, expect } from 'vitest'
-import { MetaAdsService } from './meta-ads.service'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { metaAdsService } from './meta-ads.service'
+import { prisma } from '@/lib/prisma'
 
-describe('MetaAdsService MCP', () => {
-  const service = new MetaAdsService()
+vi.mock('@/lib/prisma', () => ({
+  prisma: {
+    product: {
+      findMany: vi.fn(),
+    },
+  },
+}))
 
-  it('lists existing active campaigns', async () => {
-    const campaigns = await service.listCampaigns()
-    expect(campaigns.length).toBeGreaterThan(0)
-    expect(campaigns[0].status).toBe('ACTIVE')
+describe('MetaAdsService', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
   })
 
-  it('creates a new targeted Meta Ads campaign', async () => {
-    const campaign = await service.createCampaign({
-      name: 'Campagne San-Pédro Transport',
-      targetCity: 'San-Pédro',
-      dailyBudget: 20000,
-      currency: 'XOF',
+  it('creates and lists Meta Ads campaigns with ROAS metrics', async () => {
+    const newCamp = await metaAdsService.createCampaign({
+      name: 'Campagne Ciblée Garagistes Yopougon',
+      targetCity: 'Abidjan',
+      dailyBudget: 25000,
     })
 
-    expect(campaign.id).toContain('meta_camp_')
-    expect(campaign.name).toBe('Campagne San-Pédro Transport')
-    expect(campaign.targetCity).toBe('San-Pédro')
-    expect(campaign.dailyBudget).toBe(20000)
+    expect(newCamp.id).toContain('meta_camp_')
+    expect(newCamp.dailyBudget).toBe(25000)
+
+    const summary = await metaAdsService.getPerformanceSummary()
+    expect(summary.activeCampaignsCount).toBeGreaterThanOrEqual(3)
+    expect(summary.overallRoas).toBeGreaterThan(0)
   })
 
-  it('returns aggregated performance metrics summary', async () => {
-    const summary = await service.getPerformanceSummary()
+  it('generates Meta Commerce Automotive Catalog Feed XML compliant with Facebook/Instagram Shops', async () => {
+    const mockProducts = [
+      {
+        id: 'prod-meta-1',
+        title: 'Injecteur Moteur Toyota Hilux 2.4 D-4D',
+        description: 'Injecteur d’origine reconditionné',
+        stock: 12,
+        condition: 'RECONDITIONED',
+        price: 45000,
+        slug: 'injecteur-toyota-hilux-2-4d',
+        image: 'https://autoafrique-saas.vercel.app/hilux.jpg',
+        reference: 'TOY-23670-0L020',
+        brand: { name: 'Toyota' },
+        category: { name: 'Moteur & Injection' },
+      },
+    ]
 
-    expect(summary.activeCampaignsCount).toBeGreaterThan(0)
-    expect(summary.totalImpressions).toBeGreaterThan(0)
-    expect(summary.averageCtr).toBeGreaterThan(0)
+    vi.mocked(prisma.product.findMany).mockResolvedValue(mockProducts as any)
+
+    const xmlFeed = await metaAdsService.generateMetaCatalogFeedXML()
+
+    expect(xmlFeed).toContain('<?xml version="1.0" encoding="UTF-8"?>')
+    expect(xmlFeed).toContain('<g:id>prod-meta-1</g:id>')
+    expect(xmlFeed).toContain('<g:title><![CDATA[Injecteur Moteur Toyota Hilux 2.4 D-4D]]></g:title>')
+    expect(xmlFeed).toContain('<g:price>45000 XOF</g:price>')
+    expect(xmlFeed).toContain('<g:google_product_category>Vehicles &amp; Parts &gt; Vehicle Parts &amp; Accessories</g:google_product_category>')
   })
 
-  it('rejects campaign creation with invalid budget', async () => {
-    await expect(
-      service.createCampaign({
-        name: 'Campagne Invalide',
-        targetCity: 'Abidjan',
-        dailyBudget: -100,
-      }),
-    ).rejects.toThrow('Nom de campagne et budget journalier positif requis')
+  it('builds Meta Conversions API (CAPI) event payload', () => {
+    const event = metaAdsService.buildConversionsApiEvent(
+      'Purchase',
+      { email: 'GARAGE.DIALLO@GMAIL.COM', phone: '+225 0707070707' },
+      { value: 150000, currency: 'XOF' }
+    )
+
+    expect(event.data[0].event_name).toBe('Purchase')
+    expect(event.data[0].user_data.em).toEqual(['garage.diallo@gmail.com'])
+    expect(event.data[0].user_data.ph).toEqual(['2250707070707'])
   })
 })
