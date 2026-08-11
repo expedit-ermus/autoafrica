@@ -1,8 +1,9 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useToast } from '@/contexts/ToastContext';
+import Modal from '@/components/Modal';
 
 function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -52,6 +53,63 @@ export default function SettingsPage() {
     }
   };
 
+  const [subData, setSubData] = useState<any>(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<'STARTER' | 'PRO' | 'ENTERPRISE'>('PRO');
+  const [paymentMethod, setPaymentMethod] = useState<'ORANGE_MONEY' | 'WAVE' | 'MTN_MOMO' | 'MOOV_MONEY'>('ORANGE_MONEY');
+  const [payPhone, setPayPhone] = useState('0707070707');
+  const [upgrading, setUpgrading] = useState(false);
+
+  const fetchSubscription = async () => {
+    try {
+      const res = await fetch('/api/v1/subscriptions');
+      const data = await res.json();
+      if (data.currentSubscription) {
+        setSubData(data.currentSubscription);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    fetchSubscription();
+  }, []);
+
+  const handleUpgrade = async () => {
+    if (!payPhone) {
+      addToast('error', 'Numéro de téléphone Mobile Money requis');
+      return;
+    }
+    setUpgrading(true);
+    try {
+      const res = await fetch('/api/v1/subscriptions/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tenantId: subData?.tenantId || 'demo-tenant-id',
+          userId: 'usr_demo_1',
+          planId: selectedPlan,
+          billingCycle: 'monthly',
+          paymentMethod,
+          phone: payPhone,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        addToast('success', data.message);
+        setShowUpgradeModal(false);
+        fetchSubscription();
+      } else {
+        addToast('error', data.error || 'Erreur lors du surclassement');
+      }
+    } catch (err: any) {
+      addToast('error', err.message || 'Échec du paiement Mobile Money');
+    } finally {
+      setUpgrading(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
@@ -65,9 +123,61 @@ export default function SettingsPage() {
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--color-primary-dark)] to-[var(--color-warm-red)] flex items-center justify-center text-white text-lg">
                 ⚙
               </div>
-              <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Paramètres</h1>
+              <h1 className="text-2xl font-extrabold text-gray-900 tracking-tight">Paramètres du Compte SaaS</h1>
             </div>
-            <p className="text-sm text-gray-500 ml-[52px]">Gérez vos préférences, notifications et sécurité</p>
+            <p className="text-sm text-gray-500 ml-[52px]">Abonnements, quotas, notifications et sécurité</p>
+          </div>
+
+          {/* ═══════════════════════════════════════════════════
+              SAAS BILLING & SUBSCRIPTIONS
+          ═══════════════════════════════════════════════════ */}
+          <div className="card-modern p-6 mb-6 animate-fade-in bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl border border-slate-700 shadow-xl">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-700 pb-5 mb-5">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400 text-xl font-bold">
+                  💳
+                </div>
+                <div>
+                  <span className="text-xs text-orange-400 font-bold uppercase tracking-wider">Abonnement SaaS Actif</span>
+                  <h2 className="text-xl font-black text-white">{subData?.plan?.name || 'Starter Garagiste'}</h2>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowUpgradeModal(true)}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-extrabold shadow-lg shadow-orange-500/30 hover:scale-105 transition-transform"
+              >
+                ⚡ Changer / Changer de Plan
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+                <span className="text-xs text-slate-400 block font-medium">Quota Annonces Produits</span>
+                <div className="flex justify-between items-center mt-1 mb-2">
+                  <span className="text-lg font-bold text-white">
+                    {subData?.usage?.listingsCount || 0} / {subData?.usage?.maxListings === -1 ? 'Illimité' : subData?.usage?.maxListings || 100}
+                  </span>
+                  <span className="text-xs text-orange-400 font-semibold">{subData?.usage?.listingsUsagePercent || 0}% utilisé</span>
+                </div>
+                <div className="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-orange-500 to-amber-400 h-full rounded-full transition-all"
+                    style={{ width: `${subData?.usage?.listingsUsagePercent || 25}%` }}
+                  />
+                </div>
+              </div>
+
+              <div className="bg-slate-800/80 p-4 rounded-xl border border-slate-700">
+                <span className="text-xs text-slate-400 block font-medium">Entrepôts Multi-Sites</span>
+                <div className="flex justify-between items-center mt-1 mb-2">
+                  <span className="text-lg font-bold text-white">
+                    {subData?.usage?.warehousesCount || 1} / {subData?.usage?.maxWarehouses || 2} Entrepôts
+                  </span>
+                  <span className="text-xs text-emerald-400 font-semibold">✓ Conforme</span>
+                </div>
+                <p className="text-[11px] text-slate-400">Passez au plan Pro/Enterprise pour des entrepôts illimités</p>
+              </div>
+            </div>
           </div>
 
           {/* ═══════════════════════════════════════════════════
@@ -308,6 +418,80 @@ export default function SettingsPage() {
               </div>
             </div>
           </div>
+
+          {/* Modal Surclassement Mobile Money */}
+          <Modal isOpen={showUpgradeModal} onClose={() => setShowUpgradeModal(false)} title="Changer d'Abonnement SaaS">
+            <div className="space-y-5">
+              <p className="text-xs text-gray-500">
+                Sélectionnez le plan adapté aux besoins de votre garage ou entreprise. Paiement instantané via Mobile Money sans engagement.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {[
+                  { id: 'STARTER' as const, name: 'Starter', price: '15 000 FCFA', desc: '100 annonces + VIN' },
+                  { id: 'PRO' as const, name: 'Pro Vendeur', price: '45 000 FCFA', desc: '1000 annonces + IA & Ads' },
+                  { id: 'ENTERPRISE' as const, name: 'Enterprise', price: '120 000 FCFA', desc: 'Illimité + Conteneurs' },
+                ].map(p => (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => setSelectedPlan(p.id)}
+                    className={`p-3.5 rounded-xl border-2 text-left transition-all ${
+                      selectedPlan === p.id
+                        ? 'border-orange-500 bg-orange-50/60 font-bold'
+                        : 'border-gray-200 bg-white hover:border-gray-300'
+                    }`}
+                  >
+                    <span className="text-xs uppercase text-orange-600 block">{p.name}</span>
+                    <span className="text-sm font-black text-gray-900 block mt-1">{p.price} /mois</span>
+                    <span className="text-[11px] text-gray-500 font-normal block mt-1">{p.desc}</span>
+                  </button>
+                ))}
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-2">Moyen de Règlement Mobile Money *</label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {[
+                    { id: 'ORANGE_MONEY' as const, name: 'Orange', color: 'border-orange-400 bg-orange-50 text-orange-700' },
+                    { id: 'WAVE' as const, name: 'Wave', color: 'border-sky-400 bg-sky-50 text-sky-700' },
+                    { id: 'MTN_MOMO' as const, name: 'MTN MoMo', color: 'border-amber-400 bg-amber-50 text-amber-800' },
+                    { id: 'MOOV_MONEY' as const, name: 'Moov', color: 'border-blue-400 bg-blue-50 text-blue-700' },
+                  ].map(m => (
+                    <button
+                      key={m.id}
+                      type="button"
+                      onClick={() => setPaymentMethod(m.id)}
+                      className={`p-2.5 rounded-lg border text-center text-xs font-bold transition-all ${
+                        paymentMethod === m.id ? `${m.color} ring-2 ring-orange-500` : 'border-gray-200 bg-white text-gray-700'
+                      }`}
+                    >
+                      {m.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-700 mb-1">Numéro Mobile Money *</label>
+                <input
+                  type="text"
+                  value={payPhone}
+                  onChange={e => setPayPhone(e.target.value)}
+                  placeholder="Ex : 0707070707"
+                  className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm font-mono"
+                />
+              </div>
+
+              <button
+                onClick={handleUpgrade}
+                disabled={upgrading}
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white font-extrabold text-sm shadow-lg shadow-orange-500/25 hover:opacity-95 transition-opacity disabled:opacity-50"
+              >
+                {upgrading ? 'Traitement Mobile Money...' : 'Payer & Activer l’Abonnement'}
+              </button>
+            </div>
+          </Modal>
 
           {/* Footer */}
           <div className="text-center text-xs text-gray-400 pb-4">
