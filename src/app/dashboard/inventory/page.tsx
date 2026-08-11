@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
@@ -68,12 +68,13 @@ const MOVEMENT_COLORS: Record<string, string> = {
 export default function InventoryPage() {
   const { addToast } = useToast();
 
-  const [tab, setTab] = useState<'warehouses' | 'stock' | 'movements'>('stock');
+  const [tab, setTab] = useState<'warehouses' | 'stock' | 'movements' | 'smart-replenishment'>('stock');
 
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [stock, setStock] = useState<StockLine[]>([]);
   const [movements, setMovements] = useState<Movement[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [replenishmentData, setReplenishmentData] = useState<{ summary?: any; predictions?: any[] }>({});
 
   const [search, setSearch] = useState('');
   const [warehouseFilter, setWarehouseFilter] = useState('all');
@@ -97,22 +98,26 @@ export default function InventoryPage() {
     let cancelled = false;
     (async () => {
       try {
-        const [wRes, sRes, mRes, pRes] = await Promise.all([
-          fetch('/api/v1/warehouses?pageSize=100', { credentials: 'include' }),
-          fetch('/api/v1/inventory?pageSize=100', { credentials: 'include' }),
-          fetch('/api/v1/inventory/movements?pageSize=100', { credentials: 'include' }),
-          fetch('/api/v1/products?pageSize=100', { credentials: 'include' }),
+        const [wRes, sRes, mRes, pRes, rRes] = await Promise.all([
+          fetch('/api/v1/warehouses', { credentials: 'include' }),
+          fetch('/api/v1/inventory', { credentials: 'include' }),
+          fetch('/api/v1/inventory/movements', { credentials: 'include' }),
+          fetch('/api/v1/products', { credentials: 'include' }),
+          fetch('/api/v1/inventory/replenishment', { credentials: 'include' }),
         ]);
-        const [wData, sData, mData, pData] = await Promise.all([wRes.json(), sRes.json(), mRes.json(), pRes.json()]);
-        if (!cancelled) {
-          if (wData.success) setWarehouses(wData.data?.data || wData.data || []);
-          if (sData.success) setStock(sData.data?.data || sData.data || []);
-          if (mData.success) setMovements(mData.data?.data || mData.data || []);
-          if (pData.success) setProducts(pData.data?.data || pData.data || []);
-        }
+
+        if (cancelled) return;
+        const [wData, sData, mData, pData, rData] = await Promise.all([
+          wRes.json(), sRes.json(), mRes.json(), pRes.json(), rRes.json()
+        ]);
+
+        if (wData.success) setWarehouses(wData.data || []);
+        if (sData.success) setStock(sData.data || []);
+        if (mData.success) setMovements(mData.data || []);
+        if (pData.success) setProducts(pData.data || pData.products || []);
+        if (rData.predictions) setReplenishmentData(rData);
       } catch (err) {
-        console.error('Failed to fetch inventory data', err);
-        if (!cancelled) addToast('error', 'Erreur lors du chargement des données');
+        console.error(err);
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -261,7 +266,7 @@ export default function InventoryPage() {
   const inputCls = 'w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/40 focus:border-orange-400 text-sm';
   const labelCls = 'block text-xs font-medium text-gray-500 mb-1';
 
-  const tabBtn = (key: 'warehouses' | 'stock' | 'movements', label: string) => (
+  const tabBtn = (key: 'warehouses' | 'stock' | 'movements' | 'smart-replenishment', label: string) => (
     <button
       onClick={() => setTab(key)}
       className={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${tab === key ? 'bg-orange-500 text-white shadow-md shadow-orange-500/25' : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'}`}
@@ -294,8 +299,9 @@ export default function InventoryPage() {
             </div>
           </div>
 
-          <div className="flex gap-2 mb-6">
+          <div className="flex flex-wrap gap-2 mb-6">
             {tabBtn('stock', `Stock (${stats.totalUnits})`)}
+            {tabBtn('smart-replenishment', `⚡ Réapprovisionnement Intelligent`)}
             {tabBtn('warehouses', `Entrepôts (${stats.totalWarehouses})`)}
             {tabBtn('movements', `Mouvements (${movements.length})`)}
           </div>
@@ -479,6 +485,92 @@ export default function InventoryPage() {
                         ))}
                         {filteredMovements.length === 0 && (
                           <tr><td colSpan={6} className="px-4 py-10 text-center text-gray-400">Aucun mouvement</td></tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+
+                {tab === 'smart-replenishment' && (
+                  <div className="overflow-x-auto p-4 space-y-6">
+                    <div className="bg-gradient-to-r from-slate-900 via-amber-950/40 to-slate-900 text-white rounded-2xl p-6 border border-amber-500/30">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                          <span className="text-xs uppercase font-extrabold tracking-wider text-amber-400">🔥 Moteur IA Prédictif</span>
+                          <h3 className="text-xl font-extrabold text-white mt-1">Prédiction des Ruptures & Commandes Suggérées</h3>
+                          <p className="text-xs text-slate-300 mt-1 max-w-2xl">
+                            Calcule les seuils de réapprovisionnement en temps réel en fonction du délai fournisseur, de la consommation quotidienne et des pics saisonniers (Saison des pluies & Fêtes).
+                          </p>
+                        </div>
+                        <div className="text-right bg-slate-900/80 px-4 py-3 rounded-xl border border-slate-700">
+                          <span className="text-xs text-slate-400 block font-medium">Coût Réappro. Estimé :</span>
+                          <span className="text-lg font-black text-amber-300">
+                            {formatNumber(replenishmentData.summary?.totalEstimatedCostFcfa || 0)} FCFA
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="text-left text-xs text-gray-400 uppercase tracking-wide border-b border-gray-100">
+                          <th className="px-4 py-3 font-medium">Produit</th>
+                          <th className="px-4 py-3 font-medium">Catégorie & Saison</th>
+                          <th className="px-4 py-3 font-medium">Stock Actuel</th>
+                          <th className="px-4 py-3 font-medium">Seuil ROP</th>
+                          <th className="px-4 py-3 font-medium">Suggestion Qté</th>
+                          <th className="px-4 py-3 font-medium">Urgence</th>
+                          <th className="px-4 py-3 font-medium text-right">Coût Est. (FCFA)</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-50">
+                        {(replenishmentData.predictions || []).map((p: any) => (
+                          <tr key={p.productId} className="hover:bg-gray-50/60 transition-colors">
+                            <td className="px-4 py-3">
+                              <span className="font-semibold text-gray-900 block">{p.productName}</span>
+                              <span className="text-xs text-gray-400 font-mono">{p.sku}</span>
+                            </td>
+                            <td className="px-4 py-3">
+                              <span className="text-xs font-semibold text-gray-800 block">{p.category}</span>
+                              <span className="text-[11px] text-amber-700 font-medium">{p.seasonalReason}</span>
+                            </td>
+                            <td className="px-4 py-3">
+                              <span className={`font-bold ${p.currentStock <= 5 ? 'text-red-600' : 'text-gray-900'}`}>
+                                {p.currentStock} unités
+                              </span>
+                            </td>
+                            <td className="px-4 py-3">
+                              <span className="text-xs text-gray-600 font-medium">{p.reorderPoint} (Délai {p.leadTimeDays}j)</span>
+                            </td>
+                            <td className="px-4 py-3">
+                              <span className="font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+                                +{p.suggestedQuantity} unités
+                              </span>
+                            </td>
+                            <td className="px-4 py-3">
+                              {p.urgency === 'CRITICAL' && (
+                                <span className="px-2.5 py-1 bg-red-100 text-red-700 text-xs font-extrabold rounded-md border border-red-200">
+                                  🚨 CRITIQUE ({p.daysUntilStockout}j stock)
+                                </span>
+                              )}
+                              {p.urgency === 'WARNING' && (
+                                <span className="px-2.5 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-md border border-amber-200">
+                                  ⚠️ ATTENTION ({p.daysUntilStockout}j stock)
+                                </span>
+                              )}
+                              {p.urgency === 'NORMAL' && (
+                                <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-medium rounded-md border border-emerald-200">
+                                  ✓ NORMAL
+                                </span>
+                              )}
+                            </td>
+                            <td className="px-4 py-3 text-right">
+                              <span className="font-bold text-gray-900">{formatNumber(p.estimatedCostFcfa)}</span>
+                            </td>
+                          </tr>
+                        ))}
+                        {(!replenishmentData.predictions || replenishmentData.predictions.length === 0) && (
+                          <tr><td colSpan={7} className="px-4 py-10 text-center text-gray-400">Aucune prédiction disponible</td></tr>
                         )}
                       </tbody>
                     </table>
