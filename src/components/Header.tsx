@@ -76,6 +76,10 @@ export default function Header() {
               {L('BOUTIQUE', 'SHOP')}
             </Link>
             <span className="text-white/30">|</span>
+            <Link href="/estimation-devis" className="hover:text-amber-300 font-black text-amber-400 transition-colors tracking-wide whitespace-nowrap flex items-center gap-1">
+              <span>💡</span> {L('ESTIMATEUR DEVIS', 'QUOTE ESTIMATOR')}
+            </Link>
+            <span className="text-white/30">|</span>
             <Link href="/catalogue" className="hover:text-[var(--color-primary)] transition-colors font-bold tracking-wide text-[var(--color-primary)] whitespace-nowrap">
               {L('CATALOGUE', 'CATALOGUE')}
             </Link>

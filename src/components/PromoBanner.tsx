@@ -9,6 +9,14 @@ import { useApp } from '@/contexts/AppContext';
 const banners = [
   {
     id: 1,
+    title: { fr: '💡 Estimateur de Devis & Panne Express', en: '💡 Fast Breakdown Quote Estimator' },
+    subtitle: { fr: 'Calculez le prix de votre réparation en 30 secondes', en: 'Calculate your repair price in 30 seconds' },
+    cta: { fr: 'Ouvrir l\'estimateur', en: 'Open estimator' },
+    bg: 'from-amber-600 via-orange-600 to-amber-700',
+    link: '/estimation-devis',
+  },
+  {
+    id: 2,
     title: { fr: 'Pièces détachées neuves et d\'occasion', en: 'New and used auto parts' },
     subtitle: { fr: 'Un catalogue de pièces pour votre véhicule', en: 'A catalogue of parts for your vehicle' },
     cta: { fr: 'Voir le catalogue', en: 'Browse catalogue' },
