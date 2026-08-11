@@ -27,6 +27,10 @@ export const TRACKABLE_EVENTS = [
   'login',
   'register',
   'logout',
+  'view_service',
+  'click_cta',
+  'form_start',
+  'generate_lead',
 ] as const
 
 export type TrackableEvent = (typeof TRACKABLE_EVENTS)[number]
