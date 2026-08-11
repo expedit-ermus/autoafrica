@@ -177,6 +177,7 @@ export default function LoginPage() {
                     type="email" value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     onBlur={() => setEmailTouched(true)}
+                    autoComplete="email"
                     className={`input-field ${emailTouched && email && !emailValid ? 'auth-error' : ''} ${emailTouched && emailValid ? 'auth-success' : ''}`}
                     placeholder="vous@exemple.com" required
                   />
@@ -200,6 +201,7 @@ export default function LoginPage() {
                     id="login-password"
                     type="password" value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
                     className="input-field" placeholder="••••••••" required
                   />
                 </div>

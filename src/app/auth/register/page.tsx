@@ -248,25 +248,28 @@ export default function RegisterPage() {
               {/* Name fields */}
               <div className="grid grid-cols-2 gap-4 auth-fade-in-delay-1">
                 <div>
-                  <label htmlFor="reg-firstName" className="block text-sm font-semibold text-gray-700 mb-2">Prénom</label>
+                  <label htmlFor="reg-firstName" className="block text-sm font-semibold text-gray-700 mb-2">Prénom <span className="text-red-500">*</span></label>
                   <input id="reg-firstName" type="text" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })}
+                    autoComplete="given-name"
                     className="input-field !min-h-[52px] rounded-xl" placeholder="Amadou" required />
                 </div>
                 <div>
-                  <label htmlFor="reg-lastName" className="block text-sm font-semibold text-gray-700 mb-2">Nom</label>
+                  <label htmlFor="reg-lastName" className="block text-sm font-semibold text-gray-700 mb-2">Nom <span className="text-red-500">*</span></label>
                   <input id="reg-lastName" type="text" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })}
+                    autoComplete="family-name"
                     className="input-field !min-h-[52px] rounded-xl" placeholder="Diallo" required />
                 </div>
               </div>
 
               {/* Email */}
               <div className="auth-fade-in-delay-1">
-                <label htmlFor="reg-email" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.email}</label>
+                <label htmlFor="reg-email" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.email} <span className="text-red-500">*</span></label>
                 <div className="auth-input-group">
                   <div className="auth-input-icon">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
                   </div>
                   <input id="reg-email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
+                    autoComplete="email"
                     className="input-field !min-h-[52px] rounded-xl" placeholder="vous@exemple.com" required />
                 </div>
               </div>
@@ -280,11 +283,12 @@ export default function RegisterPage() {
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
                     </div>
                     <input id="reg-phone" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      autoComplete="tel"
                       className="input-field !min-h-[52px] rounded-xl" placeholder="+225 XX XX XX XX" />
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="reg-country" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.country}</label>
+                  <label htmlFor="reg-country" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.country} <span className="text-red-500">*</span></label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-lg pointer-events-none z-10">{selectedCountry?.flag}</span>
                     <select id="reg-country" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="input-field !pl-10 appearance-none cursor-pointer !min-h-[52px] rounded-xl">
@@ -300,13 +304,15 @@ export default function RegisterPage() {
               {/* Password fields */}
               <div className="grid grid-cols-2 gap-4 auth-fade-in-delay-3">
                 <div>
-                  <label htmlFor="reg-password" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.password}</label>
+                  <label htmlFor="reg-password" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.password} <span className="text-red-500">*</span></label>
                   <input id="reg-password" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}
+                    autoComplete="new-password"
                     className="input-field !min-h-[52px] rounded-xl" placeholder="••••••••" required />
                 </div>
                 <div>
-                  <label htmlFor="reg-confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.confirmPassword}</label>
+                  <label htmlFor="reg-confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.confirmPassword} <span className="text-red-500">*</span></label>
                   <input id="reg-confirmPassword" type="password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+                    autoComplete="new-password"
                     className={`input-field !min-h-[52px] rounded-xl ${passwordMismatch ? 'border-red-500 !shadow-[0_0_0_3px_rgba(220,38,38,0.08)]' : ''}`}
                     placeholder="••••••••" required />
                 </div>
