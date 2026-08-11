@@ -233,7 +233,12 @@ export default function Sidebar() {
 
       {/* ─── Mobile overlay ─── */}
       {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden" onClick={() => setSidebarOpen(false)} />
+        <button
+          type="button"
+          aria-label="Fermer le menu"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden cursor-default w-full h-full border-none p-0"
+          onClick={() => setSidebarOpen(false)}
+        />
       )}
 
       {/* ─── Mobile drawer ─── */}
