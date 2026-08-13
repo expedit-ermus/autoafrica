@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
         lastName: dbUser.lastName,
         role: dbUser.role,
         status: dbUser.status,
-        country: dbUser.country,
+        country: dbUser.country || 'CI',
       }
     } catch (dbError) {
       console.warn('DB write warning during social auth (using fallback profile):', dbError)

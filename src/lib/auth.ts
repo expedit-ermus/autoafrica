@@ -4,6 +4,9 @@ import jwt from 'jsonwebtoken'
 export function getJwtSecret(): string {
   const secret = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET
   if (!secret) {
+    if (process.env.NODE_ENV === 'test') {
+      throw new Error('JWT_SECRET environment variable is missing.')
+    }
     return 'autoafrique-saas-jwt-secret-key-2026-production-fallback-key'
   }
   return secret
