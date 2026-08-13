@@ -20,6 +20,7 @@ const categoryNav = [
 
 export default function Header() {
   const { t, locale, setLocale, user } = useApp();
+  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
   const { wishlist } = useWishlist();
   const [searchQuery, setSearchQuery] = useState('');
   const [cartCount, setCartCount] = useState(0);
@@ -230,9 +231,10 @@ export default function Header() {
               {/* Lang toggle */}
               <button
                 onClick={() => setLocale(locale === 'fr' ? 'en' : 'fr')}
-                className="hidden sm:flex px-2.5 py-2 rounded-xl text-xs font-bold bg-white/10 hover:bg-white/20 transition-colors border border-white/10"
+                className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-white/10 hover:bg-white/20 transition-colors border border-white/15 text-white cursor-pointer"
+                title={locale === 'fr' ? 'Switch to English' : 'Changer en Français'}
               >
-                {locale === 'fr' ? '🇫🇷' : '🇬🇧'}
+                <span>{locale === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN'}</span>
               </button>
 
               {/* Hamburger — mobile only */}
@@ -444,8 +446,4 @@ export default function Header() {
       )}
     </header>
   );
-
-  function L(fr: string, en: string) {
-    return locale === 'fr' ? fr : en;
-  }
 }

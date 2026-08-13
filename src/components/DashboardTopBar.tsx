@@ -442,6 +442,15 @@ export default function DashboardTopBar() {
               )}
             </div>
 
+            {/* Language toggle */}
+            <button
+              onClick={() => setLocale(locale === 'fr' ? 'en' : 'fr')}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold bg-gray-100/80 hover:bg-gray-200/80 text-gray-700 transition border border-gray-200/60 cursor-pointer"
+              title={locale === 'fr' ? 'Switch to English' : 'Changer en Français'}
+            >
+              <span>{locale === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN'}</span>
+            </button>
+
             {/* User avatar */}
             <div className="relative" ref={userRef}>
               <button
