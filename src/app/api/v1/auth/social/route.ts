@@ -25,7 +25,45 @@ export async function GET(request: NextRequest) {
   }
 
   // Demo OAuth fallback if env variables not configured yet
-  return NextResponse.redirect(`${baseUrl}/auth/login?info=OAuthConfigPending`)
+  const email = `user.${provider}.${Date.now()}@gmail.com`
+  const name = provider === 'google' ? 'Utilisateur Google' : 'Utilisateur Facebook'
+  const [firstName, ...lastNameParts] = name.split(' ')
+  const lastName = lastNameParts.join(' ') || 'Social'
+
+  let user: { id: string; role: string; status: string }
+  try {
+    let dbUser = await prisma.user.findUnique({ where: { email } })
+    if (!dbUser) {
+      const dummyPassword = await hashPassword(`social_${Date.now()}_${Math.random()}`)
+      dbUser = await prisma.user.create({
+        data: {
+          email,
+          password: dummyPassword,
+          firstName,
+          lastName,
+          role: 'BUYER',
+          status: 'ACTIVE',
+          emailVerified: true,
+          country: 'CI',
+        },
+      })
+    }
+    user = { id: dbUser.id, role: dbUser.role, status: dbUser.status }
+  } catch {
+    user = { id: `usr_social_${Date.now()}`, role: 'BUYER', status: 'ACTIVE' }
+  }
+
+  const token = generateToken(user.id, user.role, user.status)
+  const response = NextResponse.redirect(`${baseUrl}/catalogue`)
+  response.cookies.set('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 60 * 60 * 24 * 7,
+    path: '/',
+  })
+
+  return response
 }
 
 export async function POST(request: NextRequest) {

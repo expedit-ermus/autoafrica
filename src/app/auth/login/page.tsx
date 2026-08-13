@@ -19,34 +19,10 @@ export default function LoginPage() {
 
   const emailValid = email.length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
-  const handleSocialAuth = async (provider: 'google' | 'facebook') => {
+  const handleSocialAuth = (provider: 'google' | 'facebook') => {
     setSocialLoading(provider);
-    addToast('info', `Connexion via ${provider === 'google' ? 'Google' : 'Facebook'} en cours...`);
-    try {
-      const res = await fetch('/api/v1/auth/social', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ provider }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Connexion sociale échouée');
-      setUser(data.data.user);
-      track('login', { method: provider });
-      addToast('success', `Connexion avec ${provider === 'google' ? 'Google' : 'Facebook'} réussie !`);
-      
-      const role = data.data.user?.role ?? 'BUYER';
-      let targetUrl = '/catalogue';
-      if (['SUPER_ADMIN', 'TENANT_ADMIN', 'MODERATOR', 'SUPPORT'].includes(role)) {
-        targetUrl = '/dashboard/admin';
-      } else if (role === 'SELLER') {
-        targetUrl = '/dashboard/inventory';
-      }
-      
-      window.location.href = targetUrl;
-    } catch (err) {
-      addToast('error', err instanceof Error ? err.message : 'Erreur lors de la connexion sociale');
-      setSocialLoading(null);
-    }
+    addToast('info', `Redirection vers ${provider === 'google' ? 'Google' : 'Facebook'}...`);
+    window.location.href = `/api/v1/auth/social?provider=${provider}`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -258,20 +234,16 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              {/* Remember me + Forgot password */}
-              <div className="flex items-center justify-between auth-fade-in-delay-2">
-                <label className="flex items-center gap-2.5 text-sm text-gray-600 cursor-pointer select-none group">
-                  <div className="relative">
-                    <input
-                      type="checkbox" checked={rememberMe}
-                      onChange={(e) => setRememberMe(e.target.checked)}
-                      className="peer sr-only"
-                    />
-                    <div className="w-4 h-4 rounded border-2 border-gray-300 peer-checked:border-orange-500 peer-checked:bg-orange-500 transition-all duration-200 flex items-center justify-center">
-                      {rememberMe && <svg className="w-2.5 h-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>}
-                    </div>
-                  </div>
-                  <span className="group-hover:text-gray-900 transition-colors">Se souvenir de moi</span>
+              {/* Remember me and Forgot password */}
+              <div className="flex items-center justify-between text-xs sm:text-sm auth-fade-in-delay-2">
+                <label className="flex items-center gap-2 text-gray-600 cursor-pointer select-none group">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="w-4 h-4 rounded border-gray-300 text-orange-500 focus:ring-orange-500 accent-orange-500 cursor-pointer transition-all"
+                  />
+                  <span className="group-hover:text-gray-900 transition-colors font-medium">Se souvenir de moi</span>
                 </label>
                 <span className="text-sm text-orange-600 font-semibold cursor-pointer hover:text-orange-700 hover:underline transition-all duration-200">
                   {t.auth.forgotPassword}

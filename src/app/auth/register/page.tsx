@@ -55,25 +55,10 @@ export default function RegisterPage() {
 
   const passwordStrength = getPasswordStrength(form.password);
 
-  const handleSocialAuth = async (provider: 'google' | 'facebook') => {
+  const handleSocialAuth = (provider: 'google' | 'facebook') => {
     setSocialLoading(provider);
-    addToast('info', `Inscription via ${provider === 'google' ? 'Google' : 'Facebook'} en cours...`);
-    try {
-      const res = await fetch('/api/v1/auth/social', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ provider, role }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Inscription sociale échouée');
-      setUser(data.data.user);
-      track('register', { method: provider, role, country: form.country });
-      addToast('success', `Inscription avec ${provider === 'google' ? 'Google' : 'Facebook'} réussie ! Bienvenue sur AutoAfrique`);
-      window.location.href = role === 'SELLER' ? '/dashboard/profile' : '/dashboard';
-    } catch (err) {
-      addToast('error', err instanceof Error ? err.message : 'Erreur lors de l\'inscription sociale');
-      setSocialLoading(null);
-    }
+    addToast('info', `Redirection vers ${provider === 'google' ? 'Google' : 'Facebook'}...`);
+    window.location.href = `/api/v1/auth/social?provider=${provider}`;
   };
 
 
@@ -390,13 +375,12 @@ export default function RegisterPage() {
 
               {/* Terms checkbox */}
               <label className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-600 cursor-pointer select-none group auth-fade-in-delay-4 py-1">
-                <div className="relative mt-0.5 flex-shrink-0">
-                  <input type="checkbox" className="peer sr-only" required />
-                  <div className="w-4 h-4 rounded border-2 border-gray-300 peer-checked:border-orange-500 peer-checked:bg-orange-500 transition-all duration-200 flex items-center justify-center">
-                    <svg className="w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
-                  </div>
-                </div>
-                <span className="group-hover:text-gray-900 transition-colors">J&apos;accepte les <span className="text-orange-600 font-semibold hover:underline">conditions</span> et la <span className="text-orange-600 font-semibold hover:underline">politique de confidentialité</span></span>
+                <input
+                  type="checkbox"
+                  required
+                  className="w-4 h-4 mt-0.5 rounded border-gray-300 text-orange-500 focus:ring-orange-500 accent-orange-500 cursor-pointer transition-all flex-shrink-0"
+                />
+                <span className="group-hover:text-gray-900 transition-colors">J&apos;accepte les <Link href="/conditions-generales" className="text-orange-600 font-semibold hover:underline">conditions</Link> et la <Link href="/politique-de-confidentialite" className="text-orange-600 font-semibold hover:underline">politique de confidentialité</Link></span>
               </label>
 
               {/* Submit button */}
