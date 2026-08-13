@@ -3,6 +3,31 @@ import { prisma } from '@/lib/prisma'
 import { generateToken, hashPassword } from '@/lib/auth'
 import { successResponse, handleApiError } from '@/shared/utils/response'
 
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams
+  const provider = searchParams.get('provider') || 'google'
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || request.nextUrl.origin
+
+  if (provider === 'google') {
+    const clientId = process.env.GOOGLE_CLIENT_ID
+    const redirectUri = `${baseUrl}/api/v1/auth/social/callback/google`
+    if (clientId) {
+      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=openid%20email%20profile`
+      return NextResponse.redirect(googleAuthUrl)
+    }
+  } else if (provider === 'facebook') {
+    const appId = process.env.FACEBOOK_APP_ID
+    const redirectUri = `${baseUrl}/api/v1/auth/social/callback/facebook`
+    if (appId) {
+      const fbAuthUrl = `https://www.facebook.com/v18.0/dialog/oauth?client_id=${encodeURIComponent(appId)}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=email,public_profile`
+      return NextResponse.redirect(fbAuthUrl)
+    }
+  }
+
+  // Demo OAuth fallback if env variables not configured yet
+  return NextResponse.redirect(`${baseUrl}/auth/login?info=OAuthConfigPending`)
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
