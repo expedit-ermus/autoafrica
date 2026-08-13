@@ -109,7 +109,7 @@ export async function GET(
   }
 
   const token = generateToken(user.id, user.role, user.status)
-  const targetUrl = user.role === 'SELLER' ? '/dashboard/inventory' : '/dashboard/orders'
+  const targetUrl = user.role === 'SELLER' ? '/dashboard/inventory' : '/catalogue'
 
   const response = NextResponse.redirect(`${baseUrl}${targetUrl}`)
 

@@ -21,7 +21,7 @@ const sellerMenuItems: NavItem[] = [
   { key: 'inventory', icon: 'package', href: '/dashboard/inventory', badge: 0 },
   { key: 'orders', icon: 'file-text', href: '/dashboard/orders', badge: 5 },
   { key: 'crm', icon: 'users', href: '/dashboard/crm', badge: 12 },
-  { key: 'marketplace', icon: 'store', href: '/dashboard/marketplace', badge: 0 },
+  { key: 'marketplace', icon: 'store', href: '/catalogue', badge: 0 },
   { key: 'vehicles', icon: 'car', href: '/dashboard/vehicles', badge: 0 },
   { key: 'suppliers', icon: 'truck', href: '/dashboard/suppliers', badge: 0 },
   { key: 'purchaseOrders', icon: 'clipboard', href: '/dashboard/purchase-orders', badge: 0 },
@@ -34,8 +34,8 @@ const sellerMenuItems: NavItem[] = [
 ];
 
 const buyerMenuItems: NavItem[] = [
+  { key: 'marketplace', icon: 'store', href: '/catalogue', badge: 0 },
   { key: 'orders', icon: 'file-text', href: '/dashboard/orders', badge: 0 },
-  { key: 'marketplace', icon: 'store', href: '/dashboard/marketplace', badge: 0 },
   { key: 'cart', icon: 'shopping-cart', href: '/dashboard/cart', badge: 0 },
   { key: 'payments', icon: 'credit-card', href: '/dashboard/payments', badge: 0 },
 ];

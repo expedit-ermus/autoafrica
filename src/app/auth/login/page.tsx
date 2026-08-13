@@ -35,7 +35,7 @@ export default function LoginPage() {
       addToast('success', `Connexion avec ${provider === 'google' ? 'Google' : 'Facebook'} réussie !`);
       
       const role = data.data.user?.role ?? 'BUYER';
-      let targetUrl = '/dashboard/orders';
+      let targetUrl = '/catalogue';
       if (['SUPER_ADMIN', 'TENANT_ADMIN', 'MODERATOR', 'SUPPORT'].includes(role)) {
         targetUrl = '/dashboard/admin';
       } else if (role === 'SELLER') {
@@ -62,10 +62,10 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Login failed');
+      if (!res.ok) throw new Error(data.error || 'Connexion échouée');
       setUser(data.data.user);
       track('login', { method: 'email' });
-      addToast('success', 'Connexion réussie !');
+      addToast('success', 'Connexion réussie ! Bienvenue sur AutoAfrique');
       // Role-based smart redirect (or return to original page if middleware set ?redirect=)
       const params = new URLSearchParams(window.location.search);
       const redirectTo = params.get('redirect');
@@ -80,7 +80,7 @@ export default function LoginPage() {
         } else if (sellerRoles.includes(role)) {
           window.location.href = '/dashboard/inventory';
         } else {
-          window.location.href = '/dashboard/orders';
+          window.location.href = '/catalogue';
         }
       }
 
