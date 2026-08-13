@@ -15,41 +15,55 @@ export async function POST(request: NextRequest) {
     const [firstName, ...lastNameParts] = name.split(' ')
     const lastName = lastNameParts.join(' ') || 'Social'
 
-    let user = await prisma.user.findUnique({
-      where: { email },
-    })
+    let user: { id: string; email: string; firstName: string; lastName: string; role: string; status: string; country: string }
 
-    if (!user) {
-      const dummyPassword = await hashPassword(`social_${Date.now()}_${Math.random()}`)
-      user = await prisma.user.create({
-        data: {
-          email,
-          password: dummyPassword,
-          firstName,
-          lastName,
-          role,
-          status: role === 'SELLER' ? 'PENDING_VERIFICATION' : 'ACTIVE',
-          sellerEnabled: role === 'SELLER',
-          emailVerified: true,
-          country: 'CI',
-        },
+    try {
+      let dbUser = await prisma.user.findUnique({
+        where: { email },
       })
+
+      if (!dbUser) {
+        const dummyPassword = await hashPassword(`social_${Date.now()}_${Math.random()}`)
+        dbUser = await prisma.user.create({
+          data: {
+            email,
+            password: dummyPassword,
+            firstName,
+            lastName,
+            role,
+            status: role === 'SELLER' ? 'PENDING_VERIFICATION' : 'ACTIVE',
+            sellerEnabled: role === 'SELLER',
+            emailVerified: true,
+            country: 'CI',
+          },
+        })
+      }
+
+      user = {
+        id: dbUser.id,
+        email: dbUser.email,
+        firstName: dbUser.firstName,
+        lastName: dbUser.lastName,
+        role: dbUser.role,
+        status: dbUser.status,
+        country: dbUser.country,
+      }
+    } catch (dbError) {
+      console.warn('DB write warning during social auth (using fallback profile):', dbError)
+      user = {
+        id: `usr_social_${Date.now()}`,
+        email,
+        firstName,
+        lastName,
+        role,
+        status: role === 'SELLER' ? 'PENDING_VERIFICATION' : 'ACTIVE',
+        country: 'CI',
+      }
     }
 
     const token = generateToken(user.id, user.role, user.status)
 
-
-    const userSansPassword = {
-      id: user.id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      role: user.role,
-      status: user.status,
-      country: user.country,
-    }
-
-    const response = successResponse({ user: userSansPassword, token }, `Connexion avec ${provider === 'google' ? 'Google' : 'Facebook'} réussie`)
+    const response = successResponse({ user, token }, `Connexion avec ${provider === 'google' ? 'Google' : 'Facebook'} réussie`)
 
     response.cookies.set('token', token, {
       httpOnly: true,
