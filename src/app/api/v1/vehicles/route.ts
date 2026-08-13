@@ -1,7 +1,8 @@
 import { NextRequest } from 'next/server'
 import { vehiclesService } from '@/modules/vehicles/vehicles.service'
-import { requireAuth } from '@/modules/auth/auth.guard'
+import { requireAuth, requireActiveSeller } from '@/modules/auth/auth.guard'
 import { successResponse, handleApiError } from '@/shared/utils/response'
+
 
 export async function GET(request: NextRequest) {
   try {
@@ -37,7 +38,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const auth = await requireAuth(request)
+    const auth = await requireActiveSeller(request)
     const body = await request.json()
     const vehicle = await vehiclesService.create(body, auth.userId)
     return successResponse(vehicle, 'Vehicle created', 201)
@@ -45,3 +46,4 @@ export async function POST(request: NextRequest) {
     return handleApiError(error)
   }
 }
+

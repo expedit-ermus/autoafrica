@@ -2,6 +2,8 @@ import { prisma } from '@/lib/prisma'
 import { hashPassword, verifyPassword, generateToken } from '@/lib/auth'
 import { ConflictError, UnauthorizedError, NotFoundError } from '@/shared/errors'
 import { generateRefreshToken, generateOtp } from './auth.utils'
+import { sendWelcomeEmail } from '@/modules/notifications/providers/email.provider'
+
 
 interface RegisterInput {
   email: string
@@ -25,6 +27,11 @@ export class AuthService {
     const existing = await prisma.user.findUnique({ where: { email: data.email } })
     if (existing) throw new ConflictError('Email already registered')
 
+    // Security: public registration can only create BUYER or SELLER accounts
+    const safeRole: 'SELLER' | 'BUYER' = data.role === 'SELLER' ? 'SELLER' : 'BUYER'
+    // New sellers start in PENDING_VERIFICATION until an Admin approves them
+    const initialStatus = safeRole === 'SELLER' ? 'PENDING_VERIFICATION' : 'ACTIVE'
+
     const hashedPassword = await hashPassword(data.password)
     const user = await prisma.user.create({
       data: {
@@ -36,19 +43,24 @@ export class AuthService {
         country: data.country,
         city: data.city,
         shopName: data.shopName,
-        role: data.role || 'BUYER',
+        role: safeRole,
+        status: initialStatus,
       },
       select: {
         id: true, email: true, firstName: true, lastName: true,
-        role: true, country: true, city: true, shopName: true,
+        role: true, status: true, country: true, city: true, shopName: true,
       },
     })
 
-    const token = generateToken(user.id, user.role)
+    const token = generateToken(user.id, user.role, user.status)
     const refreshToken = await generateRefreshToken(user.id)
+
+    // Trigger automatic welcome email asynchronously
+    void sendWelcomeEmail({ email: user.email, firstName: user.firstName, role: user.role })
 
     return { user, token, refreshToken }
   }
+
 
   async login(data: LoginInput) {
     const user = await prisma.user.findUnique({ where: { email: data.email } })
@@ -57,12 +69,17 @@ export class AuthService {
     const isValid = await verifyPassword(data.password, user.password)
     if (!isValid) throw new UnauthorizedError('Invalid credentials')
 
+    // Refuse login for banned accounts immediately
+    if (user.status === 'BANNED') {
+      throw new UnauthorizedError('Compte banni. Contactez le support AutoAfrique.')
+    }
+
     await prisma.user.update({
       where: { id: user.id },
       data: { lastLoginAt: new Date() },
     })
 
-    const token = generateToken(user.id, user.role)
+    const token = generateToken(user.id, user.role, user.status)
     const refreshToken = await generateRefreshToken(user.id)
 
     const { password, ...userWithoutPassword } = user
@@ -82,7 +99,7 @@ export class AuthService {
 
     await prisma.refreshToken.delete({ where: { id: stored.id } })
 
-    const newToken = generateToken(stored.userId, stored.user.role)
+    const newToken = generateToken(stored.userId, stored.user.role, stored.user.status)
     const newRefreshToken = await generateRefreshToken(stored.userId)
 
     return { token: newToken, refreshToken: newRefreshToken }

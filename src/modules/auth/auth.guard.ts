@@ -20,7 +20,27 @@ export async function requireRole(request: NextRequest, roles: string[]) {
   return auth
 }
 
+export async function requireActiveSeller(request: NextRequest) {
+  const auth = await requireAuth(request)
+
+  if (auth.status === 'PENDING_VERIFICATION') {
+    throw new ForbiddenError('Votre compte vendeur est en cours de vérification par un administrateur. Vous ne pouvez pas encore publier d\'annonces.')
+  }
+
+  if (auth.status === 'SUSPENDED' || auth.status === 'BANNED') {
+    throw new ForbiddenError('Votre compte vendeur est suspendu ou banni. Publication refusée.')
+  }
+
+  const allowedRoles = ['SELLER', 'SUPER_ADMIN', 'TENANT_ADMIN']
+  if (!allowedRoles.includes(auth.role || '')) {
+    throw new ForbiddenError('Rôle Vendeur requis pour cette action.')
+  }
+
+  return auth
+}
+
 export async function optionalAuth(request: NextRequest) {
+
   const token = request.cookies.get('token')?.value
   if (!token) return null
   const payload = verifyToken(token)

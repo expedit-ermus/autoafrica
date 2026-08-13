@@ -7,6 +7,8 @@ import { ToastProvider } from "@/contexts/ToastContext";
 import GlobalWidgets from "@/components/GlobalWidgets";
 import TrackingProvider from "@/components/TrackingProvider";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
+import CookieConsentBanner from "@/components/CookieConsentBanner";
+
 
 export const metadata: Metadata = {
   title: {
@@ -104,7 +106,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 {children}
               </div>
               <GlobalWidgets />
+              <CookieConsentBanner />
             </ToastProvider>
+
           </WishlistProvider>
         </AppProvider>
         <TrackingProvider />

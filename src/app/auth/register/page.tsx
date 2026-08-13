@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
@@ -26,6 +26,18 @@ export default function RegisterPage() {
   const [form, setForm] = useState({ firstName: '', lastName: '', email: '', phone: '', country: 'CI', password: '', confirmPassword: '' });
   const [role, setRole] = useState<'BUYER' | 'SELLER'>('BUYER');
   const [loading, setLoading] = useState(false);
+  const [socialLoading, setSocialLoading] = useState<'google' | 'facebook' | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const provider = params.get('provider');
+      if (provider === 'google' || provider === 'facebook') {
+        handleSocialAuth(provider);
+      }
+    }
+  }, []);
+
 
   const selectedCountry = COUNTRIES.find(c => c.code === form.country);
 
@@ -43,7 +55,30 @@ export default function RegisterPage() {
 
   const passwordStrength = getPasswordStrength(form.password);
 
+  const handleSocialAuth = async (provider: 'google' | 'facebook') => {
+    setSocialLoading(provider);
+    addToast('info', `Inscription via ${provider === 'google' ? 'Google' : 'Facebook'} en cours...`);
+    try {
+      const res = await fetch('/api/v1/auth/social', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ provider, role }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Inscription sociale échouée');
+      setUser(data.data.user);
+      track('register', { method: provider, role, country: form.country });
+      addToast('success', `Inscription avec ${provider === 'google' ? 'Google' : 'Facebook'} réussie ! Bienvenue sur AutoAfrique`);
+      window.location.href = role === 'SELLER' ? '/dashboard/profile' : '/dashboard';
+    } catch (err) {
+      addToast('error', err instanceof Error ? err.message : 'Erreur lors de l\'inscription sociale');
+      setSocialLoading(null);
+    }
+  };
+
+
   const handleSubmit = async (e: React.FormEvent) => {
+
     e.preventDefault();
     if (!form.firstName || !form.lastName || !form.email || !form.password) { addToast('error', 'Veuillez remplir tous les champs obligatoires'); return; }
     if (form.password !== form.confirmPassword) { addToast('error', 'Les mots de passe ne correspondent pas'); return; }
@@ -192,10 +227,10 @@ export default function RegisterPage() {
       </div>
 
       {/* Right panel - Form */}
-      <div className="flex-1 flex items-center justify-center p-6 sm:p-8 lg:p-12 overflow-y-auto">
+      <div className="flex-1 flex items-center justify-center p-4 sm:p-8 lg:p-12 overflow-y-auto">
         <div className="w-full max-w-lg">
           {/* Mobile logo */}
-          <div className="lg:hidden flex items-center gap-3 mb-8 auth-fade-in">
+          <div className="lg:hidden flex items-center gap-3 mb-6 auth-fade-in pt-2">
             <div className="w-12 h-12 rounded-2xl gradient-primary flex items-center justify-center shadow-lg shadow-orange-500/20">
               <span className="text-white font-bold text-xl">A</span>
             </div>
@@ -205,26 +240,29 @@ export default function RegisterPage() {
             </div>
           </div>
 
+          {/* Mobile top accent bar */}
+          <div className="lg:hidden absolute top-0 left-0 right-0 h-1.5 gradient-primary"></div>
+
           {/* Form container with glass morphism on mobile */}
-          <div className="lg:bg-transparent lg:p-0 p-8 lg:rounded-none rounded-2xl" style={{ background: 'rgba(255,255,255,0.8)', backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)' }}>
+          <div className="lg:bg-transparent lg:p-0 p-5 sm:p-8 lg:rounded-none rounded-2xl border border-gray-100/80 sm:border-none shadow-xl sm:shadow-none bg-white/95 sm:bg-transparent backdrop-blur-md">
             {/* Header */}
             <div className="mb-6 auth-fade-in-delay-1">
-              <h1 className="text-3xl font-extrabold text-gray-900 mb-2 tracking-tight">{t.auth.registerTitle}</h1>
-              <p className="text-gray-500">Créez votre compte en quelques minutes</p>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-1.5 tracking-tight">{t.auth.registerTitle}</h1>
+              <p className="text-xs sm:text-sm text-gray-500">Créez votre compte en quelques minutes</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Account type selector */}
               <div className="auth-fade-in-delay-1">
-                <p className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.roleLabel}</p>
-                <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label={t.auth.roleLabel}>
+                <p className="block text-xs sm:text-sm font-semibold text-gray-700 mb-2">{t.auth.roleLabel}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3" role="radiogroup" aria-label={t.auth.roleLabel}>
                   <button type="button" role="radio" aria-checked={role === 'BUYER'}
                     onClick={() => setRole('BUYER')}
-                    className={`auth-role-card relative w-full p-4 rounded-xl border-2 text-left cursor-pointer ${role === 'BUYER' ? 'selected' : 'border-gray-200 hover:border-gray-300'}`}>
+                    className={`auth-role-card relative w-full p-3.5 sm:p-4 rounded-xl border-2 text-left cursor-pointer ${role === 'BUYER' ? 'selected' : 'border-gray-200 hover:border-gray-300'}`}>
                     <span className="auth-role-check absolute top-3 right-3 w-5 h-5 rounded-full bg-orange-500 border-orange-500 flex items-center justify-center">
                       <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                     </span>
-                    <span className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2 ${role === 'BUYER' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'}`}>
+                    <span className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center mb-1.5 ${role === 'BUYER' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'}`}>
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" /></svg>
                     </span>
                     <span className="block text-sm font-semibold text-gray-900">{t.auth.roleBuyer}</span>
@@ -232,11 +270,11 @@ export default function RegisterPage() {
                   </button>
                   <button type="button" role="radio" aria-checked={role === 'SELLER'}
                     onClick={() => setRole('SELLER')}
-                    className={`auth-role-card relative w-full p-4 rounded-xl border-2 text-left cursor-pointer ${role === 'SELLER' ? 'selected' : 'border-gray-200 hover:border-gray-300'}`}>
+                    className={`auth-role-card relative w-full p-3.5 sm:p-4 rounded-xl border-2 text-left cursor-pointer ${role === 'SELLER' ? 'selected' : 'border-gray-200 hover:border-gray-300'}`}>
                     <span className="auth-role-check absolute top-3 right-3 w-5 h-5 rounded-full bg-orange-500 border-orange-500 flex items-center justify-center">
                       <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                     </span>
-                    <span className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2 ${role === 'SELLER' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'}`}>
+                    <span className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center mb-1.5 ${role === 'SELLER' ? 'bg-orange-100 text-orange-600' : 'bg-gray-100 text-gray-500'}`}>
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5 11.65V9.35m0 0a3.001 3.001 0 003.75-.615A2.993 2.993 0 009.75 9.75c.896 0 1.7-.393 2.25-1.016a2.993 2.993 0 002.25 1.016c.896 0 1.7-.393 2.25-1.016a3.001 3.001 0 003.75.614m-16.5 0a3.004 3.004 0 01-.621-4.72L4.318 3.44A1.5 1.5 0 015.378 3h13.243a1.5 1.5 0 011.06.44l1.19 1.189a3 3 0 01-.621 4.72m-13.5 8.65h3.75a.75.75 0 00.75-.75V13.5a.75.75 0 00-.75-.75H6.75a.75.75 0 00-.75.75v3.75c0 .414.336.75.75.75z" /></svg>
                     </span>
                     <span className="block text-sm font-semibold text-gray-900">{t.auth.roleSeller}</span>
@@ -246,52 +284,52 @@ export default function RegisterPage() {
               </div>
 
               {/* Name fields */}
-              <div className="grid grid-cols-2 gap-4 auth-fade-in-delay-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 auth-fade-in-delay-1">
                 <div>
-                  <label htmlFor="reg-firstName" className="block text-sm font-semibold text-gray-700 mb-2">Prénom <span className="text-red-500">*</span></label>
+                  <label htmlFor="reg-firstName" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Prénom <span className="text-red-500">*</span></label>
                   <input id="reg-firstName" type="text" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })}
                     autoComplete="given-name"
-                    className="input-field !min-h-[52px] rounded-xl" placeholder="Amadou" required />
+                    className="input-field !min-h-[52px] rounded-xl text-base" placeholder="Amadou" required />
                 </div>
                 <div>
-                  <label htmlFor="reg-lastName" className="block text-sm font-semibold text-gray-700 mb-2">Nom <span className="text-red-500">*</span></label>
+                  <label htmlFor="reg-lastName" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">Nom <span className="text-red-500">*</span></label>
                   <input id="reg-lastName" type="text" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })}
                     autoComplete="family-name"
-                    className="input-field !min-h-[52px] rounded-xl" placeholder="Diallo" required />
+                    className="input-field !min-h-[52px] rounded-xl text-base" placeholder="Diallo" required />
                 </div>
               </div>
 
               {/* Email */}
               <div className="auth-fade-in-delay-1">
-                <label htmlFor="reg-email" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.email} <span className="text-red-500">*</span></label>
+                <label htmlFor="reg-email" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">{t.auth.email} <span className="text-red-500">*</span></label>
                 <div className="auth-input-group">
                   <div className="auth-input-icon">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
                   </div>
                   <input id="reg-email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
                     autoComplete="email"
-                    className="input-field !min-h-[52px] rounded-xl" placeholder="vous@exemple.com" required />
+                    className="input-field !min-h-[52px] rounded-xl text-base" placeholder="vous@exemple.com" required />
                 </div>
               </div>
 
               {/* Phone and Country */}
-              <div className="grid grid-cols-2 gap-4 auth-fade-in-delay-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 auth-fade-in-delay-2">
                 <div>
-                  <label htmlFor="reg-phone" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.phone}</label>
+                  <label htmlFor="reg-phone" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">{t.auth.phone}</label>
                   <div className="auth-input-group">
                     <div className="auth-input-icon">
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
                     </div>
                     <input id="reg-phone" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       autoComplete="tel"
-                      className="input-field !min-h-[52px] rounded-xl" placeholder="+225 XX XX XX XX" />
+                      className="input-field !min-h-[52px] rounded-xl text-base" placeholder="+225 XX XX XX XX" />
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="reg-country" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.country} <span className="text-red-500">*</span></label>
+                  <label htmlFor="reg-country" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">{t.auth.country} <span className="text-red-500">*</span></label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-lg pointer-events-none z-10">{selectedCountry?.flag}</span>
-                    <select id="reg-country" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="input-field !pl-10 appearance-none cursor-pointer !min-h-[52px] rounded-xl">
+                    <select id="reg-country" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} className="input-field !pl-10 appearance-none cursor-pointer !min-h-[52px] rounded-xl text-base">
                       {COUNTRIES.map((country) => (
                         <option key={country.code} value={country.code}>{country.flag} {country.name}</option>
                       ))}
@@ -302,18 +340,18 @@ export default function RegisterPage() {
               </div>
 
               {/* Password fields */}
-              <div className="grid grid-cols-2 gap-4 auth-fade-in-delay-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 auth-fade-in-delay-3">
                 <div>
-                  <label htmlFor="reg-password" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.password} <span className="text-red-500">*</span></label>
+                  <label htmlFor="reg-password" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">{t.auth.password} <span className="text-red-500">*</span></label>
                   <input id="reg-password" type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}
                     autoComplete="new-password"
-                    className="input-field !min-h-[52px] rounded-xl" placeholder="••••••••" required />
+                    className="input-field !min-h-[52px] rounded-xl text-base" placeholder="••••••••" required />
                 </div>
                 <div>
-                  <label htmlFor="reg-confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">{t.auth.confirmPassword} <span className="text-red-500">*</span></label>
+                  <label htmlFor="reg-confirmPassword" className="block text-xs sm:text-sm font-semibold text-gray-700 mb-1.5">{t.auth.confirmPassword} <span className="text-red-500">*</span></label>
                   <input id="reg-confirmPassword" type="password" value={form.confirmPassword} onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
                     autoComplete="new-password"
-                    className={`input-field !min-h-[52px] rounded-xl ${passwordMismatch ? 'border-red-500 !shadow-[0_0_0_3px_rgba(220,38,38,0.08)]' : ''}`}
+                    className={`input-field !min-h-[52px] rounded-xl text-base ${passwordMismatch ? 'border-red-500 !shadow-[0_0_0_3px_rgba(220,38,38,0.08)]' : ''}`}
                     placeholder="••••••••" required />
                 </div>
               </div>
@@ -336,12 +374,13 @@ export default function RegisterPage() {
                   <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
                     <div className={`h-full rounded-full transition-all duration-500 ${passwordStrength.color} ${passwordStrength.width}`}></div>
                   </div>
-                  <div className="flex gap-1.5 mt-1">
+                  <div className="flex flex-wrap gap-1.5 mt-1">
                     {['Au moins 8 caractères', 'Une majuscule', 'Un chiffre', 'Un caractère spécial'].map((hint, i) => {
                       const met = (i === 0 && form.password.length >= 8) || (i === 1 && /[A-Z]/.test(form.password)) || (i === 2 && /[0-9]/.test(form.password)) || (i === 3 && /[^A-Za-z0-9]/.test(form.password));
                       return (
-                        <span key={hint} className={`text-[10px] flex items-center gap-0.5 ${met ? 'text-green-600' : 'text-gray-400'}`}>
+                        <span key={hint} className={`text-[10px] flex items-center gap-0.5 ${met ? 'text-green-600 font-semibold' : 'text-gray-400'}`}>
                           <svg className="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>{met ? <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /> : <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v12m6-6H6" />}</svg>
+                          {hint}
                         </span>
                       );
                     })}
@@ -350,18 +389,18 @@ export default function RegisterPage() {
               )}
 
               {/* Terms checkbox */}
-              <label className="flex items-start gap-3 text-sm text-gray-600 cursor-pointer select-none group auth-fade-in-delay-4">
+              <label className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-600 cursor-pointer select-none group auth-fade-in-delay-4 py-1">
                 <div className="relative mt-0.5 flex-shrink-0">
                   <input type="checkbox" className="peer sr-only" required />
                   <div className="w-4 h-4 rounded border-2 border-gray-300 peer-checked:border-orange-500 peer-checked:bg-orange-500 transition-all duration-200 flex items-center justify-center">
                     <svg className="w-2.5 h-2.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg>
                   </div>
                 </div>
-                <span className="group-hover:text-gray-900 transition-colors">J&apos;accepte les <span className="text-orange-600 font-semibold cursor-pointer hover:underline">conditions</span> et la <span className="text-orange-600 font-semibold cursor-pointer hover:underline">politique de confidentialité</span></span>
+                <span className="group-hover:text-gray-900 transition-colors">J&apos;accepte les <span className="text-orange-600 font-semibold hover:underline">conditions</span> et la <span className="text-orange-600 font-semibold hover:underline">politique de confidentialité</span></span>
               </label>
 
               {/* Submit button */}
-              <button type="submit" disabled={loading} className="btn-primary w-full text-center !py-4 text-base disabled:opacity-50 disabled:cursor-not-allowed auth-fade-in-delay-4 rounded-xl">
+              <button type="submit" disabled={loading} className="btn-primary w-full text-center !py-3.5 sm:!py-4 text-base font-bold disabled:opacity-50 disabled:cursor-not-allowed auth-fade-in-delay-4 rounded-xl shadow-lg shadow-orange-500/20 active:scale-[0.98]">
                 {loading ? (
                   <span className="flex items-center justify-center gap-3">
                     <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
@@ -374,7 +413,64 @@ export default function RegisterPage() {
               </button>
             </form>
 
+            {/* Divider */}
+            <div className="relative my-5 sm:my-6 auth-fade-in-delay-4">
+              <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div>
+              <div className="relative flex justify-center text-xs sm:text-sm">
+                <span className="bg-white px-3 text-gray-400 font-medium">ou s&apos;inscrire avec</span>
+              </div>
+            </div>
+
+            {/* Social register buttons */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 mb-5 auth-fade-in-delay-4">
+              <button
+                type="button"
+                onClick={(e) => { e.preventDefault(); handleSocialAuth('google'); }}
+                disabled={loading || socialLoading !== null}
+                className="flex items-center justify-center gap-2.5 px-4 py-3 border border-gray-200 rounded-xl text-sm font-semibold transition-all duration-200 bg-white hover:border-orange-500 hover:shadow-md hover:bg-orange-50/20 active:scale-[0.98] cursor-pointer min-h-[48px] disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {socialLoading === 'google' ? (
+                  <span className="flex items-center gap-2 text-orange-600">
+                    <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Google...
+                  </span>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                    <span className="text-gray-700 font-bold">Google</span>
+                  </>
+                )}
+              </button>
+              <button
+                type="button"
+                onClick={(e) => { e.preventDefault(); handleSocialAuth('facebook'); }}
+                disabled={loading || socialLoading !== null}
+                className="flex items-center justify-center gap-2.5 px-4 py-3 border border-gray-200 rounded-xl text-sm font-semibold transition-all duration-200 bg-white hover:border-blue-500 hover:shadow-md hover:bg-blue-50/20 active:scale-[0.98] cursor-pointer min-h-[48px] disabled:opacity-60 disabled:cursor-not-allowed"
+              >
+                {socialLoading === 'facebook' ? (
+                  <span className="flex items-center gap-2 text-blue-600">
+                    <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Facebook...
+                  </span>
+                ) : (
+                  <>
+                    <svg className="w-5 h-5" fill="#1877F2" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    <span className="text-gray-700 font-bold">Facebook</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+
+
             {/* Login link */}
+
             <p className="text-center text-sm text-gray-500 mt-6 auth-fade-in-delay-4">
               {t.auth.hasAccount}{' '}
               <Link href="/auth/login" className="text-orange-600 font-semibold hover:text-orange-700 hover:underline transition-all duration-200">

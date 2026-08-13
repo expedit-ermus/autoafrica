@@ -17,15 +17,15 @@ export async function verifyPassword(password: string, hashedPassword: string): 
   return bcrypt.compare(password, hashedPassword)
 }
 
-export function generateToken(userId: string, role?: string): string {
+export function generateToken(userId: string, role?: string, status?: string): string {
   const secret = getJwtSecret()
-  return jwt.sign({ userId, role }, secret, { expiresIn: '7d' })
+  return jwt.sign({ userId, role, status }, secret, { expiresIn: '7d' })
 }
 
-export function verifyToken(token: string): { userId: string; role?: string } | null {
+export function verifyToken(token: string): { userId: string; role?: string; status?: string } | null {
   try {
     const secret = getJwtSecret()
-    return jwt.verify(token, secret) as { userId: string; role?: string }
+    return jwt.verify(token, secret) as { userId: string; role?: string; status?: string }
   } catch {
     return null
   }

@@ -4,8 +4,23 @@ import { usePathname } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
 import { useState, useEffect, useRef } from 'react';
 
-const menuItems = [
+// ─── Navigation Config (role-scoped) ─────────────────────────────────────────────────
+const ADMIN_ROLES = ['SUPER_ADMIN', 'TENANT_ADMIN', 'MODERATOR', 'SUPPORT'];
+const SELLER_ROLES_ALL = ['SELLER', 'SUPER_ADMIN', 'TENANT_ADMIN'];
+
+type NavItem = { key: string; icon: string; href: string; badge: number };
+
+const adminMenuItems: NavItem[] = [
+  { key: 'adminOverview', icon: 'shield', href: '/dashboard/admin', badge: 0 },
   { key: 'dashboard', icon: 'home', href: '/dashboard', badge: 0 },
+  { key: 'analytics', icon: 'bar-chart-2', href: '/dashboard/analytics', badge: 0 },
+];
+
+const sellerMenuItems: NavItem[] = [
+  { key: 'dashboard', icon: 'home', href: '/dashboard', badge: 0 },
+  { key: 'inventory', icon: 'package', href: '/dashboard/inventory', badge: 0 },
+  { key: 'orders', icon: 'file-text', href: '/dashboard/orders', badge: 5 },
+  { key: 'crm', icon: 'users', href: '/dashboard/crm', badge: 12 },
   { key: 'marketplace', icon: 'store', href: '/dashboard/marketplace', badge: 0 },
   { key: 'vehicles', icon: 'car', href: '/dashboard/vehicles', badge: 0 },
   { key: 'suppliers', icon: 'truck', href: '/dashboard/suppliers', badge: 0 },
@@ -13,19 +28,33 @@ const menuItems = [
   { key: 'containers', icon: 'shipping', href: '/dashboard/containers', badge: 0 },
   { key: 'customs', icon: 'shield-check', href: '/dashboard/customs', badge: 0 },
   { key: 'delivery', icon: 'truck-delivery', href: '/dashboard/delivery', badge: 0 },
-  { key: 'notifications', icon: 'bell', href: '/dashboard/notifications', badge: 0 },
-  { key: 'orders', icon: 'file-text', href: '/dashboard/orders', badge: 5 },
-  { key: 'inventory', icon: 'package', href: '/dashboard/inventory', badge: 0 },
-  { key: 'crm', icon: 'users', href: '/dashboard/crm', badge: 12 },
   { key: 'finance', icon: 'dollar-sign', href: '/dashboard/finance', badge: 0 },
   { key: 'payments', icon: 'credit-card', href: '/dashboard/payments', badge: 0 },
   { key: 'analytics', icon: 'bar-chart-2', href: '/dashboard/analytics', badge: 0 },
-  { key: 'admin', icon: 'shield', href: '/dashboard/admin', badge: 0 },
+];
+
+const buyerMenuItems: NavItem[] = [
+  { key: 'orders', icon: 'file-text', href: '/dashboard/orders', badge: 0 },
+  { key: 'marketplace', icon: 'store', href: '/dashboard/marketplace', badge: 0 },
+  { key: 'cart', icon: 'shopping-cart', href: '/dashboard/cart', badge: 0 },
+  { key: 'payments', icon: 'credit-card', href: '/dashboard/payments', badge: 0 },
+];
+
+const commonMenuItems: NavItem[] = [
+  { key: 'notifications', icon: 'bell', href: '/dashboard/notifications', badge: 0 },
   { key: 'settings', icon: 'settings', href: '/dashboard/settings', badge: 0 },
   { key: 'help', icon: 'help-circle', href: '/dashboard/help', badge: 0 },
 ];
 
-const mobileTabKeys = ['dashboard', 'marketplace', 'orders', 'inventory', 'crm'];
+function getMenuItemsForRole(role?: string | null): NavItem[] {
+  if (!role) return [...buyerMenuItems, ...commonMenuItems];
+  if (ADMIN_ROLES.includes(role)) return [...adminMenuItems, ...sellerMenuItems, ...commonMenuItems];
+  if (SELLER_ROLES_ALL.includes(role)) return [...sellerMenuItems, ...commonMenuItems];
+  return [...buyerMenuItems, ...commonMenuItems];
+}
+
+const mobileTabKeys = ['dashboard', 'orders', 'inventory', 'crm', 'marketplace'];
+
 
 function SvgIcon({ name, className = 'w-5 h-5' }: { name: string; className?: string }) {
   const props = { className, fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor', strokeWidth: 1.5 };
@@ -110,9 +139,12 @@ export default function Sidebar() {
   }
 
   const isActive = (href: string) => pathname === href || (href !== '/dashboard' && pathname.startsWith(href));
+  const menuItems = getMenuItemsForRole(user?.role);
   const tabItems = menuItems.filter((item) => mobileTabKeys.includes(item.key));
   const moreItems = menuItems.filter((item) => !mobileTabKeys.includes(item.key));
   const activeMoreItem = moreItems.find((item) => isActive(item.href));
+  const isPendingSeller = user?.role === 'SELLER' && user?.status === 'PENDING_VERIFICATION';
+
 
   const handleDesktopEnter = () => { if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current); setExpanded(true); };
   const handleDesktopLeave = () => { hoverTimeoutRef.current = setTimeout(() => setExpanded(false), 150); };

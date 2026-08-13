@@ -115,6 +115,7 @@ enum UserStatus {
   INACTIVE
   SUSPENDED
   PENDING_VERIFICATION
+  BANNED
 }
 
 enum PayoutMethod {
@@ -1409,3 +1410,5 @@ model LoyaltyTransaction {
 
   @@index([userId])
 }
+
+

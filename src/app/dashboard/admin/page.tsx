@@ -2,16 +2,33 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
+
+interface SellerProfile {
+  businessName?: string | null;
+  displayName?: string | null;
+  businessType?: string | null;
+  city?: string | null;
+  phoneForOrders?: string | null;
+  payoutMethod?: string | null;
+  payoutNumber?: string | null;
+  verified?: boolean;
+}
+
 interface User {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
+  phone?: string;
   role: string;
   status: string;
   country?: string;
+  city?: string;
+  shopName?: string;
   createdAt: string;
+  sellerProfile?: SellerProfile | null;
 }
+
 
 interface Tenant {
   id: string;
@@ -37,6 +54,8 @@ export default function AdminPage() {
   });
 
   const [refreshKey, setRefreshKey] = useState(0);
+  const [selectedKycUser, setSelectedKycUser] = useState<User | null>(null);
+
 
   useEffect(() => {
     let cancelled = false;
@@ -59,7 +78,6 @@ export default function AdminPage() {
               pendingUsers: usersData.data.data.filter((u: User) => u.status === 'PENDING_VERIFICATION').length,
             }));
           }
-
           if (tenantsData.success) {
             setTenants(tenantsData.data.data);
             setStats(prev => ({
@@ -78,18 +96,22 @@ export default function AdminPage() {
     return () => { cancelled = true; };
   }, [refreshKey]);
 
-  const handleUserAction = async (userId: string, action: 'activate' | 'suspend' | 'delete') => {
+  // ── User Actions ─────────────────────────────────────────────────────────────
+  const handleUserAction = async (userId: string, action: 'activate' | 'suspend' | 'ban' | 'delete') => {
     try {
+      const statusMap: Record<string, string> = {
+        activate: 'ACTIVE',
+        suspend: 'SUSPENDED',
+        ban: 'BANNED',
+        delete: 'INACTIVE',
+      };
       const res = await fetch(`/api/v1/users/${userId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ status: action === 'activate' ? 'ACTIVE' : action === 'suspend' ? 'SUSPENDED' : 'INACTIVE' }),
+        body: JSON.stringify({ status: statusMap[action] }),
       });
-
-      if (res.ok) {
-        setRefreshKey(k => k + 1);
-      }
+      if (res.ok) setRefreshKey(k => k + 1);
     } catch (err) {
       console.error(err);
     }
@@ -103,81 +125,54 @@ export default function AdminPage() {
         credentials: 'include',
         body: JSON.stringify({ active: action === 'activate' }),
       });
-
-      if (res.ok) {
-        setRefreshKey(k => k + 1);
-      }
+      if (res.ok) setRefreshKey(k => k + 1);
     } catch (err) {
       console.error(err);
     }
   };
 
+  // ── Labels & Colors ─────────────────────────────────────────────────────────
   const roleLabels: Record<string, string> = {
-    SUPER_ADMIN: 'Super Admin',
-    TENANT_ADMIN: 'Admin Tenant',
-    SELLER: 'Vendeur',
-    BUYER: 'Acheteur',
-    WAREHOUSE_MANAGER: 'Gestionnaire Stock',
-    DELIVERY_AGENT: 'Livreur',
-    ACCOUNTANT: 'Comptable',
-    SUPPORT: 'Support',
-    MODERATOR: 'Modérateur',
+    SUPER_ADMIN: 'Super Admin', TENANT_ADMIN: 'Admin Tenant',
+    SELLER: 'Vendeur', BUYER: 'Acheteur', WAREHOUSE_MANAGER: 'Gestionnaire Stock',
+    DELIVERY_AGENT: 'Livreur', ACCOUNTANT: 'Comptable', SUPPORT: 'Support', MODERATOR: 'Modérateur',
   };
-
   const roleColors: Record<string, string> = {
-    SUPER_ADMIN: 'bg-red-100 text-red-700',
-    TENANT_ADMIN: 'bg-purple-100 text-purple-700',
-    SELLER: 'bg-blue-100 text-blue-700',
-    BUYER: 'bg-green-100 text-green-700',
-    WAREHOUSE_MANAGER: 'bg-yellow-100 text-yellow-700',
-    DELIVERY_AGENT: 'bg-indigo-100 text-indigo-700',
-    ACCOUNTANT: 'bg-pink-100 text-pink-700',
-    SUPPORT: 'bg-cyan-100 text-cyan-700',
-    MODERATOR: 'bg-gray-100 text-gray-700',
+    SUPER_ADMIN: 'bg-red-100 text-red-700', TENANT_ADMIN: 'bg-purple-100 text-purple-700',
+    SELLER: 'bg-blue-100 text-blue-700', BUYER: 'bg-green-100 text-green-700',
+    WAREHOUSE_MANAGER: 'bg-yellow-100 text-yellow-700', DELIVERY_AGENT: 'bg-indigo-100 text-indigo-700',
+    ACCOUNTANT: 'bg-pink-100 text-pink-700', SUPPORT: 'bg-cyan-100 text-cyan-700', MODERATOR: 'bg-gray-100 text-gray-700',
   };
-
   const statusLabels: Record<string, string> = {
-    ACTIVE: 'Actif',
-    INACTIVE: 'Inactif',
-    SUSPENDED: 'Suspendu',
-    PENDING_VERIFICATION: 'En attente',
+    ACTIVE: 'Actif', INACTIVE: 'Inactif', SUSPENDED: 'Suspendu',
+    PENDING_VERIFICATION: 'En attente', BANNED: 'Banni',
   };
-
   const statusColors: Record<string, string> = {
-    ACTIVE: 'bg-green-100 text-green-700',
-    INACTIVE: 'bg-gray-100 text-gray-700',
-    SUSPENDED: 'bg-red-100 text-red-700',
-    PENDING_VERIFICATION: 'bg-yellow-100 text-yellow-700',
+    ACTIVE: 'bg-green-100 text-green-700', INACTIVE: 'bg-gray-100 text-gray-700',
+    SUSPENDED: 'bg-orange-100 text-orange-700', PENDING_VERIFICATION: 'bg-yellow-100 text-yellow-700',
+    BANNED: 'bg-red-900 text-red-100',
   };
-
-  const planLabels: Record<string, string> = {
-    FREE: 'Gratuit',
-    STARTER: 'Starter',
-    PRO: 'Pro',
-    ENTERPRISE: 'Entreprise',
-  };
-
+  const planLabels: Record<string, string> = { FREE: 'Gratuit', STARTER: 'Starter', PRO: 'Pro', ENTERPRISE: 'Entreprise' };
   const planColors: Record<string, string> = {
-    FREE: 'bg-gray-100 text-gray-700',
-    STARTER: 'bg-blue-100 text-blue-700',
-    PRO: 'bg-purple-100 text-purple-700',
-    ENTERPRISE: 'bg-amber-100 text-amber-700',
+    FREE: 'bg-gray-100 text-gray-700', STARTER: 'bg-blue-100 text-blue-700',
+    PRO: 'bg-purple-100 text-purple-700', ENTERPRISE: 'bg-amber-100 text-amber-700',
   };
 
   const tabs: Array<{ key: 'overview' | 'users' | 'tenants' | 'settings'; label: string; icon: string }> = [
-    { key: 'overview', label: 'Vue d\'ensemble', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
+    { key: 'overview', label: "Vue d'ensemble", icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
     { key: 'users', label: 'Utilisateurs', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z' },
     { key: 'tenants', label: 'Tenants', icon: 'M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4' },
     { key: 'settings', label: 'Paramètres', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z' },
   ];
 
+  // ── Loading ─────────────────────────────────────────────────────────────────
   if (loading) {
     return (
       <div className="flex min-h-screen bg-gray-50">
         <Sidebar />
-      <div className="flex-1 min-w-0 lg:ml-64">
-        <DashboardTopBar />
-        <div className="flex items-center justify-center h-96">
+        <div className="flex-1 min-w-0 lg:ml-[72px]">
+          <DashboardTopBar />
+          <div className="flex items-center justify-center h-96">
             <div className="text-center">
               <div className="animate-spin w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full mx-auto mb-4"></div>
               <p className="text-gray-500 font-medium">Chargement de l&apos;administration...</p>
@@ -188,10 +183,11 @@ export default function AdminPage() {
     );
   }
 
+  // ── Main Render ─────────────────────────────────────────────────────────────
   return (
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
-      <div className="flex-1 min-w-0 lg:ml-64">
+      <div className="flex-1 min-w-0 lg:ml-[72px]">
         <DashboardTopBar />
         <main className="p-4 lg:p-8 pb-24 lg:pb-8 max-w-[1400px] mx-auto">
 
@@ -208,6 +204,15 @@ export default function AdminPage() {
                 <p className="text-sm text-gray-500">Gestion de la plateforme AutoAfrique</p>
               </div>
             </div>
+            {/* PENDING seller badge */}
+            {stats.pendingUsers > 0 && (
+              <div className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-amber-50 border border-amber-200 rounded-xl text-amber-700 text-sm font-medium">
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {stats.pendingUsers} vendeur(s) en attente de validation — cliquez sur &quot;Utilisateurs&quot;
+              </div>
+            )}
           </div>
 
           {/* Tabs */}
@@ -215,32 +220,31 @@ export default function AdminPage() {
             {tabs.map((tab) => (
               <button
                 key={tab.key}
+                id={`admin-tab-${tab.key}`}
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap ${
-                  activeTab === tab.key
-                    ? 'bg-white text-orange-600 shadow-sm'
-                    : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
+                  activeTab === tab.key ? 'bg-white text-orange-600 shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-white/50'
                 }`}
               >
                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                   <path strokeLinecap="round" strokeLinejoin="round" d={tab.icon} />
                 </svg>
                 {tab.label}
+                {tab.key === 'users' && stats.pendingUsers > 0 && (
+                  <span className="ml-1 px-1.5 py-0.5 text-[10px] font-bold bg-amber-500 text-white rounded-full">{stats.pendingUsers}</span>
+                )}
               </button>
             ))}
           </div>
 
-          {/* Overview Tab */}
+          {/* ── Overview Tab ────────────────────────────────────────────────── */}
           {activeTab === 'overview' && (
             <div className="space-y-6" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both' }}>
-              {/* Stats Cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 <div className="card-modern p-5">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#3B82F6" strokeWidth="2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                      </svg>
+                      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#3B82F6" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                     </div>
                     <div>
                       <p className="text-2xl font-extrabold text-gray-900">{stats.totalUsers}</p>
@@ -253,9 +257,7 @@ export default function AdminPage() {
                 <div className="card-modern p-5">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center">
-                      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#A855F7" strokeWidth="2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                      </svg>
+                      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#A855F7" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
                     </div>
                     <div>
                       <p className="text-2xl font-extrabold text-gray-900">{stats.totalTenants}</p>
@@ -268,24 +270,20 @@ export default function AdminPage() {
                 <div className="card-modern p-5">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
-                      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#22C55E" strokeWidth="2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+                      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#22C55E" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
                     <div>
                       <p className="text-2xl font-extrabold text-gray-900">{stats.activeTenants}</p>
                       <p className="text-xs text-gray-500 font-medium">Tenants actifs</p>
                     </div>
                   </div>
-                  <div className="text-xs text-gray-400">{((stats.activeTenants / stats.totalTenants) * 100).toFixed(0)}% du total</div>
+                  <div className="text-xs text-gray-400">{stats.totalTenants > 0 ? ((stats.activeTenants / stats.totalTenants) * 100).toFixed(0) : 0}% du total</div>
                 </div>
 
                 <div className="card-modern p-5">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
-                      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#F59E0B" strokeWidth="2">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
+                      <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#F59E0B" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
                     <div>
                       <p className="text-2xl font-extrabold text-gray-900">{stats.pendingUsers}</p>
@@ -304,9 +302,7 @@ export default function AdminPage() {
                     {users.slice(0, 5).map((u) => (
                       <div key={u.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center flex-shrink-0">
-                          <span className="text-white text-xs font-bold">
-                            {u.firstName?.[0]}{u.lastName?.[0]}
-                          </span>
+                          <span className="text-white text-xs font-bold">{u.firstName?.[0]}{u.lastName?.[0]}</span>
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-semibold text-gray-900 text-sm truncate">{u.firstName} {u.lastName}</p>
@@ -343,7 +339,7 @@ export default function AdminPage() {
             </div>
           )}
 
-          {/* Users Tab */}
+          {/* ── Users Tab ────────────────────────────────────────────────────── */}
           {activeTab === 'users' && (
             <div className="space-y-6" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both' }}>
               <div className="card-modern overflow-hidden">
@@ -353,9 +349,11 @@ export default function AdminPage() {
                       <h3 className="font-bold text-gray-900">Gestion des utilisateurs</h3>
                       <p className="text-sm text-gray-500 mt-0.5">{users.length} utilisateurs au total</p>
                     </div>
-                    <button className="px-4 py-2 bg-orange-500 text-white rounded-xl text-sm font-medium hover:bg-orange-600 transition-colors">
-                      + Ajouter
-                    </button>
+                    {stats.pendingUsers > 0 && (
+                      <span className="px-3 py-1.5 text-xs font-semibold text-amber-700 bg-amber-50 border border-amber-200 rounded-xl">
+                        {stats.pendingUsers} en attente de validation ⏳
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="overflow-x-auto">
@@ -372,13 +370,11 @@ export default function AdminPage() {
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                       {users.map((u) => (
-                        <tr key={u.id} className="hover:bg-gray-50 transition-colors">
+                        <tr key={u.id} className={`hover:bg-gray-50 transition-colors ${u.status === 'PENDING_VERIFICATION' && u.role === 'SELLER' ? 'bg-amber-50/30' : ''}`}>
                           <td className="px-5 py-4">
                             <div className="flex items-center gap-3">
                               <div className="w-9 h-9 rounded-full bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center flex-shrink-0">
-                                <span className="text-white text-xs font-bold">
-                                  {u.firstName?.[0]}{u.lastName?.[0]}
-                                </span>
+                                <span className="text-white text-xs font-bold">{u.firstName?.[0]}{u.lastName?.[0]}</span>
                               </div>
                               <div>
                                 <p className="font-semibold text-gray-900 text-sm">{u.firstName} {u.lastName}</p>
@@ -401,20 +397,57 @@ export default function AdminPage() {
                             {u.createdAt ? new Date(u.createdAt).toLocaleDateString('fr-FR') : '—'}
                           </td>
                           <td className="px-5 py-4">
-                            <div className="flex items-center justify-end gap-2">
-                              {u.status === 'ACTIVE' ? (
+                            <div className="flex items-center justify-end gap-1.5 flex-wrap">
+                              {/* Inspect KYC button for sellers */}
+                              {u.role === 'SELLER' && (
                                 <button
-                                  onClick={() => handleUserAction(u.id, 'suspend')}
-                                  className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                                  onClick={() => setSelectedKycUser(u)}
+                                  className="px-2.5 py-1.5 text-xs font-medium text-slate-600 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors"
+                                  title="Inspecter le dossier KYC et coordonnées vendeur"
                                 >
-                                  Suspendre
+                                  🔍 Dossier KYC
                                 </button>
-                              ) : (
+                              )}
+                              {/* ✓ Validate Seller PENDING → ACTIVE */}
+                              {u.role === 'SELLER' && u.status === 'PENDING_VERIFICATION' && (
+                                <button
+                                  id={`admin-validate-seller-${u.id}`}
+                                  onClick={() => handleUserAction(u.id, 'activate')}
+                                  className="px-3 py-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg hover:bg-emerald-100 transition-colors"
+                                >
+                                  ✓ Valider Vendeur
+                                </button>
+                              )}
+
+                              {/* Activate (for non-ACTIVE accounts) */}
+                              {['SUSPENDED', 'INACTIVE', 'BANNED'].includes(u.status) && (
                                 <button
                                   onClick={() => handleUserAction(u.id, 'activate')}
                                   className="px-3 py-1.5 text-xs font-medium text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
                                 >
                                   Activer
+                                </button>
+                              )}
+                              {/* Suspend (for ACTIVE accounts) */}
+                              {u.status === 'ACTIVE' && (
+                                <button
+                                  onClick={() => handleUserAction(u.id, 'suspend')}
+                                  className="px-3 py-1.5 text-xs font-medium text-amber-600 bg-amber-50 rounded-lg hover:bg-amber-100 transition-colors"
+                                >
+                                  Suspendre
+                                </button>
+                              )}
+                              {/* Ban (permanent — exclude platform admins) */}
+                              {!['SUPER_ADMIN', 'TENANT_ADMIN'].includes(u.role) && u.status !== 'BANNED' && (
+                                <button
+                                  onClick={() => {
+                                    if (confirm(`Bannir définitivement ${u.firstName} ${u.lastName} ? Cette action est irréversible.`)) {
+                                      handleUserAction(u.id, 'ban');
+                                    }
+                                  }}
+                                  className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
+                                >
+                                  Bannir
                                 </button>
                               )}
                             </div>
@@ -428,7 +461,7 @@ export default function AdminPage() {
             </div>
           )}
 
-          {/* Tenants Tab */}
+          {/* ── Tenants Tab ──────────────────────────────────────────────────── */}
           {activeTab === 'tenants' && (
             <div className="space-y-6" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both' }}>
               <div className="card-modern overflow-hidden">
@@ -438,9 +471,6 @@ export default function AdminPage() {
                       <h3 className="font-bold text-gray-900">Gestion des tenants</h3>
                       <p className="text-sm text-gray-500 mt-0.5">{tenants.length} tenants au total</p>
                     </div>
-                    <button className="px-4 py-2 bg-orange-500 text-white rounded-xl text-sm font-medium hover:bg-orange-600 transition-colors">
-                      + Ajouter
-                    </button>
                   </div>
                 </div>
                 <div className="overflow-x-auto">
@@ -484,17 +514,11 @@ export default function AdminPage() {
                           <td className="px-5 py-4">
                             <div className="flex items-center justify-end gap-2">
                               {t.active ? (
-                                <button
-                                  onClick={() => handleTenantAction(t.id, 'deactivate')}
-                                  className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors"
-                                >
+                                <button onClick={() => handleTenantAction(t.id, 'deactivate')} className="px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
                                   Désactiver
                                 </button>
                               ) : (
-                                <button
-                                  onClick={() => handleTenantAction(t.id, 'activate')}
-                                  className="px-3 py-1.5 text-xs font-medium text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
-                                >
+                                <button onClick={() => handleTenantAction(t.id, 'activate')} className="px-3 py-1.5 text-xs font-medium text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
                                   Activer
                                 </button>
                               )}
@@ -509,61 +533,125 @@ export default function AdminPage() {
             </div>
           )}
 
-          {/* Settings Tab */}
+          {/* ── Settings Tab ─────────────────────────────────────────────────── */}
           {activeTab === 'settings' && (
             <div className="space-y-6" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both' }}>
               <div className="card-modern p-6">
                 <h3 className="font-bold text-gray-900 mb-4">Paramètres de la plateforme</h3>
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                    <div>
-                      <p className="font-semibold text-gray-900 text-sm">Maintenance mode</p>
-                      <p className="text-xs text-gray-500">Désactiver l&apos;accès public au site</p>
+                  {[
+                    { label: 'Mode Maintenance', desc: "Désactiver l'accès public au site", active: false },
+                    { label: 'Nouvelles inscriptions', desc: 'Autoriser les nouvelles inscriptions', active: true },
+                    { label: 'Notifications email', desc: 'Envoyer des emails de notification', active: true },
+                  ].map((item) => (
+                    <div key={item.label} className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                      <div>
+                        <p className="font-semibold text-gray-900 text-sm">{item.label}</p>
+                        <p className="text-xs text-gray-500">{item.desc}</p>
+                      </div>
+                      <button className={`w-12 h-6 ${item.active ? 'bg-green-500' : 'bg-gray-300'} rounded-full relative transition-colors`}>
+                        <div className={`w-5 h-5 bg-white rounded-full absolute top-0.5 ${item.active ? 'right-0.5' : 'left-0.5'} shadow transition-transform`}></div>
+                      </button>
                     </div>
-                    <button className="w-12 h-6 bg-gray-300 rounded-full relative transition-colors">
-                      <div className="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 shadow transition-transform"></div>
-                    </button>
-                  </div>
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                    <div>
-                      <p className="font-semibold text-gray-900 text-sm">Nouveaux inscriptions</p>
-                      <p className="text-xs text-gray-500">Autoriser les nouvelles inscriptions</p>
-                    </div>
-                    <button className="w-12 h-6 bg-green-500 rounded-full relative transition-colors">
-                      <div className="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 shadow transition-transform"></div>
-                    </button>
-                  </div>
-                  <div className="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
-                    <div>
-                      <p className="font-semibold text-gray-900 text-sm">Notifications email</p>
-                      <p className="text-xs text-gray-500">Envoyer des emails de notification</p>
-                    </div>
-                    <button className="w-12 h-6 bg-green-500 rounded-full relative transition-colors">
-                      <div className="w-5 h-5 bg-white rounded-full absolute top-0.5 right-0.5 shadow transition-transform"></div>
-                    </button>
-                  </div>
+                  ))}
                 </div>
               </div>
 
               <div className="card-modern p-6">
                 <h3 className="font-bold text-gray-900 mb-4">Informations système</h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="p-4 bg-gray-50 rounded-xl">
-                    <p className="text-xs text-gray-500 mb-1">Version</p>
-                    <p className="font-semibold text-gray-900">1.0.0</p>
+                  {[
+                    { label: 'Version', value: '1.0.0' },
+                    { label: 'Environnement', value: 'Production' },
+                    { label: 'Base de données', value: 'libSQL (Turso)' },
+                    { label: 'Dernière mise à jour', value: new Date().toLocaleDateString('fr-FR') },
+                  ].map((item) => (
+                    <div key={item.label} className="p-4 bg-gray-50 rounded-xl">
+                      <p className="text-xs text-gray-500 mb-1">{item.label}</p>
+                      <p className="font-semibold text-gray-900">{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── KYC Inspection Modal ───────────────────────────────────────────── */}
+          {selectedKycUser && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in">
+              <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-gray-100 space-y-6">
+                {/* Modal Header */}
+                <div className="flex items-center justify-between pb-4 border-b border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-amber-50 flex items-center justify-center text-amber-600 text-lg font-bold">
+                      🔍
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-gray-900 text-base">Dossier KYC Vendeur</h3>
+                      <p className="text-xs text-gray-400">Vérification des coordonnées entreprise</p>
+                    </div>
                   </div>
-                  <div className="p-4 bg-gray-50 rounded-xl">
-                    <p className="text-xs text-gray-500 mb-1">Environnement</p>
-                    <p className="font-semibold text-gray-900">Production</p>
+                  <button
+                    onClick={() => setSelectedKycUser(null)}
+                    className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 transition-colors"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* Seller Info Grid */}
+                <div className="space-y-4 text-sm">
+                  <div className="p-4 rounded-2xl bg-gray-50 border border-gray-100">
+                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Boutique & Propriétaire</p>
+                    <p className="font-bold text-gray-900 text-base">{selectedKycUser.shopName || selectedKycUser.sellerProfile?.businessName || selectedKycUser.sellerProfile?.displayName || 'Sans nom'}</p>
+                    <p className="text-xs text-gray-600">{selectedKycUser.firstName} {selectedKycUser.lastName} ({selectedKycUser.email})</p>
+                    <p className="text-xs text-gray-500 mt-1">Contact : {selectedKycUser.phone || selectedKycUser.sellerProfile?.phoneForOrders || '—'}</p>
                   </div>
-                  <div className="p-4 bg-gray-50 rounded-xl">
-                    <p className="text-xs text-gray-500 mb-1">Base de données</p>
-                    <p className="font-semibold text-gray-900">SQLite</p>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3.5 rounded-xl bg-gray-50">
+                      <p className="text-[11px] text-gray-400 font-medium">Localisation</p>
+                      <p className="font-semibold text-gray-800 text-xs mt-0.5">{selectedKycUser.city || selectedKycUser.sellerProfile?.city || '—'}, {selectedKycUser.country}</p>
+                    </div>
+                    <div className="p-3.5 rounded-xl bg-gray-50">
+                      <p className="text-[11px] text-gray-400 font-medium">Statut Compte</p>
+                      <span className={`inline-block mt-0.5 text-[10px] font-bold px-2 py-0.5 rounded-full ${statusColors[selectedKycUser.status] || 'bg-gray-100 text-gray-700'}`}>
+                        {statusLabels[selectedKycUser.status] || selectedKycUser.status}
+                      </span>
+                    </div>
                   </div>
-                  <div className="p-4 bg-gray-50 rounded-xl">
-                    <p className="text-xs text-gray-500 mb-1">Dernière mise à jour</p>
-                    <p className="font-semibold text-gray-900">{new Date().toLocaleDateString('fr-FR')}</p>
+
+                  <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-100">
+                    <p className="text-xs font-bold text-amber-900 mb-1">💳 Coordonnées de Paiement (Mobile Money)</p>
+                    <p className="text-xs text-amber-800">
+                      Moyen : <strong>{selectedKycUser.sellerProfile?.payoutMethod || 'Non renseigné'}</strong>
+                    </p>
+                    <p className="text-xs text-amber-800">
+                      Numéro de versement : <strong>{selectedKycUser.sellerProfile?.payoutNumber || 'Non renseigné'}</strong>
+                    </p>
                   </div>
+                </div>
+
+                {/* Modal Footer Actions */}
+                <div className="pt-2 flex items-center justify-end gap-2 border-t border-gray-100">
+                  <button
+                    onClick={() => setSelectedKycUser(null)}
+                    className="px-4 py-2 text-xs font-semibold text-gray-600 bg-gray-100 rounded-xl hover:bg-gray-200 transition-colors"
+                  >
+                    Fermer
+                  </button>
+
+                  {selectedKycUser.status === 'PENDING_VERIFICATION' && (
+                    <button
+                      onClick={() => {
+                        handleUserAction(selectedKycUser.id, 'activate');
+                        setSelectedKycUser(null);
+                      }}
+                      className="px-4 py-2 text-xs font-bold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 shadow-md shadow-emerald-600/20 transition-all"
+                    >
+                      ✓ Valider et Activer le Vendeur
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -574,3 +662,4 @@ export default function AdminPage() {
     </div>
   );
 }
+
