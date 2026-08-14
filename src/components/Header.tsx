@@ -124,20 +124,25 @@ export default function Header() {
             </Link>
 
             {/* Search bar — desktop */}
-            <div className="hidden md:flex flex-1 max-w-2xl min-w-0">
-              <div className="flex w-full">
+            <div className="hidden md:flex flex-1 max-w-xl min-w-0 mx-4">
+              <div className="flex w-full items-center bg-white rounded-xl overflow-hidden shadow-sm border-2 border-transparent focus-within:border-orange-500 transition-all">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                   placeholder={L('Rechercher une pièce (ex: filtre Toyota Hilux)', 'Search for a part (ex: filter Toyota Hilux)')}
-                  className="flex-1 px-5 py-3 rounded-l-xl text-base text-[var(--color-warm-ink)] placeholder-[var(--color-warm-muted)] focus:outline-none border-2 border-transparent focus:border-[var(--color-primary)]"
+                  className="flex-1 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none bg-transparent"
                 />
-                <button onClick={handleSearch} className="px-5 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-r-xl transition-all flex items-center gap-2 shadow-lg shadow-[var(--color-primary)]/30 cursor-pointer">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button
+                  type="button"
+                  onClick={handleSearch}
+                  className="px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
-                  <span className="hidden lg:inline">{L('Rechercher', 'Search')}</span>
+                  <span>{L('Rechercher', 'Search')}</span>
                 </button>
               </div>
             </div>
@@ -261,17 +266,21 @@ export default function Header() {
 
       {/* ── Mobile search bar (expandable) ── */}
       {mobileSearchOpen && (
-        <div className="md:hidden bg-[var(--color-secondary)] border-t border-white/10 px-4 pb-3">
+        <div className="md:hidden bg-[var(--color-secondary)] border-t border-white/10 px-4 py-3">
           <div className="flex gap-2">
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               placeholder={L('Rechercher une pièce...', 'Search for a part...')}
               autoFocus
-              className="flex-1 px-4 py-3 rounded-xl text-sm text-[var(--color-warm-ink)] placeholder-[var(--color-warm-muted)] focus:outline-none border-2 border-transparent focus:border-[var(--color-primary)]"
+              className="flex-1 px-4 py-2.5 rounded-xl text-sm text-gray-900 bg-white placeholder-gray-400 focus:outline-none border-2 border-transparent focus:border-orange-500"
             />
-            <button onClick={handleSearch} className="px-4 py-3 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] text-white font-bold rounded-xl transition-all shadow-lg shadow-[var(--color-primary)]/30 cursor-pointer">
+            <button
+              onClick={handleSearch}
+              className="px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm rounded-xl transition-all shadow-md cursor-pointer shrink-0"
+            >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
@@ -281,21 +290,21 @@ export default function Header() {
       )}
 
       {/* ── Category bar ── */}
-      <div className="bg-[var(--color-secondary-hover)] border-t border-[var(--color-primary)]/10">
+      <div className="bg-[var(--color-secondary-hover)] border-t border-white/10 shadow-inner">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-1 overflow-x-auto py-2.5 scrollbar-hide">
+          <div className="flex items-center gap-1.5 overflow-x-auto py-2 scrollbar-hide">
             {categoryNav.map((cat) => (
               <Link
                 key={cat.name.fr}
                 href={cat.href}
-                className={`flex items-center gap-1.5 px-3 sm:px-4 py-2 rounded-xl text-sm transition-all whitespace-nowrap font-medium ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
                   cat.highlight
-                    ? 'bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] text-white font-bold shadow-md shadow-[var(--color-primary)]/20 hover:brightness-110'
-                    : 'text-white/75 hover:text-white hover:bg-[var(--color-primary)]/15'
+                    ? 'bg-orange-500 hover:bg-orange-600 text-white font-extrabold shadow-sm'
+                    : 'text-white/80 hover:text-white hover:bg-white/10'
                 }`}
               >
-                <span className="text-base">{cat.icon}</span>
-                <span className="hidden xs:inline sm:inline">{cat.name[locale as 'fr' | 'en']}</span>
+                <span className="text-sm">{cat.icon}</span>
+                <span>{cat.name[locale as 'fr' | 'en']}</span>
               </Link>
             ))}
           </div>

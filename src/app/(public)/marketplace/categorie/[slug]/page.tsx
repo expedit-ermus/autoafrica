@@ -27,7 +27,13 @@ export default async function CategorieCataloguePage({ params }: PageProps) {
   const cat = resolveCategory(slug);
   if (!cat) notFound();
 
-  const res = await productsService.list({ category: cat.slug }, { page: 1, pageSize: 24 });
+  let res = await productsService.list({ category: cat.slug }, { page: 1, pageSize: 24 });
+  let productsList = (res.data || []) as unknown as Product[];
+
+  if (productsList.length === 0) {
+    const fallbackRes = await productsService.list({}, { page: 1, pageSize: 50 });
+    productsList = (fallbackRes.data || []) as unknown as Product[];
+  }
 
   return (
     <CatalogPage
@@ -35,8 +41,8 @@ export default async function CategorieCataloguePage({ params }: PageProps) {
       slug={cat.slug}
       name={cat.name}
       description={cat.description}
-      count={res.total}
-      products={res.data as unknown as Product[]}
+      count={productsList.length}
+      products={productsList}
     />
   );
 }
