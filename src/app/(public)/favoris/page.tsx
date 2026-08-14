@@ -60,7 +60,7 @@ export default function WishlistPage() {
           </p>
           <Link
             href="/catalogue"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md"
+            className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md"
           >
             <span>{L('Découvrir le catalogue', 'Explore Catalog')}</span>
             <span>➔</span>
@@ -71,7 +71,7 @@ export default function WishlistPage() {
           {wishlist.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-emerald-500/30 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col relative"
+              className="bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-orange-500/30 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col relative"
             >
               <button
                 type="button"
@@ -96,20 +96,20 @@ export default function WishlistPage() {
 
               <div className="p-4 flex flex-col flex-1">
                 {item.category && (
-                  <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">
+                  <span className="text-xs font-bold text-orange-600 uppercase tracking-wider mb-1">
                     {item.category}
                   </span>
                 )}
 
-                <Link href={`/pieces/${item.id}`} className="hover:text-emerald-600 transition-colors">
+                <Link href={`/pieces/${item.id}`} className="hover:text-orange-600 transition-colors">
                   <h3 className="text-sm font-bold text-gray-900 mb-2 line-clamp-2">{item.title}</h3>
                 </Link>
 
                 <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between">
-                  <span className="text-base font-black text-emerald-900">{formatPrice(item.price)}</span>
+                  <span className="text-base font-black text-gray-900">{formatPrice(item.price)}</span>
                   <Link
                     href={`/pieces/${item.id}`}
-                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-colors"
+                    className="px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-xs font-bold transition-colors"
                   >
                     {L('Voir', 'View')}
                   </Link>

@@ -171,10 +171,21 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Estimateur de Devis & Panne Express */}
-      <section className="py-8 bg-slate-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <RepairEstimator />
+      {/* Link to full Estimateur de Devis */}
+      <section className="py-10 bg-slate-900 border-t border-b border-slate-800">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-xl sm:text-2xl font-extrabold text-white mb-3">
+            {L('💡 Besoin d\'une estimation précise de réparation ?', '💡 Need a detailed repair estimate?')}
+          </h2>
+          <p className="text-slate-300 text-sm sm:text-base mb-6">
+            {L('Utilisez notre estimateur complet de pannes et pièces (Venantes ou Neuves) avec main d\'œuvre garagiste.', 'Use our complete breakdown & parts estimator (Used or New) with mechanic labor costs.')}
+          </p>
+          <Link
+            href="/estimation-devis"
+            className="inline-flex items-center gap-2 px-7 py-3.5 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-all shadow-lg shadow-orange-950/40 text-base"
+          >
+            {L('Calculer mon devis complet →', 'Calculate full estimate →')}
+          </Link>
         </div>
       </section>
 

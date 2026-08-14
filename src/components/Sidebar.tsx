@@ -113,7 +113,8 @@ function SvgIcon({ name, className = 'w-5 h-5' }: { name: string; className?: st
 }
 
 export default function Sidebar() {
-  const { t, user, sidebarOpen, setSidebarOpen } = useApp();
+  const { t, user, sidebarOpen, setSidebarOpen, locale } = useApp();
+  const L = (fr: string, en: string) => locale === 'fr' ? fr : en;
   const pathname = usePathname();
   const [expanded, setExpanded] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
@@ -400,7 +401,7 @@ export default function Sidebar() {
                 <div className={`transition-transform duration-200 ${moreOpen ? 'rotate-90' : ''}`}>
                   <SvgIcon name={moreOpen ? 'x' : 'more-horizontal'} className="w-[22px] h-[22px]" />
                 </div>
-                <span className="text-[10px] mt-1.5 font-medium leading-none truncate w-full text-center px-1">Plus</span>
+                <span className="text-[10px] mt-1.5 font-medium leading-none truncate w-full text-center px-1">{L('Plus', 'More')}</span>
               </button>
 
               {/* More menu popup */}
@@ -408,7 +409,7 @@ export default function Sidebar() {
                 <div className="absolute bottom-full right-0 mb-3 w-56 rounded-2xl overflow-hidden shadow-2xl border border-gray-100 bg-white/95 backdrop-blur-xl animate-fade-in">
                   <div className="p-2">
                     <div className="px-3 py-2 mb-1">
-                      <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">More</p>
+                      <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">{L('Plus', 'More')}</p>
                     </div>
                     {moreItems.map(({ key, icon, href, badge }) => {
                       const active = isActive(href);

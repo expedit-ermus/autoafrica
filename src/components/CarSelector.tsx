@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
 import { track } from '@/lib/tracking';
@@ -221,9 +222,7 @@ export default function CarSelector() {
           <div className="flex-1 h-px bg-[var(--color-warm-border)]"></div>
         </div>
 
-        {/* Sélecteurs Marque, Modèle, Motorisation */}
-        <div className="space-y-5">
-          {/* Marque */}
+        <div className="space-y-4">
           <div>
             <label htmlFor="carMake" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
               {L('1. Marque du véhicule', '1. Vehicle Make')}
@@ -233,7 +232,7 @@ export default function CarSelector() {
                 id="carMake"
                 value={selectedMake || ''}
                 onChange={(e) => handleMakeChange(Number(e.target.value) || null)}
-                className="w-full pl-5 pr-10 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-gray-900 focus:border-emerald-600 focus:outline-none transition-colors bg-white font-medium cursor-pointer appearance-none"
+                className="w-full pl-5 pr-10 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-gray-900 focus:border-orange-500 focus:outline-none transition-colors bg-white font-medium cursor-pointer appearance-none"
               >
                 <option value="">{L('Choisissez une marque (ex: Toyota, Peugeot)', 'Choose a make')}</option>
                 <optgroup label={L('Populaires en Afrique de l\'Ouest', 'Popular in West Africa')}>
@@ -255,7 +254,6 @@ export default function CarSelector() {
             </div>
           </div>
 
-          {/* Modèle (Toujours cliquable et fonctionnel) */}
           <div>
             <label htmlFor="carModel" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
               {L('2. Modèle de véhicule', '2. Vehicle Model')}
@@ -265,7 +263,7 @@ export default function CarSelector() {
                 id="carModel"
                 value={selectedModel || ''}
                 onChange={(e) => handleModelChange(Number(e.target.value) || null)}
-                className="w-full pl-5 pr-10 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-gray-900 focus:border-emerald-600 focus:outline-none transition-colors bg-white font-medium cursor-pointer appearance-none"
+                className="w-full pl-5 pr-10 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-gray-900 focus:border-orange-500 focus:outline-none transition-colors bg-white font-medium cursor-pointer appearance-none"
               >
                 <option value="">{L('Choisissez un modèle (ex: Hilux, Corolla, 308)', 'Choose a model')}</option>
                 {availableModels.map((model) => (
@@ -282,7 +280,6 @@ export default function CarSelector() {
             </div>
           </div>
 
-          {/* Motorisation (Toujours cliquable et fonctionnelle) */}
           <div>
             <label htmlFor="carEngine" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
               {L('3. Motorisation & Cylindrée', '3. Engine & Displacement')}
@@ -292,7 +289,7 @@ export default function CarSelector() {
                 id="carEngine"
                 value={selectedEngine || ''}
                 onChange={(e) => handleEngineChange(Number(e.target.value) || null)}
-                className="w-full pl-5 pr-10 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-gray-900 focus:border-emerald-600 focus:outline-none transition-colors bg-white font-medium cursor-pointer appearance-none"
+                className="w-full pl-5 pr-10 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-gray-900 focus:border-orange-500 focus:outline-none transition-colors bg-white font-medium cursor-pointer appearance-none"
               >
                 <option value="">{L('Choisissez une motorisation (ex: 2.4L D-4D, 1.6L BlueHDi)', 'Choose an engine')}</option>
                 {availableEngines.map((engine) => (
@@ -307,11 +304,10 @@ export default function CarSelector() {
             </div>
           </div>
 
-          {/* Bouton de confirmation de recherche */}
           <button
             type="button"
             onClick={handleSearch}
-            className="w-full px-7 py-3.5 sm:py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold rounded-xl transition-all shadow-lg shadow-emerald-950/30 text-base sm:text-lg cursor-pointer flex items-center justify-center gap-2"
+            className="w-full px-7 py-3.5 sm:py-4 bg-orange-500 hover:bg-orange-600 text-white font-extrabold rounded-xl transition-all shadow-lg shadow-orange-950/20 text-base sm:text-lg cursor-pointer flex items-center justify-center gap-2"
           >
             <span>🔍</span> {L('Rechercher les pièces compatibles', 'Search compatible parts')}
           </button>
@@ -319,9 +315,9 @@ export default function CarSelector() {
 
         <p className="text-center text-sm text-[var(--color-warm-muted)] mt-5 font-medium">
           {L('Vous ne trouvez pas votre véhicule ?', 'Can\'t find your vehicle?')}{' '}
-          <a href="/contact" className="text-emerald-600 hover:underline font-bold">
+          <Link href="/contact" className="text-orange-600 hover:underline font-bold">
             {L('Contactez-nous sur WhatsApp', 'Contact us on WhatsApp')}
-          </a>
+          </Link>
         </p>
       </div>
     </div>

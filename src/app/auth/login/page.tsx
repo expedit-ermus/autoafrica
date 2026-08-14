@@ -245,9 +245,9 @@ export default function LoginPage() {
                   />
                   <span className="group-hover:text-gray-900 transition-colors font-medium">Se souvenir de moi</span>
                 </label>
-                <span className="text-sm text-orange-600 font-semibold cursor-pointer hover:text-orange-700 hover:underline transition-all duration-200">
+                <Link href="/contact" className="text-sm text-orange-600 font-semibold hover:text-orange-700 hover:underline transition-all duration-200">
                   {t.auth.forgotPassword}
-                </span>
+                </Link>
               </div>
 
               {/* Submit button */}

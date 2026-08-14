@@ -153,7 +153,7 @@ export default function PartsCatalog() {
 
         <div className="text-center mt-6 md:mt-10">
           <Link
-            href="/dashboard/marketplace"
+            href="/catalogue"
             className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-[var(--color-bg-warm)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-warm-ink)] font-bold rounded-xl transition-all duration-300 border border-[var(--color-warm-border)] text-sm sm:text-base"
           >
             {L('Plus de pièces détachées', 'More spare parts')}

@@ -368,7 +368,7 @@ export default function VehiclePartsSearch() {
   const handleModelSearch = () => {
     if (selectedBrand) {
       const slug = selectedBrand.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-      router.push(`/catalogue/${slug}`);
+      router.push(`/marketplace/marque/${slug}`);
     } else {
       router.push('/catalogue');
     }

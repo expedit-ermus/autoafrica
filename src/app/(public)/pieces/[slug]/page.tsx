@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const result = await productsService.list({}, { page: 1, pageSize: 50 });
   const rawProducts = (result.data || []) as unknown as Product[];
-  const product = rawProducts.find((p) => p.id === slug || (p.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug) || rawProducts[0];
+  const product = rawProducts.find((p) => p.id === slug || (p.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug);
 
   if (!product) return { title: 'Pièce non trouvée | AutoAfrique' };
 
@@ -33,7 +33,7 @@ export default async function PieceDetailPage({ params }: Props) {
   const { slug } = await params;
   const result = await productsService.list({}, { page: 1, pageSize: 50 });
   const rawProducts = (result.data || []) as unknown as Product[];
-  const product = rawProducts.find((p) => p.id === slug || (p.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug) || rawProducts[0];
+  const product = rawProducts.find((p) => p.id === slug || (p.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug);
 
   if (!product) notFound();
 

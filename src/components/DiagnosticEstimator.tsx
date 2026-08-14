@@ -331,7 +331,7 @@ export default function DiagnosticEstimator() {
               ) : (
                 <button
                   onClick={() => setBooked(true)}
-                  className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-sm sm:text-base transition-all shadow-lg shadow-emerald-950/40 flex items-center justify-center gap-2 border border-emerald-400/30"
+                  className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold text-sm sm:text-base transition-all shadow-lg shadow-orange-950/30 flex items-center justify-center gap-2 border border-orange-400/30 cursor-pointer"
                 >
                   <span>📲</span>
                   {L('Valider ce devis & Réserver mon RDV', 'Validate quote & Book mechanic')}

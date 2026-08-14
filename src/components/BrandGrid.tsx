@@ -58,7 +58,7 @@ export default function BrandGrid() {
 
         <div className="text-center mt-6 md:mt-10">
           <Link
-            href="/dashboard/marketplace"
+            href="/catalogue"
             className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-white hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-warm-ink)] font-bold rounded-xl transition-all duration-300 border border-[var(--color-warm-border)] shadow-sm text-sm sm:text-base"
           >
             {L('Plus de constructeurs automobiles', 'More car manufacturers')}
