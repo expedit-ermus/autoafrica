@@ -83,8 +83,8 @@ export default function TarifsPage() {
     <div className="min-h-screen bg-slate-50 text-slate-900 py-12 px-4 sm:px-6 lg:px-8">
       {/* Header Banner */}
       <div className="max-w-5xl mx-auto text-center">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200 mb-4">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-800 border border-orange-200 mb-4">
+          <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
           Offres SaaS & Marketplace ERP
         </span>
         <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 mb-4">
@@ -103,7 +103,7 @@ export default function TarifsPage() {
             type="button"
             onClick={() => setAnnualBilling(!annualBilling)}
             className={`relative inline-flex h-7 w-14 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-              annualBilling ? 'bg-emerald-600' : 'bg-slate-300'
+              annualBilling ? 'bg-orange-500' : 'bg-slate-300'
             }`}
             aria-label="Basculer facturation annuelle"
           >
@@ -115,7 +115,7 @@ export default function TarifsPage() {
           </button>
           <span className={`text-sm font-medium flex items-center gap-2 ${annualBilling ? 'text-slate-900 font-bold' : 'text-slate-500'}`}>
             Paiement Annuel
-            <span className="bg-emerald-100 text-emerald-800 text-xs font-bold px-2 py-0.5 rounded-full border border-emerald-200">
+            <span className="bg-amber-100 text-amber-800 text-xs font-bold px-2 py-0.5 rounded-full border border-amber-200">
               -15% (-2 mois)
             </span>
           </span>
@@ -149,7 +149,7 @@ export default function TarifsPage() {
                 <span className="text-slate-500 text-sm ml-1">{plan.data.period}</span>
               </div>
               {annualBilling && plan.key !== 'free' && (
-                <p className="text-xs text-emerald-600 font-medium mt-1">
+                <p className="text-xs text-orange-600 font-medium mt-1">
                   Facturé annuellement (économie de 15%)
                 </p>
               )}
@@ -158,7 +158,7 @@ export default function TarifsPage() {
               <ul className="mt-6 space-y-3 border-t border-slate-100 pt-6 text-sm text-slate-600">
                 {plan.data.features.map((feature: string, idx: number) => (
                   <li key={idx} className="flex items-start gap-2.5">
-                    <svg className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
                     <span>{feature}</span>
@@ -189,7 +189,7 @@ export default function TarifsPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="p-5 rounded-xl bg-slate-50 border border-slate-100">
-            <div className="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xl mb-3">
+            <div className="w-10 h-10 rounded-lg bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-xl mb-3">
               📱
             </div>
             <h3 className="font-bold text-slate-900 text-base">Mobile Money & Escrow</h3>
@@ -251,11 +251,11 @@ export default function TarifsPage() {
       </div>
 
       {/* Bottom CTA */}
-      <div className="max-w-5xl mx-auto mt-12 md:mt-20 bg-gradient-to-r from-emerald-600 to-teal-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 text-center text-white shadow-xl">
+      <div className="max-w-5xl mx-auto mt-12 md:mt-20 bg-gradient-to-r from-orange-600 via-amber-600 to-orange-700 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-12 text-center text-white shadow-xl">
         <h2 className="text-2xl sm:text-4xl font-extrabold mb-4">
           Prêt à digitaliser votre garage ou magasin de pièces ?
         </h2>
-        <p className="text-emerald-100 text-base sm:text-lg max-w-2xl mx-auto mb-8">
+        <p className="text-amber-100 text-base sm:text-lg max-w-2xl mx-auto mb-8">
           Rejoignez des centaines de garagistes, casseaurs et revendeurs en Côte d&apos;Ivoire, au Sénégal et dans toute l&apos;Afrique de l&apos;Ouest.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">

@@ -31,20 +31,20 @@ export default function DevenirVendeurPage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Hero Section Vendeur */}
-        <div className="bg-gradient-to-r from-emerald-900 to-teal-800 rounded-3xl p-6 sm:p-10 md:p-14 text-white shadow-xl mb-12">
-          <span className="text-xs font-extrabold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 px-3.5 py-1.5 rounded-full border border-emerald-400/30">
+        <div className="bg-gradient-to-r from-[var(--color-warm-navy)] via-[var(--color-secondary)] to-orange-950 rounded-3xl p-6 sm:p-10 md:p-14 text-white shadow-xl mb-12 border border-orange-900/30">
+          <span className="text-xs font-extrabold uppercase tracking-wider bg-orange-500/20 text-orange-300 px-3.5 py-1.5 rounded-full border border-orange-400/30">
             Espace Vendeurs & Garagistes
           </span>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mt-4 mb-4 leading-tight">
             Vendez vos pièces détachées en Afrique de l&apos;Ouest
           </h1>
-          <p className="text-emerald-100 text-base sm:text-lg max-w-2xl leading-relaxed mb-8">
+          <p className="text-orange-100 text-base sm:text-lg max-w-2xl leading-relaxed mb-8">
             Digitalisez votre magasin ou votre casse auto. Publiez vos annonces en 10 secondes et recevez vos paiements par Mobile Money garanti.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href="/auth/register"
-              className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-extrabold text-center rounded-2xl transition-all shadow-lg border border-emerald-400/30"
+              className="px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-center rounded-2xl transition-all shadow-lg border border-orange-400/30"
             >
               S&apos;inscrire comme Vendeur
             </Link>
@@ -142,16 +142,16 @@ export default function DevenirVendeurPage() {
         </div>
 
         {/* CTA Final */}
-        <div className="bg-gradient-to-r from-emerald-600 to-teal-700 rounded-3xl p-8 text-center text-white shadow-lg">
+        <div className="bg-gradient-to-r from-orange-600 via-amber-600 to-orange-700 rounded-3xl p-8 text-center text-white shadow-lg">
           <h2 className="text-2xl sm:text-3xl font-extrabold mb-3">
             Prêt à publier vos premières pièces ?
           </h2>
-          <p className="text-emerald-100 text-sm sm:text-base max-w-xl mx-auto mb-6">
+          <p className="text-amber-100 text-sm sm:text-base max-w-xl mx-auto mb-6">
             Créez votre compte en 2 minutes et commencez à recevoir des commandes de garagistes et particuliers.
           </p>
           <Link
             href="/auth/register"
-            className="inline-block px-8 py-3.5 bg-white text-emerald-800 font-extrabold rounded-xl shadow hover:bg-emerald-50 transition-all"
+            className="inline-block px-8 py-3.5 bg-white text-orange-600 font-extrabold rounded-xl shadow hover:bg-orange-50 transition-all"
           >
             Créer un compte Vendeur Gratuit
           </Link>

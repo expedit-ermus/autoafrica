@@ -96,16 +96,16 @@ export default function VtcCircuitCourtSection() {
             </div>
             <Link
               href="/a-propos"
-              className="inline-flex items-center justify-center w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-colors shadow-md shadow-emerald-200"
+              className="inline-flex items-center justify-center w-full py-2.5 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs transition-colors shadow-md shadow-orange-500/20"
             >
               {L('Notre Impact Communautaire', 'Our Local Impact')} →
             </Link>
           </div>
 
           {/* Carte 3: Sociétés & Flottes Entreprises */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[var(--color-warm-border)] shadow-md shadow-blue-900/5 flex flex-col justify-between hover:border-blue-400 transition-all">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[var(--color-warm-border)] shadow-md shadow-blue-900/5 flex flex-col justify-between hover:border-orange-400 transition-all">
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-2xl font-bold mb-5">
+              <div className="w-12 h-12 rounded-2xl bg-orange-100 text-orange-700 flex items-center justify-center text-2xl font-bold mb-5">
                 🏢
               </div>
               <h3 className="text-lg font-extrabold text-[var(--color-warm-ink)] mb-2">
@@ -119,19 +119,19 @@ export default function VtcCircuitCourtSection() {
               </p>
               <ul className="space-y-2 text-xs font-medium text-gray-700 mb-6">
                 <li className="flex items-center gap-2">
-                  <span className="text-emerald-500 font-bold">✓</span> {L('Contrats entretien préventif & suivi kilométrique', 'Preventive maintenance contracts & mileage tracking')}
+                  <span className="text-orange-500 font-bold">✓</span> {L('Contrats entretien préventif & suivi kilométrique', 'Preventive maintenance contracts & mileage tracking')}
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-emerald-500 font-bold">✓</span> {L('Double Garantie SAV : Pièce + Montage inclus', 'Dual Warranty: Part + Labor included')}
+                  <span className="text-orange-500 font-bold">✓</span> {L('Double Garantie SAV : Pièce + Montage inclus', 'Dual Warranty: Part + Labor included')}
                 </li>
                 <li className="flex items-center gap-2">
-                  <span className="text-emerald-500 font-bold">✓</span> {L('Facturation groupée & gestionnaire dédié', 'Grouped invoicing & dedicated manager')}
+                  <span className="text-orange-500 font-bold">✓</span> {L('Facturation groupée & gestionnaire dédié', 'Grouped invoicing & dedicated manager')}
                 </li>
               </ul>
             </div>
             <Link
               href="/contact"
-              className="inline-flex items-center justify-center w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors shadow-md shadow-blue-200"
+              className="inline-flex items-center justify-center w-full py-2.5 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-bold text-xs transition-colors shadow-md shadow-orange-500/20"
             >
               {L('Contacter le pôle Flottes', 'Contact Fleet Team')} →
             </Link>
@@ -140,9 +140,9 @@ export default function VtcCircuitCourtSection() {
         </div>
 
         {/* Bannière Tiers de confiance Mobile Money */}
-        <div className="mt-10 bg-gradient-to-r from-gray-900 via-gray-800 to-emerald-950 text-white rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+        <div className="mt-10 bg-gradient-to-r from-gray-900 via-gray-800 to-slate-900 text-white rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl border border-gray-800">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-3xl shrink-0">
+            <div className="w-14 h-14 rounded-2xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-3xl shrink-0">
               🛡️
             </div>
             <div>
@@ -159,7 +159,7 @@ export default function VtcCircuitCourtSection() {
           </div>
           <Link
             href="/paiement"
-            className="shrink-0 py-3 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-xs md:text-sm transition-all shadow-lg shadow-emerald-950/40 border border-emerald-400/30"
+            className="shrink-0 py-3 px-6 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs md:text-sm transition-all shadow-lg shadow-orange-950/40 border border-orange-400/30"
           >
             {L('En savoir plus sur la sécurité', 'Learn more about security')}
           </Link>
