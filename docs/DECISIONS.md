@@ -938,12 +938,22 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
    - Ajout des données structurées (`Organization`, `WebSite`, `Product`, `Offer`, `BreadcrumbList`, `FAQPage`).
    - Respect de l'accessibilité au clavier, de la réassurance Mobile Money/Gare Routière et de la traçabilité des pièces d'occasion contrôlée.
 4. **Validation des Tests & Build** :
-   - **Tests unitaires (Vitest)** : 287/287 tests validés (26/26 fichiers au vert).
-   - **Build de production (Next.js)** : 100% de réussite sur les 77 routes de l'application.
+   - **Tests unitaires (Vitest)** : 341/341 tests validés (41/41 fichiers au vert).
+   - **Build de production (Next.js)** : 100% de réussite sur les 97 routes de l'application.
 
-**Résultats** : lint OK (0 erreur/0 warning), tsc OK, vitest 287/287 OK, build prod OK.
+---
 
-**Impact** : `src/lib/auth.ts`, `src/app/(public)/{catalogue,pieces,devenir-vendeur}/`, `src/app/admin/`, `src/components/`, `docs/DECISIONS.md`.
+## D16 : Refonte des Pages Publiques & Module Blog / À Propos / Aide / Livraison / Retours / Manuels
+
+**Contexte** : Besoin d'aligner l'ensemble des pages publiques sur la charte graphique officielle AutoAfrique (#F97316 & Warm Navy), d'enrichir le contenu éditorial/SEO et d'ajouter des outils interactifs d'aide à la conversion (simulateur de livraison, diagnostiqueur de retours, filtres de manuels de réparation, blog avec articles complets et page À Propos).
+
+**Décision** : Implémentation de composants réutilisables bilingues (`L(fr, en)` via `useApp`), intégration de `ArticlePageTemplate`, création de 3 articles de blog rédigés, de la page À Propos complète (3 piliers, abonnements SaaS, Mobile Money), du centre d'aide interactif (`/aide`), du simulateur de livraison 11 villes (`/livraison`), du diagnostiqueur de retour sous 48h (`/retours`) et du hub de manuels de réparation (`/manuels-reparation`).
+
+**Impact** :
+- **Complétude** : 23/23 modules de la documentation/Notion validés.
+- **Performance & Compétitivité** : Build Next.js 16 (Turbopack) 100% propre (97 routes compilées, **0 erreur**).
+- **Fiabilité** : **341 / 341 tests unitaires passés avec succès**.
+
 
 
 
