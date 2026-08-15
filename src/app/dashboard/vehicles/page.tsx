@@ -12,6 +12,8 @@ import {
 import { SITE_URL, VEHICLES_URL } from '@/lib/structured-data';
 import { useDocumentTitle } from '@/lib/useDocumentTitle';
 
+import { useApp } from '@/contexts/AppContext';
+
 const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
 const IVORIAN_CITIES = ['Abidjan', 'Bouaké', 'Yamoussoukro', 'Korhogo', 'San-Pédro', 'Daloa', 'Man', 'Gagnoa'];
@@ -57,15 +59,17 @@ interface Vehicle {
   listings?: VehicleListing[];
 }
 
-const FUEL_LABELS: Record<string, string> = { DIESEL: 'Diesel', GASOLINE: 'Essence', HYBRID: 'Hybride', ELECTRIC: 'Électrique', LPG: 'GPL' };
-const GEARBOX_LABELS: Record<string, string> = { MANUAL: 'Manuelle', AUTOMATIC: 'Automatique' };
-const CONDITION_LABELS: Record<string, { label: string; cls: string }> = {
-  NEW: { label: 'Neuf', cls: 'bg-emerald-500/90 text-white' },
-  USED: { label: 'Occasion', cls: 'bg-amber-500/90 text-white' },
-  CERTIFIED: { label: 'Certifié', cls: 'bg-sky-500/90 text-white' },
-};
-
 export default function VehiclesPage() {
+  const { locale } = useApp();
+  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
+
+  const FUEL_LABELS: Record<string, string> = { DIESEL: L('Diesel', 'Diesel'), GASOLINE: L('Essence', 'Gasoline'), HYBRID: L('Hybride', 'Hybrid'), ELECTRIC: L('Électrique', 'Electric'), LPG: L('GPL', 'LPG') };
+  const GEARBOX_LABELS: Record<string, string> = { MANUAL: L('Manuelle', 'Manual'), AUTOMATIC: L('Automatique', 'Automatic') };
+  const CONDITION_LABELS: Record<string, { label: string; cls: string }> = {
+    NEW: { label: L('Neuf', 'New'), cls: 'bg-emerald-500/90 text-white' },
+    USED: { label: L('Occasion', 'Used'), cls: 'bg-amber-500/90 text-white' },
+    CERTIFIED: { label: L('Certifié', 'Certified'), cls: 'bg-sky-500/90 text-white' },
+  };
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');

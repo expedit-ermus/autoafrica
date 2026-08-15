@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useToast } from '@/contexts/ToastContext';
+import { useApp } from '@/contexts/AppContext';
 import Modal from '@/components/Modal';
 
 type CustomsRecord = {
@@ -37,14 +38,17 @@ const STATUS_COLORS: Record<string, string> = {
   RELEASED: 'bg-emerald-50 text-emerald-600 border-emerald-200',
   HELD: 'bg-red-50 text-red-600 border-red-200',
 };
-const STATUS_LABELS: Record<string, string> = {
-  PENDING: 'En attente', DOCUMENTS_REQUIRED: 'Documents requis', UNDER_REVIEW: 'En examen',
-  DUTY_ASSESSED: 'Taxes evaluees', DUTY_PAID: 'Taxes payees', INSPECTION: 'Inspection',
-  RELEASED: 'Libere', HELD: 'Retenu',
-};
 
 export default function CustomsPage() {
   const { addToast } = useToast();
+  const { locale } = useApp();
+  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
+
+  const STATUS_LABELS: Record<string, string> = {
+    PENDING: L('En attente', 'Pending'), DOCUMENTS_REQUIRED: L('Documents requis', 'Documents required'), UNDER_REVIEW: L('En examen', 'Under review'),
+    DUTY_ASSESSED: L('Taxes évaluées', 'Duty assessed'), DUTY_PAID: L('Taxes payées', 'Duty paid'), INSPECTION: L('Inspection', 'Inspection'),
+    RELEASED: L('Libéré', 'Released'), HELD: L('Retenu', 'Held'),
+  };
 
   const [records, setRecords] = useState<CustomsRecord[]>([]);
   const [containers, setContainers] = useState<ContainerOption[]>([]);
