@@ -61,6 +61,16 @@ const MOVEMENT_COLORS: Record<string, string> = {
 
 export default function InventoryPage() {
   const { addToast } = useToast();
+  const { locale } = useApp();
+  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
+
+  const TYPE_LABELS: Record<string, string> = {
+    STANDARD: L('Standard', 'Standard'), COLD_STORAGE: L('Froid', 'Cold Storage'), HAZMAT: L('Dangereux', 'Hazmat'), BULK: L('Vrac', 'Bulk'), CROSS_DOCK: L('Cross-dock', 'Cross-dock'),
+  };
+  const MOVEMENT_LABELS: Record<string, string> = {
+    RECEIVED: L('Reçu', 'Received'), TRANSFERRED: L('Transféré', 'Transferred'), SOLD: L('Vendu', 'Sold'), RETURNED: L('Retour', 'Returned'),
+    ADJUSTED: L('Ajustement', 'Adjusted'), DAMAGED: L('Abîmé', 'Damaged'), RESERVED: L('Réservé', 'Reserved'), UNRESERVED: L('Libéré', 'Unreserved'),
+  };
 
   const [tab, setTab] = useState<'warehouses' | 'stock' | 'movements' | 'smart-replenishment'>('stock');
 

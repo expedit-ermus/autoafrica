@@ -12,7 +12,7 @@ import { Product, Order, Payment } from '@/shared/types';
 const PLACEHOLDER_IMAGE = '/images/placeholder.svg';
 
 export default function DashboardPage() {
-  const { t, user } = useApp();
+  const { t, user, locale } = useApp();
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);

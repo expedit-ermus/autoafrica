@@ -49,7 +49,6 @@ export default function OrdersPage() {
     FAILED:    { label: L('Échoué', 'Failed'),     bg: 'bg-red-50',    text: 'text-red-600' },
     REFUNDED:  { label: L('Remboursé', 'Refunded'),  bg: 'bg-gray-50',   text: 'text-gray-600' },
   };
-  const { addToast } = useToast();
 
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
