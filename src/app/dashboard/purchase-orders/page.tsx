@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useToast } from '@/contexts/ToastContext';
+import { useApp } from '@/contexts/AppContext';
 import Modal from '@/components/Modal';
 
 type PurchaseOrder = {
@@ -50,16 +51,19 @@ const STATUS_COLORS: Record<string, string> = {
   COMPLETED: 'bg-green-50 text-green-600 border-green-200',
   CANCELLED: 'bg-red-50 text-red-600 border-red-200',
 };
-const STATUS_LABELS: Record<string, string> = {
-  DRAFT: 'Brouillon', PENDING_APPROVAL: 'En attente', APPROVED: 'Approuve', ORDERED: 'Commande', SHIPPED: 'Expedie',
-  IN_TRANSIT: 'En transit', CUSTOMS: 'Douane', DELIVERED: 'Livree', COMPLETED: 'Termine', CANCELLED: 'Annule',
-};
 const SHIPPING_METHODS = ['sea', 'air', 'road'];
 
 type FormItem = { productName: string; reference: string; quantity: string; unitPrice: string };
 
 export default function PurchaseOrdersPage() {
   const { addToast } = useToast();
+  const { locale } = useApp();
+  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
+
+  const STATUS_LABELS: Record<string, string> = {
+    DRAFT: L('Brouillon', 'Draft'), PENDING_APPROVAL: L('En attente', 'Pending approval'), APPROVED: L('Approuvé', 'Approved'), ORDERED: L('Commandé', 'Ordered'), SHIPPED: L('Expédié', 'Shipped'),
+    IN_TRANSIT: L('En transit', 'In transit'), CUSTOMS: L('Douane', 'Customs'), DELIVERED: L('Livré', 'Delivered'), COMPLETED: L('Terminé', 'Completed'), CANCELLED: L('Annulé', 'Cancelled'),
+  };
 
   const [orders, setOrders] = useState<PurchaseOrder[]>([]);
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);

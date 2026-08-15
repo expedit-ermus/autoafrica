@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useToast } from '@/contexts/ToastContext';
+import { useApp } from '@/contexts/AppContext';
 import Modal from '@/components/Modal';
 
 type Supplier = {
@@ -30,13 +31,17 @@ type Supplier = {
 const COUNTRY_FLAGS: Record<string, string> = {
   CN: '🇨🇳', TW: '🇹🇼', JP: '🇯🇵', KR: '🇰🇷', DE: '🇩🇪', FR: '🇫🇷', IT: '🇮🇹', ES: '🇪🇸', GB: '🇬🇧', US: '🇺🇸', AE: '🇦🇪', TR: '🇹🇷', IN: '🇮🇳', TH: '🇹🇭', MA: '🇲🇦', CI: '🇨🇮',
 };
-const COUNTRY_LABELS: Record<string, string> = {
-  CN: 'Chine', TW: 'Taiwan', JP: 'Japon', KR: 'Coree', DE: 'Allemagne', FR: 'France', IT: 'Italie', ES: 'Espagne', GB: 'Royaume-Uni', US: 'Etats-Unis', AE: 'Emirats', TR: 'Turquie', IN: 'Inde', TH: 'Thailande', MA: 'Maroc', CI: 'Cote d\'Ivoire',
-};
+
 const PAYMENT_TERMS = ['NET30', 'NET60', 'NET90', 'LC', 'TT', 'COD'];
 
 export default function SuppliersPage() {
   const { addToast } = useToast();
+  const { locale } = useApp();
+  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
+
+  const COUNTRY_LABELS: Record<string, string> = {
+    CN: L('Chine', 'China'), TW: L('Taïwan', 'Taiwan'), JP: L('Japon', 'Japan'), KR: L('Corée', 'Korea'), DE: L('Allemagne', 'Germany'), FR: L('France', 'France'), IT: L('Italie', 'Italy'), ES: L('Espagne', 'Spain'), GB: L('Royaume-Uni', 'United Kingdom'), US: L('États-Unis', 'United States'), AE: L('Émirats', 'UAE'), TR: L('Turquie', 'Turkey'), IN: L('Inde', 'India'), TH: L('Thaïlande', 'Thailand'), MA: L('Maroc', 'Morocco'), CI: L('Côte d\'Ivoire', 'Ivory Coast'),
+  };
 
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [search, setSearch] = useState('');

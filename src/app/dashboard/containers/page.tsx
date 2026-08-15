@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useToast } from '@/contexts/ToastContext';
+import { useApp } from '@/contexts/AppContext';
 import Modal from '@/components/Modal';
 
 type Container = {
@@ -38,14 +39,18 @@ const STATUS_COLORS: Record<string, string> = {
   DELIVERED_TO_WAREHOUSE: 'bg-green-50 text-green-600 border-green-200',
   COMPLETED: 'bg-green-100 text-green-700 border-green-300',
 };
-const STATUS_LABELS: Record<string, string> = {
-  LOADING: 'Chargement', SHIPPED: 'Expedie', IN_TRANSIT: 'En transit', ARRIVED_PORT: 'Arrive au port',
-  CUSTOMS_PROCESSING: 'En douane', CUSTOMS_CLEARED: 'Douane passee', DELIVERED_TO_WAREHOUSE: 'A l\'entrepot', COMPLETED: 'Termine',
-};
+
 const SIZES = ['20ft', '40ft', '40hq'];
 
 export default function ContainersPage() {
   const { addToast } = useToast();
+  const { locale } = useApp();
+  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
+
+  const STATUS_LABELS: Record<string, string> = {
+    LOADING: L('Chargement', 'Loading'), SHIPPED: L('Expédié', 'Shipped'), IN_TRANSIT: L('En transit', 'In transit'), ARRIVED_PORT: L('Arrivé au port', 'Arrived at port'),
+    CUSTOMS_PROCESSING: L('En douane', 'Customs processing'), CUSTOMS_CLEARED: L('Douane passée', 'Customs cleared'), DELIVERED_TO_WAREHOUSE: L('À l\'entrepôt', 'Delivered to warehouse'), COMPLETED: L('Terminé', 'Completed'),
+  };
 
   const [containers, setContainers] = useState<Container[]>([]);
   const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>([]);
