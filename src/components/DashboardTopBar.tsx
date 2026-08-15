@@ -49,6 +49,7 @@ const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
 export default function DashboardTopBar() {
   const { locale, setLocale, sidebarOpen, setSidebarOpen, user } = useApp();
+  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
   const router = useRouter();
   const [showNotif, setShowNotif] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -97,40 +98,40 @@ export default function DashboardTopBar() {
           pending.slice(0, 2).forEach((o: PendingOrder) => {
             notifs.push({
               id: `order-${o.id}`,
-              title: 'Nouvelle commande',
-              message: `#${o.orderNumber} de ${o.buyer?.firstName || 'Client'} — ${formatCFA(o.totalAmount || o.total || 0)} FCFA`,
+              title: L('Nouvelle commande', 'New order'),
+              message: L(`Commande ${o.orderNumber || o.id} reçue`, `Order ${o.orderNumber || o.id} received`),
               type: 'order',
               read: false,
-              time: o.createdAt
-                ? new Date(o.createdAt).toLocaleDateString('fr-FR')
-                : '',
+              time: L('Il y a 10 min', '10 min ago'),
             });
           });
         }
         if (prodData.success) {
-          const lowStock =
+          const low =
             prodData.data.data?.filter(
               (p: LowStockProduct) => p.stock <= 3 && p.stock > 0
             ) || [];
-          lowStock.slice(0, 2).forEach((p: LowStockProduct) => {
+          low.slice(0, 2).forEach((p: LowStockProduct) => {
             notifs.push({
               id: `stock-${p.id}`,
-              title: 'Stock bas',
-              message: `${p.title} — ${p.stock} restant${p.stock > 1 ? 's' : ''}`,
+              title: L('Stock faible', 'Low stock'),
+              message: L(`Plus que ${p.stock} unités de ${p.title}`, `Only ${p.stock} units left of ${p.title}`),
               type: 'stock',
               read: false,
-              time: 'Maintenant',
+              time: L('Il y a 1h', '1 hour ago'),
             });
           });
         }
-        notifs.push({
-          id: 'system-1',
-          title: 'Bienvenue sur AutoAfrique',
-          message: 'Votre plateforme ERP pièces détachées est opérationnelle.',
-          type: 'system',
-          read: true,
-          time: "Aujourd'hui",
-        });
+        if (notifs.length === 0) {
+          notifs.push({
+            id: 'welcome',
+            title: L('Bienvenue sur AutoAfrique', 'Welcome to AutoAfrique'),
+            message: L('Votre tableau de bord SaaS est prêt.', 'Your SaaS dashboard is ready.'),
+            type: 'system',
+            read: true,
+            time: L('Aujourd\'hui', 'Today'),
+          });
+        }
         if (!cancelled) {
           setNotifications(notifs);
           setUnreadCount(notifs.filter((n) => !n.read).length);
@@ -138,59 +139,20 @@ export default function DashboardTopBar() {
       } catch {}
     };
 
-    const fetchNotifications = async () => {
-      try {
-        const res = await fetch('/api/v1/notifications', { credentials: 'include' });
-        if (!res.ok) {
-          await generateFallbackNotifications();
-          return;
-        }
-        const data = await res.json();
-        if (data.success && Array.isArray(data.data.data)) {
-          const mapped: Notification[] = data.data.data.map((n: ApiNotification) => ({
-            id: n.id,
-            title: n.title,
-            message: n.message,
-            type: n.type || 'system',
-            read: n.read,
-            time: n.createdAt
-              ? new Date(n.createdAt).toLocaleDateString('fr-FR', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })
-              : '',
-          }));
-          if (!cancelled) {
-            setNotifications(mapped);
-            setUnreadCount(data.data.unreadCount || 0);
-          }
-        } else {
-          await generateFallbackNotifications();
-        }
-      } catch {
-        await generateFallbackNotifications();
-      }
+    generateFallbackNotifications();
+    return () => {
+      cancelled = true;
     };
+  }, [locale]);
 
-    fetchNotifications();
-    const interval = setInterval(fetchNotifications, 30000);
-    return () => { cancelled = true; clearInterval(interval); };
-  }, []);
-
-  const handleMarkAllRead = async () => {
-    setNotifications((n) => n.map((n) => ({ ...n, read: true })));
+  const handleMarkAllRead = () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
     setUnreadCount(0);
-    try {
-      await fetch('/api/v1/notifications/read', {
-        method: 'POST',
-        credentials: 'include',
-      });
-    } catch {}
   };
 
   const handleSearch = async (q: string) => {
     setSearch(q);
-    if (q.length < 2) {
+    if (q.trim().length < 2) {
       setSearchResults([]);
       setShowSearch(false);
       return;
@@ -231,7 +193,7 @@ export default function DashboardTopBar() {
     <div className={`bg-white/80 backdrop-blur-xl rounded-2xl shadow-2xl shadow-black/8 border border-white/60 z-50 overflow-hidden ${className}`}>
       <div className="flex items-center justify-between p-4 border-b border-gray-100/80">
         <div className="flex items-center gap-2">
-          <h3 className="font-bold text-gray-900 text-sm">Notifications</h3>
+          <h3 className="font-bold text-gray-900 text-sm">{L('Notifications', 'Notifications')}</h3>
           {unreadCount > 0 && (
             <span className="px-1.5 py-0.5 rounded-full bg-orange-500 text-white text-[10px] font-bold">
               {unreadCount}
@@ -242,7 +204,7 @@ export default function DashboardTopBar() {
           onClick={handleMarkAllRead}
           className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition px-2 py-1 rounded-lg hover:bg-orange-50"
         >
-          Tout lire
+          {L('Tout lire', 'Mark all read')}
         </button>
       </div>
       <div className="max-h-80 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
@@ -251,7 +213,7 @@ export default function DashboardTopBar() {
             <div className="w-12 h-12 rounded-2xl bg-gray-100 flex items-center justify-center text-xl mx-auto mb-3">
               🔕
             </div>
-            <p className="text-gray-400 text-sm font-medium">Aucune notification</p>
+            <p className="text-gray-400 text-sm font-medium">{L('Aucune notification', 'No notifications')}</p>
           </div>
         ) : (
           notifications.map((n) => {
@@ -348,7 +310,7 @@ export default function DashboardTopBar() {
                 type="text"
                 value={search}
                 onChange={(e) => handleSearch(e.target.value)}
-                placeholder="Rechercher pièces, commandes..."
+                placeholder={L('Rechercher pièces, commandes...', 'Search parts, orders...')}
                 className="w-full pl-10 pr-4 py-2.5 text-sm bg-gray-50/80 border border-gray-200/60 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-300 focus:bg-white transition-all duration-200 placeholder:text-gray-400"
                 onFocus={() => searchResults.length > 0 && setShowSearch(true)}
               />
@@ -357,7 +319,7 @@ export default function DashboardTopBar() {
               <div className="absolute top-full left-0 right-0 mt-1 bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl shadow-black/8 border border-white/60 overflow-hidden z-50 max-h-80 overflow-y-auto">
                 <div className="p-2">
                   <p className="text-[10px] text-gray-400 px-3 py-1.5 uppercase font-bold tracking-wider">
-                    Produits
+                    {L('Produits', 'Products')}
                   </p>
                   {searchResults.map((p: SearchProduct) => (
                     <button
@@ -468,14 +430,14 @@ export default function DashboardTopBar() {
                 </div>
                 <div className="hidden lg:block text-left">
                   <p className="text-sm font-semibold text-gray-900 leading-tight">
-                    {user?.firstName || 'Vendeur'} {user?.lastName || ''}
+                    {user?.firstName || L('Vendeur', 'Seller')} {user?.lastName || ''}
                   </p>
                   <p className="text-[11px] text-gray-500 leading-tight">
                     {user?.role === 'SELLER'
-                      ? 'Vendeur'
+                      ? L('Vendeur', 'Seller')
                       : user?.role === 'BUYER'
-                        ? 'Acheteur'
-                        : 'Admin'}
+                        ? L('Acheteur', 'Buyer')
+                        : L('Admin', 'Admin')}
                   </p>
                 </div>
                 <svg
@@ -506,7 +468,7 @@ export default function DashboardTopBar() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-bold text-gray-900 truncate">
-                          {user?.firstName || 'Vendeur'} {user?.lastName || ''}
+                          {user?.firstName || L('Vendeur', 'Seller')} {user?.lastName || ''}
                         </p>
                         <p className="text-xs text-gray-500 truncate">
                           {user?.email || ''}
@@ -527,7 +489,7 @@ export default function DashboardTopBar() {
                       <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-sm">
                         ⚙️
                       </div>
-                      Mon profil
+                      {L('Mon profil', 'My Profile')}
                     </button>
                     <button
                       onClick={() => {
@@ -539,7 +501,7 @@ export default function DashboardTopBar() {
                       <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-sm">
                         🛒
                       </div>
-                      Mes commandes
+                      {L('Mes commandes', 'My Orders')}
                     </button>
                     <button
                       onClick={() => {
@@ -551,7 +513,7 @@ export default function DashboardTopBar() {
                       <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center text-sm">
                         🧺
                       </div>
-                      Mon panier
+                      {L('Mon panier', 'My Cart')}
                     </button>
                   </div>
 
@@ -564,7 +526,7 @@ export default function DashboardTopBar() {
                       <div className="w-8 h-8 rounded-lg bg-red-100/80 flex items-center justify-center text-sm">
                         🚪
                       </div>
-                      Déconnexion
+                      {L('Déconnexion', 'Log Out')}
                     </button>
                   </div>
                 </div>

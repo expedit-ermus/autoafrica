@@ -107,16 +107,18 @@ export default function DashboardPage() {
     color: 'bg-blue-400',
   }));
 
+  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
+
   const getGreeting = () => {
     const h = new Date().getHours();
-    if (h < 12) return 'Bonjour';
-    if (h < 18) return 'Bon après-midi';
-    return 'Bonsoir';
+    if (h < 12) return L('Bonjour', 'Good morning');
+    if (h < 18) return L('Bon après-midi', 'Good afternoon');
+    return L('Bonsoir', 'Good evening');
   };
 
   const statsCards = [
     {
-      label: 'Pièces',
+      label: L('Pièces', 'Parts'),
       value: String(totalProducts),
       href: '/dashboard/inventory',
       icon: (
@@ -126,12 +128,12 @@ export default function DashboardPage() {
       iconBg: 'bg-blue-500/10',
       iconColor: 'text-blue-600',
       spark: priceData.map(d => d.value),
-      sub: `${outOfStock.length} rupture`,
+      sub: `${outOfStock.length} ${L('rupture', 'out of stock')}`,
       subColor: outOfStock.length > 0 ? 'text-red-500' : 'text-green-600',
       isCurrency: false,
     },
     {
-      label: 'Commandes',
+      label: L('Commandes', 'Orders'),
       value: String(totalOrders),
       href: '/dashboard/orders',
       icon: (
@@ -141,12 +143,12 @@ export default function DashboardPage() {
       iconBg: 'bg-emerald-500/10',
       iconColor: 'text-emerald-600',
       spark: statusDistribution.map(d => d.value),
-      sub: `${pendingOrders} en attente`,
+      sub: `${pendingOrders} ${L('en attente', 'pending')}`,
       subColor: pendingOrders > 0 ? 'text-orange-500' : 'text-green-600',
       isCurrency: false,
     },
     {
-      label: 'Revenu',
+      label: L('Revenu', 'Revenue'),
       value: formatCFA(totalRevenue),
       href: '/dashboard/payments',
       icon: (
@@ -156,12 +158,12 @@ export default function DashboardPage() {
       iconBg: 'bg-orange-500/10',
       iconColor: 'text-orange-600',
       spark: revenueSparkline,
-      sub: `${formatCFA(escrowAmount)} séquestre`,
+      sub: `${formatCFA(escrowAmount)} ${L('séquestre', 'in escrow')}`,
       subColor: 'text-blue-600',
       isCurrency: true,
     },
     {
-      label: 'Taux succès',
+      label: L('Taux succès', 'Success rate'),
       value: totalOrders > 0 ? `${((deliveredOrders / totalOrders) * 100).toFixed(0)}%` : '—',
       href: '/dashboard/orders',
       icon: (
@@ -171,7 +173,7 @@ export default function DashboardPage() {
       iconBg: 'bg-violet-500/10',
       iconColor: 'text-violet-600',
       spark: [],
-      sub: `${deliveredOrders}/${totalOrders} livrées`,
+      sub: `${deliveredOrders}/${totalOrders} ${L('livrées', 'delivered')}`,
       subColor: 'text-green-600',
       isCurrency: false,
     },
@@ -217,24 +219,24 @@ export default function DashboardPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-emerald-400 text-xs font-semibold tracking-wide uppercase">En ligne</span>
+                    <span className="text-emerald-400 text-xs font-semibold tracking-wide uppercase">{L('En ligne', 'Online')}</span>
                   </div>
                   <p className="text-orange-300 text-sm font-semibold mb-1 tracking-wide">{getGreeting()}</p>
                   <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white mb-2 tracking-tight">
-                    {user?.firstName || 'Vendeur'}
+                    {user?.firstName || L('Vendeur', 'Seller')}
                   </h1>
-                  <p className="text-gray-400 text-sm max-w-md leading-relaxed">{t.dashboard.welcome} — voici un aperçu de votre activité en temps réel.</p>
+                  <p className="text-gray-400 text-sm max-w-md leading-relaxed">{L('Welcome — voici un aperçu de votre activité en temps réel.', 'Welcome — here is a real-time overview of your activity.')}</p>
                   {(!user?.firstName) && (
                     <Link href="/dashboard/settings" className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 text-white text-sm font-medium transition-all duration-200 backdrop-blur-sm border border-white/10 hover:border-white/20">
                       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
-                      Compléter mon profil
+                      {L('Compléter mon profil', 'Complete my profile')}
                     </Link>
                   )}
                 </div>
                 <div className="flex items-center justify-between sm:justify-start gap-3 sm:gap-6 lg:gap-8 overflow-x-auto sm:overflow-visible pb-1 sm:pb-0">
                   <div className="text-center">
                     <p className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">{totalOrders}</p>
-                    <p className="text-xs text-gray-400 mt-1 font-medium">Commandes</p>
+                    <p className="text-xs text-gray-400 mt-1 font-medium">{L('Commandes', 'Orders')}</p>
                   </div>
                   <div className="w-px h-12 bg-white/10" />
                   <div className="text-center">
@@ -246,7 +248,7 @@ export default function DashboardPage() {
                     <p className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-emerald-400 tracking-tight">
                       {totalOrders > 0 ? `${((deliveredOrders / totalOrders) * 100).toFixed(0)}%` : '—'}
                     </p>
-                    <p className="text-xs text-gray-400 mt-1 font-medium">Succès</p>
+                    <p className="text-xs text-gray-400 mt-1 font-medium">{L('Succès', 'Success')}</p>
                   </div>
                 </div>
               </div>
@@ -289,39 +291,39 @@ export default function DashboardPage() {
             <div className="glass-card p-4 sm:p-6 min-w-0">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Stock par catégorie</h3>
-                  <p className="text-xs text-gray-400 mt-0.5">Répartition de votre inventaire</p>
+                  <h3 className="font-bold text-gray-900 text-sm">{L('Stock par catégorie', 'Stock by Category')}</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">{L('Répartition de votre inventaire', 'Inventory Breakdown')}</p>
                 </div>
-                <Link href="/dashboard/inventory" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout →</Link>
+                <Link href="/dashboard/inventory" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">{L('Voir tout →', 'View all →')}</Link>
               </div>
               <BarChart data={categoryData} height={160} />
             </div>
             <div className="glass-card p-4 sm:p-6 min-w-0">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Statut des commandes</h3>
-                  <p className="text-xs text-gray-400 mt-0.5">Distribution des statuts</p>
+                  <h3 className="font-bold text-gray-900 text-sm">{L('Statut des commandes', 'Order Status')}</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">{L('Distribution des statuts', 'Status Distribution')}</p>
                 </div>
-                <Link href="/dashboard/orders" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout →</Link>
+                <Link href="/dashboard/orders" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">{L('Voir tout →', 'View all →')}</Link>
               </div>
               {statusDistribution.length > 0 ? (
                 <DonutChart segments={statusDistribution} />
               ) : (
                 <div className="flex flex-col items-center justify-center py-10 text-gray-400">
                   <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" className="mb-2 opacity-40"><path strokeLinecap="round" strokeLinejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" /></svg>
-                  <p className="text-sm">Aucune commande</p>
+                  <p className="text-sm">{L('Aucune commande', 'No orders')}</p>
                 </div>
               )}
             </div>
             <div className="glass-card p-4 sm:p-6 min-w-0">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Répartition des prix</h3>
-                  <p className="text-xs text-gray-400 mt-0.5">Fourchettes de prix</p>
+                  <h3 className="font-bold text-gray-900 text-sm">{L('Répartition des prix', 'Price Distribution')}</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">{L('Fourchettes de prix', 'Price Ranges')}</p>
                 </div>
-                <Link href="/dashboard/inventory" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout →</Link>
+                <Link href="/dashboard/inventory" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">{L('Voir tout →', 'View all →')}</Link>
               </div>
-              <BarChart data={priceData} height={160} format={(n) => `${n} pièce${n > 1 ? 's' : ''}`} />
+              <BarChart data={priceData} height={160} format={(n) => `${n} ${L(n > 1 ? 'pièces' : 'pièce', n > 1 ? 'parts' : 'part')}`} />
             </div>
           </div>
 
@@ -330,17 +332,17 @@ export default function DashboardPage() {
             <div className="glass-card p-4 sm:p-6">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Méthodes de paiement</h3>
-                  <p className="text-xs text-gray-400 mt-0.5">Moyens utilisés</p>
+                  <h3 className="font-bold text-gray-900 text-sm">{L('Méthodes de paiement', 'Payment Methods')}</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">{L('Moyens utilisés', 'Methods Used')}</p>
                 </div>
-                <Link href="/dashboard/orders" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout →</Link>
+                <Link href="/dashboard/orders" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">{L('Voir tout →', 'View all →')}</Link>
               </div>
               {methodDistribution.length > 0 ? (
                 <DonutChart segments={methodDistribution} />
               ) : (
                 <div className="flex flex-col items-center justify-center py-10 text-gray-400">
                   <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" className="mb-2 opacity-40"><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
-                  <p className="text-sm">Aucun paiement</p>
+                  <p className="text-sm">{L('Aucun paiement', 'No payments')}</p>
                 </div>
               )}
             </div>
@@ -348,15 +350,15 @@ export default function DashboardPage() {
             <div className="lg:col-span-2 glass-card p-4 sm:p-6">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Commandes récentes</h3>
-                  <p className="text-xs text-gray-400 mt-0.5">Dernières activités</p>
+                  <h3 className="font-bold text-gray-900 text-sm">{L('Commandes récentes', 'Recent Orders')}</h3>
+                  <p className="text-xs text-gray-400 mt-0.5">{L('Dernières activités', 'Latest Activities')}</p>
                 </div>
-                <Link href="/dashboard/orders" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">Voir tout →</Link>
+                <Link href="/dashboard/orders" className="text-xs text-orange-600 font-semibold hover:text-orange-700 transition-colors hover:underline">{L('Voir tout →', 'View all →')}</Link>
               </div>
               {recentOrders.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-10 text-gray-400">
                   <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.5" className="mb-2 opacity-40"><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
-                  <p className="text-sm">Aucune commande</p>
+                  <p className="text-sm">{L('Aucune commande', 'No orders')}</p>
                 </div>
               ) : (
                 <div className="space-y-1">

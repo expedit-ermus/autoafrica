@@ -93,48 +93,48 @@ export default function RoleServicesHub() {
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">🚗</span>
                 <span className="text-xs font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
-                  2 Véhicules
+                  {L('2 Véhicules', '2 Vehicles')}
                 </span>
               </div>
               <div className="text-xs text-gray-500 font-medium">{L('Mon Garage Virtuel', 'My Virtual Garage')}</div>
               <div className="text-sm font-extrabold text-gray-900 mt-1">Toyota Corolla & Peugeot 307</div>
-              <div className="text-[11px] text-blue-600 font-semibold mt-2">Vidange préventive dans 2 500 km</div>
+              <div className="text-[11px] text-blue-600 font-semibold mt-2">{L('Vidange préventive dans 2 500 km', 'Preventive oil change in 2,500 km')}</div>
             </div>
 
             <div className="bg-gradient-to-br from-amber-50 to-orange-50/50 rounded-2xl p-4 border border-amber-100">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">🛠️</span>
                 <span className="text-xs font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
-                  1 En cours
+                  {L('1 En cours', '1 In progress')}
                 </span>
               </div>
               <div className="text-xs text-gray-500 font-medium">{L('Mes RDV Garagistes', 'My Mechanic Appointments')}</div>
               <div className="text-sm font-extrabold text-gray-900 mt-1">Maître Garage Diallo</div>
-              <div className="text-[11px] text-amber-700 font-semibold mt-2">Dépannage Amortisseurs • Demain 14h</div>
+              <div className="text-[11px] text-amber-700 font-semibold mt-2">{L('Dépannage Amortisseurs • Demain 14h', 'Shock Repair • Tomorrow 2 PM')}</div>
             </div>
 
             <div className="bg-gradient-to-br from-emerald-50 to-teal-50/50 rounded-2xl p-4 border border-emerald-100">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">📦</span>
                 <span className="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
-                  En livraison
+                  {L('En livraison', 'In delivery')}
                 </span>
               </div>
               <div className="text-xs text-gray-500 font-medium">{L('Commande Pièce d\'occasion', 'Used Part Order')}</div>
-              <div className="text-sm font-extrabold text-gray-900 mt-1">Amortisseur N&apos;Dotré #14</div>
-              <div className="text-[11px] text-emerald-700 font-semibold mt-2">Livreur Tiak-Tiak en route</div>
+              <div className="text-sm font-extrabold text-gray-900 mt-1">{L('Amortisseur N\'Dotré #14', 'Shock Absorber N\'Dotre #14')}</div>
+              <div className="text-[11px] text-emerald-700 font-semibold mt-2">{L('Livreur Tiak-Tiak en route', 'Express Courier in transit')}</div>
             </div>
 
             <div className="bg-gradient-to-br from-purple-50 to-pink-50/50 rounded-2xl p-4 border border-purple-100">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">🛡️</span>
                 <span className="text-xs font-bold bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">
-                  Active
+                  {L('Active', 'Active')}
                 </span>
               </div>
               <div className="text-xs text-gray-500 font-medium">{L('Double Garantie SAV', 'Dual Warranty')}</div>
-              <div className="text-sm font-extrabold text-gray-900 mt-1">Pièce ET Main d&apos;œuvre</div>
-              <div className="text-[11px] text-purple-700 font-semibold mt-2">Paiement séquestre Wave sécurisé</div>
+              <div className="text-sm font-extrabold text-gray-900 mt-1">{L('Pièce ET Main d\'œuvre', 'Part AND Labor')}</div>
+              <div className="text-[11px] text-purple-700 font-semibold mt-2">{L('Paiement séquestre Wave sécurisé', 'Secure Wave Escrow Payment')}</div>
             </div>
 
           </div>
@@ -249,35 +249,35 @@ export default function RoleServicesHub() {
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">💰</span>
                 <span className="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
-                  Ce mois
+                  {L('Ce mois', 'This month')}
                 </span>
               </div>
               <div className="text-xs text-gray-500 font-medium">{L('Revenus Séquestre Débloqués', 'Unlocked Escrow Revenue')}</div>
               <div className="text-lg font-extrabold text-emerald-900 mt-1">485 000 FCFA</div>
-              <div className="text-[11px] text-emerald-700 font-semibold mt-1">12 montages & ventes validés</div>
+              <div className="text-[11px] text-emerald-700 font-semibold mt-1">{L('12 montages & ventes validés', '12 installations & sales validated')}</div>
             </div>
 
             <div className="bg-gradient-to-br from-amber-50 to-orange-50/50 rounded-2xl p-4 border border-amber-100">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">🔒</span>
                 <span className="text-xs font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
-                  En attente
+                  {L('En attente', 'Pending')}
                 </span>
               </div>
               <div className="text-xs text-gray-500 font-medium">{L('En Séquestre Client', 'In Customer Escrow')}</div>
               <div className="text-lg font-extrabold text-amber-900 mt-1">140 000 FCFA</div>
-              <div className="text-[11px] text-amber-700 font-semibold mt-1">Déblocage après test 24h</div>
+              <div className="text-[11px] text-amber-700 font-semibold mt-1">{L('Déblocage après test 24h', 'Release after 24h test')}</div>
             </div>
 
             <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 rounded-2xl p-4 border border-blue-100">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">📋</span>
                 <span className="text-xs font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
-                  Nouveaux
+                  {L('Nouveaux', 'New')}
                 </span>
               </div>
               <div className="text-xs text-gray-500 font-medium">{L('Demandes d\'Intervention', 'Job Requests')}</div>
-              <div className="text-lg font-extrabold text-gray-900 mt-1">3 Demandes</div>
+              <div className="text-lg font-extrabold text-gray-900 mt-1">{L('3 Demandes', '3 Requests')}</div>
               <div className="text-[11px] text-blue-700 font-semibold mt-1">Yopougon & Abobo N&apos;Dotré</div>
             </div>
 
@@ -285,12 +285,12 @@ export default function RoleServicesHub() {
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">⭐</span>
                 <span className="text-xs font-bold bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">
-                  Certifié
+                  {L('Certifié', 'Certified')}
                 </span>
               </div>
               <div className="text-xs text-gray-500 font-medium">{L('Ma Réputation Garagiste', 'Mechanic Reputation')}</div>
               <div className="text-lg font-extrabold text-purple-900 mt-1">4.9 / 5 ⭐</div>
-              <div className="text-[11px] text-purple-700 font-semibold mt-1">128 clients satisfaits</div>
+              <div className="text-[11px] text-purple-700 font-semibold mt-1">{L('128 clients satisfaits', '128 satisfied clients')}</div>
             </div>
 
           </div>
@@ -309,31 +309,31 @@ export default function RoleServicesHub() {
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold px-2 py-0.5 bg-amber-100 text-amber-800 rounded-md">
-                        Urgent VTC
+                        {L('Urgent VTC', 'Urgent VTC')}
                       </span>
                       <span className="text-xs text-gray-500 font-semibold">Toyota Hilux 2014</span>
                     </div>
                     <h4 className="text-sm font-extrabold text-gray-900 mt-1">
-                      Vidange complète + Remplacement Kit d&apos;embrayage
+                      {L('Vidange complète + Remplacement Kit d\'embrayage', 'Full Oil Change + Clutch Kit Replacement')}
                     </h4>
                     <p className="text-xs text-gray-500 mt-0.5">
-                      Client : Kouassi (VTC Yango) • Lieu : Cocody Angré • Main d&apos;œuvre : 25 000 FCFA
+                      {L('Client : Kouassi (VTC Yango) • Lieu : Cocody Angré • Main d\'œuvre : 25 000 FCFA', 'Client: Kouassi (Yango VTC) • Location: Cocody Angre • Labor: 25,000 XOF')}
                     </p>
                   </div>
                   <div className="flex gap-2 w-full sm:w-auto">
                     <button
                       type="button"
-                      onClick={() => addToast('success', 'Intervention acceptée (25 000 FCFA) ! Le client Kouassi a été notifié.')}
+                      onClick={() => addToast('success', L('Intervention acceptée (25 000 FCFA) ! Le client Kouassi a été notifié.', 'Job accepted (25,000 XOF)! Client Kouassi has been notified.'))}
                       className="flex-1 sm:flex-initial py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors cursor-pointer"
                     >
-                      Accepter (25k)
+                      {L('Accepter (25k)', 'Accept (25k)')}
                     </button>
                     <button
                       type="button"
-                      onClick={() => addToast('info', 'Formulaire de devis envoyé au client Kouassi.')}
+                      onClick={() => addToast('info', L('Formulaire de devis envoyé au client Kouassi.', 'Quote form sent to client Kouassi.'))}
                       className="flex-1 sm:flex-initial py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-colors cursor-pointer"
                     >
-                      Proposer Devis
+                      {L('Proposer Devis', 'Offer Quote')}
                     </button>
                   </div>
                 </div>
@@ -342,31 +342,31 @@ export default function RoleServicesHub() {
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold px-2 py-0.5 bg-blue-100 text-blue-800 rounded-md">
-                        Diagnostic Électrique
+                        {L('Diagnostic Électrique', 'Electrical Diagnostic')}
                       </span>
                       <span className="text-xs text-gray-500 font-semibold">Peugeot 308</span>
                     </div>
                     <h4 className="text-sm font-extrabold text-gray-900 mt-1">
-                      Voyant Moteur & Contrôle Alternateur
+                      {L('Voyant Moteur & Contrôle Alternateur', 'Check Engine Light & Alternator Inspection')}
                     </h4>
                     <p className="text-xs text-gray-500 mt-0.5">
-                      Client : Société BTP • Lieu : Yopougon Zone • Main d&apos;œuvre : 15 000 FCFA
+                      {L('Client : Société BTP • Lieu : Yopougon Zone • Main d\'œuvre : 15 000 FCFA', 'Client: BTP Corp • Location: Yopougon Zone • Labor: 15,000 XOF')}
                     </p>
                   </div>
                   <div className="flex gap-2 w-full sm:w-auto">
                     <button
                       type="button"
-                      onClick={() => addToast('success', 'Diagnostic accepté (15 000 FCFA) ! Le client Société BTP a été notifié.')}
+                      onClick={() => addToast('success', L('Diagnostic accepté (15 000 FCFA) ! Le client Société BTP a été notifié.', 'Diagnostic accepted (15,000 XOF)! Client BTP Corp has been notified.'))}
                       className="flex-1 sm:flex-initial py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-colors cursor-pointer"
                     >
-                      Accepter (15k)
+                      {L('Accepter (15k)', 'Accept (15k)')}
                     </button>
                     <button
                       type="button"
-                      onClick={() => addToast('info', 'Devis de diagnostic envoyé à la Société BTP.')}
+                      onClick={() => addToast('info', L('Devis de diagnostic envoyé à la Société BTP.', 'Diagnostic quote sent to BTP Corp.'))}
                       className="flex-1 sm:flex-initial py-2 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-xl transition-colors cursor-pointer"
                     >
-                      Proposer Devis
+                      {L('Proposer Devis', 'Offer Quote')}
                     </button>
                   </div>
                 </div>
@@ -478,32 +478,32 @@ export default function RoleServicesHub() {
                       {L('Résultat IA Validé', 'Validated AI Result')}
                     </span>
                     <span className="text-xs font-bold text-emerald-600 bg-white px-2 py-0.5 rounded-full border border-emerald-200">
-                      Précision 99%
+                      {L('Précision 99%', '99% Accuracy')}
                     </span>
                   </div>
 
                   {modalType === 'voice' ? (
                     <>
                       <div className="text-xs text-gray-600 italic">
-                        &quot;Je cherche une paire d&apos;amortisseurs avant et rotules pour ma Toyota Corolla 2012&quot;
+                        &quot;{L('Je cherche une paire d\'amortisseurs avant et rotules pour ma Toyota Corolla 2012', 'Looking for a pair of front shock absorbers and ball joints for my 2012 Toyota Corolla')}&quot;
                       </div>
                       <div className="text-sm font-extrabold text-emerald-950 pt-1">
-                        Paire d&apos;Amortisseurs Avant + Rotules • Toyota Corolla (2007 - 2014)
+                        {L('Paire d\'Amortisseurs Avant + Rotules • Toyota Corolla (2007 - 2014)', 'Front Shock Absorbers Pair + Ball Joints • Toyota Corolla (2007 - 2014)')}
                       </div>
                       <div className="text-xs text-emerald-800 font-semibold">
-                        Estimation Occasion Contrôle : 45 000 FCFA | Neuf OEM : 110 000 FCFA
+                        {L('Estimation Occasion Contrôlée : 45 000 FCFA | Neuf OEM : 110 000 FCFA', 'Inspected Used Est.: 45,000 XOF | New OEM: 110,000 XOF')}
                       </div>
                     </>
                   ) : (
                     <>
                       <div className="text-xs text-gray-600 italic">
-                        Photo analysée : Alternateur Diesel Reconditionné
+                        {L('Photo analysée : Alternateur Diesel Reconditionné', 'Analyzed Photo: Reconditioned Diesel Alternator')}
                       </div>
                       <div className="text-sm font-extrabold text-emerald-950 pt-1">
-                        Alternateur 12V 90A • Peugeot 307 / 407 HDi (2004 - 2011)
+                        {L('Alternateur 12V 90A • Peugeot 307 / 407 HDi (2004 - 2011)', '12V 90A Alternator • Peugeot 307 / 407 HDi (2004 - 2011)')}
                       </div>
                       <div className="text-xs text-emerald-800 font-semibold">
-                        Prix conseillé de mise en ligne : 35 000 FCFA (Garantie 30 jours)
+                        {L('Prix conseillé de mise en ligne : 35 000 FCFA (Garantie 30 jours)', 'Recommended Listing Price: 35,000 XOF (30-day Warranty)')}
                       </div>
                     </>
                   )}
