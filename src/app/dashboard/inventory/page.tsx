@@ -48,6 +48,12 @@ type Movement = {
 };
 
 const WAREHOUSE_TYPES = ['STANDARD', 'COLD_STORAGE', 'HAZMAT', 'BULK', 'CROSS_DOCK'];
+const MOVEMENT_COLORS: Record<string, string> = {
+  RECEIVED: 'bg-emerald-50 text-emerald-600 border-emerald-200',
+  TRANSFERRED: 'bg-blue-50 text-blue-600 border-blue-200',
+  SOLD: 'bg-purple-50 text-purple-600 border-purple-200',
+  RETURNED: 'bg-amber-50 text-amber-600 border-amber-200',
+  ADJUSTED: 'bg-cyan-50 text-cyan-600 border-cyan-200',
   DAMAGED: 'bg-red-50 text-red-600 border-red-200',
   RESERVED: 'bg-indigo-50 text-indigo-600 border-indigo-200',
   UNRESERVED: 'bg-gray-100 text-gray-600 border-gray-200',

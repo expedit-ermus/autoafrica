@@ -7,6 +7,8 @@ import { useApp } from '@/contexts/AppContext';
 import Modal from '@/components/Modal';
 import { Order } from '@/shared/types';
 
+const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
+
 export default function OrdersPage() {
   const { addToast } = useToast();
   const { locale } = useApp();
@@ -47,10 +49,6 @@ export default function OrdersPage() {
     FAILED:    { label: L('Échoué', 'Failed'),     bg: 'bg-red-50',    text: 'text-red-600' },
     REFUNDED:  { label: L('Remboursé', 'Refunded'),  bg: 'bg-gray-50',   text: 'text-gray-600' },
   };
-
-const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
-
-export default function OrdersPage() {
   const { addToast } = useToast();
 
   const [orders, setOrders] = useState<Order[]>([]);
