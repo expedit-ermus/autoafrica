@@ -3,44 +3,50 @@ import { useState, useEffect, useMemo } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useToast } from '@/contexts/ToastContext';
+import { useApp } from '@/contexts/AppContext';
 import Modal from '@/components/Modal';
 import { Order } from '@/shared/types';
 
-const TRACKING_STEPS = [
-  { key: 'PENDING', label: 'Commande reçue', color: 'text-yellow-600', bg: 'bg-yellow-100', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>
-  ) },
-  { key: 'CONFIRMED', label: 'Confirmée', color: 'text-blue-600', bg: 'bg-blue-100', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
-  ) },
-  { key: 'PAID', label: 'Payée', color: 'text-green-600', bg: 'bg-green-100', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
-  ) },
-  { key: 'SHIPPED', label: 'Expédiée', color: 'text-purple-600', bg: 'bg-purple-100', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25" /></svg>
-  ) },
-  { key: 'DELIVERED', label: 'Livrée', color: 'text-green-600', bg: 'bg-green-100', icon: (
-    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
-  ) },
-];
+export default function OrdersPage() {
+  const { addToast } = useToast();
+  const { locale } = useApp();
+  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
-const STATUS_CONFIG: Record<string, { label: string; bg: string; text: string; dot: string }> = {
-  PENDING:     { label: 'En attente',   bg: 'bg-amber-50',   text: 'text-amber-700',   dot: 'bg-amber-400' },
-  CONFIRMED:   { label: 'Confirmée',    bg: 'bg-blue-50',    text: 'text-blue-700',    dot: 'bg-blue-400' },
-  PAID:        { label: 'Payée',        bg: 'bg-green-50',   text: 'text-green-700',   dot: 'bg-green-400' },
-  PROCESSING:  { label: 'En cours',     bg: 'bg-purple-50',  text: 'text-purple-700',  dot: 'bg-purple-400' },
-  SHIPPED:     { label: 'Expédiée',     bg: 'bg-violet-50',  text: 'text-violet-700',  dot: 'bg-violet-400' },
-  DELIVERED:   { label: 'Livrée',       bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-400' },
-  COMPLETED:   { label: 'Terminée',     bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-400' },
-  CANCELLED:   { label: 'Annulée',      bg: 'bg-red-50',     text: 'text-red-700',     dot: 'bg-red-400' },
-};
+  const TRACKING_STEPS = [
+    { key: 'PENDING', label: L('Commande reçue', 'Order received'), color: 'text-yellow-600', bg: 'bg-yellow-100', icon: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>
+    ) },
+    { key: 'CONFIRMED', label: L('Confirmée', 'Confirmed'), color: 'text-blue-600', bg: 'bg-blue-100', icon: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+    ) },
+    { key: 'PAID', label: L('Payée', 'Paid'), color: 'text-green-600', bg: 'bg-green-100', icon: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>
+    ) },
+    { key: 'SHIPPED', label: L('Expédiée', 'Shipped'), color: 'text-purple-600', bg: 'bg-purple-100', icon: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25" /></svg>
+    ) },
+    { key: 'DELIVERED', label: L('Livrée', 'Delivered'), color: 'text-green-600', bg: 'bg-green-100', icon: (
+      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+    ) },
+  ];
 
-const PAYMENT_STATUS: Record<string, { label: string; bg: string; text: string }> = {
-  PENDING:   { label: 'En attente', bg: 'bg-amber-50',  text: 'text-amber-600' },
-  PAID:      { label: 'Payé',       bg: 'bg-green-50',  text: 'text-green-600' },
-  FAILED:    { label: 'Échoué',     bg: 'bg-red-50',    text: 'text-red-600' },
-  REFUNDED:  { label: 'Remboursé',  bg: 'bg-gray-50',   text: 'text-gray-600' },
-};
+  const STATUS_CONFIG: Record<string, { label: string; bg: string; text: string; dot: string }> = {
+    PENDING:     { label: L('En attente', 'Pending'),   bg: 'bg-amber-50',   text: 'text-amber-700',   dot: 'bg-amber-400' },
+    CONFIRMED:   { label: L('Confirmée', 'Confirmed'),    bg: 'bg-blue-50',    text: 'text-blue-700',    dot: 'bg-blue-400' },
+    PAID:        { label: L('Payée', 'Paid'),        bg: 'bg-green-50',   text: 'text-green-700',   dot: 'bg-green-400' },
+    PROCESSING:  { label: L('En cours', 'Processing'),     bg: 'bg-purple-50',  text: 'text-purple-700',  dot: 'bg-purple-400' },
+    SHIPPED:     { label: L('Expédiée', 'Shipped'),     bg: 'bg-violet-50',  text: 'text-violet-700',  dot: 'bg-violet-400' },
+    DELIVERED:   { label: L('Livrée', 'Delivered'),       bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-400' },
+    COMPLETED:   { label: L('Terminée', 'Completed'),     bg: 'bg-emerald-50', text: 'text-emerald-700', dot: 'bg-emerald-400' },
+    CANCELLED:   { label: L('Annulée', 'Cancelled'),      bg: 'bg-red-50',     text: 'text-red-700',     dot: 'bg-red-400' },
+  };
+
+  const PAYMENT_STATUS: Record<string, { label: string; bg: string; text: string }> = {
+    PENDING:   { label: L('En attente', 'Pending'), bg: 'bg-amber-50',  text: 'text-amber-600' },
+    PAID:      { label: L('Payé', 'Paid'),       bg: 'bg-green-50',  text: 'text-green-600' },
+    FAILED:    { label: L('Échoué', 'Failed'),     bg: 'bg-red-50',    text: 'text-red-600' },
+    REFUNDED:  { label: L('Remboursé', 'Refunded'),  bg: 'bg-gray-50',   text: 'text-gray-600' },
+  };
 
 const ITEMS_PER_PAGE_OPTIONS = [5, 10, 20, 50];
 
@@ -160,12 +166,12 @@ export default function OrdersPage() {
   }, [orders]);
 
   const filterButtons = [
-    { key: 'all', label: 'Toutes' },
-    { key: 'PENDING', label: 'En attente' },
-    { key: 'CONFIRMED', label: 'Confirmées' },
-    { key: 'SHIPPED', label: 'Expédiées' },
-    { key: 'DELIVERED', label: 'Livrées' },
-    { key: 'CANCELLED', label: 'Annulées' },
+    { key: 'all', label: L('Toutes', 'All') },
+    { key: 'PENDING', label: L('En attente', 'Pending') },
+    { key: 'CONFIRMED', label: L('Confirmées', 'Confirmed') },
+    { key: 'SHIPPED', label: L('Expédiées', 'Shipped') },
+    { key: 'DELIVERED', label: L('Livrées', 'Delivered') },
+    { key: 'CANCELLED', label: L('Annulées', 'Cancelled') },
   ];
 
   return (
@@ -179,15 +185,15 @@ export default function OrdersPage() {
           <div className="mb-8">
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
               <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Commandes</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">{L('Commandes', 'Orders')}</h1>
                 <p className="mt-1 text-sm text-gray-500">
-                  {filteredOrders.length} commande{filteredOrders.length !== 1 ? 's' : ''} trouvée{filteredOrders.length !== 1 ? 's' : ''}
-                  {searchQuery && <span className="text-orange-500 font-medium"> — Recherche active</span>}
+                  {filteredOrders.length} {L(`commande${filteredOrders.length !== 1 ? 's' : ''} trouvée${filteredOrders.length !== 1 ? 's' : ''}`, `order${filteredOrders.length !== 1 ? 's' : ''} found`)}
+                  {searchQuery && <span className="text-orange-500 font-medium"> — {L('Recherche active', 'Search active')}</span>}
                 </p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="text-right hidden sm:block">
-                  <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">Revenus totaux</p>
+                  <p className="text-xs text-gray-400 uppercase tracking-wide font-medium">{L('Revenus totaux', 'Total revenue')}</p>
                   <p className="text-xl font-bold text-gray-900">{formatCFA(totalRevenue)} <span className="text-sm font-normal text-gray-400">FCFA</span></p>
                 </div>
               </div>
@@ -197,16 +203,16 @@ export default function OrdersPage() {
           {/* Quick Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
             {[
-              { label: 'Total', value: orders.length, color: 'from-blue-500 to-blue-600', icon: (
+              { label: L('Total', 'Total'), value: orders.length, color: 'from-blue-500 to-blue-600', icon: (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>
               ) },
-              { label: 'En attente', value: pendingCount, color: 'from-amber-500 to-amber-600', icon: (
+              { label: L('En attente', 'Pending'), value: pendingCount, color: 'from-amber-500 to-amber-600', icon: (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               ) },
-              { label: 'En transit', value: shippedCount, color: 'from-violet-500 to-violet-600', icon: (
+              { label: L('En transit', 'In transit'), value: shippedCount, color: 'from-violet-500 to-violet-600', icon: (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25" /></svg>
               ) },
-              { label: 'Revenus', value: formatCFA(totalRevenue), suffix: ' FCFA', color: 'from-emerald-500 to-emerald-600', icon: (
+              { label: L('Revenus', 'Revenue'), value: formatCFA(totalRevenue), suffix: ' FCFA', color: 'from-emerald-500 to-emerald-600', icon: (
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
               ) },
             ].map(s => (

@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useToast } from '@/contexts/ToastContext';
+import { useApp } from '@/contexts/AppContext';
 import Modal from '@/components/Modal';
 import { Product } from '@/shared/types';
 
@@ -47,19 +48,6 @@ type Movement = {
 };
 
 const WAREHOUSE_TYPES = ['STANDARD', 'COLD_STORAGE', 'HAZMAT', 'BULK', 'CROSS_DOCK'];
-const TYPE_LABELS: Record<string, string> = {
-  STANDARD: 'Standard', COLD_STORAGE: 'Froid', HAZMAT: 'Dangereux', BULK: 'Vrac', CROSS_DOCK: 'Cross-dock',
-};
-const MOVEMENT_LABELS: Record<string, string> = {
-  RECEIVED: 'Recu', TRANSFERRED: 'Transfere', SOLD: 'Vendu', RETURNED: 'Retour',
-  ADJUSTED: 'Ajustement', DAMAGED: 'Abime', RESERVED: 'Reserve', UNRESERVED: 'Libere',
-};
-const MOVEMENT_COLORS: Record<string, string> = {
-  RECEIVED: 'bg-emerald-50 text-emerald-600 border-emerald-200',
-  TRANSFERRED: 'bg-blue-50 text-blue-600 border-blue-200',
-  SOLD: 'bg-purple-50 text-purple-600 border-purple-200',
-  RETURNED: 'bg-amber-50 text-amber-600 border-amber-200',
-  ADJUSTED: 'bg-cyan-50 text-cyan-600 border-cyan-200',
   DAMAGED: 'bg-red-50 text-red-600 border-red-200',
   RESERVED: 'bg-indigo-50 text-indigo-600 border-indigo-200',
   UNRESERVED: 'bg-gray-100 text-gray-600 border-gray-200',
@@ -283,40 +271,40 @@ export default function InventoryPage() {
         <main className="px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Inventaire & Entrepôts</h1>
-              <p className="text-sm text-gray-500 mt-1">Gestion du stock multi-entrepôts et des mouvements</p>
+              <h1 className="text-2xl font-bold text-gray-900">{L('Inventaire & Entrepôts', 'Inventory & Warehouses')}</h1>
+              <p className="text-sm text-gray-500 mt-1">{L('Gestion du stock multi-entrepôts et des mouvements', 'Multi-warehouse stock and movements management')}</p>
             </div>
             <div className="flex gap-2">
               <button onClick={() => setShowTransfer(true)} className="px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-all">
-                Transferer
+                {L('Transférer', 'Transfer')}
               </button>
               <button
                 onClick={() => { if (tab === 'warehouses') setShowAddWarehouse(true); else setShowAddStock(true); }}
                 className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold shadow-lg shadow-orange-500/25 hover:opacity-95 transition-opacity"
               >
-                + {tab === 'warehouses' ? 'Nouvel entrepôt' : 'Ligne de stock'}
+                + {tab === 'warehouses' ? L('Nouvel entrepôt', 'New warehouse') : L('Ligne de stock', 'Stock line')}
               </button>
             </div>
           </div>
 
           <div className="flex flex-wrap gap-2 mb-6">
-            {tabBtn('stock', `Stock (${stats.totalUnits})`)}
-            {tabBtn('smart-replenishment', `⚡ Réapprovisionnement Intelligent`)}
-            {tabBtn('warehouses', `Entrepôts (${stats.totalWarehouses})`)}
-            {tabBtn('movements', `Mouvements (${movements.length})`)}
+            {tabBtn('stock', `${L('Stock', 'Stock')} (${stats.totalUnits})`)}
+            {tabBtn('smart-replenishment', L('⚡ Réapprovisionnement Intelligent', '⚡ Smart Replenishment'))}
+            {tabBtn('warehouses', `${L('Entrepôts', 'Warehouses')} (${stats.totalWarehouses})`)}
+            {tabBtn('movements', `${L('Mouvements', 'Movements')} (${movements.length})`)}
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-              <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Unites en stock</p>
+              <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">{L('Unités en stock', 'Units in stock')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">{formatNumber(stats.totalUnits)}</p>
             </div>
             <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-              <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Valeur stock</p>
+              <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">{L('Valeur stock', 'Stock value')}</p>
               <p className="text-2xl font-bold text-gray-900 mt-1">{formatNumber(stats.totalValue)} XOF</p>
             </div>
             <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
-              <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">Stock bas</p>
+              <p className="text-xs font-medium text-gray-400 uppercase tracking-wide">{L('Stock bas', 'Low stock')}</p>
               <p className="text-2xl font-bold text-amber-600 mt-1">{stats.lowStock}</p>
             </div>
             <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
