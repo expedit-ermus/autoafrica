@@ -4,8 +4,12 @@ import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import BarChart, { DonutChart, SparkLine } from '@/components/Charts';
 import { Order, Payment, Product } from '@/shared/types';
+import { useApp } from '@/contexts/AppContext';
 
 export default function AnalyticsPage() {
+  const { locale } = useApp();
+  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
+
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -67,10 +71,10 @@ export default function AnalyticsPage() {
   const visitToCartRate = productViews > 0 ? ((addToCarts / productViews) * 100).toFixed(1) : '0.0';
 
   const funnelStages = [
-    { label: 'Vues produit', value: productViews, color: 'bg-blue-500' },
-    { label: 'Ajouts panier', value: addToCarts, color: 'bg-orange-500' },
-    { label: 'Checkouts', value: checkouts, color: 'bg-amber-500' },
-    { label: 'Commandes', value: orderCompletes, color: 'bg-emerald-500' },
+    { label: L('Vues produit', 'Product views'), value: productViews, color: 'bg-blue-500' },
+    { label: L('Ajouts panier', 'Add to cart'), value: addToCarts, color: 'bg-orange-500' },
+    { label: L('Checkouts', 'Checkouts'), value: checkouts, color: 'bg-amber-500' },
+    { label: L('Commandes', 'Orders'), value: orderCompletes, color: 'bg-emerald-500' },
   ];
   const funnelMax = Math.max(1, ...funnelStages.map(s => s.value));
 
@@ -90,7 +94,7 @@ export default function AnalyticsPage() {
     o.items?.forEach(item => {
       const pid = item.productId || item.product?.id;
       if (pid) {
-        if (!productOrderCount[pid]) productOrderCount[pid] = { count: 0, revenue: 0, title: item.product?.title || 'Pièce' };
+        if (!productOrderCount[pid]) productOrderCount[pid] = { count: 0, revenue: 0, title: item.product?.title || L('Pièce', 'Part') };
         productOrderCount[pid].count += item.quantity || 1;
         productOrderCount[pid].revenue += item.totalPrice || 0;
       }
@@ -104,7 +108,7 @@ export default function AnalyticsPage() {
   // Order status distribution
   const statusCounts: Record<string, number> = {};
   orders.forEach(o => { statusCounts[o.status] = (statusCounts[o.status] || 0) + 1; });
-  const statusLabels: Record<string, string> = { PENDING: 'En attente', CONFIRMED: 'Confirmée', PAID: 'Payée', SHIPPED: 'Expédiée', DELIVERED: 'Livrée', COMPLETED: 'Terminée', CANCELLED: 'Annulée' };
+  const statusLabels: Record<string, string> = { PENDING: L('En attente', 'Pending'), CONFIRMED: L('Confirmée', 'Confirmed'), PAID: L('Payée', 'Paid'), SHIPPED: L('Expédiée', 'Shipped'), DELIVERED: L('Livrée', 'Delivered'), COMPLETED: L('Terminée', 'Completed'), CANCELLED: L('Annulée', 'Cancelled') };
   const statusColors: Record<string, string> = { PENDING: '#EAB308', CONFIRMED: '#3B82F6', PAID: '#22C55E', SHIPPED: '#A855F7', DELIVERED: '#22C55E', COMPLETED: '#22C55E', CANCELLED: '#EF4444' };
   const statusData = Object.entries(statusCounts).map(([k, v]) => ({ label: statusLabels[k] || k, value: v, color: statusColors[k] || '#6B7280' }));
 
@@ -113,9 +117,9 @@ export default function AnalyticsPage() {
   const lowStock = products.filter(p => p.stock > 0 && p.stock <= 5).length;
   const outOfStock = products.filter(p => p.stock === 0).length;
   const stockData = [
-    { label: 'En stock', value: inStock, color: '#22C55E' },
-    { label: 'Stock bas', value: lowStock, color: '#F97316' },
-    { label: 'Rupture', value: outOfStock, color: '#EF4444' },
+    { label: L('En stock', 'In stock'), value: inStock, color: '#22C55E' },
+    { label: L('Stock bas', 'Low stock'), value: lowStock, color: '#F97316' },
+    { label: L('Rupture', 'Out of stock'), value: outOfStock, color: '#EF4444' },
   ].filter(d => d.value > 0);
 
   // Category performance

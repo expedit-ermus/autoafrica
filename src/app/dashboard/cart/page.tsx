@@ -6,6 +6,7 @@ import RemoteImage from '@/components/RemoteImage';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useToast } from '@/contexts/ToastContext';
+import { useApp } from '@/contexts/AppContext';
 import { track } from '@/lib/tracking';
 import { PaymentLogo } from '@/components/PaymentLogos';
 
@@ -30,6 +31,8 @@ const MOBILE_MONEY_OPERATORS = [
 
 export default function CartPage() {
   const { addToast } = useToast();
+  const { locale } = useApp();
+  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
   const [cart, setCart] = useState<CartItem[]>(() => {
     if (typeof window === 'undefined') return [];
     const saved = localStorage.getItem('cart');

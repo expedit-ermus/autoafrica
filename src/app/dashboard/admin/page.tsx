@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
+import { useApp } from '@/contexts/AppContext';
 
 interface SellerProfile {
   businessName?: string | null;
@@ -42,6 +43,8 @@ interface Tenant {
 }
 
 export default function AdminPage() {
+  const { locale } = useApp();
+  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'tenants' | 'settings'>('overview');
   const [users, setUsers] = useState<User[]>([]);
   const [tenants, setTenants] = useState<Tenant[]>([]);

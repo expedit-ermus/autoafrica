@@ -4,6 +4,7 @@ import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { FAQStructuredData } from '@/components/StructuredData';
 import { useToast } from '@/contexts/ToastContext';
+import { useApp } from '@/contexts/AppContext';
 
 const faq = [
   { q: 'Comment ajouter une pièce à mon inventaire ?', a: 'Allez dans l\'onglet Inventaire, cliquez sur "+ Ajouter", remplissez les informations (titre, marque, catégorie, prix, stock) et enregistrez. Votre pièce apparaîtra immédiatement sur le marketplace.', category: 'Inventaire' },
@@ -41,6 +42,8 @@ const categoryColors: Record<string, string> = {
 
 export default function HelpPage() {
   const { addToast } = useToast();
+  const { locale } = useApp();
+  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [faqFilter, setFaqFilter] = useState('all');
   const [contactForm, setContactForm] = useState({ name: '', email: '', subject: '', message: '' });
