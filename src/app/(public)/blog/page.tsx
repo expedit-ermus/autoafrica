@@ -10,6 +10,15 @@ export default function BlogIndexPage() {
 
   const articles = [
     {
+      slug: 'casse-auto-vs-autoafrique',
+      title: L('Casse auto vs AutoAfrique : pourquoi choisir l\'occasion contrôlée à Abidjan ?', 'Scrap yards vs AutoAfrique: why choose certified used parts in Abidjan?'),
+      category: L('Différenciation & Confiance', 'Trust & Comparison'),
+      categoryColor: 'bg-orange-100 text-orange-800 border-orange-200',
+      excerpt: L('Prix fixes, garantie 48h, pièces certifiées et paiement Mobile Money : l\'alternative moderne aux casses d\'Abidjan.', 'Fixed prices, 48h warranty, certified parts and Mobile Money payment: the modern alternative to Abidjan scrap yards.'),
+      date: L('15 Août 2026', 'Aug 15, 2026'),
+      readTime: L('6 min', '6 min'),
+    },
+    {
       slug: 'entretien-vehicule-afrique',
       title: L('Guide complet : entretenir son véhicule en Afrique de l\'Ouest', 'Complete guide: vehicle maintenance in West Africa'),
       category: L('Entretien', 'Maintenance'),
