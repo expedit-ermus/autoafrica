@@ -1,7 +1,7 @@
-﻿import type { Metadata } from 'next';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Blog & Guides Pièces Auto Abidjan | AutoAfrique',
+  title: 'Blog & Guides Pièces Auto Abidjan',
   description:
     "Guides d'achat, conseils d'entretien auto, comparatifs casse auto vs pièces contrôlées et astuces Mobile Money à Abidjan et en Afrique de l'Ouest.",
   alternates: {

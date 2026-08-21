@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import LegalPage from '@/components/LegalPage';
 
 export const metadata: Metadata = {
-  title: 'Politique de confidentialité | AutoAfrique Abidjan',
+  title: 'Politique de confidentialité à Abidjan',
   description:
     "Politique de confidentialité d'AutoAfrique à Abidjan : protection des données personnelles, conformité loi ivoirienne 2013-450 et sécurité des transactions.",
   alternates: { canonical: '/politique-de-confidentialite' },

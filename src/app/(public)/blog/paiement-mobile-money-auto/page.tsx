@@ -2,7 +2,7 @@ import ArticlePageTemplate from '@/components/ArticlePageTemplate';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Acheter ses pièces auto par Mobile Money à Abidjan | AutoAfrique',
+  title: 'Acheter ses pièces auto par Mobile Money à Abidjan',
   description: 'Wave, Orange Money, MTN MoMo, Moov Money, Djamo : découvrez comment le système de paiement séquestre protège acheteurs et vendeurs de pièces détachées à Abidjan.',
   alternates: {
     canonical: 'https://autoafrique-saas.vercel.app/blog/paiement-mobile-money-auto',

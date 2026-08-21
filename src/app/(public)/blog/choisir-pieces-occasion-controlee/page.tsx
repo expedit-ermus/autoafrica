@@ -2,7 +2,7 @@ import ArticlePageTemplate from '@/components/ArticlePageTemplate';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Comment choisir une pièce d\'occasion contrôlée à Abidjan ? | AutoAfrique',
+  title: 'Comment choisir une pièce d\'occasion contrôlée à Abidjan ?',
   description: 'Neuf ou occasion ? Découvrez comment vérifier la qualité d\'une pièce de réemploi auto avant l\'achat à Abidjan et profitez de la garantie AutoAfrique.',
   alternates: {
     canonical: 'https://autoafrique-saas.vercel.app/blog/choisir-pieces-occasion-controlee',

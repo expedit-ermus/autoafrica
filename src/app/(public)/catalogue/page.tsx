@@ -4,7 +4,7 @@ import { productsService } from '@/modules/products/products.service';
 import { Product } from '@/shared/types';
 
 export const metadata: Metadata = {
-  title: 'Catalogue pièces détachées auto Abidjan | AutoAfrique',
+  title: 'Catalogue pièces détachées auto Abidjan',
   description:
     "Catalogue complet de pièces détachées neuves et d'occasion contrôlée pour Toyota, Peugeot, Hyundai, Kia, Nissan, Renault à Abidjan et Afrique de l'Ouest.",
   alternates: { canonical: '/catalogue' },
