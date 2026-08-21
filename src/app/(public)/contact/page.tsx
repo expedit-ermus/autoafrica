@@ -2,9 +2,10 @@ import type { Metadata } from 'next';
 import ContactForm from '@/components/ContactForm';
 
 export const metadata: Metadata = {
-  title: 'Nous contacter',
+  title: 'Contactez AutoAfrique à Abidjan',
   description:
-    "Contactez l'équipe AutoAfrique : questions, commandes, paiements, livraisons, retours ou devenir vendeur. Service client Afrique de l'Ouest.",
+    "Contactez l'équipe AutoAfrique à Abidjan : questions, commandes, paiements Mobile Money, livraisons, retours ou devenir vendeur partenaire en Côte d'Ivoire.",
+  alternates: { canonical: '/contact' },
 };
 
 export default function ContactPage() {

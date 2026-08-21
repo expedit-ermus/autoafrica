@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { categorie } = await params;
   const readableName = categorie.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
   return {
-    title: `Pièces détachées ${readableName} | AutoAfrique`,
+    title: `Pièces détachées ${readableName} à Abidjan | AutoAfrique`,
     description: `Achetez vos pièces détachées ${readableName} neuves ou d'occasion contrôlée à Abidjan et en Afrique de l'Ouest.`,
     alternates: { canonical: `/catalogue/${categorie}` },
   };

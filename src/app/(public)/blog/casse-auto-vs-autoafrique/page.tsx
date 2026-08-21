@@ -4,6 +4,9 @@ import type { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'Casse auto vs AutoAfrique : pourquoi choisir l\'occasion contrôlée à Abidjan ? | AutoAfrique',
   description: 'Découvrez les différences entre la casse auto traditionnelle à Abidjan et la marketplace AutoAfrique : prix fixes, pièces contrôlées, garantie et paiement Mobile Money.',
+  alternates: {
+    canonical: 'https://autoafrique-saas.vercel.app/blog/casse-auto-vs-autoafrique',
+  },
 };
 
 export default function CasseAutoVsAutoafriquePage() {

@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { WebsiteStructuredData, FAQStructuredData } from '@/components/StructuredData';
 
 export const metadata: Metadata = {
-  title: 'Devenir Vendeur & Garagiste Partenaire | AutoAfrique',
+  title: 'Devenir Vendeur & Garagiste Partenaire à Abidjan | AutoAfrique',
   description: 'Vendez vos pièces détachées neuves ou d\'occasion contrôlée sur AutoAfrique. Touchez des milliers de chauffeurs VTC et garagistes à Abidjan et en Afrique de l\'Ouest.',
   alternates: { canonical: '/devenir-vendeur' },
 };

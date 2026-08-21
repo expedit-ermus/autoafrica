@@ -2,9 +2,10 @@ import type { Metadata } from 'next';
 import LegalPage from '@/components/LegalPage';
 
 export const metadata: Metadata = {
-  title: 'Conditions générales de vente',
+  title: 'Conditions générales de vente | AutoAfrique Abidjan',
   description:
-    "Conditions générales de vente d'AutoAfrique : commandes, paiement Mobile Money, livraison 24-72h, retours et garanties en Afrique de l'Ouest.",
+    "Conditions générales de vente d'AutoAfrique : commandes, paiement Mobile Money, livraison 24-72h à Abidjan, retours et garanties en Côte d'Ivoire.",
+  alternates: { canonical: '/conditions-generales' },
 };
 
 export default function CGVPage() {

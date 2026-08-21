@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { RepairEstimator } from '@/components/RepairEstimator'
 
 export const metadata: Metadata = {
-  title: 'Estimateur de Devis & Panne Express | AutoAfrique',
+  title: 'Estimateur de Devis & Panne Express à Abidjan | AutoAfrique',
   description:
     'Calculez le prix de votre réparation auto en 30 secondes. Tarifs transparents pour pièces (Venantes ou Neuves) et main d’œuvre Maître Garagiste à Abidjan et Dakar.',
   alternates: {

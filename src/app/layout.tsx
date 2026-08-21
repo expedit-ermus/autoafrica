@@ -12,11 +12,11 @@ import CookieConsentBanner from "@/components/CookieConsentBanner";
 
 export const metadata: Metadata = {
   title: {
-    default: "AutoAfrique - Pièces Détachées Auto & Marketplace Afrique de l'Ouest",
+    default: "Pièces détachées auto Abidjan, neuf & occasion | AutoAfrique",
     template: "%s | AutoAfrique",
   },
-  description: "La plateforme ERP Marketplace pour pièces détachées automobile en Afrique de l'Ouest. Gestion d'inventaire, ventes en ligne, paiements Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave).",
-  keywords: ["pièces détachées", "auto", "automobile", "Afrique de l'Ouest", "Mobile Money", "Orange Money", "MTN MoMo", "Moov Money", "Wave", "marketplace", "ERP", "garage", "revendeur", "Toyota", "Hyundai", "Kia", "Peugeot", "Mercedes"],
+  description: "Marketplace de pièces détachées automobile à Abidjan et en Afrique de l'Ouest. Paiement Mobile Money sécurisé (Orange Money, MTN MoMo, Wave), livraison 24-72h, garantie occasion contrôlée.",
+  keywords: ["pièces détachées", "auto", "automobile", "Abidjan", "Côte d'Ivoire", "Afrique de l'Ouest", "Mobile Money", "Orange Money", "MTN MoMo", "Moov Money", "Wave", "marketplace", "ERP", "garage", "revendeur", "Toyota", "Hyundai", "Kia", "Peugeot", "Mercedes"],
   authors: [{ name: "AutoAfrique" }],
   creator: "AutoAfrique",
   publisher: "AutoAfrique",
@@ -34,21 +34,21 @@ export const metadata: Metadata = {
     locale: "fr_FR",
     url: "https://autoafrique-saas.vercel.app",
     siteName: "AutoAfrique",
-    title: "AutoAfrique - Pièces Détachées Auto & Marketplace Afrique de l'Ouest",
-    description: "La plateforme ERP Marketplace pour pièces détachées automobile en Afrique de l'Ouest. Gestion d'inventaire, ventes en ligne, paiements Mobile Money.",
+    title: "Pièces détachées auto Abidjan | AutoAfrique - Marketplace Afrique de l'Ouest",
+    description: "Marketplace de pièces détachées automobile à Abidjan. Paiement Mobile Money sécurisé, livraison rapide, garantie occasion contrôlée.",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "AutoAfrique - Marketplace Pièces Détachées Auto",
+        alt: "AutoAfrique - Marketplace Pièces Détachées Auto Abidjan",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "AutoAfrique - Pièces Détachées Auto & Marketplace",
-    description: "La plateforme ERP Marketplace pour pièces détachées automobile en Afrique de l'Ouest.",
+    title: "Pièces détachées auto Abidjan | AutoAfrique",
+    description: "Marketplace de pièces détachées automobile à Abidjan et en Afrique de l'Ouest.",
     images: ["/og-image.png"],
   },
   robots: {

@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const brandName = product.brand?.name || 'Toyota';
 
   return {
-    title: `${product.title} — Pièce auto ${brandName} | AutoAfrique`,
+    title: `${product.title} — Pièce auto ${brandName} à Abidjan | AutoAfrique`,
     description: `Achetez ${product.title} (${product.condition || 'Neuf'}) pour ${brandName} à ${product.price.toLocaleString()} FCFA à Abidjan. Livraison 24-72h et garantie.`,
     alternates: { canonical: `/pieces/${slug}` },
   };

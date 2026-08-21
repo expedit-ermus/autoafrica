@@ -2,8 +2,11 @@ import ArticlePageTemplate from '@/components/ArticlePageTemplate';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Guide complet : entretenir son véhicule en Afrique de l\'Ouest | AutoAfrique',
+  title: 'Guide complet : entretenir son véhicule à Abidjan et en Afrique de l\'Ouest | AutoAfrique',
   description: 'Les 10 points d\'entretien essentiels pour rouler en sécurité à Abidjan et Dakar. Huile moteur, freins, pneus, batterie.',
+  alternates: {
+    canonical: 'https://autoafrique-saas.vercel.app/blog/entretien-vehicule-afrique',
+  },
 };
 
 export default function EntretienVehiculeAfriquePage() {
