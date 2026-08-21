@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { BreadcrumbStructuredData } from '@/components/StructuredData';
+import { BreadcrumbStructuredData, FAQStructuredData } from '@/components/StructuredData';
 import CatalogueFilters from '@/components/CatalogueFilters';
 import { SITE_URL } from '@/lib/structured-data';
 import { Product } from '@/shared/types';
@@ -17,6 +17,25 @@ export default function CatalogPage({ kind, slug, name, description, products }:
   const canonicalPath = kind === 'categorie' ? `/marketplace/categorie/${slug}` : `/marketplace/marque/${slug}`;
   const fullUrl = `${SITE_URL}${canonicalPath}`;
 
+  const faqs = [
+    {
+      question: `Comment commander des pièces détachées ${name} à Abidjan sur AutoAfrique ?`,
+      answer: `Vous pouvez commander vos pièces ${name} directement en ligne sur AutoAfrique en sélectionnant la référence souhaitée, puis en réglant en toute sécurité via Mobile Money (Wave, Orange Money, MTN MoMo, Moov Money, Djamo) ou carte bancaire. La livraison s'effectue en 24h à Abidjan et en 48h à l'intérieur du pays.`,
+    },
+    {
+      question: `Les pièces auto ${name} vendues sur AutoAfrique sont-elles garanties ?`,
+      answer: `Oui, toutes les pièces neuves bénéficient de la garantie constructeur, et les pièces d'occasion contrôlée (pièces de réemploi) sont certifiées avec une garantie de 48 heures minimum pour vous permettre de vérifier la conformité avec votre mécanicien.`,
+    },
+    {
+      question: `Comment fonctionne le paiement sécurisé par séquestre pour les pièces ${name} ?`,
+      answer: `Lors de votre commande de pièces ${name}, votre argent est bloqué sur un compte de séquestre sécurisé. Le vendeur n'est payé que lorsque vous avez reçu la pièce et confirmé sa conformité. En cas de problème ou de pièce incompatible, vous êtes remboursé intégralement.`,
+    },
+    {
+      question: `Quels sont les délais et tarifs de livraison pour ${name} à Abidjan et en Côte d'Ivoire ?`,
+      answer: `À Abidjan (Cocody, Yopougon, Marcory, Plateau, Treichville, Koumassi, Abobo, Port-Bouët), la livraison express par coursier moto s'effectue en 24h pour 1 500 à 3 000 FCFA. Pour l'intérieur du pays (Bouaké, Yamoussoukro, San Pedro, Korhogo), l'expédition en car de transport sécurisé prend 24h à 48h.`,
+    },
+  ];
+
   return (
     <div className="bg-[var(--color-bg)] min-h-screen">
       <BreadcrumbStructuredData
@@ -26,6 +45,8 @@ export default function CatalogPage({ kind, slug, name, description, products }:
           { name, url: fullUrl },
         ]}
       />
+
+      <FAQStructuredData items={faqs} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         <nav className="flex flex-wrap items-center gap-2 text-sm text-[var(--color-warm-muted)] mb-6" aria-label="Fil d'Ariane">
@@ -45,10 +66,56 @@ export default function CatalogPage({ kind, slug, name, description, products }:
           </h1>
           <p className="text-gray-600 leading-relaxed text-sm sm:text-base">{description}</p>
         </div>
+
+        {/* Badges de Confiance Abidjan */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-6">
+          <div className="flex items-center gap-3 p-3.5 bg-white rounded-2xl border border-gray-200 shadow-sm">
+            <span className="text-2xl">⚡</span>
+            <div>
+              <p className="text-xs font-bold text-gray-900">Livraison 24h Abidjan</p>
+              <p className="text-[11px] text-gray-500">Par coursier express moto ou gare</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-3.5 bg-white rounded-2xl border border-gray-200 shadow-sm">
+            <span className="text-2xl">🛡️</span>
+            <div>
+              <p className="text-xs font-bold text-gray-900">Garantie Conformité 48h</p>
+              <p className="text-[11px] text-gray-500">Occasion contrôlée ou neuf certifié</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-3.5 bg-white rounded-2xl border border-gray-200 shadow-sm">
+            <span className="text-2xl">📱</span>
+            <div>
+              <p className="text-xs font-bold text-gray-900">Séquestre Mobile Money</p>
+              <p className="text-[11px] text-gray-500">Wave, Orange Money, MTN MoMo</p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Intégration du composant interactif de catalogue et filtres */}
       <CatalogueFilters products={products} />
+
+      {/* Section FAQ SEO pour Rich Snippets */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="bg-white rounded-3xl p-6 sm:p-10 border border-gray-200 shadow-sm">
+          <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 mb-6 flex items-center gap-2">
+            <span>❓</span> Foire aux questions — Pièces {name} à Abidjan
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {faqs.map((faq, idx) => (
+              <div key={idx} className="p-5 bg-gray-50 rounded-2xl border border-gray-100">
+                <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-2">
+                  {faq.question}
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                  {faq.answer}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -68,14 +68,38 @@ export interface VehicleSchemaInput {
 export function buildOrganizationSchema() {
   return {
     '@context': 'https://schema.org',
-    '@type': 'Organization',
+    '@type': ['Organization', 'AutoPartsStore'],
     name: 'AutoAfrique',
     url: SITE_URL,
     logo: `${SITE_URL}/logo.png`,
-    description: 'Marketplace de pièces détachées automobile en Afrique de l\'Ouest',
+    description: 'Marketplace et distributeur de pièces détachées automobile neuves et d\'occasion contrôlée à Abidjan et en Afrique de l\'Ouest',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'Boulevard de Marseille, Zone 4',
+      addressLocality: 'Abidjan',
+      addressRegion: 'Lagunes',
+      addressCountry: 'CI',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 5.316667,
+      longitude: -4.033333,
+    },
+    telephone: '+2250700000000',
+    priceRange: '5000 - 500000 XOF',
+    paymentAccepted: 'Cash, Wave, Orange Money, MTN Mobile Money, Moov Money, Djamo, Carte Bancaire',
+    currenciesAccepted: 'XOF',
     areaServed: ['CI', 'SN', 'ML', 'BF', 'NE', 'BJ', 'TG', 'GW', 'NG', 'GH'],
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        opens: '08:00',
+        closes: '18:30',
+      },
+    ],
     sameAs: [],
-  }
+  };
 }
 
 export function buildWebsiteSchema() {
