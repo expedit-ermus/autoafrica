@@ -13,40 +13,28 @@ import AbidjanDeliveryZones from '@/components/AbidjanDeliveryZones';
 
 const trustFeatures = [
   {
-    icon: (
-      <svg className="w-8 h-8 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-      </svg>
-    ),
-    title: { fr: 'Livraison rapide', en: 'Fast delivery' },
-    desc: { fr: '24-72h en Afrique de l\'Ouest', en: '24-72h in West Africa' },
+    icon: '⚡',
+    gradient: 'from-orange-500 to-amber-500',
+    title: { fr: 'Livraison Express 24h', en: '24h Express Delivery' },
+    desc: { fr: 'Par coursier moto à Abidjan & gares vers l\'intérieur', en: 'By courier in Abidjan & bus stations to regions' },
   },
   {
-    icon: (
-      <svg className="w-8 h-8 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-      </svg>
-    ),
-    title: { fr: 'Paiement sécurisé', en: 'Secure payment' },
-    desc: { fr: 'Wave, Djamo, Orange Money, MTN MoMo et Moov Money', en: 'Wave, Djamo, Orange Money, MTN MoMo and Moov Money' },
+    icon: '📱',
+    gradient: 'from-blue-600 to-cyan-500',
+    title: { fr: 'Séquestre Mobile Money', en: 'Mobile Money Escrow' },
+    desc: { fr: 'Wave, Orange Money, MTN MoMo, Moov, Djamo & CB', en: 'Wave, Orange Money, MTN MoMo, Moov, Djamo & Cards' },
   },
   {
-    icon: (
-      <svg className="w-8 h-8 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-      </svg>
-    ),
-    title: { fr: 'Retour 30 jours', en: '30-day return' },
-    desc: { fr: 'Satisfait ou remboursé', en: 'Satisfaction guaranteed' },
+    icon: '🛡️',
+    gradient: 'from-emerald-500 to-teal-500',
+    title: { fr: 'Garantie Conformité 48h', en: '48h Fit Guarantee' },
+    desc: { fr: 'Testez avec votre mécanicien, satisfait ou remboursé', en: 'Test with your mechanic, satisfaction or refund' },
   },
   {
-    icon: (
-      <svg className="w-8 h-8 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
-      </svg>
-    ),
-    title: { fr: 'Support client', en: 'Customer support' },
-    desc: { fr: 'Horaires de contact à confirmer avant la mise en production', en: 'Contact hours to be confirmed before launch' },
+    icon: '👨‍🔧',
+    gradient: 'from-violet-600 to-indigo-500',
+    title: { fr: 'Support Expert Abidjan', en: 'Abidjan Expert Support' },
+    desc: { fr: 'Assistance WhatsApp 6j/7 pour trouver les pièces rares', en: 'WhatsApp help 6d/7 to find rare parts' },
   },
 ];
 
@@ -55,13 +43,33 @@ export default function LandingPage() {
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
   return (
-    <div className="overflow-x-hidden bg-[var(--color-bg)]">
-      <section className="bg-gradient-to-b from-[var(--color-bg-warm)] to-[var(--color-bg)] py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] text-center mb-8">
-            {L('Pièces détachées auto neuves et occasion à Abidjan — AutoAfrique', 'New and used auto parts in Abidjan — AutoAfrique')}
-          </h1>
-          <div className="grid lg:grid-cols-5 gap-5">
+    <div className="overflow-x-hidden bg-[#F8FAFC]">
+      {/* ── Modern Hero Section ── */}
+      <section className="relative py-8 sm:py-12 bg-gradient-to-b from-white via-slate-50 to-[#F8FAFC] border-b border-slate-200/70 overflow-hidden">
+        {/* Subtle Ambient Mesh Glow */}
+        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center max-w-4xl mx-auto mb-8 sm:mb-10">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-50 border border-orange-200/80 text-orange-700 font-extrabold text-xs uppercase tracking-wider mb-4 shadow-xs">
+              <span className="w-2 h-2 rounded-full bg-orange-500 animate-ping shrink-0" />
+              <span>⚡</span> {L('Marketplace N°1 Pièces Auto & Garages à Abidjan', 'Top Auto Parts & Garage Marketplace in Abidjan')}
+            </div>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-tight mb-4">
+              {L(
+                'Trouvez vos pièces auto neuves & d\'occasion contrôlée à Abidjan',
+                'Find new and certified used auto parts in Abidjan'
+              )}
+            </h1>
+            <p className="text-sm sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              {L(
+                'Prix fixes transparents, garantie 48h, paiement Mobile Money sécurisé et livraison express en 24h par moto dans toutes les communes.',
+                'Transparent fixed prices, 48h warranty, secure Mobile Money payment, and express 24h motorcycle delivery across all communes.'
+              )}
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-5 gap-6 items-start">
             <div className="lg:col-span-3 min-w-0 order-first">
               <PromoBanner />
             </div>
@@ -72,23 +80,23 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <PartsCatalog />
-
-      <BrandGrid />
-
-      <section className="py-8 bg-white border-y border-[var(--color-warm-border)]">
+      {/* ── Modern Trust Badges Strip ── */}
+      <section className="py-6 sm:py-8 bg-white border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {trustFeatures.map((feat, i) => (
-              <div key={i} className="flex items-center gap-3 p-4 rounded-xl hover:bg-[var(--color-bg-warm)] transition-colors border border-[var(--color-warm-border)]/50">
-                <div className="shrink-0 w-11 h-11 bg-[var(--color-bg-warm)] rounded-xl flex items-center justify-center">
+              <div
+                key={i}
+                className="flex items-center gap-4 p-4 sm:p-5 rounded-2xl bg-slate-50/80 hover:bg-white hover:shadow-lg hover:shadow-slate-200/60 transition-all duration-300 border border-slate-200/70"
+              >
+                <div className={`shrink-0 w-12 h-12 rounded-2xl bg-gradient-to-br ${feat.gradient} flex items-center justify-center text-white text-xl shadow-md`}>
                   {feat.icon}
                 </div>
                 <div className="min-w-0">
-                  <div className="text-sm font-bold text-[var(--color-warm-ink)] leading-tight">
+                  <div className="text-sm sm:text-base font-extrabold text-slate-900 leading-tight">
                     {feat.title[locale as 'fr' | 'en']}
                   </div>
-                  <div className="text-xs text-[var(--color-warm-muted-strong)] font-medium mt-0.5 leading-snug">
+                  <div className="text-xs text-slate-500 font-medium mt-1 leading-snug">
                     {feat.desc[locale as 'fr' | 'en']}
                   </div>
                 </div>
@@ -98,75 +106,113 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <Bestsellers />
+      <PartsCatalog />
+
+      <BrandGrid />
 
       <VtcCircuitCourtSection />
 
       <DiagnosticEstimator />
 
-      <section className="py-8 md:py-14 bg-white">
+      {/* ── Neuf vs Occasion ── */}
+      <section className="py-12 md:py-16 bg-white border-y border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] mb-8 text-center">
-            {L('Neuf ou occasion, à vous de choisir', 'New or used, you choose')}
-          </h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-[var(--color-bg-warm)] rounded-3xl p-8 border border-[var(--color-warm-border)]">
-              <h3 className="text-lg font-extrabold text-[var(--color-warm-ink)] mb-3">
-                {L('Pièces neuves', 'New parts')}
+          <div className="text-center max-w-3xl mx-auto mb-10">
+            <span className="text-xs font-extrabold uppercase tracking-wider text-orange-600 bg-orange-50 px-3 py-1 rounded-full border border-orange-200">
+              {L('Transparence & Qualité', 'Transparency & Quality')}
+            </span>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mt-3 mb-3 tracking-tight">
+              {L('Neuf ou occasion contrôlée : à vous de choisir', 'New or certified used: you choose')}
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600">
+              {L('Toutes nos pièces répondent à un cahier des charges strict pour éviter les mauvaises surprises.', 'All parts meet strict specifications to prevent bad surprises.')}
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
+            <div className="bg-gradient-to-br from-slate-50 to-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm hover:shadow-md transition-all">
+              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-2xl font-bold mb-4">
+                ✨
+              </div>
+              <h3 className="text-xl font-extrabold text-slate-900 mb-2">
+                {L('Pièces neuves d\'origine & adaptables', 'New OEM & aftermarket parts')}
               </h3>
-              <p className="text-sm md:text-base text-[var(--color-warm-faint)] leading-relaxed">
+              <p className="text-sm text-slate-600 leading-relaxed mb-4">
                 {L(
-                  'Une pièce neuve sort directement d\'usine et n\'a jamais été montée. Elle convient aux automobilistes et garagistes qui privilégient la durée de vie, avec la garantie AutoAfrique incluse.',
-                  'A new part comes straight from the factory and has never been fitted. It suits car owners and mechanics who value lifespan, with the AutoAfrique warranty included.'
+                  'Une pièce neuve sort directement d\'usine et n\'a jamais été montée. Idéale pour les composants d\'usure critique (freinage, distribution, filtration) avec garantie constructeur.',
+                  'A new part comes straight from the factory and has never been fitted. Ideal for critical wear components (brakes, timing, filtration) with manufacturer warranty.'
                 )}
               </p>
+              <div className="inline-flex items-center gap-2 text-xs font-bold text-blue-700 bg-blue-50 px-3 py-1 rounded-lg">
+                <span>🛡️</span> {L('Garantie Constructeur + AutoAfrique', 'Manufacturer + AutoAfrique Warranty')}
+              </div>
             </div>
-            <div className="bg-[var(--color-bg-warm)] rounded-3xl p-8 border border-[var(--color-warm-border)]">
-              <h3 className="text-lg font-extrabold text-[var(--color-warm-ink)] mb-3">
-                {L('Pièces d\'occasion contrôlée', 'Certified used parts')}
+
+            <div className="bg-gradient-to-br from-amber-50/40 to-white rounded-3xl p-6 sm:p-8 border border-amber-200/80 shadow-sm hover:shadow-md transition-all">
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-2xl font-bold mb-4">
+                🔧
+              </div>
+              <h3 className="text-xl font-extrabold text-slate-900 mb-2">
+                {L('Pièces d\'occasion contrôlée (Venantes)', 'Certified used parts (Venantes)')}
               </h3>
-              <p className="text-sm md:text-base text-[var(--color-warm-faint)] leading-relaxed">
+              <p className="text-sm text-slate-600 leading-relaxed mb-4">
                 {L(
-                  'Chaque pièce d\'occasion est inspectée, testée et remise en état avant d\'être mise en ligne, avec sa propre garantie. Un choix économique et fiable, notamment pour les modèles Toyota, Peugeot et Renault en Afrique de l\'Ouest.',
-                  'Every used part is inspected, tested and reconditioned before going online, with its own warranty. An affordable, reliable choice, especially for Toyota, Peugeot and Renault models in West Africa.'
+                  'Chaque pièce de réemploi est inspectée, nettoyée et testée par nos techniciens avant validation. Un choix jusqu\'à 70% moins cher, parfait pour les moteurs, boîtes et carrosseries Toyota, Peugeot, Hyundai.',
+                  'Each reused part is inspected, cleaned, and tested by our technicians before validation. Up to 70% cheaper, ideal for engines, gearboxes, and bodywork.'
                 )}
               </p>
+              <div className="inline-flex items-center gap-2 text-xs font-bold text-amber-800 bg-amber-100/80 px-3 py-1 rounded-lg">
+                <span>🛡️</span> {L('Garantie 48h Satisfait ou Remboursé', '48h Fit Guarantee or Refund')}
+              </div>
             </div>
           </div>
-          <p className="mt-8 text-center text-sm md:text-base text-[var(--color-warm-faint)] leading-relaxed">
-            {L(
-              'Le prix affiché est toujours le prix final : pas de surprise au moment de payer. Règlement en Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money) et livraison en 24-72h.',
-              'The displayed price is always the final price: no surprises at checkout. Pay by Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money) and get delivery in 24-72h.'
-            )}
-          </p>
         </div>
       </section>
 
-      <section className="py-8 md:py-14 bg-[var(--color-bg)]">
+      {/* ── Casse Auto vs AutoAfrique ── */}
+      <section className="py-12 md:py-16 bg-[#F8FAFC]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 border border-[var(--color-warm-border)] shadow-lg shadow-[var(--color-earth)]/5">
-            <h2 className="text-xl md:text-2xl font-extrabold text-[var(--color-warm-ink)] mb-5">
-              {L('Une alternative fiable à la casse auto', 'A reliable alternative to scrapyards')}
-            </h2>
-            <div className="text-base text-[var(--color-warm-faint)] leading-relaxed space-y-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-xl shadow-slate-900/5">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="p-3 bg-orange-100 text-orange-600 rounded-2xl text-2xl">⚖️</span>
+              <div>
+                <h2 className="text-xl sm:text-2xl font-black text-slate-900">
+                  {L('Une alternative moderne et sécurisée à la casse auto', 'A modern and secure alternative to scrapyards')}
+                </h2>
+                <p className="text-xs text-slate-500 font-semibold">
+                  {L('Fini les arnaques et les déplacements interminables à la ferraille', 'No more scams and endless trips to scrapyards')}
+                </p>
+              </div>
+            </div>
+
+            <div className="text-sm sm:text-base text-slate-600 leading-relaxed space-y-4 pt-2">
               <p>
                 {L(
-                  'Récupérer des pièces dans une casse auto à Abidjan reste une pratique courante, mais les prix sont souvent négociables et la qualité variable. AutoAfrique propose une alternative plus simple : un prix fixe affiché, une pièce de récupération contrôlée ou neuve, et une garantie incluse.',
-                  'Recovering parts from a scrapyard in Abidjan is still common, but prices are often negotiable and quality varies. AutoAfrique offers a simpler alternative: a fixed displayed price, a certified used or new part, and a warranty included.'
+                  'Récupérer des pièces dans une casse auto à Abidjan (Adjamé, N\'Dotré, Koumassi) est souvent une corvée : prix à la tête du client, absence de garantie et risque élevé d\'incompatibilité.',
+                  'Finding parts in an Abidjan scrapyard is often a hassle: arbitrary pricing, no warranty, and high risk of incompatibility.'
                 )}
               </p>
               <p>
                 {L(
-                  'Que vous soyez un particulier qui cherche des pièces introuvables, un garage de débrouille qui veut s\'équiper pas cher ou un grossiste qui veut sécuriser son approvisionnement, vous gardez les mêmes prix bas qu\'au marché informel, avec en plus la traçabilité, le devis et le reçu. Trouvez votre garagiste de confiance à Abidjan ou devenez revendeur.',
-                  'Whether you are a private driver looking for hard-to-find parts, a small shop that wants to stock up cheaply, or a wholesaler who wants to secure supply, you keep the same low prices as the informal market, plus traceability, a quote and a receipt. Find a trusted mechanic in Abidjan or become a reseller.'
+                  'AutoAfrique standardise le marché : chaque pièce d\'occasion contrôlée dispose d\'un prix fixe affiché, d\'une facture conforme et d\'un séquestre Mobile Money. Votre argent reste bloqué tant que vous n\'avez pas reçu et validé la pièce avec votre mécanicien.',
+                  'AutoAfrique standardizes the market: every certified part features a transparent fixed price, an official invoice, and Mobile Money escrow.'
                 )}
               </p>
-              <p>
-                {L(
-                  'Le devis de réparation est estimé en ligne et le paiement s\'effectue par Mobile Money. Bénéficiez d\'une pièce auto d\'occasion garantie, livrée en Afrique de l\'Ouest, à Abidjan comme à Dakar.',
-                  'The repair quote is estimated online and payment is made by Mobile Money. Get a certified used auto part, delivered across West Africa, in Abidjan and Dakar alike.'
-                )}
-              </p>
+            </div>
+
+            <div className="mt-6 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <Link
+                href="/blog/casse-auto-vs-autoafrique"
+                className="text-orange-600 font-extrabold hover:text-orange-700 text-sm flex items-center gap-1.5"
+              >
+                {L('Lire le comparatif complet Casse vs AutoAfrique →', 'Read the full Scrapyard vs AutoAfrique guide →')}
+              </Link>
+              <Link
+                href="/catalogue"
+                className="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-md transition-all"
+              >
+                {L('Commander une pièce contrôlée', 'Order a tested part')}
+              </Link>
             </div>
           </div>
         </div>
@@ -190,53 +236,53 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="py-8 md:py-14 bg-white">
+      <section className="py-12 md:py-16 bg-[#F8FAFC]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-10 border border-[var(--color-warm-border)] shadow-lg shadow-[var(--color-earth)]/5">
-            <h2 className="text-xl md:text-2xl font-extrabold text-[var(--color-warm-ink)] mb-5">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 md:p-10 border border-slate-200 shadow-xl shadow-slate-900/5">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 mb-6">
               {L('Questions fréquentes', 'Frequently asked questions')}
             </h2>
-            <div className="space-y-5">
-              <div>
-                <h3 className="font-bold text-[var(--color-warm-ink)] mb-1.5">
+            <div className="space-y-6">
+              <div className="border-b border-slate-100 pb-5">
+                <h3 className="font-extrabold text-slate-900 mb-2 text-base">
                   {L('Comment savoir si une pièce auto est compatible avec mon véhicule ?', 'How do I know if an auto part fits my vehicle?')}
                 </h3>
-                <p className="text-sm md:text-base text-[var(--color-warm-faint)] leading-relaxed">
+                <p className="text-sm md:text-base text-slate-600 leading-relaxed">
                   {L(
                     'Utilisez la recherche par numéro d\'immatriculation ou sélectionnez la marque et le modèle de votre véhicule : nous ne proposons que des pièces référencées pour votre voiture.',
                     'Use the licence plate search or select your vehicle\'s brand and model: we only list parts referenced for your car.'
                   )}
                 </p>
               </div>
-              <div>
-                <h3 className="font-bold text-[var(--color-warm-ink)] mb-1.5">
+              <div className="border-b border-slate-100 pb-5">
+                <h3 className="font-extrabold text-slate-900 mb-2 text-base">
                   {L('Quelle est la différence entre pièce d\'origine, pièce neuve et pièce d\'occasion contrôlée ?', 'What is the difference between an OEM part, a new part and a certified used part?')}
                 </h3>
-                <p className="text-sm md:text-base text-[var(--color-warm-faint)] leading-relaxed">
+                <p className="text-sm md:text-base text-slate-600 leading-relaxed">
                   {L(
-                    'La pièce d\'origine est fabriquée par le constructeur. La pièce neuve est une pièce de remplacement neuve, garantie. L\'occasion contrôlée est une pièce de récupération inspectée et testée par AutoAfrique, avec sa propre garantie.',
-                    'An OEM part is made by the manufacturer. A new part is a new replacement part, under warranty. A certified used part is a recovery part inspected and tested by AutoAfrique, with its own warranty.'
+                    'La pièce d\'origine est fabriquée par le constructeur. La pièce neuve est une pièce de remplacement neuve, garantie. L\'occasion contrôlée est une pièce de récupération inspectée et testée par AutoAfrique, avec sa propre garantie de 48h.',
+                    'An OEM part is made by the manufacturer. A new part is a new replacement part, under warranty. A certified used part is a recovery part inspected and tested by AutoAfrique, with its own 48h warranty.'
                   )}
                 </p>
               </div>
               <div>
-                <h3 className="font-bold text-[var(--color-warm-ink)] mb-1.5">
+                <h3 className="font-extrabold text-slate-900 mb-2 text-base">
                   {L('Comment payer mes pièces auto sur AutoAfrique ?', 'How do I pay for my auto parts on AutoAfrique?')}
                 </h3>
-                <p className="text-sm md:text-base text-[var(--color-warm-faint)] leading-relaxed">
+                <p className="text-sm md:text-base text-slate-600 leading-relaxed">
                   {L(
-                    'Le paiement se fait par Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave), directement et en toute sécurité, avec un reçu conservé dans votre compte.',
-                    'Payment is made by Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave), directly and securely, with a receipt kept in your account.'
+                    'Le paiement se fait par Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money), directement et en toute sécurité grâce au compte séquestre qui protège vos fonds jusqu\'à la validation du montage.',
+                    'Payment is made by Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money), directly and securely through an escrow account that protects your funds until parts are tested.'
                   )}
                 </p>
               </div>
             </div>
-            <p className="mt-8 text-sm md:text-base text-[var(--color-warm-faint)]">
+            <p className="mt-8 pt-6 border-t border-slate-100 text-sm md:text-base text-slate-500">
               {L(
                 'Encore une question ? Parcourez le',
                 'Still have a question? Browse the'
               )}{' '}
-              <Link href="/catalogue" className="font-bold text-[var(--color-primary)] hover:underline">
+              <Link href="/catalogue" className="font-extrabold text-orange-600 hover:underline">
                 {L('catalogue de pièces', 'parts catalogue')}
               </Link>
               {L(' ou recherchez une pièce compatible avec votre véhicule en ligne.', ' or search for a compatible part for your vehicle online.')}
@@ -248,27 +294,27 @@ export default function LandingPage() {
       {/* ── Section Communes & Délais Abidjan ── */}
       <AbidjanDeliveryZones />
 
-      <section className="py-14 bg-[var(--color-bg-warm)]">
+      <section className="py-14 bg-white border-y border-slate-200/80">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-3xl p-8 md:p-10 border border-[var(--color-warm-border)] shadow-lg shadow-[var(--color-earth)]/5">
-            <h2 className="text-xl md:text-2xl font-extrabold text-[var(--color-warm-ink)] mb-5">
+          <div className="bg-slate-50/80 rounded-3xl p-8 md:p-10 border border-slate-200 shadow-md">
+            <h2 className="text-xl md:text-2xl font-black text-slate-900 mb-4">
               {L('AutoAfrique — La marketplace des pièces automobiles en Afrique de l\'Ouest', 'AutoAfrique — The auto parts marketplace in West Africa')}
             </h2>
-            <div className="text-base text-[var(--color-warm-faint)] leading-relaxed space-y-4">
+            <div className="text-sm sm:text-base text-slate-600 leading-relaxed space-y-4">
               <p>
                 {L(
-                  'AutoAfrique est une marketplace e-commerce dédiée aux pièces détachées automobile en Afrique de l\'Ouest. Elle connecte les vendeurs et les acheteurs pour les marques Toyota, Hyundai, Kia, Peugeot, Mercedes et Renault, dans 10 pays : Côte d\'Ivoire, Sénégal, Mali, Burkina Faso, Niger, Bénin, Togo, Guinée-Bissau, Nigeria et Ghana.',
-                  'AutoAfrique is an e-commerce marketplace dedicated to auto parts in West Africa. It connects sellers and buyers for Toyota, Hyundai, Kia, Peugeot, Mercedes and Renault, across 10 countries: Ivory Coast, Senegal, Mali, Burkina Faso, Niger, Benin, Togo, Guinea-Bissau and Ghana.'
+                  'AutoAfrique est la première plateforme e-commerce dédiée aux pièces détachées automobiles certifiées en Afrique de l\'Ouest. Elle connecte les vendeurs vérifiés, les casses auto de réemploi et les automobilistes pour les marques Toyota, Hyundai, Kia, Peugeot, Mercedes, Nissan, Suzuki et Renault, dans 10 pays ouest-africains.',
+                  'AutoAfrique is the premier e-commerce platform dedicated to certified auto parts in West Africa. It connects verified sellers, reuse scrapyards, and car owners for Toyota, Hyundai, Kia, Peugeot, Mercedes, Nissan, Suzuki, and Renault across 10 West African countries.'
                 )}
               </p>
               <p>
                 {L(
-                  'Que vous soyez garagiste, revendeur ou particulier, trouvez les pièces dont vous avez besoin à prix transparents. Paiement par Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave). Livraison rapide en 24-72h partout en Afrique de l\'Ouest.',
-                  'Whether you\'re a mechanic, dealer or individual, find the parts you need at transparent prices. Pay with Mobile Money (Orange Money, MTN MoMo, Moov Money, Wave). Fast delivery in 24-72h across West Africa.'
+                  'Que vous soyez garagiste, gestionnaire de flotte VTC ou particulier, trouvez les pièces neuves ou d\'occasion dont vous avez besoin à prix transparents avec séquestre Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov). Livraison express moto en 1h-4h à Abidjan et expédition en 24h-48h par gare routière vers l\'intérieur.',
+                  'Whether you are a mechanic, fleet manager, or individual, find genuine or tested used parts at transparent prices with Mobile Money escrow. Express motorcycle delivery in 1h-4h across Abidjan.'
                 )}
               </p>
-              <Link href="/a-propos" className="inline-flex items-center gap-1.5 text-[var(--color-primary)] font-bold text-base hover:underline transition-colors">
-                {L('Lire la suite', 'Read more')} <span aria-hidden>&#8594;</span>
+              <Link href="/a-propos" className="inline-flex items-center gap-1.5 text-orange-600 font-extrabold text-sm sm:text-base hover:underline transition-colors">
+                {L('En savoir plus sur notre mission', 'Learn more about our mission')} <span aria-hidden>→</span>
               </Link>
             </div>
           </div>
@@ -276,15 +322,15 @@ export default function LandingPage() {
       </section>
 
       {/* Section CTA Final (Devenir Vendeur) */}
-      <section className="py-14 bg-gradient-to-r from-emerald-800 to-teal-900 text-white">
+      <section className="py-16 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white border-t border-slate-800">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <span className="text-xs font-extrabold uppercase tracking-wider bg-emerald-500/20 text-emerald-300 px-3.5 py-1.5 rounded-full border border-emerald-400/30">
+          <span className="text-xs font-black uppercase tracking-wider bg-orange-500/20 text-orange-400 px-3.5 py-1.5 rounded-full border border-orange-500/30">
             {L('Espace Vendeurs & Garagistes', 'Sellers & Mechanics Space')}
           </span>
-          <h2 className="text-2xl sm:text-4xl font-extrabold mt-4 mb-4">
+          <h2 className="text-2xl sm:text-4xl font-black mt-4 mb-4 text-white tracking-tight">
             {L('Vous êtes garagiste ou vendeur de pièces ?', 'Are you a mechanic or parts seller?')}
           </h2>
-          <p className="text-emerald-100 text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
+          <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
             {L(
               'Digitalisez votre magasin de pièces neuves ou d\'occasion contrôlée à Abidjan et en Afrique de l\'Ouest. Recevez vos commandes avec séquestre Mobile Money garanti.',
               'Digitize your new or certified used parts shop in Abidjan and West Africa. Receive orders with guaranteed Mobile Money escrow.'
@@ -293,13 +339,13 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link
               href="/devenir-vendeur"
-              className="px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-extrabold rounded-2xl shadow-lg transition-all border border-emerald-400/30"
+              className="px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black rounded-2xl shadow-xl shadow-orange-950/40 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               {L('Devenir Vendeur Partenaire', 'Become a Partner Seller')}
             </Link>
             <Link
               href="/tarifs"
-              className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-2xl border border-white/20 transition-all"
+              className="px-8 py-4 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-2xl border border-slate-700 transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               {L('Découvrir les Tarifs & Formules SaaS', 'Discover SaaS Plans & Pricing')}
             </Link>

@@ -68,81 +68,83 @@ export default function Header() {
   const formatCFA = (n: number) => `${new Intl.NumberFormat('fr-FR').format(n)} FCFA`;
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="sticky top-0 z-50 shadow-md">
       {/* ── Top bar ── */}
-      <div className="bg-[var(--color-warm-navy-deep)] text-white text-xs py-2">
+      <div className="bg-slate-950 text-slate-300 text-xs py-1.5 border-b border-slate-800/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto scrollbar-hide">
-            <Link href="/" className="hover:text-[var(--color-primary)] transition-colors font-bold tracking-wide whitespace-nowrap">
+          <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto scrollbar-hide font-medium">
+            <Link href="/" className="hover:text-orange-400 transition-colors font-bold tracking-wide whitespace-nowrap text-white">
               {L('BOUTIQUE', 'SHOP')}
             </Link>
-            <span className="text-white/30">|</span>
-            <Link href="/estimation-devis" className="hover:text-amber-300 font-black text-amber-400 transition-colors tracking-wide whitespace-nowrap flex items-center gap-1">
+            <span className="text-slate-700">|</span>
+            <Link href="/estimation-devis" className="hover:text-amber-300 font-extrabold text-amber-400 transition-colors tracking-wide whitespace-nowrap flex items-center gap-1.5 bg-amber-400/10 px-2 py-0.5 rounded-md border border-amber-400/20">
               <span>💡</span> {L('ESTIMATEUR DEVIS', 'QUOTE ESTIMATOR')}
             </Link>
-            <span className="text-white/30">|</span>
-            <Link href="/catalogue" className="hover:text-[var(--color-primary)] transition-colors font-bold tracking-wide text-[var(--color-primary)] whitespace-nowrap">
+            <span className="text-slate-700">|</span>
+            <Link href="/catalogue" className="hover:text-orange-400 transition-colors font-bold tracking-wide text-orange-400 whitespace-nowrap">
               {L('CATALOGUE', 'CATALOGUE')}
             </Link>
-            <span className="text-white/30">|</span>
-            <Link href="/dashboard" className="hover:text-[var(--color-primary)] transition-colors font-medium whitespace-nowrap">
+            <span className="text-slate-700">|</span>
+            <Link href="/dashboard" className="hover:text-orange-400 transition-colors font-medium whitespace-nowrap text-slate-300">
               {L('CLUB', 'CLUB')}
             </Link>
-            <span className="text-white/30 hidden sm:inline">|</span>
-            <Link href="/dashboard/vehicles" className="hover:text-[var(--color-primary)] transition-colors font-medium whitespace-nowrap hidden sm:inline">
+            <span className="text-slate-700 hidden sm:inline">|</span>
+            <Link href="/dashboard/vehicles" className="hover:text-orange-400 transition-colors font-medium whitespace-nowrap hidden sm:inline text-slate-300">
               {L('VÉHICULES', 'VEHICLES')}
             </Link>
           </div>
-          <div className="hidden md:flex items-center gap-4 text-white/70 shrink-0">
+          <div className="hidden md:flex items-center gap-4 text-slate-400 text-[11px] shrink-0 font-medium">
             <span className="flex items-center gap-1.5">
-              <span className="text-[var(--color-primary)]">●</span>
-              {L('Livraison Afrique de l\'Ouest', 'West Africa Delivery')}
+              <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+              {L('Livraison Express Abidjan & Gares', 'Express Delivery Abidjan & Bus Stations')}
             </span>
-            <span className="text-white/30">|</span>
+            <span className="text-slate-700">|</span>
             <span className="flex items-center gap-1.5">
-              <span className="text-[var(--color-warm-teal)]">●</span>
-              {L('Mobile Money accepté', 'Mobile Money accepted')}
+              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+              {L('Séquestre Mobile Money Garanti', 'Guaranteed Mobile Money Escrow')}
             </span>
           </div>
         </div>
       </div>
 
       {/* ── Main nav bar ── */}
-      <div className="bg-[var(--color-secondary)]">
+      <div className="bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 gap-3">
+          <div className="flex items-center justify-between h-16 gap-4">
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 shrink-0">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-accent-warm)] flex items-center justify-center shadow-lg shadow-[var(--color-primary)]/30">
+            <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/25 group-hover:scale-105 transition-all">
                 <span className="text-white font-bold text-lg sm:text-xl">🔧</span>
               </div>
-              <div className="hidden sm:block">
-                <span className="text-xl font-extrabold text-white tracking-tight">Auto</span>
-                <span className="text-xl font-extrabold text-[var(--color-primary)] tracking-tight">Afrique</span>
+              <div className="hidden sm:block leading-none">
+                <span className="text-xl font-black text-white tracking-tight">Auto<span className="text-orange-500">Afrique</span></span>
+                <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Marketplace & ERP</span>
               </div>
             </Link>
 
             {/* Search bar — desktop */}
-            <div className="hidden md:flex flex-1 max-w-xl min-w-0 mx-4">
-              <div className="flex w-full items-center bg-white rounded-xl overflow-hidden shadow-sm border-2 border-transparent focus-within:border-orange-500 transition-all">
+            <div className="hidden md:flex flex-1 max-w-xl min-w-0 mx-2">
+              <div className="flex w-full items-center bg-slate-800/80 border border-slate-700/80 rounded-2xl overflow-hidden shadow-inner focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/20 transition-all">
+                <span className="pl-4 text-slate-400">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </span>
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                  placeholder={L('Rechercher une pièce (ex: filtre Toyota Hilux)', 'Search for a part (ex: filter Toyota Hilux)')}
-                  className="flex-1 px-4 py-2.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none bg-transparent"
+                  placeholder={L('Rechercher une pièce (ex: amortisseur Toyota Hilux, plaquettes 206...)', 'Search for a part (ex: shock absorber Hilux, brake pads...)')}
+                  className="flex-1 px-3 py-2.5 text-sm text-white placeholder-slate-400 focus:outline-none bg-transparent"
                 />
                 <button
                   type="button"
                   onClick={handleSearch}
-                  className="px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm flex items-center gap-1.5 transition-colors cursor-pointer shrink-0"
+                  className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-md"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  <span>{L('Rechercher', 'Search')}</span>
+                  <span>{L('Trouver', 'Find')}</span>
                 </button>
               </div>
             </div>
@@ -153,7 +155,7 @@ export default function Header() {
               {/* Mobile search toggle */}
               <button
                 onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
-                className="md:hidden p-2.5 rounded-xl hover:bg-white/10 transition-colors text-white"
+                className="md:hidden p-2.5 rounded-xl hover:bg-slate-800 transition-colors text-white"
                 aria-label="Rechercher"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -290,17 +292,17 @@ export default function Header() {
       )}
 
       {/* ── Category bar ── */}
-      <div className="bg-[var(--color-secondary-hover)] border-t border-white/10 shadow-inner">
+      <div className="bg-slate-950/90 border-b border-slate-800/80 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-1.5 overflow-x-auto py-2 scrollbar-hide">
             {categoryNav.map((cat) => (
               <Link
                 key={cat.name.fr}
                 href={cat.href}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all whitespace-nowrap ${
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                   cat.highlight
-                    ? 'bg-orange-500 hover:bg-orange-600 text-white font-extrabold shadow-sm'
-                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                    ? 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-sm shadow-orange-500/20'
+                    : 'text-slate-300 hover:text-white hover:bg-slate-800/80 border border-transparent hover:border-slate-700/60'
                 }`}
               >
                 <span className="text-sm">{cat.icon}</span>

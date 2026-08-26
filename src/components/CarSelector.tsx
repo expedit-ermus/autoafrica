@@ -150,6 +150,7 @@ export default function CarSelector() {
         const modelObj = carModelsList.find((m) => m.id === engineObj.modelId);
         if (modelObj) {
           setSelectedModel(modelObj.id);
+
           setSelectedMake(modelObj.makeId);
         }
       }
@@ -166,75 +167,80 @@ export default function CarSelector() {
 
     if (brandName) {
       const slug = brandName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-      router.push(`/catalogue/${slug}`);
+      router.push(`/marques/${slug}`);
     } else {
       router.push('/catalogue');
     }
   };
 
   return (
-    <div className="bg-white rounded-3xl shadow-xl shadow-[var(--color-earth)]/8 border border-[var(--color-warm-border)] overflow-hidden">
-      <div className="bg-gradient-to-r from-[var(--color-secondary)] to-[var(--color-warm-navy-deep)] px-5 sm:px-7 pt-7 sm:pt-9 pb-5 sm:pb-7">
-        <h2 className="text-white font-extrabold text-lg sm:text-xl mb-2">
+    <div className="bg-white rounded-3xl shadow-2xl shadow-slate-900/10 border border-slate-200/80 overflow-hidden">
+      <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 px-6 py-6 sm:py-7 text-white border-b border-slate-800">
+        <div className="flex items-center gap-2 mb-1">
+          <span className="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+          <span className="text-[11px] font-extrabold uppercase tracking-widest text-orange-400">Sélecteur Rapide</span>
+        </div>
+        <h2 className="text-white font-black text-lg sm:text-xl tracking-tight">
           {L('Trouvez les pièces pour votre véhicule', 'Find parts for your vehicle')}
         </h2>
-        <p className="text-white/85 text-sm sm:text-base">
-          {L('Recherchez par immatriculation ou sélectionnez votre modèle', 'Search by registration or select your model')}
+        <p className="text-slate-400 text-xs sm:text-sm mt-1">
+          {L('Par immatriculation ou modèle (Toyota, Peugeot...)', 'By registration or model (Toyota, Peugeot...)')}
         </p>
       </div>
 
-      <div className="p-5 sm:p-7">
+      <div className="p-6 sm:p-7">
         {/* Immatriculation */}
-        <div className="mb-7">
-          <label htmlFor="regNumber" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
-            {L('Numéro d\'immatriculation (Afrique de l\'Ouest)', 'Registration number')}
+        <div className="mb-6">
+          <label htmlFor="regNumber" className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
+            {L('Numéro d\'immatriculation (Côte d\'Ivoire / Sénégal)', 'Registration number (CI / SN)')}
           </label>
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="flex items-stretch flex-1 min-w-0">
-              <div className="w-14 shrink-0 bg-blue-600 rounded-xl flex items-center justify-center shadow-sm">
-                <span className="text-white text-xs font-bold tracking-wide">CI / SN</span>
+          <div className="flex flex-col sm:flex-row gap-2.5">
+            <div className="flex items-stretch flex-1 min-w-0 shadow-inner rounded-2xl overflow-hidden border-2 border-slate-200 focus-within:border-orange-500 transition-all">
+              <div className="w-16 shrink-0 bg-blue-700 flex flex-col items-center justify-center text-white px-2 py-1 select-none">
+                <span className="text-[9px] font-black tracking-widest opacity-80">CI / SN</span>
+                <span className="text-sm">🚗</span>
               </div>
               <input
                 id="regNumber"
                 type="text"
                 value={regNumber}
                 onChange={(e) => setRegNumber(e.target.value.toUpperCase())}
-                placeholder="AB-123-CD"
-                maxLength={12}
-                className="flex-1 min-w-0 px-4 py-3.5 border-2 border-l-0 border-[var(--color-warm-border)] rounded-r-xl rounded-l-none text-lg font-mono uppercase focus:border-[var(--color-primary)] focus:outline-none transition-colors text-[var(--color-warm-ink)] placeholder-[var(--color-warm-muted)]"
+                placeholder="1234-AB-01"
+                maxLength={14}
+                className="flex-1 min-w-0 px-4 py-3 text-base sm:text-lg font-mono font-bold uppercase focus:outline-none bg-slate-50/50 text-slate-900 placeholder-slate-400"
               />
             </div>
             <button
               type="button"
               onClick={handleSearch}
-              className="shrink-0 px-5 sm:px-7 py-3.5 bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] text-white font-bold rounded-xl transition-all shadow-lg shadow-[var(--color-primary)]/30 whitespace-nowrap cursor-pointer"
+              className="shrink-0 px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-sm rounded-2xl transition-all shadow-md shadow-orange-500/20 whitespace-nowrap cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
             >
-              {L('Rechercher', 'Search')}
+              {L('Valider', 'Submit')}
             </button>
           </div>
         </div>
 
-        <div className="relative flex items-center gap-4 my-7">
-          <div className="flex-1 h-px bg-[var(--color-warm-border)]"></div>
-          <span className="text-sm text-[var(--color-warm-muted)] font-bold leading-none whitespace-nowrap">
-            {L('ou sélectionnez votre modèle', 'or select your model')}
+        <div className="relative flex items-center gap-4 my-6">
+          <div className="flex-1 h-px bg-slate-200"></div>
+          <span className="text-xs text-slate-400 font-bold uppercase tracking-wider whitespace-nowrap">
+            {L('ou par modèle précis', 'or by specific model')}
           </span>
-          <div className="flex-1 h-px bg-[var(--color-warm-border)]"></div>
+          <div className="flex-1 h-px bg-slate-200"></div>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3.5">
           <div>
-            <label htmlFor="carMake" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
-              {L('1. Marque du véhicule', '1. Vehicle Make')}
+            <label htmlFor="carMake" className="block text-xs font-bold text-slate-700 mb-1.5">
+              {L('1. Constructeur automobile', '1. Vehicle Make')}
             </label>
             <div className="relative">
               <select
                 id="carMake"
                 value={selectedMake || ''}
                 onChange={(e) => handleMakeChange(Number(e.target.value) || null)}
-                className="w-full pl-5 pr-10 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-gray-900 focus:border-orange-500 focus:outline-none transition-colors bg-white font-medium cursor-pointer appearance-none"
+                className="w-full pl-4 pr-10 py-3 border-2 border-slate-200 rounded-2xl text-slate-900 font-bold text-sm focus:border-orange-500 focus:outline-none transition-colors bg-slate-50/60 cursor-pointer appearance-none"
               >
-                <option value="">{L('Choisissez une marque (ex: Toyota, Peugeot)', 'Choose a make')}</option>
+                <option value="">{L('Sélectionner une marque (ex: Toyota, Peugeot)', 'Select a make')}</option>
                 <optgroup label={L('Populaires en Afrique de l\'Ouest', 'Popular in West Africa')}>
                   {carMakes.filter((m) => m.popular).map((make) => (
                     <option key={make.id} value={make.id}>{make.name}</option>
@@ -255,7 +261,7 @@ export default function CarSelector() {
           </div>
 
           <div>
-            <label htmlFor="carModel" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
+            <label htmlFor="carModel" className="block text-xs font-bold text-slate-700 mb-1.5">
               {L('2. Modèle de véhicule', '2. Vehicle Model')}
             </label>
             <div className="relative">
@@ -263,9 +269,9 @@ export default function CarSelector() {
                 id="carModel"
                 value={selectedModel || ''}
                 onChange={(e) => handleModelChange(Number(e.target.value) || null)}
-                className="w-full pl-5 pr-10 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-gray-900 focus:border-orange-500 focus:outline-none transition-colors bg-white font-medium cursor-pointer appearance-none"
+                className="w-full pl-4 pr-10 py-3 border-2 border-slate-200 rounded-2xl text-slate-900 font-bold text-sm focus:border-orange-500 focus:outline-none transition-colors bg-slate-50/60 cursor-pointer appearance-none"
               >
-                <option value="">{L('Choisissez un modèle (ex: Hilux, Corolla, 308)', 'Choose a model')}</option>
+                <option value="">{L('Sélectionner un modèle (ex: Hilux, Corolla, 308)', 'Select a model')}</option>
                 {availableModels.map((model) => (
                   <option key={model.id} value={model.id}>
                     {model.name} {!selectedMake ? `(${carMakes.find(m => m.id === model.makeId)?.name})` : ''}
@@ -281,17 +287,17 @@ export default function CarSelector() {
           </div>
 
           <div>
-            <label htmlFor="carEngine" className="block text-base font-bold text-[var(--color-warm-ink)] mb-2.5">
-              {L('3. Motorisation & Cylindrée', '3. Engine & Displacement')}
+            <label htmlFor="carEngine" className="block text-xs font-bold text-slate-700 mb-1.5">
+              {L('3. Motorisation', '3. Engine')}
             </label>
             <div className="relative">
               <select
                 id="carEngine"
                 value={selectedEngine || ''}
                 onChange={(e) => handleEngineChange(Number(e.target.value) || null)}
-                className="w-full pl-5 pr-10 py-3.5 border-2 border-[var(--color-warm-border)] rounded-xl text-gray-900 focus:border-orange-500 focus:outline-none transition-colors bg-white font-medium cursor-pointer appearance-none"
+                className="w-full pl-4 pr-10 py-3 border-2 border-slate-200 rounded-2xl text-slate-900 font-bold text-sm focus:border-orange-500 focus:outline-none transition-colors bg-slate-50/60 cursor-pointer appearance-none"
               >
-                <option value="">{L('Choisissez une motorisation (ex: 2.4L D-4D, 1.6L BlueHDi)', 'Choose an engine')}</option>
+                <option value="">{L('Motorisation (ex: 2.4L D-4D, 1.6L BlueHDi)', 'Engine (optional)')}</option>
                 {availableEngines.map((engine) => (
                   <option key={engine.id} value={engine.id}>{engine.name}</option>
                 ))}
@@ -307,16 +313,16 @@ export default function CarSelector() {
           <button
             type="button"
             onClick={handleSearch}
-            className="w-full px-7 py-3.5 sm:py-4 bg-orange-500 hover:bg-orange-600 text-white font-extrabold rounded-xl transition-all shadow-lg shadow-orange-950/20 text-base sm:text-lg cursor-pointer flex items-center justify-center gap-2"
+            className="w-full mt-2 px-6 py-4 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black rounded-2xl transition-all shadow-lg shadow-orange-500/25 text-sm uppercase tracking-wider cursor-pointer flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-[0.98]"
           >
-            <span>🔍</span> {L('Rechercher les pièces compatibles', 'Search compatible parts')}
+            <span>🔍</span> {L('Voir les pièces compatibles', 'View compatible parts')}
           </button>
         </div>
 
-        <p className="text-center text-sm text-[var(--color-warm-muted)] mt-5 font-medium">
-          {L('Vous ne trouvez pas votre véhicule ?', 'Can\'t find your vehicle?')}{' '}
-          <Link href="/contact" className="text-orange-600 hover:underline font-bold">
-            {L('Contactez-nous sur WhatsApp', 'Contact us on WhatsApp')}
+        <p className="text-center text-xs text-slate-500 mt-4 font-medium">
+          {L('Besoin d\'aide pour trouver une pièce rare ?', 'Need help finding a rare part?')}{' '}
+          <Link href="/contact" className="text-orange-600 hover:text-orange-700 font-bold underline">
+            {L('Conseiller WhatsApp', 'WhatsApp Advisor')}
           </Link>
         </p>
       </div>

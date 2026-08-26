@@ -3,164 +3,178 @@ import Link from 'next/link';
 import { useApp } from '@/contexts/AppContext';
 import { track } from '@/lib/tracking';
 
-// Vignettes neutres : dégradés de la palette + icône SVG, aucune image distante
-// (remplace les anciennes photos Unsplash non validées, cf. DECISIONS.md D39).
 const categories = [
   {
     id: 1,
     slug: 'pneus-jantes',
     name: { fr: 'Pneus & Jantes', en: 'Tyres & Rims' },
-    bg: 'from-[var(--color-primary)] to-[#FF8F5E]',
-    subcategories: ['Pneus été', 'Pneus hiver', 'Jantes aluminium', 'Jantes acier'],
+    emoji: '🛞',
+    bg: 'from-amber-500 to-orange-600',
+    subcategories: ['Pneus été / toute saison', 'Jantes aluminium', 'Jantes tôle', 'Capteurs de pression TPMS'],
   },
   {
     id: 2,
     slug: 'frein',
-    name: { fr: 'Frein', en: 'Brakes' },
-    bg: 'from-[var(--color-secondary)] to-[var(--color-warm-slate)]',
-    subcategories: ['Disques de frein', 'Plaquettes', 'Étriers', 'Câbles de frein'],
+    name: { fr: 'Freinage', en: 'Brakes' },
+    emoji: '🔴',
+    bg: 'from-rose-600 to-red-700',
+    subcategories: ['Disques ventilés & pleins', 'Plaquettes céramique & semi-métal', 'Étriers de frein', 'Liquide DOT4 / DOT5.1'],
   },
   {
     id: 3,
     slug: 'moteur',
-    name: { fr: 'Moteur', en: 'Engine' },
-    bg: 'from-[var(--color-warm-teal)] to-[#00A88C]',
-    subcategories: ['Pièces moteur', 'Joint de culasse', 'Piston', 'Vilebrequin'],
+    name: { fr: 'Moteur & Culasse', en: 'Engine & Cylinder' },
+    emoji: '⚙️',
+    bg: 'from-emerald-600 to-teal-700',
+    subcategories: ['Moteurs complets venants', 'Joints de culasse', 'Pistons & segments', 'Injecteurs & pompes HP'],
   },
   {
     id: 4,
     slug: 'courroies-chaines',
     name: { fr: 'Courroies & Chaînes', en: 'Belts & Chains' },
-    bg: 'from-[var(--color-earth)] to-[var(--color-warm-slate)]',
-    subcategories: ['Courroie distribution', 'Courroie accessoire', 'Galet tendeur', 'Chaîne de distribution'],
+    emoji: '⛓️',
+    bg: 'from-amber-600 to-yellow-600',
+    subcategories: ['Kits distribution avec pompe à eau', 'Courroies d\'accessoire', 'Galets tendeurs', 'Chaînes de synchro'],
   },
   {
     id: 5,
     slug: 'embrayage',
-    name: { fr: 'Embrayage', en: 'Clutch' },
-    bg: 'from-[var(--color-primary)] to-[var(--color-warm-teal)]',
-    subcategories: ['Kit d\'embrayage', 'Disque d\'embrayage', 'Récepteur', 'Vilebrequin'],
+    name: { fr: 'Embrayage & Boîte', en: 'Clutch & Gearbox' },
+    emoji: '🔄',
+    bg: 'from-blue-600 to-indigo-700',
+    subcategories: ['Kits d\'embrayage complets', 'Volants moteurs bi-masse', 'Butées hydrauliques', 'Boîtes de vitesses'],
   },
   {
     id: 6,
     slug: 'amortissement',
-    name: { fr: 'Amortissement', en: 'Shock Absorbers' },
-    bg: 'from-[var(--color-warm-navy-deep)] to-[var(--color-secondary)]',
-    subcategories: ['Amortisseurs', 'Supports d\'amortisseurs', 'Biellettes', 'Rotules'],
+    name: { fr: 'Amortisseurs', en: 'Shock Absorbers' },
+    emoji: '〰️',
+    bg: 'from-violet-600 to-purple-800',
+    subcategories: ['Paires amortisseurs avant/arrière', 'Coupelles & roulements', 'Ressorts hélicoïdaux', 'Biellettes de barre'],
   },
   {
     id: 7,
     slug: 'suspension',
-    name: { fr: 'Suspension', en: 'Suspension' },
-    bg: 'from-[#FF8F5E] to-[var(--color-warm-teal)]',
-    subcategories: ['Ressorts', 'Baladeurs', 'Barres antiroulis', 'Bras de suspension'],
+    name: { fr: 'Suspension & Train', en: 'Suspension & Axle' },
+    emoji: '🚙',
+    bg: 'from-cyan-600 to-blue-700',
+    subcategories: ['Bras & triangles de suspension', 'Rotules de direction', 'Silentblocs renforcés', 'Crémaillères assistées'],
   },
   {
     id: 8,
     slug: 'filtre',
-    name: { fr: 'Filtre', en: 'Filters' },
-    bg: 'from-[var(--color-warm-slate)] to-[#00A88C]',
-    subcategories: ['Filtre à huile', 'Filtre à air', 'Filtre à carburant', 'Filtre habitacle'],
+    name: { fr: 'Filtres & Entretien', en: 'Filters & Service' },
+    emoji: '🧪',
+    bg: 'from-teal-600 to-emerald-700',
+    subcategories: ['Filtres à huile', 'Filtres à air haute capacité', 'Filtres à gasoil / essence', 'Filtres d\'habitacle'],
   },
   {
     id: 9,
     slug: 'carrosserie',
-    name: { fr: 'Carrosserie', en: 'Body Parts' },
-    bg: 'from-[var(--color-warm-ink)] to-[var(--color-warm-navy-deep)]',
-    subcategories: ['Pare-chocs', 'Rétroviseurs', 'Phares', 'Calandre'],
+    name: { fr: 'Carrosserie & Éclairage', en: 'Body Parts & Lighting' },
+    emoji: '🚗',
+    bg: 'from-slate-700 to-slate-950',
+    subcategories: ['Optiques de phares LED/Halogène', 'Feux arrière', 'Pare-chocs avant/arrière', 'Rétroviseurs rabattables'],
   },
   {
     id: 10,
     slug: 'huiles-fluides',
     name: { fr: 'Huiles & Fluides', en: 'Oils & Fluids' },
-    bg: 'from-[var(--color-warm-navy)] to-[#00A88C]',
-    subcategories: ['Huile moteur', 'Liquide de refroidissement', 'Liquide de frein', 'Huile de transmission'],
+    emoji: '🛢️',
+    bg: 'from-amber-500 to-orange-700',
+    subcategories: ['Huiles synthétiques 5W30 / 10W40 / 15W40', 'Liquide de refroidissement tropical', 'Huiles boîte auto ATF', 'Liquide de frein'],
   },
   {
     id: 11,
     slug: 'electricite',
-    name: { fr: 'Électricité', en: 'Electrics' },
-    bg: 'from-[var(--color-secondary)] to-[var(--color-primary)]',
-    subcategories: ['Alternateur', 'Démarreur', 'Batterie', 'Bougies d\'allumage'],
+    name: { fr: 'Électricité & Allumage', en: 'Electrics & Ignition' },
+    emoji: '⚡',
+    bg: 'from-orange-500 to-amber-500',
+    subcategories: ['Alternateurs 12V/24V', 'Démarreurs renforcés', 'Batteries tropicalisées', 'Bougies d\'allumage & préchauffage'],
   },
   {
     id: 12,
     slug: 'autres',
-    name: { fr: 'Autres catégories', en: 'Other categories' },
-    bg: 'from-[var(--color-earth)] to-[var(--color-warm-navy)]',
-    subcategories: ['Échappement', 'Climatisation', 'Direction', 'Système de refroidissement'],
+    name: { fr: 'Clim & Échappement', en: 'AC & Exhaust' },
+    emoji: '📦',
+    bg: 'from-indigo-700 to-slate-900',
+    subcategories: ['Compresseurs de clim', 'Condenseurs & bouteilles', 'Pots d\'échappement & silencieux', 'Radiateurs de refroidissement'],
   },
 ];
-
-function CategoryIcon() {
-  return (
-    <svg className="w-12 h-12 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-    </svg>
-  );
-}
 
 export default function PartsCatalog() {
   const { locale } = useApp();
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
   return (
-    <section className="py-8 md:py-14 bg-[var(--color-bg)]">
+    <section className="py-12 md:py-16 bg-[#F8FAFC]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] mb-6 md:mb-10">
-          {L('Catégories de pièces', 'Parts categories')}
-        </h2>
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100/80 text-orange-800 text-xs font-bold uppercase tracking-wider mb-2">
+              <span>🔧</span> {L('Catalogue par Famille de Pièces', 'Parts Catalog by Family')}
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
+              {L('Catégories de pièces détachées', 'Parts categories')}
+            </h2>
+            <p className="text-slate-500 text-sm sm:text-base mt-1">
+              {L('Sélectionnez un système pour trouver les pièces compatibles avec votre véhicule.', 'Select a system to find compatible parts for your vehicle.')}
+            </p>
+          </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          <Link
+            href="/catalogue"
+            className="inline-flex items-center gap-2 text-sm font-extrabold text-orange-600 hover:text-orange-700 group shrink-0"
+          >
+            <span>{L('Voir tout le catalogue (12 catégories)', 'View full catalogue (12 categories)')}</span>
+            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-5">
           {categories.map((cat) => (
             <Link
               key={cat.id}
               href={`/categories/${cat.slug}`}
               onClick={() => track('click_category', { category_name: cat.name[locale as 'fr' | 'en'] })}
-              className="group relative bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--color-primary)]/10 transition-all duration-300 overflow-hidden"
+              className="group relative bg-white rounded-3xl border border-slate-200/80 hover:border-orange-500/40 hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1"
             >
-              <div className={`relative aspect-square overflow-hidden bg-gradient-to-br ${cat.bg}`}>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <CategoryIcon />
-                </div>
+              <div className={`relative aspect-square overflow-hidden bg-gradient-to-br ${cat.bg} p-6 flex flex-col items-center justify-center transition-transform group-hover:scale-105 duration-300`}>
+                <span className="text-4xl sm:text-5xl filter drop-shadow-md select-none transform group-hover:scale-110 transition-transform">
+                  {cat.emoji}
+                </span>
+                <span className="absolute bottom-2 text-[10px] font-extrabold uppercase tracking-widest text-white/80 bg-black/20 px-2 py-0.5 rounded-full backdrop-blur-xs">
+                  {cat.slug}
+                </span>
               </div>
-              <div className="p-4 text-center">
-                <h3 className="text-sm font-bold text-[var(--color-warm-ink)] group-hover:text-[var(--color-primary)] transition-colors">
+              
+              <div className="p-4 text-center bg-white flex-1 flex items-center justify-center">
+                <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 group-hover:text-orange-600 transition-colors leading-snug">
                   {cat.name[locale as 'fr' | 'en']}
                 </h3>
               </div>
 
-              <div className="absolute inset-0 bg-gradient-to-b from-[var(--color-secondary)]/95 to-[var(--color-warm-navy-deep)]/95 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center p-4">
-                <div className="text-center">
-                  <div className="text-white font-bold text-sm mb-3">
-                    {cat.name[locale as 'fr' | 'en']}
-                  </div>
-                  <ul className="space-y-2">
-                    {cat.subcategories.map((sub) => (
-                      <li key={sub}>
-                        <span className="text-white/80 text-xs hover:text-[var(--color-primary)] transition-colors cursor-pointer font-medium">
-                          {sub}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+              {/* Hover quick preview layer */}
+              <div className="absolute inset-0 bg-slate-950/95 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-center p-4 text-white z-10 backdrop-blur-xs">
+                <div className="text-xs font-black text-orange-400 mb-2 border-b border-white/10 pb-1 flex items-center gap-1">
+                  <span>{cat.emoji}</span> {cat.name[locale as 'fr' | 'en']}
+                </div>
+                <ul className="space-y-1.5 text-[11px] text-slate-300">
+                  {cat.subcategories.slice(0, 3).map((sub) => (
+                    <li key={sub} className="flex items-center gap-1 line-clamp-1">
+                      <span className="text-orange-500 font-bold">•</span>
+                      <span>{sub}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-3 text-[10px] font-bold text-center bg-orange-500 text-white py-1 rounded-lg">
+                  {L('Consulter les prix →', 'Check prices →')}
                 </div>
               </div>
             </Link>
           ))}
-        </div>
-
-        <div className="text-center mt-6 md:mt-10">
-          <Link
-            href="/catalogue"
-            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-[var(--color-bg-warm)] hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-warm-ink)] font-bold rounded-xl transition-all duration-300 border border-[var(--color-warm-border)] text-sm sm:text-base"
-          >
-            {L('Plus de pièces détachées', 'More spare parts')}
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
         </div>
       </div>
     </section>

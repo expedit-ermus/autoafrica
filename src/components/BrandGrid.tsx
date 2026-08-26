@@ -25,47 +25,57 @@ export default function BrandGrid() {
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
   return (
-    <section className="py-8 md:py-14 bg-[var(--color-bg-warm)]">
+    <section className="py-12 md:py-16 bg-white border-y border-slate-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-warm-ink)] mb-6 md:mb-10">
-          {L('Marques populaires', 'Popular brands')}
-        </h2>
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 md:mb-12 gap-4">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 text-slate-800 text-xs font-bold uppercase tracking-wider mb-2">
+              <span>🚗</span> {L('Constructeurs Automobiles', 'Car Manufacturers')}
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
+              {L('Marques automobiles les plus demandées', 'Top demanded car makes')}
+            </h2>
+            <p className="text-slate-500 text-sm sm:text-base mt-1">
+              {L('Pièces d\'origine neuves et d\'occasion contrôlée pour tout le parc roulant ouest-africain.', 'New OEM and tested used parts for all West African vehicles.')}
+            </p>
+          </div>
 
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
+          <Link
+            href="/catalogue"
+            className="inline-flex items-center gap-2 text-sm font-extrabold text-orange-600 hover:text-orange-700 group shrink-0"
+          >
+            <span>{L('Voir les 15+ constructeurs', 'View 15+ manufacturers')}</span>
+            <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-5">
           {brands.map((brand) => (
             <Link
               key={brand.name}
               href={`/marques/${brand.slug}`}
               onClick={() => track('click_brand', { brand_name: brand.name })}
-              className="group bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--color-primary)]/10 p-4 sm:p-6 flex flex-col items-center justify-center transition-all duration-300"
+              className="group bg-slate-50/70 hover:bg-white rounded-3xl border border-slate-200/80 hover:border-orange-500/40 hover:shadow-xl hover:shadow-orange-500/10 p-5 sm:p-6 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1"
             >
-              <div className="relative w-18 h-18 mb-3 flex items-center justify-center">
+              <div className="relative w-16 h-16 sm:w-20 sm:h-20 mb-3 flex items-center justify-center">
                 <RemoteImage
                   src={brand.logo}
                   alt={brand.name}
                   fill
-                  sizes="72px"
-                  className="object-contain grayscale group-hover:grayscale-0 transition-all duration-300"
+                  sizes="80px"
+                  className="object-contain filter grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-300"
                 />
               </div>
-              <div className="text-sm font-bold text-[var(--color-warm-ink)] group-hover:text-[var(--color-primary)] transition-colors text-center">
+              <div className="text-sm font-extrabold text-slate-900 group-hover:text-orange-600 transition-colors text-center mt-1">
                 {brand.name}
               </div>
-              <div className="text-xs text-[var(--color-warm-muted-strong)] mt-1 font-medium">{L('Pièces disponibles', 'Parts available')}</div>
+              <div className="text-[11px] text-slate-400 mt-0.5 font-bold uppercase tracking-wider">
+                {L('Pièces dispo', 'In stock')}
+              </div>
             </Link>
           ))}
-        </div>
-
-        <div className="text-center mt-6 md:mt-10">
-          <Link
-            href="/catalogue"
-            className="inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-white hover:bg-[var(--color-primary)] hover:text-white text-[var(--color-warm-ink)] font-bold rounded-xl transition-all duration-300 border border-[var(--color-warm-border)] shadow-sm text-sm sm:text-base"
-          >
-            {L('Plus de constructeurs automobiles', 'More car manufacturers')}
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-            </svg>
-          </Link>
         </div>
       </div>
     </section>
