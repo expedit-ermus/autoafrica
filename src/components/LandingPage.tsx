@@ -9,6 +9,7 @@ import BrandGrid from '@/components/BrandGrid';
 import Bestsellers from '@/components/Bestsellers';
 import VtcCircuitCourtSection from '@/components/VtcCircuitCourtSection';
 import DiagnosticEstimator from '@/components/DiagnosticEstimator';
+import AbidjanDeliveryZones from '@/components/AbidjanDeliveryZones';
 
 const trustFeatures = [
   {
@@ -243,6 +244,9 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Section Communes & Délais Abidjan ── */}
+      <AbidjanDeliveryZones />
 
       <section className="py-14 bg-[var(--color-bg-warm)]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
