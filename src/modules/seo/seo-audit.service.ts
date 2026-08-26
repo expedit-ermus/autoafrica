@@ -55,7 +55,7 @@ export class SeoAuditService {
         previousPosition: 2,
         change: 0,
         searchVolume: 9800,
-        url: `${this.defaultSiteUrl}/marketplace/marque/toyota`,
+        url: `${this.defaultSiteUrl}/marques/toyota`,
       },
       {
         keyword: 'achat pièces auto mobile money',
@@ -71,7 +71,7 @@ export class SeoAuditService {
         previousPosition: 7,
         change: +3,
         searchVolume: 4100,
-        url: `${this.defaultSiteUrl}/marketplace/categorie/moteur`,
+        url: `${this.defaultSiteUrl}/categories/moteur`,
       },
       {
         keyword: 'décodeur vin côte d ivoire',

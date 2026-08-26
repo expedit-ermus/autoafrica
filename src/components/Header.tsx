@@ -9,13 +9,13 @@ import { track } from '@/lib/tracking';
 const categoryNav = [
   { name: { fr: 'Catalogue complet', en: 'Full catalogue' }, icon: '🔍', href: '/catalogue', highlight: true },
   { name: { fr: 'Tarifs & Abonnements', en: 'Pricing' }, icon: '🏷️', href: '/tarifs' },
-  { name: { fr: 'Pneus', en: 'Tyres' }, icon: '🛞', href: '/marketplace/categorie/pneus-jantes' },
-  { name: { fr: 'Frein', en: 'Brakes' }, icon: '🔴', href: '/marketplace/categorie/frein' },
-  { name: { fr: 'Moteur', en: 'Engine' }, icon: '⚙️', href: '/marketplace/categorie/moteur' },
-  { name: { fr: 'Filtre', en: 'Filters' }, icon: '🔧', href: '/marketplace/categorie/filtre' },
-  { name: { fr: 'Huile moteur', en: 'Engine oil' }, icon: '🛢️', href: '/marketplace/categorie/huiles-fluides' },
-  { name: { fr: 'Jantes', en: 'Rims' }, icon: '⭕', href: '/marketplace/categorie/pneus-jantes' },
-  { name: { fr: 'Accessoires', en: 'Accessories' }, icon: '📦', href: '/marketplace/categorie/autres' },
+  { name: { fr: 'Pneus & Jantes', en: 'Tyres & Rims' }, icon: '🛞', href: '/categories/pneus-jantes' },
+  { name: { fr: 'Freinage', en: 'Brakes' }, icon: '🔴', href: '/categories/frein' },
+  { name: { fr: 'Moteur', en: 'Engine' }, icon: '⚙️', href: '/categories/moteur' },
+  { name: { fr: 'Filtres', en: 'Filters' }, icon: '🔧', href: '/categories/filtre' },
+  { name: { fr: 'Suspension', en: 'Suspension' }, icon: '🚙', href: '/categories/suspension' },
+  { name: { fr: 'Huiles & Fluides', en: 'Engine oil' }, icon: '🛢️', href: '/categories/huiles-fluides' },
+  { name: { fr: 'Électricité', en: 'Electricity' }, icon: '⚡', href: '/categories/electricite' },
 ];
 
 export default function Header() {

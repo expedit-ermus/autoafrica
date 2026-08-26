@@ -85,10 +85,10 @@ export default function EntretienVehiculeAfriquePage() {
         },
       ]}
       resources={[
-        { title: 'Catalogue Filtres', description: 'Filtres à air, huile, carburant et habitacle pour toutes marques.', href: '/marketplace/categorie/filtre' },
-        { title: 'Catalogue Freins', description: 'Plaquettes, disques et kits de frein inspectés.', href: '/marketplace/categorie/frein' },
-        { title: 'Huiles & Fluides', description: 'Huiles moteur, liquides de refroidissement et de frein.', href: '/marketplace/categorie/huiles-fluides' },
-        { title: 'Pneus & Jantes', description: 'Pneus neufs et d\'occasion contrôlée pour toutes marques.', href: '/marketplace/categorie/pneus-jantes' },
+        { title: 'Catalogue Filtres', description: 'Filtres à air, huile, carburant et habitacle pour toutes marques.', href: '/categories/filtre' },
+        { title: 'Catalogue Freinage', description: 'Plaquettes, disques et kits de frein inspectés.', href: '/categories/frein' },
+        { title: 'Huiles & Fluides', description: 'Huiles moteur, liquides de refroidissement et de frein.', href: '/categories/huiles-fluides' },
+        { title: 'Pneus & Jantes', description: 'Pneus neufs et d\'occasion contrôlée pour toutes marques.', href: '/categories/pneus-jantes' },
       ]}
       cta={{
         title: 'Trouvez vos pièces d\'entretien sur AutoAfrique',

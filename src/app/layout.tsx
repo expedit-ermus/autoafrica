@@ -62,6 +62,12 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  other: {
+    "geo.region": "CI-AB",
+    "geo.placename": "Abidjan",
+    "geo.position": "5.316667;-4.033333",
+    "ICBM": "5.316667, -4.033333",
+  },
 };
 
 export const viewport: Viewport = {

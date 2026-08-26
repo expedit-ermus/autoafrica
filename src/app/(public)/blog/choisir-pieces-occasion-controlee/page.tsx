@@ -76,7 +76,7 @@ export default function ChoisirPiecesOccasionPage() {
         },
       ]}
       resources={[
-        { title: 'Catalogue Moteurs', description: 'Moteurs d\'occasion contrôlée et neufs pour toutes marques.', href: '/marketplace/categorie/moteur' },
+        { title: 'Catalogue Moteurs', description: 'Moteurs d\'occasion contrôlée et neufs pour toutes marques.', href: '/categories/moteur' },
         { title: 'Guide des retours', description: 'Comment retourner une pièce non conforme.', href: '/retours' },
       ]}
       cta={{

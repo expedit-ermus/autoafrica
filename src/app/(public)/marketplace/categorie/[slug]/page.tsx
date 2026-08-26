@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `Pièces détachées ${cat.name} à Abidjan`,
     description: `${cat.description} Paiement Mobile Money, livraison 24-72h.`,
-    alternates: { canonical: `/marketplace/categorie/${cat.slug}` },
+    alternates: { canonical: `/categories/${cat.slug}` },
   };
 }
 

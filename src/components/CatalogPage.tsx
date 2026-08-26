@@ -14,7 +14,7 @@ interface CatalogPageProps {
 }
 
 export default function CatalogPage({ kind, slug, name, description, products }: CatalogPageProps) {
-  const canonicalPath = kind === 'categorie' ? `/marketplace/categorie/${slug}` : `/marketplace/marque/${slug}`;
+  const canonicalPath = kind === 'categorie' ? `/categories/${slug}` : `/marques/${slug}`;
   const fullUrl = `${SITE_URL}${canonicalPath}`;
 
   const faqs = [

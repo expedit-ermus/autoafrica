@@ -55,42 +55,58 @@ export default function Footer() {
 
       <div className="py-14">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-8">
             <div>
               <h4 className="text-white font-bold mb-5 text-sm tracking-wide">{L('À PROPOS D\'AUTOAFRIQUE', 'ABOUT AUTOAFRIQUE')}</h4>
               <ul className="space-y-3 text-sm text-white/70">
                 <li><Link href="/a-propos" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Qui sommes-nous ?', 'About us?')}</Link></li>
                 <li><Link href="/tarifs" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Tarifs & Abonnements SaaS', 'Pricing & Subscriptions')}</Link></li>
-                <li><Link href="/catalogue" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Marketplace', 'Marketplace')}</Link></li>
+                <li><Link href="/catalogue" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Catalogue de pièces', 'Parts Catalogue')}</Link></li>
+                <li><Link href="/devenir-vendeur" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Devenir Vendeur', 'Become a Seller')}</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-bold mb-5 text-sm tracking-wide">{L('AIDE ET SOUTIEN', 'HELP & SUPPORT')}</h4>
+              <h4 className="text-white font-bold mb-5 text-sm tracking-wide">{L('AIDE ET GUIDES', 'HELP & GUIDES')}</h4>
               <ul className="space-y-3 text-sm text-white/70">
-                <li><Link href="/blog" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Blog', 'Blog')}</Link></li>
+                <li><Link href="/blog" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Blog & Guides Auto', 'Blog & Auto Guides')}</Link></li>
                 <li><Link href="/manuels-reparation" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Manuels de réparation', 'Repair manuals')}</Link></li>
+                <li><Link href="/estimation-devis" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Estimateur de Devis', 'Quote Estimator')}</Link></li>
                 <li><Link href="/conditions-generales" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Conditions générales', 'Terms & conditions')}</Link></li>
-                <li><Link href="/politique-de-confidentialite" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Politique de confidentialité', 'Privacy policy')}</Link></li>
+                <li><Link href="/politique-de-confidentialite" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Confidentialité', 'Privacy policy')}</Link></li>
               </ul>
             </div>
             <div>
               <h4 className="text-white font-bold mb-5 text-sm tracking-wide">{L('SERVICE CLIENTS', 'CUSTOMER SERVICE')}</h4>
               <ul className="space-y-3 text-sm text-white/70">
                 <li><Link href="/aide" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Centre d\'aide', 'Help center')}</Link></li>
-                <li><Link href="/paiement" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Paiement', 'Payment')}</Link></li>
-                <li><Link href="/livraison" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Livraison', 'Delivery')}</Link></li>
-                <li><Link href="/contact" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Nous contacter', 'Contact us')}</Link></li>
-                <li><Link href="/retours" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Retours', 'Returns')}</Link></li>
+                <li><Link href="/paiement" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Paiement Mobile Money', 'Mobile Money Payment')}</Link></li>
+                <li><Link href="/livraison" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Livraison 24h & Gares', '24h Delivery & Stations')}</Link></li>
+                <li><Link href="/retours" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Garantie & Retours 48h', '48h Returns & Warranty')}</Link></li>
+                <li><Link href="/contact" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Contactez-nous', 'Contact us')}</Link></li>
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-bold mb-5 text-sm tracking-wide">{L('PRODUITS', 'PRODUCTS')}</h4>
+              <h4 className="text-white font-bold mb-5 text-sm tracking-wide">{L('CATÉGORIES DE PIÈCES', 'PARTS CATEGORIES')}</h4>
               <ul className="space-y-3 text-sm text-white/70">
-                <li><Link href="/marketplace/categorie/pneus-jantes" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Pneus & Jantes', 'Tyres & Rims')}</Link></li>
-                <li><Link href="/marketplace/categorie/frein" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Frein', 'Brakes')}</Link></li>
-                <li><Link href="/marketplace/categorie/moteur" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Moteur', 'Engine')}</Link></li>
-                <li><Link href="/marketplace/categorie/filtre" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Filtres', 'Filters')}</Link></li>
-                <li><Link href="/marketplace/categorie/huiles-fluides" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Huiles & fluides', 'Oils & fluids')}</Link></li>
+                <li><Link href="/categories/moteur" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Moteur', 'Engine')}</Link></li>
+                <li><Link href="/categories/frein" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Freinage', 'Brakes')}</Link></li>
+                <li><Link href="/categories/filtre" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Filtres', 'Filters')}</Link></li>
+                <li><Link href="/categories/suspension" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Suspension & Direction', 'Suspension & Steering')}</Link></li>
+                <li><Link href="/categories/pneus-jantes" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Pneus & Jantes', 'Tyres & Rims')}</Link></li>
+                <li><Link href="/categories/huiles-fluides" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Huiles & Fluides', 'Oils & Fluids')}</Link></li>
+                <li><Link href="/categories/electricite" className="hover:text-[var(--color-primary)] transition-colors font-medium">{L('Électricité', 'Electricity')}</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-bold mb-5 text-sm tracking-wide">{L('MARQUES VÉHICULES', 'CAR BRANDS')}</h4>
+              <ul className="space-y-3 text-sm text-white/70">
+                <li><Link href="/marques/toyota" className="hover:text-[var(--color-primary)] transition-colors font-medium">Pièces Toyota</Link></li>
+                <li><Link href="/marques/hyundai" className="hover:text-[var(--color-primary)] transition-colors font-medium">Pièces Hyundai</Link></li>
+                <li><Link href="/marques/peugeot" className="hover:text-[var(--color-primary)] transition-colors font-medium">Pièces Peugeot</Link></li>
+                <li><Link href="/marques/suzuki" className="hover:text-[var(--color-primary)] transition-colors font-medium">Pièces Suzuki</Link></li>
+                <li><Link href="/marques/nissan" className="hover:text-[var(--color-primary)] transition-colors font-medium">Pièces Nissan</Link></li>
+                <li><Link href="/marques/renault" className="hover:text-[var(--color-primary)] transition-colors font-medium">Pièces Renault</Link></li>
+                <li><Link href="/marques/mercedes-benz" className="hover:text-[var(--color-primary)] transition-colors font-medium">Pièces Mercedes-Benz</Link></li>
               </ul>
             </div>
           </div>

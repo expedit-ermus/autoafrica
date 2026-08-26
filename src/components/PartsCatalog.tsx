@@ -116,7 +116,7 @@ export default function PartsCatalog() {
           {categories.map((cat) => (
             <Link
               key={cat.id}
-              href={`/marketplace/categorie/${cat.slug}`}
+              href={`/categories/${cat.slug}`}
               onClick={() => track('click_category', { category_name: cat.name[locale as 'fr' | 'en'] })}
               className="group relative bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--color-primary)]/10 transition-all duration-300 overflow-hidden"
             >

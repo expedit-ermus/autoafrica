@@ -164,20 +164,12 @@ function categoryUrls(): MetadataRoute.Sitemap {
     "electricite",
     "autres",
   ];
-  return slugs.flatMap((slug) => [
-    {
-      url: `${BASE_URL}/marketplace/categorie/${slug}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    },
-    {
-      url: `${BASE_URL}/categories/${slug}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    },
-  ]);
+  return slugs.map((slug) => ({
+    url: `${BASE_URL}/categories/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
 }
 
 function brandUrls(): MetadataRoute.Sitemap {
@@ -196,18 +188,10 @@ function brandUrls(): MetadataRoute.Sitemap {
     "citroen",
     "opel",
   ];
-  return slugs.flatMap((slug) => [
-    {
-      url: `${BASE_URL}/marketplace/marque/${slug}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.6,
-    },
-    {
-      url: `${BASE_URL}/marques/${slug}`,
-      lastModified: new Date(),
-      changeFrequency: "weekly" as const,
-      priority: 0.6,
-    },
-  ]);
+  return slugs.map((slug) => ({
+    url: `${BASE_URL}/marques/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
 }

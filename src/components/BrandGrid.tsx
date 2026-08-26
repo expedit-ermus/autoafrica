@@ -35,7 +35,7 @@ export default function BrandGrid() {
           {brands.map((brand) => (
             <Link
               key={brand.name}
-              href={`/marketplace/marque/${brand.slug}`}
+              href={`/marques/${brand.slug}`}
               onClick={() => track('click_brand', { brand_name: brand.name })}
               className="group bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--color-primary)]/10 p-4 sm:p-6 flex flex-col items-center justify-center transition-all duration-300"
             >
