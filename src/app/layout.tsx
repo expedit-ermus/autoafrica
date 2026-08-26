@@ -72,8 +72,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FF6B35" },
-    { media: "(prefers-color-scheme: dark)", color: "#FF6B35" },
+    { media: "(prefers-color-scheme: light)", color: "#FF5A1F" },
+    { media: "(prefers-color-scheme: dark)", color: "#0F172A" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -90,14 +90,14 @@ const inter = Inter({
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr" dir="ltr">
+    <html lang="fr" dir="ltr" className="scroll-smooth">
       <head>
         <meta name="google-site-verification" content="google67878e31d8998189" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className={`${inter.variable} antialiased`}>
+      <body className={`${inter.variable} antialiased bg-[#F8FAFC] text-slate-900 min-h-screen overflow-x-hidden selection:bg-orange-500/20 selection:text-slate-900`}>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-xl focus:bg-orange-600 focus:text-white focus:font-semibold focus:shadow-lg"

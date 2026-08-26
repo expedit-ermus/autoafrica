@@ -223,26 +223,30 @@ export default function DiagnosticEstimator() {
                 <label className="text-xs font-bold text-slate-300 block mb-2 uppercase tracking-wider">
                   {L('Choisissez l\'état de la pièce souhaité :', 'Select desired part condition:')}
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   <button
+                    type="button"
                     onClick={() => setSelectedCondition('venant')}
-                    className={`py-3 px-3 rounded-2xl font-bold text-xs border transition-all text-center cursor-pointer ${
+                    className={`py-3 px-3.5 rounded-2xl font-black text-xs border transition-all text-center cursor-pointer flex items-center justify-center gap-2 ${
                       selectedCondition === 'venant'
-                        ? 'bg-blue-600 text-white border-blue-400 shadow-md shadow-blue-900/50 scale-[1.02]'
+                        ? 'bg-blue-600 text-white border-blue-400 shadow-md shadow-blue-900/50 scale-[1.01]'
                         : 'bg-slate-800/80 text-slate-300 border-slate-700 hover:bg-slate-750'
                     }`}
                   >
-                    🔵 {L('Venant (Occasion contrôlée)', 'Venant (Tested used)')}
+                    <span>🔵</span>
+                    <span>{L('Venant (Occasion contrôlée)', 'Venant (Tested used)')}</span>
                   </button>
                   <button
+                    type="button"
                     onClick={() => setSelectedCondition('neuf')}
-                    className={`py-3 px-3 rounded-2xl font-bold text-xs border transition-all text-center cursor-pointer ${
+                    className={`py-3 px-3.5 rounded-2xl font-black text-xs border transition-all text-center cursor-pointer flex items-center justify-center gap-2 ${
                       selectedCondition === 'neuf'
-                        ? 'bg-emerald-600 text-white border-emerald-400 shadow-md shadow-emerald-900/50 scale-[1.02]'
+                        ? 'bg-emerald-600 text-white border-emerald-400 shadow-md shadow-emerald-900/50 scale-[1.01]'
                         : 'bg-slate-800/80 text-slate-300 border-slate-700 hover:bg-slate-750'
                     }`}
                   >
-                    🟢 {L('Neuf d\'origine (OEM)', 'New OEM part')}
+                    <span>🟢</span>
+                    <span>{L('Neuf d\'origine (OEM)', 'New OEM part')}</span>
                   </button>
                 </div>
               </div>

@@ -156,8 +156,8 @@ export default function PartsCatalog() {
                 </h3>
               </div>
 
-              {/* Hover quick preview layer */}
-              <div className="absolute inset-0 bg-slate-950/95 opacity-0 group-hover:opacity-100 transition-all duration-300 flex flex-col justify-center p-4 text-white z-10 backdrop-blur-xs">
+              {/* Hover quick preview layer (Desktop only so mobile taps navigate instantly) */}
+              <div className="hidden md:flex absolute inset-0 bg-slate-950/95 opacity-0 group-hover:opacity-100 transition-all duration-300 flex-col justify-center p-4 text-white z-10 backdrop-blur-xs pointer-events-none">
                 <div className="text-xs font-black text-orange-400 mb-2 border-b border-white/10 pb-1 flex items-center gap-1">
                   <span>{cat.emoji}</span> {cat.name[locale as 'fr' | 'en']}
                 </div>
@@ -169,7 +169,7 @@ export default function PartsCatalog() {
                     </li>
                   ))}
                 </ul>
-                <div className="mt-3 text-[10px] font-bold text-center bg-orange-500 text-white py-1 rounded-lg">
+                <div className="mt-3 text-[10px] font-bold text-center bg-orange-500 text-white py-1.5 rounded-lg shadow-sm">
                   {L('Consulter les prix →', 'Check prices →')}
                 </div>
               </div>
