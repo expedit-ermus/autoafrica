@@ -2,14 +2,14 @@ import type { Metadata } from 'next';
 import { SITE_URL } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
-  title: 'Tarifs & Abonnements SaaS ERP Automobile | AutoAfrique',
-  description: "Découvrez les formules d'abonnement SaaS AutoAfrique pour garagistes, casseaurs, revendeurs et flottes en Afrique de l'Ouest. Paiement par Mobile Money en FCFA.",
+  title: 'Tarifs & Abonnements SaaS ERP Automobile à Abidjan',
+  description: "Découvrez les formules d'abonnement SaaS AutoAfrique pour garagistes, casseurs, revendeurs et flottes à Abidjan et en Afrique de l'Ouest. Paiement par Mobile Money en FCFA.",
   alternates: {
     canonical: `${SITE_URL}/tarifs`,
   },
   openGraph: {
-    title: 'Tarifs & Abonnements SaaS ERP Automobile | AutoAfrique',
-    description: "Formules d'abonnement SaaS pour le commerce automobile ouest-africain. Gestion d'inventaire, Marketplace et Mobile Money.",
+    title: 'Tarifs & Abonnements SaaS ERP Automobile à Abidjan | AutoAfrique',
+    description: "Formules d'abonnement SaaS pour le commerce automobile à Abidjan et en Afrique de l'Ouest. Gestion d'inventaire, Marketplace et Mobile Money.",
     url: `${SITE_URL}/tarifs`,
     type: 'website',
   },
