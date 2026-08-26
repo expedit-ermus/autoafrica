@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { WebsiteStructuredData, FAQStructuredData } from '@/components/StructuredData';
+import { WebsiteStructuredData, FAQStructuredData, BreadcrumbStructuredData } from '@/components/StructuredData';
+import { SITE_URL } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
   title: 'Devenir Vendeur & Garagiste Partenaire à Abidjan',
@@ -26,6 +27,12 @@ const faqSeller = [
 export default function DevenirVendeurPage() {
   return (
     <div>
+      <BreadcrumbStructuredData
+        items={[
+          { name: 'Accueil', url: SITE_URL },
+          { name: 'Devenir Vendeur', url: `${SITE_URL}/devenir-vendeur` },
+        ]}
+      />
       <WebsiteStructuredData />
       <FAQStructuredData items={faqSeller} />
 

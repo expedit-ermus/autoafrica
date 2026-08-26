@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { RepairEstimator } from '@/components/RepairEstimator'
+import { BreadcrumbStructuredData } from '@/components/StructuredData'
+import { SITE_URL } from '@/lib/structured-data'
 
 export const metadata: Metadata = {
   title: 'Estimateur de Devis & Panne Express à Abidjan',
@@ -13,6 +15,12 @@ export const metadata: Metadata = {
 export default function RepairEstimatorPage() {
   return (
     <div className="min-h-screen bg-slate-950 py-8 sm:py-12">
+      <BreadcrumbStructuredData
+        items={[
+          { name: 'Accueil', url: SITE_URL },
+          { name: 'Estimation & Devis', url: `${SITE_URL}/estimation-devis` },
+        ]}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <RepairEstimator />
       </div>

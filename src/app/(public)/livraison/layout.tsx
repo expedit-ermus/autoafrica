@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { SITE_URL } from '@/lib/structured-data';
+import { BreadcrumbStructuredData } from '@/components/StructuredData';
 
 export const metadata: Metadata = {
   title: 'Livraison pièces auto à Abidjan et Côte d\'Ivoire',
@@ -18,5 +19,15 @@ export const metadata: Metadata = {
 };
 
 export default function LivraisonLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <BreadcrumbStructuredData
+        items={[
+          { name: 'Accueil', url: SITE_URL },
+          { name: 'Livraison', url: `${SITE_URL}/livraison` },
+        ]}
+      />
+      {children}
+    </>
+  );
 }

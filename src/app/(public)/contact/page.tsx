@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import ContactForm from '@/components/ContactForm';
+import { BreadcrumbStructuredData } from '@/components/StructuredData';
+import { SITE_URL } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
   title: 'Contactez AutoAfrique à Abidjan',
@@ -11,6 +13,12 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="bg-[var(--color-bg)]">
+      <BreadcrumbStructuredData
+        items={[
+          { name: 'Accueil', url: SITE_URL },
+          { name: 'Contact', url: `${SITE_URL}/contact` },
+        ]}
+      />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
         <p className="text-xs font-bold uppercase tracking-wider text-[var(--color-primary)] mb-2">AutoAfrique</p>
         <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[var(--color-warm-ink)] mb-3 tracking-tight">

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { SITE_URL } from '@/lib/structured-data';
+import { BreadcrumbStructuredData } from '@/components/StructuredData';
 
 export const metadata: Metadata = {
   title: 'Tarifs & Abonnements SaaS ERP Automobile à Abidjan',
@@ -58,6 +59,12 @@ const pricingSchema = {
 export default function TarifsLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
+      <BreadcrumbStructuredData
+        items={[
+          { name: 'Accueil', url: SITE_URL },
+          { name: 'Tarifs & Abonnements', url: `${SITE_URL}/tarifs` },
+        ]}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingSchema) }}

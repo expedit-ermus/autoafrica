@@ -35,7 +35,7 @@ export default function CasseAutoVsAutoafriquePage() {
           heading: 'Le marché de la casse automobile à Abidjan',
           body: [
             'À Abidjan (Marcory, Treichville, Yopougon, Abobo), la recherche d\'une pièce automobile nécessite souvent de passer des heures dans les casses informelles ou de négocier avec des intermédiaires.',
-            'Bien que ces marchés permettent de trouver des pièces pour d\'anciens modèles Toyota, Peugeot ou Hyundai, ils présentent des risques majeurs pour les propriétaires de véhicules et les garagistes.',
+            'Bien que ces marchés permettent de trouver des pièces pour d\'anciens modèles <a href="/marques/toyota">Toyota</a>, <a href="/marques/peugeot">Peugeot</a> ou <a href="/marques/hyundai">Hyundai</a>, ils présentent des risques majeurs pour les propriétaires de véhicules et les garagistes.',
           ],
         },
         {
@@ -43,7 +43,7 @@ export default function CasseAutoVsAutoafriquePage() {
           heading: 'Les pièges de la casse traditionnelle',
           body: [
             'Prix à la tête du client : Les tarifs varient considérablement selon l\'acheteur, sans aucun affichage ni facturation formelle.',
-            'Absence de garantie : Une pièce défectueuse une fois installée par le mécanicien ne fait l\'objet d\'aucun remboursement ni échange.',
+            'Absence de garantie : Une pièce défectueuse une fois installée par le mécanicien ne fait l\'objet d\'aucun remboursement ni échange. (Consultez notre <a href="/retours">politique de garantie et retours 48h</a>).',
             'Risque de contrefaçon et mauvaise compatibilité : Sans référence officielle ni test préalable, le risque de monter une pièce incompatible est élevé.',
           ],
         },
@@ -51,8 +51,8 @@ export default function CasseAutoVsAutoafriquePage() {
           id: 'alternative-autoafrique',
           heading: 'AutoAfrique : l\'occasion contrôlée avec garantie',
           body: [
-            'AutoAfrique transforme ce marché en proposant des pièces d\'occasion rigoureusement testées, certifiées et cataloguées.',
-            'Grâce à notre outil de recherche par immatriculation ivoirienne (et 9 autres pays UEMOA/CEDEAO), vous êtes certain de la compatibilité exacte de la pièce avant l\'achat.',
+            'AutoAfrique transforme ce marché en proposant des <a href="/catalogue">pièces détachées d\'occasion rigoureusement testées</a>, certifiées et cataloguées.',
+            'Grâce à notre outil de <a href="/estimation-devis">recherche par immatriculation ivoirienne</a> (et 9 autres pays UEMOA/CEDEAO), vous êtes certain de la compatibilité exacte de la pièce avant l\'achat.',
           ],
         },
         {
@@ -62,15 +62,15 @@ export default function CasseAutoVsAutoafriquePage() {
             'Transparence des prix : Prix fixe affiché en Francs CFA (XOF) sur AutoAfrique, négociations opaques en casse.',
             'Garantie : Garantie de conformité et droit de retour sous 48h avec diagnostiqueur en ligne.',
             'Traçabilité : Pièces d\'origine contrôlées avec historique et kilométrage d\'origine.',
-            'Paiement sécurisé : Paiement par Mobile Money (Orange Money, MTN MoMo, Wave, Moov, Djamo) conservé en séquestre jusqu\'à la livraison.',
+            'Paiement sécurisé : Paiement par <a href="/blog/paiement-mobile-money-auto">Mobile Money (Orange Money, MTN MoMo, Wave, Moov, Djamo)</a> conservé en séquestre jusqu\'à la livraison.',
           ],
         },
         {
           id: 'paiement-sequestre',
           heading: 'La sécurité du paiement Mobile Money en séquestre',
           body: [
-            'Avec le système de séquestre (escrow) d\'AutoAfrique, votre argent reste protégé. Le vendeur n\'est payé que lorsque vous avez reçu la pièce et confirmé sa conformité.',
-            'Cette garantie élimine tout risque d\'arnaque et assure une confiance totale pour l\'achat de pièces détachées auto à Abidjan et dans toute la Côte d\'Ivoire.',
+            'Avec le système de séquestre (escrow) d\'AutoAfrique via <a href="/paiement">nos partenaires Mobile Money</a>, votre argent reste protégé. Le vendeur n\'est payé que lorsque vous avez reçu la pièce et confirmé sa conformité.',
+            'Cette garantie élimine tout risque d\'arnaque et assure une confiance totale pour l\'achat de pièces détachées auto avec <a href="/livraison">livraison rapide à Abidjan</a> et dans toute la Côte d\'Ivoire.',
           ],
         },
       ]}

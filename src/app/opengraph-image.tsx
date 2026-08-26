@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
 
-export const alt = "AutoAfrique - Marketplace Pièces Détachées Auto";
+export const alt = "AutoAfrique - Pièces Détachées Auto à Abidjan, Neuf & Occasion";
 export const size = {
   width: 1200,
   height: 630,
@@ -20,7 +20,7 @@ export default async function Image() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          background: "linear-gradient(135deg, #FF6B35 0%, #FF8F5E 50%, #FFB088 100%)",
+          background: "linear-gradient(135deg, #FF6B35 0%, #E85A20 50%, #C4450C 100%)",
           fontFamily: "sans-serif",
           padding: "60px",
         }}
@@ -30,25 +30,25 @@ export default async function Image() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            marginBottom: "30px",
+            marginBottom: "24px",
           }}
         >
           <div
             style={{
               width: "80px",
               height: "80px",
-              borderRadius: "20px",
+              borderRadius: "22px",
               backgroundColor: "white",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.15)",
+              boxShadow: "0 8px 30px rgba(0, 0, 0, 0.2)",
             }}
           >
             <span
               style={{
-                fontSize: "48px",
-                fontWeight: "bold",
+                fontSize: "44px",
+                fontWeight: "900",
                 color: "#FF6B35",
               }}
             >
@@ -59,13 +59,14 @@ export default async function Image() {
 
         <div
           style={{
-            fontSize: "72px",
-            fontWeight: "bold",
+            fontSize: "68px",
+            fontWeight: "900",
             color: "white",
             textAlign: "center",
             lineHeight: "1.1",
-            marginBottom: "20px",
-            textShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
+            marginBottom: "16px",
+            textShadow: "0 4px 15px rgba(0, 0, 0, 0.25)",
+            letterSpacing: "-1px",
           }}
         >
           AutoAfrique
@@ -73,44 +74,47 @@ export default async function Image() {
 
         <div
           style={{
-            fontSize: "28px",
-            color: "rgba(255, 255, 255, 0.95)",
+            fontSize: "30px",
+            fontWeight: "700",
+            color: "rgba(255, 255, 255, 0.98)",
             textAlign: "center",
-            maxWidth: "800px",
-            lineHeight: "1.4",
+            maxWidth: "900px",
+            lineHeight: "1.3",
           }}
         >
-          Pièces Détachées Auto & Marketplace
+          Pièces Détachées Auto Neuves & Occasion Contrôlée
         </div>
 
         <div
           style={{
             fontSize: "22px",
-            color: "rgba(255, 255, 255, 0.8)",
+            fontWeight: "600",
+            color: "rgba(255, 255, 255, 0.85)",
             textAlign: "center",
-            marginTop: "15px",
+            marginTop: "12px",
           }}
         >
-          Afrique de l&apos;Ouest
+          Abidjan • Côte d&apos;Ivoire • Afrique de l&apos;Ouest
         </div>
 
         <div
           style={{
             display: "flex",
-            gap: "20px",
-            marginTop: "40px",
+            gap: "16px",
+            marginTop: "36px",
           }}
         >
-          {["Mobile Money", "ERP", "Marketplace"].map((tag) => (
+          {["⚡ Livraison 24h Abidjan", "🛡️ Garantie 48h", "📱 Séquestre Mobile Money", "🔧 Occasion Contrôlée"].map((tag) => (
             <div
               key={tag}
               style={{
-                padding: "10px 24px",
-                backgroundColor: "rgba(255, 255, 255, 0.2)",
+                padding: "10px 20px",
+                backgroundColor: "rgba(255, 255, 255, 0.22)",
                 borderRadius: "30px",
                 color: "white",
-                fontSize: "18px",
-                fontWeight: "500",
+                fontSize: "16px",
+                fontWeight: "700",
+                border: "1px solid rgba(255, 255, 255, 0.35)",
               }}
             >
               {tag}

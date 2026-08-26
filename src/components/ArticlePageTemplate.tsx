@@ -175,14 +175,19 @@ export default function ArticlePageTemplate(props: ArticlePageProps) {
             <section key={sec.id} id={sec.id} className="scroll-mt-12 bg-white rounded-3xl p-6 sm:p-8 border border-gray-200 shadow-sm">
               <h2 className="text-2xl font-extrabold text-gray-900 mb-4">{sec.heading}</h2>
               {sec.body.map((paragraph, idx) => (
-                <p key={idx} className="text-gray-700 text-base leading-relaxed mb-4">
-                  {paragraph}
-                </p>
+                <p
+                  key={idx}
+                  className="text-gray-700 text-base leading-relaxed mb-4 [&_a]:text-orange-600 [&_a]:font-semibold [&_a]:underline hover:[&_a]:text-orange-700 transition-colors"
+                  dangerouslySetInnerHTML={{ __html: paragraph }}
+                />
               ))}
               {sec.subsections && sec.subsections.map((sub, sidx) => (
                 <div key={sidx} className="mt-6 pl-4 border-l-4 border-orange-500">
                   <h3 className="text-lg font-bold text-gray-900 mb-2">{sub.heading}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">{sub.body}</p>
+                  <p
+                    className="text-sm text-gray-600 leading-relaxed [&_a]:text-orange-600 [&_a]:font-semibold [&_a]:underline hover:[&_a]:text-orange-700 transition-colors"
+                    dangerouslySetInnerHTML={{ __html: sub.body }}
+                  />
                 </div>
               ))}
             </section>

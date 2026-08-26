@@ -35,48 +35,48 @@ export default function PaiementMobileMoneyPage() {
           id: 'probleme-cash',
           heading: 'Le problème du paiement cash dans le commerce auto à Abidjan',
           body: [
-            'Jusqu\'à présent, acheter une pièce auto à Abidjan impliquait souvent de se déplacer physiquement avec de l\'argent liquide, parfois d\'une commune à l\'autre — de Yopougon à Adjamé, ou de Cocody à Marcory. Outre les risques de sécurité liés au transport d\'espèces pour des sommes souvent importantes (moteurs, boîtes de vitesse), cette méthode limite considérablement le choix de l\'acheteur à sa zone géographique immédiate.',
-            'L\'alternative consistait à envoyer de l\'argent via transfert direct avant réception de la marchandise. Malheureusement, les arnaques étaient nombreuses : vendeurs fantômes disparaissant une fois l\'argent reçu, ou envoi de pièces défectueuses ne correspondant pas à la promesse.',
+            'Jusqu\'à présent, acheter une pièce auto à Abidjan impliquait souvent de se déplacer physiquement avec de l\'argent liquide, parfois d\'une commune à l\'autre — de Yopougon à Adjamé, ou de Cocody à Marcory. Outre les risques de sécurité liés au transport d\'espèces pour des sommes importantes (<a href="/categories/moteur">moteurs complets</a>, <a href="/categories/transmission">boîtes de vitesse</a>), cette méthode limite le choix à la zone immédiate.',
+            'L\'alternative consistait à envoyer de l\'argent via transfert direct sans garantie. Malheureusement, les arnaques étaient nombreuses : vendeurs fantômes disparaissant une fois l\'argent reçu, ou envoi de pièces défectueuses.',
           ],
         },
         {
           id: 'mobile-money-vs-cash',
           heading: 'Mobile Money vs cash au marché informel : la comparaison',
           body: [
-            'Au marché informel d\'Adjamé ou de Yopougon, le paiement se fait exclusivement en espèces. Cela signifie : aucun reçu, aucune traçabilité, aucun recours en cas de pièce défectueuse, et l\'obligation de se déplacer avec de grosses sommes. Si la pièce ne convient pas, il est quasiment impossible d\'obtenir un remboursement.',
-            'Avec le Mobile Money sur AutoAfrique, tout change. Vous payez depuis votre téléphone via Wave, Orange Money, MTN MoMo, Moov Money ou Djamo, sans avoir à vous déplacer. Chaque transaction est tracée, un reçu électronique est généré, et le système de séquestre garantit que votre argent est protégé tant que vous n\'avez pas validé la réception de la pièce. Le Mobile Money offre la commodité du numérique avec la sécurité d\'un tiers de confiance.',
+            'Au <a href="/blog/casse-auto-vs-autoafrique">marché informel d\'Adjamé ou de Yopougon</a>, le paiement se fait exclusivement en espèces : aucun reçu, aucun recours en cas de pièce défectueuse. Si la pièce ne convient pas, il est quasiment impossible d\'obtenir un remboursement.',
+            'Avec le <a href="/paiement">Mobile Money sur AutoAfrique</a>, tout change. Vous payez depuis votre téléphone via Wave, Orange Money, MTN MoMo, Moov Money ou Djamo. Chaque transaction est tracée, un reçu électronique est généré, et le système de séquestre garantit que votre argent est protégé tant que vous n\'avez pas validé la réception de la pièce.',
           ],
         },
         {
           id: 'sequestre-mobile-money',
           heading: 'Comment fonctionne le séquestre (escrow) Mobile Money',
           body: [
-            'Pour résoudre ce problème de confiance, AutoAfrique intègre un système de paiement par séquestre (escrow) directement lié aux comptes Mobile Money des utilisateurs. L\'acheteur commande sa pièce et la paie via son application Mobile Money. Les fonds ne sont pas envoyés au vendeur, mais conservés en toute sécurité sur un compte de cantonnement AutoAfrique.',
-            'Le vendeur est notifié que les fonds sont sécurisés et procède à l\'expédition de la pièce. À la réception, l\'acheteur dispose de 48h pour vérifier et valider la conformité de la pièce. Ce n\'est qu\'une fois la pièce validée par l\'acheteur que les fonds sont débloqués et instantanément transférés sur le compte Mobile Money du vendeur.',
+            'Pour résoudre ce problème de confiance, AutoAfrique intègre un système de paiement par séquestre lié aux comptes Mobile Money. L\'acheteur commande sa pièce sur le <a href="/catalogue">catalogue en ligne</a> et la paie via son application. Les fonds sont conservés en toute sécurité sur un compte de cantonnement AutoAfrique.',
+            'Le vendeur est notifié et procède à l\'expédition. À la réception, l\'acheteur dispose d\'une <a href="/retours">garantie de 48h pour vérifier la conformité</a>. Une fois validée, les fonds sont instantanément transférés sur le compte Mobile Money du vendeur.',
           ],
         },
         {
           id: 'operateurs',
           heading: 'Les opérateurs supportés : Wave, Orange Money, MTN MoMo, Moov Money et Djamo',
           body: [
-            'Pour rendre ce système accessible à tous à Abidjan et dans toute la sous-région, nous avons intégré les principaux opérateurs. Wave, très populaire pour ses frais réduits en Côte d\'Ivoire et au Sénégal. Orange Money, présent dans presque toute la zone UEMOA avec le réseau le plus étendu. MTN MoMo, incontournable en Côte d\'Ivoire, au Bénin et au Ghana. Moov Money, une alternative solide avec une couverture croissante. Et enfin Djamo, la néo-banque mobile plébiscitée par la jeune génération ivoirienne.',
-            'Les cartes bancaires traditionnelles (Visa, Mastercard) sont également acceptées pour ceux qui le préfèrent. Aucun compte bancaire n\'est requis pour utiliser le Mobile Money — un simple numéro de téléphone suffit.',
+            'Pour rendre ce système accessible à tous à Abidjan et dans la sous-région, nous avons intégré les principaux opérateurs : Wave, Orange Money, MTN MoMo, Moov Money et Djamo. Les cartes bancaires (Visa, Mastercard) sont également acceptées.',
+            'Aucun compte bancaire n\'est requis — un simple numéro de téléphone suffit pour acheter ou vendre des pièces pour vos <a href="/marques/toyota">Toyota</a>, <a href="/marques/peugeot">Peugeot</a>, <a href="/marques/hyundai">Hyundai</a> ou <a href="/marques/suzuki">Suzuki</a>.',
           ],
         },
         {
           id: 'avantages',
           heading: 'Avantages pour les vendeurs et les acheteurs',
           body: [
-            'Pour l\'acheteur : finies les arnaques. Vous avez la garantie que vous ne paierez que si vous recevez la bonne pièce, en bon état. En cas de litige justifié, les fonds vous sont restitués rapidement après retour de la pièce.',
-            'Pour le vendeur : fini le syndrome du colis non récupéré ou des fausses commandes. Vous avez la certitude absolue que l\'argent est disponible et sécurisé avant même d\'emballer le produit. De plus, cela élargit votre clientèle à tout Abidjan, tout le pays, voire à la sous-région, car les acheteurs vous font confiance grâce à la garantie de la plateforme.',
+            'Pour l\'acheteur : finies les arnaques. Vous avez la certitude de recevoir la bonne pièce avec notre service de <a href="/livraison">livraison express à Abidjan et gares routières</a>. En cas de litige justifié, les fonds vous sont restitués rapidement.',
+            'Pour le vendeur : fini le risque de fausses commandes. Vous savez que les fonds sont sécurisés avant d\'expédier. Consultez notre guide pour <a href="/devenir-vendeur">devenir vendeur certifié AutoAfrique</a>.',
           ],
         },
         {
           id: 'securite',
           heading: 'Sécurité et traçabilité des transactions',
           body: [
-            'Toutes les transactions effectuées via la plateforme sont cryptées et tracées. En s\'appuyant sur les infrastructures sécurisées des grands opérateurs télécoms et des agrégateurs de paiement certifiés, vos données financières ne sont jamais stockées en clair.',
-            'De plus, chaque achat génère un reçu électronique numérique qui a valeur de preuve en cas de contrôle ou pour la comptabilité de votre garage. L\'ère de la transaction automobile informelle, risquée et sans filet de sécurité est officiellement révolue.',
+            'Toutes les transactions sont cryptées et tracées via les opérateurs télécoms certifiés. Chaque achat génère un reçu électronique numérique indispensable pour la comptabilité.',
+            'Pour les ateliers, cette traçabilité s\'intègre directement dans notre <a href="/blog/gestion-stock-garage-erp">logiciel ERP pour garages</a> afin d\'automatiser le suivi financier et la facturation client.',
           ],
         },
       ]}

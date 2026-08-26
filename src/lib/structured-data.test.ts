@@ -16,7 +16,7 @@ describe('buildOrganizationSchema', () => {
     const schema = buildOrganizationSchema()
 
     expect(schema['@context']).toBe('https://schema.org')
-    expect(schema['@type']).toBe('Organization')
+    expect(schema['@type']).toEqual(['Organization', 'AutoPartsStore'])
     expect(schema.name).toBe('AutoAfrique')
     expect(schema.url).toBe(SITE_URL)
     expect(schema.logo).toBe(`${SITE_URL}/logo.png`)

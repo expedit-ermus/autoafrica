@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import LegalPage from '@/components/LegalPage';
+import { BreadcrumbStructuredData } from '@/components/StructuredData';
+import { SITE_URL } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
   title: 'Politique de confidentialité à Abidjan',
@@ -10,7 +12,14 @@ export const metadata: Metadata = {
 
 export default function ConfidentialitePage() {
   return (
-    <LegalPage
+    <>
+      <BreadcrumbStructuredData
+        items={[
+          { name: 'Accueil', url: SITE_URL },
+          { name: 'Politique de confidentialité', url: `${SITE_URL}/politique-de-confidentialite` },
+        ]}
+      />
+      <LegalPage
       title="Politique de confidentialité"
       updatedAt="Août 2026"
       intro="La protection de vos données personnelles est une priorité pour AutoAfrique. Cette politique explique quelles données sont collectées, pour quelles raisons, et les droits dont vous disposez."
@@ -66,5 +75,6 @@ export default function ConfidentialitePage() {
         },
       ]}
     />
+    </>
   );
 }

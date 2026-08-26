@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { SITE_URL } from '@/lib/structured-data';
+import { BreadcrumbStructuredData } from '@/components/StructuredData';
 
 export const metadata: Metadata = {
   title: 'Centre d\'aide — Pièces auto Abidjan',
@@ -18,5 +19,15 @@ export const metadata: Metadata = {
 };
 
 export default function AideLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <>
+      <BreadcrumbStructuredData
+        items={[
+          { name: 'Accueil', url: SITE_URL },
+          { name: 'Centre d\'aide', url: `${SITE_URL}/aide` },
+        ]}
+      />
+      {children}
+    </>
+  );
 }

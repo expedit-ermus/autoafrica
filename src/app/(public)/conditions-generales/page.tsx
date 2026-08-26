@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import LegalPage from '@/components/LegalPage';
+import { BreadcrumbStructuredData } from '@/components/StructuredData';
+import { SITE_URL } from '@/lib/structured-data';
 
 export const metadata: Metadata = {
   title: 'Conditions générales de vente à Abidjan',
@@ -10,7 +12,14 @@ export const metadata: Metadata = {
 
 export default function CGVPage() {
   return (
-    <LegalPage
+    <>
+      <BreadcrumbStructuredData
+        items={[
+          { name: 'Accueil', url: SITE_URL },
+          { name: 'Conditions générales de vente', url: `${SITE_URL}/conditions-generales` },
+        ]}
+      />
+      <LegalPage
       title="Conditions générales de vente"
       updatedAt="Août 2026"
       intro="Les présentes conditions générales de vente encadrent l'utilisation de la plateforme AutoAfrique et la vente de pièces détachées automobiles en Afrique de l'Ouest (Côte d'Ivoire, Sénégal, Mali, Burkina Faso, Niger, Bénin, Togo, Guinée-Bissau, Nigeria, Ghana)."
@@ -74,5 +83,6 @@ export default function CGVPage() {
         },
       ]}
     />
+    </>
   );
 }

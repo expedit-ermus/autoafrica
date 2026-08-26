@@ -1,4 +1,4 @@
-﻿import ArticlePageTemplate from '@/components/ArticlePageTemplate';
+import ArticlePageTemplate from '@/components/ArticlePageTemplate';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -35,7 +35,7 @@ export default function DevenirVendeurMarketplacePage() {
           heading: 'Pourquoi ouvrir votre boutique en ligne sur AutoAfrique ?',
           body: [
             'Traditionnellement, la clientèle d\'une boutique de pièces à Adjamé, Treichville ou Koumassi est limitée aux passants et aux garagistes du quartier. Avec AutoAfrique, votre stock devient instantanément visible auprès de dizaines de milliers de chauffeurs VTC, particuliers, gestionnaires de flottes et garagistes partout en Côte d\'Ivoire.',
-            'Vous bénéficiez également d\'un mini-ERP gratuit pour gérer vos stocks, éditer des factures professionnelles et suivre vos ventes en direct depuis votre smartphone.',
+            'Vous bénéficiez également d\'un mini-ERP pour gérer vos stocks, éditer des factures professionnelles et suivre vos ventes. Découvrez nos <a href="/tarifs">tarifs et abonnements SaaS pour professionnels</a>.',
           ],
         },
         {
@@ -43,34 +43,34 @@ export default function DevenirVendeurMarketplacePage() {
           heading: 'Qui peut devenir vendeur certifié ?',
           body: [
             '- Importateurs et distributeurs de pièces détachées neuves (OEM et adaptables).',
-            '- Commerçants et magasins de pièces de réemploi et d\'occasion contrôlée.',
+            '- Commerçants et magasins de pièces de réemploi et d\'<a href="/blog/choisir-pieces-occasion-controlee">occasion contrôlée certifiée</a>.',
             '- Électriciens et mécaniciens spécialisés proposant des organes rénovés (alternateurs, démarreurs, injecteurs testés).',
-            '- Centres de démontage et casses automobiles professionnelles respectant les normes de traçabilité.',
+            '- Centres de démontage et casses professionnelles respectant la <a href="/blog/casse-auto-vs-autoafrique">charte de traçabilité</a>.',
           ],
         },
         {
           id: 'etapes-inscription',
           heading: 'Les 4 étapes simples pour commencer à vendre',
           body: [
-            '1. Inscription en ligne : Remplissez le formulaire en 2 minutes avec vos coordonnées et le nom de votre magasin.',
+            '1. Inscription en ligne : Remplissez le <a href="/devenir-vendeur">formulaire vendeur</a> en 2 minutes avec vos coordonnées et le nom de votre magasin.',
             '2. Vérification d\'identité : Téléversez une pièce d\'identité valide ou votre registre de commerce (RCCM) pour obtenir le badge Vendeur Vérifié.',
-            '3. Ajout de vos premières pièces : Prenez en photo vos pièces, indiquez la marque (Toyota, Peugeot, Nissan...), la référence et votre prix fixe en FCFA.',
-            '4. Commencez à recevoir des commandes : Dès qu\'un acheteur réserve une pièce, vous recevez une alerte SMS / WhatsApp avec les instructions d\'expédition.',
+            '3. Ajout de vos premières pièces : Prenez en photo vos pièces, indiquez la marque (<a href="/marques/toyota">Toyota</a>, <a href="/marques/peugeot">Peugeot</a>, <a href="/marques/nissan">Nissan</a>, <a href="/marques/hyundai">Hyundai</a>, <a href="/marques/suzuki">Suzuki</a>...), la référence et votre prix en FCFA.',
+            '4. Commencez à recevoir des commandes : Dès qu\'un acheteur réserve sur le <a href="/catalogue">catalogue</a>, vous recevez une alerte SMS / WhatsApp instantanée.',
           ],
         },
         {
           id: 'gestion-commandes',
           heading: 'Paiements garantis et encaissement Mobile Money',
           body: [
-            'Fini le risque de non-paiement : lorsqu\'une commande est passée, l\'argent de l\'acheteur est préalablement bloqué sur un compte de séquestre sécurisé. Vous êtes donc certain à 100% que la transaction est solvable avant d\'expédier la pièce.',
-            'Dès la livraison confirmée, les fonds sont virés directement sur votre compte Wave, Orange Money ou MTN Mobile Money.',
+            'Fini le risque de non-paiement : lorsqu\'une commande est passée, l\'argent de l\'acheteur est préalablement bloqué sur un compte de séquestre sécurisé. Vous êtes certain à 100% que la transaction est solvable avant d\'expédier la pièce.',
+            'Dès la livraison confirmée, les fonds sont virés directement sur votre compte <a href="/blog/paiement-mobile-money-auto">Wave, Orange Money ou MTN Mobile Money</a> sans délai via nos <a href="/paiement">passerelles de paiement sécurisées</a>.',
           ],
         },
         {
           id: 'charte-qualite',
           heading: 'La charte qualité : clé de la fidélisation',
           body: [
-            'Pour préserver la confiance de la communauté, chaque vendeur s\'engage à respecter la Charte AutoAfrique : descriptions fidèles à l\'état réel de la pièce, photos authentiques non retouchées, et acceptation de la garantie de conformité 48 heures.',
+            'Pour préserver la confiance de la communauté, chaque vendeur s\'engage à respecter la Charte AutoAfrique : descriptions fidèles, photos authentiques et acceptation de la <a href="/retours">garantie de conformité 48 heures</a>. L\'expédition est facilitée par notre réseau de <a href="/livraison">livraison express à Abidjan et gares routières</a>.',
           ],
         },
       ]}
