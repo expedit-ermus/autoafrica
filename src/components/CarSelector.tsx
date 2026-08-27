@@ -158,6 +158,36 @@ export default function CarSelector() {
   };
 
   const handleSearch = () => {
+    // 1. Recherche par immatriculation ou numéro de châssis (VIN)
+    if (regNumber.trim()) {
+      const cleanInput = regNumber.trim().toUpperCase();
+      track('search_vehicle_registration', { query: cleanInput });
+
+      // Détection automatique du constructeur par préfixe WMI (VIN 17 caractères)
+      if (cleanInput.length === 17) {
+        if (cleanInput.startsWith('JT')) {
+          router.push('/marques/toyota');
+          return;
+        } else if (cleanInput.startsWith('VF3')) {
+          router.push('/marques/peugeot');
+          return;
+        } else if (cleanInput.startsWith('KMH')) {
+          router.push('/marques/hyundai');
+          return;
+        } else if (cleanInput.startsWith('VF1')) {
+          router.push('/marques/renault');
+          return;
+        } else if (cleanInput.startsWith('JN')) {
+          router.push('/marques/nissan');
+          return;
+        }
+      }
+
+      router.push(`/catalogue?search=${encodeURIComponent(cleanInput)}`);
+      return;
+    }
+
+    // 2. Recherche par Marque / Modèle
     const brandObj = carMakes.find((m) => m.id === selectedMake);
     const modelObj = carModelsList.find((m) => m.id === selectedModel);
     const brandName = brandObj ? brandObj.name : '';
@@ -165,7 +195,9 @@ export default function CarSelector() {
 
     track('search_vehicle', { brand: brandName, model: modelName });
 
-    if (brandName) {
+    if (brandName && modelName) {
+      router.push(`/catalogue?brand=${encodeURIComponent(brandName)}&model=${encodeURIComponent(modelName)}`);
+    } else if (brandName) {
       const slug = brandName.toLowerCase().replace(/[^a-z0-9]+/g, '-');
       router.push(`/marques/${slug}`);
     } else {
