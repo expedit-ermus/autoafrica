@@ -102,6 +102,30 @@ export default function DevenirVendeurPage() {
           </div>
         </div>
 
+        {/* Extension Chrome Vendeur Showcase */}
+        <div className="bg-gradient-to-br from-slate-950 via-slate-900 to-orange-950 rounded-3xl p-8 border border-slate-800 text-white shadow-xl mb-12 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="space-y-3">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-orange-500/20 text-orange-400 border border-orange-500/30">
+              ⚡ NOUVEAUTÉ VENDEUR & GARAGE
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+              Extension Chrome AutoAfrique
+            </h2>
+            <p className="text-sm text-slate-300 max-w-2xl leading-relaxed">
+              Scannez les demandes de pièces directement sur WhatsApp Web, consultez les stocks OEM en temps réel et générez des devis avec lien de paiement séquestre Mobile Money en 1 clic.
+            </p>
+          </div>
+          <div className="shrink-0 flex flex-col sm:flex-row items-center gap-3">
+            <a
+              href="/downloads/autoafrique-extension.zip"
+              download
+              className="px-6 py-3.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black rounded-2xl shadow-lg shadow-orange-950/40 transition-all flex items-center gap-2 text-sm hover:scale-105 active:scale-95"
+            >
+              <span>📥</span> Télécharger l&apos;Extension (.zip)
+            </a>
+          </div>
+        </div>
+
         {/* Transparence Tarifs & Conditions */}
         <div className="bg-white rounded-3xl p-8 border border-gray-200 shadow-sm mb-12">
           <h2 className="text-2xl font-extrabold text-gray-900 mb-4">

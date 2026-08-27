@@ -73,8 +73,9 @@ export default function Footer() {
                 <li><Link href="/blog" className="hover:text-orange-400 transition-colors font-medium">{L('Blog & Guides Auto', 'Blog & Auto Guides')}</Link></li>
                 <li><Link href="/manuels-reparation" className="hover:text-orange-400 transition-colors font-medium">{L('Manuels de réparation', 'Repair manuals')}</Link></li>
                 <li><Link href="/estimation-devis" className="hover:text-orange-400 transition-colors font-medium">{L('Estimateur de Devis', 'Quote Estimator')}</Link></li>
-                <li><Link href="/conditions-generales" className="hover:text-orange-400 transition-colors font-medium">{L('Conditions générales', 'Terms & conditions')}</Link></li>
-                <li><Link href="/politique-de-confidentialite" className="hover:text-orange-400 transition-colors font-medium">{L('Confidentialité', 'Privacy policy')}</Link></li>
+                <li><a href="/downloads/autoafrique-extension.zip" download className="hover:text-orange-400 transition-colors font-medium flex items-center gap-1.5 text-orange-400 font-bold"><span>🧩</span> {L('Extension Chrome Vendeur', 'Chrome Extension')}</a></li>
+                <li><Link href="/conditions-generales" className="hover:text-orange-400 transition-colors font-medium">{L('Conditions générales', 'Terms & Conditions')}</Link></li>
+                <li><Link href="/politique-de-confidentialite" className="hover:text-orange-400 transition-colors font-medium">{L('Confidentialité', 'Privacy Policy')}</Link></li>
               </ul>
             </div>
             <div>
