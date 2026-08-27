@@ -1,4 +1,5 @@
 import {
+  buildAutoRepairListSchema,
   buildBreadcrumbSchema,
   buildFAQPageSchema,
   buildItemListSchema,
@@ -6,6 +7,7 @@ import {
   buildProductSchema,
   buildVehicleSchema,
   buildWebsiteSchema,
+  AutoRepairSchemaInput,
   BreadcrumbEntry,
   FAQEntry,
   ItemListEntry,
@@ -77,6 +79,15 @@ type VehicleStructuredDataProps = VehicleSchemaInput;
 
 export function VehicleStructuredData(props: VehicleStructuredDataProps) {
   return <JsonLdScript id="vehicle-schema" data={buildVehicleSchema(props)} />;
+}
+
+interface AutoRepairListStructuredDataProps {
+  garages: AutoRepairSchemaInput[];
+}
+
+export function AutoRepairListStructuredData({ garages }: AutoRepairListStructuredDataProps) {
+  if (garages.length === 0) return null;
+  return <JsonLdScript id="autorepair-schema" data={buildAutoRepairListSchema(garages)} />;
 }
 
 interface BreadcrumbStructuredDataProps {

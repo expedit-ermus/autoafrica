@@ -10,6 +10,15 @@ export default function BlogIndexPage() {
 
   const articles = [
     {
+      slug: 'verifier-compatibilite-piece-auto-vehicule',
+      title: L('Comment vérifier la compatibilité d\'une pièce auto avec son véhicule ?', 'How to check auto part compatibility with your vehicle?'),
+      category: L('Guide d\'achat', 'Buying guide'),
+      categoryColor: 'bg-blue-100 text-blue-800 border-blue-200',
+      excerpt: L('Immatriculation, VIN, motorisation : les 4 méthodes fiables pour ne jamais commander la mauvaise référence.', 'Registration, VIN, engine type: 4 reliable methods to never order the wrong part reference.'),
+      date: L('27 Août 2026', 'Aug 27, 2026'),
+      readTime: L('6 min', '6 min'),
+    },
+    {
       slug: 'casse-auto-vs-autoafrique',
       title: L('Casse auto vs AutoAfrique : pourquoi choisir l\'occasion contrôlée à Abidjan ?', 'Scrap yards vs AutoAfrique: why choose certified used parts in Abidjan?'),
       category: L('Différenciation & Confiance', 'Trust & Comparison'),

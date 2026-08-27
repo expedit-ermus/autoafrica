@@ -202,6 +202,49 @@ export function buildFAQPageSchema(items: FAQEntry[]) {
   }
 }
 
+export interface AutoRepairSchemaInput {
+  id: string
+  name: string
+  location: string
+  rating: number
+  reviewsCount: number
+  url?: string
+}
+
+export function buildAutoRepairSchema(input: AutoRepairSchemaInput) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'AutoRepair',
+    '@id': `${SITE_URL}/#garage-${input.id}`,
+    name: input.name,
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: input.location,
+      addressCountry: 'CI',
+    },
+    ...(input.url ? { url: input.url } : {}),
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: input.rating,
+      reviewCount: input.reviewsCount,
+      bestRating: 5,
+      worstRating: 1,
+    },
+  }
+}
+
+export function buildAutoRepairListSchema(garages: AutoRepairSchemaInput[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: garages.map((g, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: buildAutoRepairSchema(g),
+    })),
+  }
+}
+
 export interface ArticleSchemaInput {
   title: string
   description: string

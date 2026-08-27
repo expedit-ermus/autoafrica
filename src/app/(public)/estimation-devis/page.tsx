@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { RepairEstimator } from '@/components/RepairEstimator'
-import { BreadcrumbStructuredData } from '@/components/StructuredData'
+import { DEFAULT_GARAGES } from '@/lib/garages'
+import { BreadcrumbStructuredData, AutoRepairListStructuredData } from '@/components/StructuredData'
 import { SITE_URL } from '@/lib/structured-data'
 
 export const metadata: Metadata = {
@@ -20,6 +21,15 @@ export default function RepairEstimatorPage() {
           { name: 'Accueil', url: SITE_URL },
           { name: 'Estimation & Devis', url: `${SITE_URL}/estimation-devis` },
         ]}
+      />
+      <AutoRepairListStructuredData
+        garages={DEFAULT_GARAGES.map((g) => ({
+          id: g.id,
+          name: g.name,
+          location: g.location,
+          rating: g.rating,
+          reviewsCount: g.reviewsCount,
+        }))}
       />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <RepairEstimator />

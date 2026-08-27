@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import {
+  buildAutoRepairListSchema,
+  buildAutoRepairSchema,
   buildBreadcrumbSchema,
   buildFAQPageSchema,
   buildItemListSchema,
@@ -186,3 +188,77 @@ describe('buildVehicleSchema', () => {
     expect(schema.offers.itemCondition).toBe('https://schema.org/UsedCondition')
   })
 })
+
+describe('buildAutoRepairSchema', () => {
+  it('returns a valid AutoRepair schema with AggregateRating', () => {
+    const schema = buildAutoRepairSchema({
+      id: 'g-diallo',
+      name: 'Maître Garage Diallo',
+      location: 'Yopougon Selmer, Abidjan',
+      rating: 4.9,
+      reviewsCount: 128,
+      url: 'https://example.com/garage-diallo',
+    })
+
+    expect(schema['@context']).toBe('https://schema.org')
+    expect(schema['@type']).toBe('AutoRepair')
+    expect(schema['@id']).toBe(`${SITE_URL}/#garage-g-diallo`)
+    expect(schema.name).toBe('Maître Garage Diallo')
+    expect(schema.url).toBe('https://example.com/garage-diallo')
+    expect(schema.address).toEqual({
+      '@type': 'PostalAddress',
+      addressLocality: 'Yopougon Selmer, Abidjan',
+      addressCountry: 'CI',
+    })
+    expect(schema.aggregateRating).toEqual({
+      '@type': 'AggregateRating',
+      ratingValue: 4.9,
+      reviewCount: 128,
+      bestRating: 5,
+      worstRating: 1,
+    })
+  })
+
+  it('omits url when not provided', () => {
+    const schema = buildAutoRepairSchema({
+      id: 'g-diallo',
+      name: 'Maître Garage Diallo',
+      location: 'Yopougon Selmer, Abidjan',
+      rating: 4.9,
+      reviewsCount: 128,
+    })
+
+    expect(schema.url).toBeUndefined()
+  })
+})
+
+describe('buildAutoRepairListSchema', () => {
+  it('builds an ItemList of AutoRepair entries with sequential positions', () => {
+    const schema = buildAutoRepairListSchema([
+      {
+        id: 'g-1',
+        name: 'Garage 1',
+        location: 'Abidjan',
+        rating: 4.8,
+        reviewsCount: 50,
+      },
+      {
+        id: 'g-2',
+        name: 'Garage 2',
+        location: 'Dakar',
+        rating: 4.9,
+        reviewsCount: 80,
+      },
+    ])
+
+    expect(schema['@context']).toBe('https://schema.org')
+    expect(schema['@type']).toBe('ItemList')
+    expect(schema.itemListElement).toHaveLength(2)
+    expect(schema.itemListElement[0].position).toBe(1)
+    expect(schema.itemListElement[0].item['@type']).toBe('AutoRepair')
+    expect(schema.itemListElement[0].item.name).toBe('Garage 1')
+    expect(schema.itemListElement[1].position).toBe(2)
+    expect(schema.itemListElement[1].item.name).toBe('Garage 2')
+  })
+})
+
