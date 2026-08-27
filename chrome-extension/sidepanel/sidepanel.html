@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoAfrique Assistant</title>
+  <link rel="stylesheet" href="sidepanel.css">
+</head>
+<body>
+  <div class="panel-container">
+    <!-- Header -->
+    <header class="panel-header">
+      <div class="header-brand">
+        <div class="logo-box">🔧</div>
+        <div class="brand-titles">
+          <h1>Auto<span class="accent">Afrique</span></h1>
+          <span class="hub-tag">🇨🇮 Hub Abidjan & Intérieur</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button type="button" id="btnSyncCatalog" class="btn-icon" title="Rafraîchir les stocks">🔄</button>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="panel-nav">
+      <button type="button" class="nav-tab active" data-tab="search">
+        <span>🔍</span> Pièces & OEM
+      </button>
+      <button type="button" class="nav-tab" data-tab="quote">
+        <span>⚡</span> Devis WhatsApp <span id="cartCountBadge" class="badge-count hidden">0</span>
+      </button>
+      <button type="button" class="nav-tab" data-tab="settings">
+        <span>⚙️</span> Réglages
+      </button>
+    </nav>
+
+    <!-- Tab 1: Search & OEM Scanner -->
+    <section id="tabSearch" class="tab-pane active">
+      <div class="search-box">
+        <div class="input-wrap">
+          <input type="text" id="searchInput" placeholder="Rechercher réf. OEM, pièce, Toyota, Peugeot..." />
+          <button type="button" id="btnSearch" class="btn-primary">Chercher</button>
+        </div>
+
+        <!-- Quick Filters -->
+        <div class="filters-row">
+          <select id="filterMake" aria-label="Filtrer par marque">
+            <option value="">Toutes Marques</option>
+            <option value="Toyota">Toyota</option>
+            <option value="Hyundai">Hyundai</option>
+            <option value="Peugeot">Peugeot</option>
+            <option value="Suzuki">Suzuki</option>
+            <option value="Nissan">Nissan</option>
+            <option value="Kia">Kia</option>
+            <option value="Renault">Renault</option>
+          </select>
+
+          <select id="filterCategory" aria-label="Filtrer par catégorie">
+            <option value="">Toutes Catégories</option>
+            <option value="suspension">Suspension</option>
+            <option value="frein">Freinage</option>
+            <option value="moteur">Moteur</option>
+            <option value="filtre">Filtres</option>
+            <option value="electricite">Électricité</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Results Stats & Source -->
+      <div class="results-header">
+        <span id="resultsCount">Chargement du catalogue...</span>
+        <span id="sourceBadge" class="source-badge">⚡ Stock Abidjan</span>
+      </div>
+
+      <!-- Products Grid -->
+      <div id="productsList" class="products-list"></div>
+    </section>
+
+    <!-- Tab 2: WhatsApp Quote Generator -->
+    <section id="tabQuote" class="tab-pane">
+      <div class="quote-container">
+        <!-- Client Info Form -->
+        <div class="form-group-card">
+          <div class="card-head">👤 Coordonnées Client</div>
+          <div class="form-row">
+            <input type="text" id="quoteClientName" placeholder="Nom du client (ex: M. Kouassi)" />
+            <input type="text" id="quoteVehicle" placeholder="Véhicule (ex: Toyota Hilux 2018)" />
+          </div>
+        </div>
+
+        <!-- Selected Items in Quote -->
+        <div class="form-group-card">
+          <div class="card-head">
+            <span>📦 Pièces au Devis</span>
+            <button type="button" id="btnClearQuote" class="btn-text-danger">Vider</button>
+          </div>
+          <div id="quoteItemsList" class="quote-items-list">
+            <div class="empty-quote">
+              <span>🛒 Aucune pièce sélectionnée</span>
+              <p>Ajoutez des pièces depuis l'onglet « Pièces & OEM » pour générer un devis instantané.</p>
+            </div>
+          </div>
+          <button type="button" id="btnAddManualItem" class="btn-secondary btn-sm">+ Ajouter une pièce personnalisée</button>
+        </div>
+
+        <!-- Delivery & Payment Selection -->
+        <div class="form-group-card">
+          <div class="card-head">📍 Expédition & Paiement Séquestre</div>
+          
+          <label class="form-label">Zone de livraison Abidjan / Gares :</label>
+          <select id="quoteCommune" class="select-full"></select>
+
+          <label class="form-label" style="margin-top: 10px;">Opérateur Mobile Money favori :</label>
+          <div class="operators-grid">
+            <label class="op-radio"><input type="radio" name="quoteOperator" value="wave" checked /> Wave</label>
+            <label class="op-radio"><input type="radio" name="quoteOperator" value="orange" /> Orange</label>
+            <label class="op-radio"><input type="radio" name="quoteOperator" value="mtn" /> MTN</label>
+            <label class="op-radio"><input type="radio" name="quoteOperator" value="moov" /> Moov</label>
+            <label class="op-radio"><input type="radio" name="quoteOperator" value="djamo" /> Djamo</label>
+          </div>
+        </div>
+
+        <!-- Quote Summary & Actions -->
+        <div class="quote-summary-card">
+          <div class="summary-line">
+            <span>Sous-total pièces :</span>
+            <span id="sumPartsTotal" class="val">0 FCFA</span>
+          </div>
+          <div class="summary-line">
+            <span>Livraison (<span id="sumDeliveryZone">Marcory</span>) :</span>
+            <span id="sumDeliveryFee" class="val">1 500 FCFA</span>
+          </div>
+          <div class="summary-line total">
+            <span>TOTAL SÉQUESTRÉ :</span>
+            <span id="sumGrandTotal" class="val-total">1 500 FCFA</span>
+          </div>
+
+          <div class="quote-actions">
+            <button type="button" id="btnCopyQuote" class="btn-primary btn-block">
+              📋 Copier le Devis pour WhatsApp
+            </button>
+            <button type="button" id="btnInsertInWhatsApp" class="btn-whatsapp btn-block">
+              💬 Insérer Directement sur WhatsApp Web
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Settings -->
+    <section id="tabSettings" class="tab-pane">
+      <div class="settings-container">
+        <div class="form-group-card">
+          <div class="card-head">🏢 Profil Vendeur / Garagiste</div>
+          
+          <label class="form-label">Nom commercial du garage / vendeur :</label>
+          <input type="text" id="settingSellerName" class="input-full" placeholder="Ex: AutoAfrique Marcory Pièces" />
+
+          <label class="form-label" style="margin-top: 10px;">Numéro WhatsApp Support Vendeur :</label>
+          <input type="text" id="settingSellerPhone" class="input-full" placeholder="+225 07 08 09 10 11" />
+
+          <label class="form-label" style="margin-top: 10px;">Commune par défaut :</label>
+          <select id="settingDefaultCommune" class="select-full"></select>
+        </div>
+
+        <div class="form-group-card">
+          <div class="card-head">🌐 Connexion Plateforme AutoAfrique</div>
+          
+          <label class="form-label">Serveur API :</label>
+          <select id="settingApiUrl" class="select-full">
+            <option value="https://autoafrique-saas.vercel.app">Production (https://autoafrique-saas.vercel.app)</option>
+            <option value="http://localhost:3000">Développement Local (http://localhost:3000)</option>
+          </select>
+        </div>
+
+        <button type="button" id="btnSaveSettings" class="btn-primary btn-block">
+          💾 Enregistrer les Réglages
+        </button>
+
+        <div class="reassurance-box">
+          <h4>🔒 Sécurité & Séquestre Garanti</h4>
+          <p>Toutes les transactions générées via l'extension profitent de la garantie 48h montage et du séquestre Mobile Money certifié AutoAfrique.</p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="toastMessage" class="toast hidden"></div>
+
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>

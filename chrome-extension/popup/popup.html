@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoAfrique Assistant</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body class="popup-body">
+  <!-- Header -->
+  <header class="popup-header">
+    <div class="brand">
+      <div class="logo-box">🔧</div>
+      <div class="brand-text">
+        <span class="brand-name">Auto<span class="brand-accent">Afrique</span></span>
+        <span class="brand-sub">Marketplace & ERP</span>
+      </div>
+    </div>
+    <span class="badge-status">● En ligne</span>
+  </header>
+
+  <!-- Quick Search Bar -->
+  <section class="search-section">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="quickSearchInput" placeholder="Réf. OEM, pièce, véhicule..." autofocus />
+      <button type="button" id="btnQuickSearch" class="btn-search">Chercher</button>
+    </div>
+  </section>
+
+  <!-- Actions Grid -->
+  <main class="actions-container">
+    <button type="button" id="btnOpenSidePanel" class="action-card primary">
+      <div class="card-icon">🛠️</div>
+      <div class="card-info">
+        <div class="card-title">Panneau Latéral & Devis</div>
+        <div class="card-desc">Recherche OEM, stock & générateur WhatsApp (Alt+A)</div>
+      </div>
+      <div class="card-arrow">→</div>
+    </button>
+
+    <div class="grid-two">
+      <button type="button" id="btnOpenStore" class="action-card compact">
+        <div class="card-icon">🛒</div>
+        <div class="card-info">
+          <div class="card-title">Boutique Web</div>
+          <div class="card-desc">Catalogue Abidjan</div>
+        </div>
+      </button>
+
+      <button type="button" id="btnOpenDashboard" class="action-card compact">
+        <div class="card-icon">📊</div>
+        <div class="card-info">
+          <div class="card-title">Espace Vendeur</div>
+          <div class="card-desc">Stocks & Commandes</div>
+        </div>
+      </button>
+    </div>
+
+    <button type="button" id="btnOpenEstimator" class="action-card outline">
+      <div class="card-icon">💡</div>
+      <div class="card-info">
+        <div class="card-title">Simulateur Devis & Séquestre</div>
+        <div class="card-desc">Wave, Orange Money, MTN MoMo, Moov, Djamo</div>
+      </div>
+      <div class="card-arrow">↗</div>
+    </button>
+  </main>
+
+  <!-- Delivery & Reassurance Footer -->
+  <footer class="popup-footer">
+    <div class="footer-info">
+      <span>⚡ Livraison 1h-4h Abidjan</span>
+      <span>•</span>
+      <span>🔒 Séquestre Garanti</span>
+    </div>
+    <div class="footer-bottom">
+      <span class="version">v1.0.0</span>
+      <a href="#" id="linkOptions" class="link-settings">⚙️ Réglages</a>
+    </div>
+  </footer>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

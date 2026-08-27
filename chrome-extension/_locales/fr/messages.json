@@ -1,0 +1,23 @@
+{
+  "appName": {
+    "message": "AutoAfrique — Pièces Auto & Devis Vendeur",
+    "description": "Nom de l'extension"
+  },
+  "appDesc": {
+    "message": "Assistant vendeur WhatsApp & recherche OEM instantanée pour pièces auto à Abidjan.",
+    "description": "Description de l'extension"
+  },
+  "searchContext": {
+    "message": "Rechercher « $QUERY$ » sur AutoAfrique",
+    "description": "Menu contextuel de recherche",
+    "placeholders": {
+      "query": {
+        "content": "$1"
+      }
+    }
+  },
+  "createQuoteContext": {
+    "message": "Créer un devis Mobile Money pour cette pièce",
+    "description": "Menu contextuel de devis"
+  }
+}

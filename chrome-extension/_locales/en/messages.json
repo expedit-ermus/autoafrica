@@ -1,0 +1,23 @@
+{
+  "appName": {
+    "message": "AutoAfrique — Auto Parts & Seller Quotes",
+    "description": "Extension name"
+  },
+  "appDesc": {
+    "message": "WhatsApp seller assistant & instant OEM search for auto parts in Abidjan.",
+    "description": "Extension description"
+  },
+  "searchContext": {
+    "message": "Search \"$QUERY$\" on AutoAfrique",
+    "description": "Context menu search",
+    "placeholders": {
+      "query": {
+        "content": "$1"
+      }
+    }
+  },
+  "createQuoteContext": {
+    "message": "Create Mobile Money quote for this part",
+    "description": "Context menu quote"
+  }
+}
