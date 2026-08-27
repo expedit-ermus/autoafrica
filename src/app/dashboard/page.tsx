@@ -6,7 +6,14 @@ import DashboardTopBar from '@/components/DashboardTopBar';
 import { useApp } from '@/contexts/AppContext';
 import Link from 'next/link';
 import BarChart, { DonutChart, SparkLine } from '@/components/Charts';
-import RoleServicesHub from '@/components/RoleServicesHub';
+import dynamic from 'next/dynamic';
+import LoadingSkeleton from '@/components/LoadingSkeleton';
+
+const RoleServicesHub = dynamic(() => import('@/components/RoleServicesHub'), {
+  ssr: false,
+  loading: () => <LoadingSkeleton height="h-32" />
+});
+
 import { Product, Order, Payment } from '@/shared/types';
 
 const PLACEHOLDER_IMAGE = '/images/placeholder.svg';

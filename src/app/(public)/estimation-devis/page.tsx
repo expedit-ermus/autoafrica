@@ -1,5 +1,10 @@
 import type { Metadata } from 'next'
-import { RepairEstimator } from '@/components/RepairEstimator'
+import dynamic from 'next/dynamic'
+import LoadingSkeleton from '@/components/LoadingSkeleton'
+
+const RepairEstimator = dynamic(() => import('@/components/RepairEstimator').then(mod => mod.RepairEstimator), {
+  loading: () => <LoadingSkeleton height="h-96" />
+})
 import { DEFAULT_GARAGES } from '@/lib/garages'
 import { BreadcrumbStructuredData, AutoRepairListStructuredData } from '@/components/StructuredData'
 import { SITE_URL } from '@/lib/structured-data'

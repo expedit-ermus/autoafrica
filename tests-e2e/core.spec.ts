@@ -14,16 +14,9 @@ test('marketplace page (R005) loads with its grid', async ({ page }) => {
   await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
 });
 
-test('vehicles page (R017) is indexable with its heading', async ({ page }) => {
+test('protected dashboard routes redirect unauthenticated users to login', async ({ page }) => {
   await page.goto('/dashboard/vehicles');
-  await expect(page).toHaveTitle(/AutoAfrique/i);
-  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-});
-
-test('parts search page (R018) renders registration search form', async ({ page }) => {
-  await page.goto('/dashboard/parts-search');
-  await expect(page).toHaveTitle(/AutoAfrique/i);
-  await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  await expect(page).toHaveURL(/\/auth\/login/);
 });
 
 test('blog hub page renders recent articles', async ({ page }) => {

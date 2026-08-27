@@ -1,4 +1,9 @@
-import VehiclePartsSearch from '@/components/VehiclePartsSearch';
+import dynamic from 'next/dynamic';
+import LoadingSkeleton from '@/components/LoadingSkeleton';
+
+const VehiclePartsSearch = dynamic(() => import('@/components/VehiclePartsSearch'), {
+  loading: () => <LoadingSkeleton height="h-64" />
+});
 import { Metadata } from 'next';
 import { SITE_URL, PARTS_SEARCH_URL } from '@/lib/structured-data';
 import { BreadcrumbStructuredData } from '@/components/StructuredData';

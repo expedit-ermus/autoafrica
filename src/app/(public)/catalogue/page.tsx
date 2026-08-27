@@ -1,5 +1,10 @@
 import type { Metadata } from 'next';
-import CatalogueFilters from '@/components/CatalogueFilters';
+import dynamic from 'next/dynamic';
+import LoadingSkeleton from '@/components/LoadingSkeleton';
+
+const CatalogueFilters = dynamic(() => import('@/components/CatalogueFilters'), {
+  loading: () => <LoadingSkeleton height="h-96" />
+});
 import { BreadcrumbStructuredData } from '@/components/StructuredData';
 import { SITE_URL } from '@/lib/structured-data';
 import { productsService } from '@/modules/products/products.service';
