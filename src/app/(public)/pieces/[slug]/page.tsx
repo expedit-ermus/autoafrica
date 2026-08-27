@@ -12,11 +12,23 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+async function getProductBySlugOrId(slug: string): Promise<Product | null> {
+  try {
+    const product = await productsService.getById(slug);
+    if (product) return product as unknown as Product;
+  } catch {
+    // Not found by ID, try list lookup
+  }
+  const result = await productsService.list({}, { page: 1, pageSize: 100 });
+  const rawProducts = (result.data || []) as unknown as Product[];
+  return rawProducts.find(
+    (p) => p.id === slug || (p.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug
+  ) || null;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const result = await productsService.list({}, { page: 1, pageSize: 50 });
-  const rawProducts = (result.data || []) as unknown as Product[];
-  const product = rawProducts.find((p) => p.id === slug || (p.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug);
+  const product = await getProductBySlugOrId(slug);
 
   if (!product) return { title: 'Pièce non trouvée | AutoAfrique' };
 
@@ -31,18 +43,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PieceDetailPage({ params }: Props) {
   const { slug } = await params;
-  const result = await productsService.list({}, { page: 1, pageSize: 50 });
-  const rawProducts = (result.data || []) as unknown as Product[];
-  const product = rawProducts.find((p) => p.id === slug || (p.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug);
+  const product = await getProductBySlugOrId(slug);
 
   if (!product) notFound();
 
   const brandName = product.brand?.name || 'Toyota';
   const categoryName = product.category?.name || 'Pièces Auto';
 
-  const related = rawProducts
-    .filter((p) => p.id !== product.id)
-    .slice(0, 4);
+  // Fetch related products from same category or brand
+  let related: Product[] = [];
+  try {
+    const relResult = await productsService.list(
+      { category: product.category?.slug || undefined },
+      { page: 1, pageSize: 6 }
+    );
+    related = ((relResult.data || []) as unknown as Product[])
+      .filter((p) => p.id !== product.id)
+      .slice(0, 4);
+  } catch {
+    related = [];
+  }
 
   const imagesArr = Array.isArray(product.images) ? product.images : [];
   const firstImg = imagesArr.length > 0 ? String(imagesArr[0]) : '';
@@ -152,8 +172,12 @@ export default async function PieceDetailPage({ params }: Props) {
               🏪
             </div>
             <div>
-              <h3 className="font-extrabold text-gray-900 text-base">Magasin Ferraille N&apos;Dotré Pro</h3>
-              <p className="text-xs text-gray-500">Vendeur Vérifié AutoAfrique • Abidjan, Côte d&apos;Ivoire ⭐ 4.9 (128 avis)</p>
+              <h3 className="font-extrabold text-gray-900 text-base">
+                {product.seller?.shopName || (product.seller?.firstName ? `${product.seller.firstName} ${product.seller.lastName || ''}` : 'Vendeur Certifié AutoAfrique')}
+              </h3>
+              <p className="text-xs text-gray-500">
+                Vendeur Vérifié AutoAfrique • {product.seller?.city || 'Abidjan'}, {product.seller?.country || 'Côte d’Ivoire'}
+              </p>
             </div>
           </div>
           <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200">
