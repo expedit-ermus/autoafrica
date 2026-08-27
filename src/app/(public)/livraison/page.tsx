@@ -39,20 +39,20 @@ export default function LivraisonPage() {
   const selectedCityData = cities.find(c => c.name === selectedCity);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900">
       {/* Hero Section */}
-      <section className="relative bg-[var(--color-warm-navy)] text-white pt-24 pb-32 px-4 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 to-transparent pointer-events-none"></div>
+      <section className="relative bg-gradient-to-br from-slate-950 via-slate-900 to-orange-950 text-white pt-24 pb-32 px-4 overflow-hidden border-b border-slate-800">
+        <div className="absolute inset-0 bg-gradient-to-br from-orange-950/20 to-transparent pointer-events-none"></div>
         <div className="max-w-6xl mx-auto relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-semibold text-sm mb-6 border border-[var(--color-primary)]/20 shadow-sm">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/15 text-orange-400 font-bold text-xs uppercase tracking-wider mb-6 border border-orange-500/30 shadow-sm">
             <Clock className="w-4 h-4" />
-            {L('Livraison 24-72h', '24-72h Delivery')}
+            {L('Livraison Express 24-72h', '24-72h Express Delivery')}
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 tracking-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
             {L('Expédition & Livraison en ', 'Shipping & Delivery in ')}
-            <span className="text-[var(--color-primary)]">{L('Afrique de l\'Ouest', 'West Africa')}</span>
+            <span className="text-orange-500">{L('Afrique de l\'Ouest', 'West Africa')}</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
             {L('Recevez vos pièces auto rapidement et en toute sécurité, où que vous soyez dans la sous-région.', 'Receive your auto parts quickly and securely, wherever you are in the sub-region.')}
           </p>
         </div>
@@ -62,79 +62,79 @@ export default function LivraisonPage() {
       <section className="max-w-7xl mx-auto px-4 -mt-16 relative z-20 pb-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Mode 1 */}
-          <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 flex flex-col items-start transition-transform hover:-translate-y-1 duration-300">
-            <div className="bg-orange-100 p-4 rounded-2xl mb-6">
-              <Package className="w-8 h-8 text-[var(--color-primary)]" />
+          <div className="bg-white rounded-3xl p-8 shadow-xl shadow-slate-900/5 border border-slate-200/80 flex flex-col items-start transition-transform hover:-translate-y-1 duration-300">
+            <div className="bg-orange-50 p-4 rounded-2xl mb-6 border border-orange-200/60">
+              <Package className="w-8 h-8 text-orange-600" />
             </div>
-            <h3 className="text-2xl font-extrabold text-[var(--color-secondary)] mb-3">
+            <h3 className="text-2xl font-black text-slate-900 mb-3">
               {L('Livreur Express Moto', 'Express Motorcycle Delivery')}
             </h3>
-            <p className="text-gray-600 mb-6 flex-grow">
-              {L('Idéal pour les livraisons intra-urbaines rapides via les services locaux (Tiak-Tiak, coursiers).', 'Ideal for fast intra-city deliveries via local services.')}
+            <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-grow">
+              {L('Idéal pour les livraisons intra-urbaines rapides via les services locaux (Tiak-Tiak, coursiers moto à Abidjan).', 'Ideal for fast intra-city deliveries via local courier services.')}
             </p>
-            <ul className="space-y-3 w-full border-t border-gray-100 pt-6">
-              <li className="flex items-center gap-3 text-sm text-gray-700 font-medium">
-                <MapPin className="w-4 h-4 text-gray-400" /> {L('Abidjan & Dakar', 'Abidjan & Dakar')}
+            <ul className="space-y-3 w-full border-t border-slate-100 pt-6">
+              <li className="flex items-center gap-3 text-sm text-slate-700 font-bold">
+                <MapPin className="w-4 h-4 text-slate-400" /> {L('Abidjan (10 Communes) & Grand Abidjan', 'Abidjan (10 Communes) & Grand Abidjan')}
               </li>
-              <li className="flex items-center gap-3 text-sm text-gray-700 font-medium">
-                <Clock className="w-4 h-4 text-[var(--color-primary)]" /> {L('Moins de 24h', 'Under 24h')}
+              <li className="flex items-center gap-3 text-sm text-slate-700 font-bold">
+                <Clock className="w-4 h-4 text-orange-500" /> {L('Moins de 24h', 'Under 24h')}
               </li>
-              <li className="flex items-center gap-3 text-sm text-gray-700 font-medium">
-                <div className="w-4 h-4 rounded-full bg-green-100 flex items-center justify-center text-green-600 text-xs font-bold">$</div>
+              <li className="flex items-center gap-3 text-sm text-slate-700 font-bold">
+                <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 text-xs font-black">✓</div>
                 {L('1,500 à 3,000 FCFA', '1,500 to 3,000 FCFA')}
               </li>
             </ul>
           </div>
 
           {/* Mode 2 */}
-          <div className="bg-[var(--color-warm-navy)] rounded-3xl p-8 shadow-xl flex flex-col items-start text-white transition-transform hover:-translate-y-1 duration-300 relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-[var(--color-primary)] text-white text-xs font-bold px-3 py-1 rounded-bl-xl uppercase tracking-wider">
+          <div className="bg-slate-950 rounded-3xl p-8 shadow-2xl flex flex-col items-start text-white transition-transform hover:-translate-y-1 duration-300 relative overflow-hidden border border-slate-800">
+            <div className="absolute top-0 right-0 bg-orange-500 text-white text-[11px] font-black px-3.5 py-1.5 rounded-bl-2xl uppercase tracking-wider shadow-md">
               {L('Populaire', 'Popular')}
             </div>
-            <div className="bg-white/10 p-4 rounded-2xl mb-6">
-              <Truck className="w-8 h-8 text-[var(--color-primary)]" />
+            <div className="bg-white/10 p-4 rounded-2xl mb-6 border border-white/10">
+              <Truck className="w-8 h-8 text-orange-400" />
             </div>
-            <h3 className="text-2xl font-extrabold mb-3">
+            <h3 className="text-2xl font-black mb-3 text-white">
               {L('Expédition Gare Routière', 'Bus Station Shipping')}
             </h3>
-            <p className="text-gray-300 mb-6 flex-grow">
+            <p className="text-slate-300 text-sm leading-relaxed mb-6 flex-grow">
               {L('Envoi interurbain via les compagnies de transport reconnues (UTB, STC, 7 Places).', 'Inter-city shipping via recognized transport companies (UTB, STC).')}
             </p>
-            <ul className="space-y-3 w-full border-t border-white/10 pt-6">
-              <li className="flex items-center gap-3 text-sm text-gray-200 font-medium">
-                <MapPin className="w-4 h-4 text-gray-400" /> {L('Bouaké, Korhogo, Saint-Louis...', 'Bouaké, Korhogo, Saint-Louis...')}
+            <ul className="space-y-3 w-full border-t border-slate-800 pt-6">
+              <li className="flex items-center gap-3 text-sm text-slate-200 font-bold">
+                <MapPin className="w-4 h-4 text-slate-400" /> {L('Bouaké, Korhogo, San Pedro, Yamoussoukro...', 'Bouaké, Korhogo, San Pedro, Yamoussoukro...')}
               </li>
-              <li className="flex items-center gap-3 text-sm text-gray-200 font-medium">
-                <Clock className="w-4 h-4 text-[var(--color-primary)]" /> {L('24 à 48h', '24 to 48h')}
+              <li className="flex items-center gap-3 text-sm text-slate-200 font-bold">
+                <Clock className="w-4 h-4 text-orange-400" /> {L('24 à 48h', '24 to 48h')}
               </li>
-              <li className="flex items-center gap-3 text-sm text-gray-200 font-medium">
-                <div className="w-4 h-4 rounded-full bg-green-900/50 flex items-center justify-center text-green-400 text-xs font-bold">$</div>
+              <li className="flex items-center gap-3 text-sm text-slate-200 font-bold">
+                <div className="w-5 h-5 rounded-full bg-emerald-900/60 flex items-center justify-center text-emerald-400 text-xs font-black">✓</div>
                 {L('2,500 à 5,000 FCFA', '2,500 to 5,000 FCFA')}
               </li>
             </ul>
           </div>
 
           {/* Mode 3 */}
-          <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 flex flex-col items-start transition-transform hover:-translate-y-1 duration-300">
-            <div className="bg-blue-100 p-4 rounded-2xl mb-6">
+          <div className="bg-white rounded-3xl p-8 shadow-xl shadow-slate-900/5 border border-slate-200/80 flex flex-col items-start transition-transform hover:-translate-y-1 duration-300">
+            <div className="bg-blue-50 p-4 rounded-2xl mb-6 border border-blue-200/60">
               <MapIcon className="w-8 h-8 text-blue-600" />
             </div>
-            <h3 className="text-2xl font-extrabold text-[var(--color-secondary)] mb-3">
+            <h3 className="text-2xl font-black text-slate-900 mb-3">
               {L('Fret & Transit Régional', 'Regional Freight & Transit')}
             </h3>
-            <p className="text-gray-600 mb-6 flex-grow">
+            <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-grow">
               {L('Transport de pièces lourdes ou volumineuses à travers les frontières sous-régionales.', 'Transport of heavy or bulky parts across sub-regional borders.')}
             </p>
-            <ul className="space-y-3 w-full border-t border-gray-100 pt-6">
-              <li className="flex items-center gap-3 text-sm text-gray-700 font-medium">
-                <MapPin className="w-4 h-4 text-gray-400" /> {L('Espace UEMOA / CEDEAO', 'WAEMU / ECOWAS Zone')}
+            <ul className="space-y-3 w-full border-t border-slate-100 pt-6">
+              <li className="flex items-center gap-3 text-sm text-slate-700 font-bold">
+                <MapPin className="w-4 h-4 text-slate-400" /> {L('Espace UEMOA / CEDEAO (Mali, Sénégal, Burkina...)', 'WAEMU / ECOWAS Zone')}
               </li>
-              <li className="flex items-center gap-3 text-sm text-gray-700 font-medium">
-                <Clock className="w-4 h-4 text-[var(--color-primary)]" /> {L('48 à 72h', '48 to 72h')}
+              <li className="flex items-center gap-3 text-sm text-slate-700 font-bold">
+                <Clock className="w-4 h-4 text-orange-500" /> {L('48 à 72h', '48 to 72h')}
               </li>
-              <li className="flex items-center gap-3 text-sm text-gray-700 font-medium">
-                <div className="w-4 h-4 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 text-xs font-bold">!</div>
-                {L('Tarification sur mesure', 'Custom pricing')}
+              <li className="flex items-center gap-3 text-sm text-slate-700 font-bold">
+                <div className="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 text-xs font-black">ℹ</div>
+                {L('Tarification sur devis', 'Custom quote')}
               </li>
             </ul>
           </div>
@@ -142,60 +142,60 @@ export default function LivraisonPage() {
       </section>
 
       {/* Interactive City Coverage & Delay Checker */}
-      <section className="bg-white py-20 border-y border-gray-100">
+      <section className="bg-white py-20 border-y border-slate-200/80">
         <div className="max-w-4xl mx-auto px-4 text-center">
-          <h2 className="text-3xl font-extrabold text-[var(--color-secondary)] mb-4">
+          <h2 className="text-3xl font-black text-slate-900 mb-4 tracking-tight">
             {L('Vérifiez les délais pour votre ville', 'Check delays for your city')}
           </h2>
-          <p className="text-gray-600 mb-10 max-w-2xl mx-auto">
+          <p className="text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
             {L('Sélectionnez votre destination pour connaître les options de transport et les délais d\'acheminement estimés.', 'Select your destination to see transport options and estimated delivery times.')}
           </p>
 
-          <div className="bg-gray-50 p-6 md:p-10 rounded-3xl border border-gray-200">
+          <div className="bg-slate-50 p-6 md:p-10 rounded-3xl border border-slate-200/80 shadow-sm">
             <div className="relative max-w-md mx-auto mb-8 text-left">
-              <label className="block text-sm font-semibold text-[var(--color-secondary)] mb-2">
+              <label className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
                 {L('Choisissez votre ville de destination', 'Choose your destination city')}
               </label>
               <div className="relative">
                 <select
                   value={selectedCity}
                   onChange={(e) => setSelectedCity(e.target.value)}
-                  className="w-full appearance-none bg-white border border-gray-300 rounded-xl py-4 pl-5 pr-12 text-gray-700 font-medium focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent cursor-pointer shadow-sm"
+                  className="w-full appearance-none bg-white border-2 border-slate-200 rounded-2xl py-4 pl-5 pr-12 text-slate-900 font-bold focus:outline-none focus:border-orange-500 cursor-pointer shadow-sm transition-colors text-sm"
                 >
                   <option value="">{L('-- Sélectionner une ville --', '-- Select a city --')}</option>
                   {cities.map(city => (
                     <option key={city.name} value={city.name}>{city.name}</option>
                   ))}
                 </select>
-                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none w-5 h-5" />
+                <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-orange-500 pointer-events-none w-5 h-5" />
               </div>
             </div>
 
             {selectedCityData && (
-              <div className="bg-white rounded-2xl p-6 shadow-md border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
+              <div className="bg-white rounded-2xl p-6 shadow-md border border-slate-200/80 flex flex-col md:flex-row items-center justify-between gap-6 animate-in fade-in slide-in-from-bottom-4 duration-300">
                 <div className="flex items-center gap-4">
-                  <div className="bg-green-100 p-3 rounded-full">
-                    <Navigation className="w-6 h-6 text-green-600" />
+                  <div className="bg-emerald-50 p-3 rounded-2xl border border-emerald-200">
+                    <Navigation className="w-6 h-6 text-emerald-600" />
                   </div>
                   <div className="text-left">
-                    <h4 className="text-lg font-bold text-[var(--color-secondary)]">{selectedCityData.name}</h4>
-                    <p className="text-sm text-gray-500">{selectedCityData.carrier}</p>
+                    <h4 className="text-lg font-black text-slate-900">{selectedCityData.name}</h4>
+                    <p className="text-xs text-slate-500 font-medium">{selectedCityData.carrier}</p>
                   </div>
                 </div>
                 
-                <div className="w-full md:w-px md:h-12 bg-gray-200 hidden md:block"></div>
+                <div className="w-full md:w-px md:h-12 bg-slate-200 hidden md:block"></div>
                 
-                <div className="flex w-full md:w-auto justify-between md:justify-end md:gap-8 items-center border-t md:border-t-0 pt-4 md:pt-0 border-gray-100">
+                <div className="flex w-full md:w-auto justify-between md:justify-end md:gap-8 items-center border-t md:border-t-0 pt-4 md:pt-0 border-slate-100">
                   <div className="text-center md:text-right">
-                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">{L('Délai estimé', 'Estimated Delay')}</p>
-                    <p className="font-bold text-[var(--color-secondary)] flex items-center justify-center md:justify-end gap-1">
-                      <Clock className="w-4 h-4 text-[var(--color-primary)]" />
+                    <p className="text-[11px] text-slate-500 font-black uppercase tracking-wider mb-1">{L('Délai estimé', 'Estimated Delay')}</p>
+                    <p className="font-bold text-slate-900 flex items-center justify-center md:justify-end gap-1 text-sm">
+                      <Clock className="w-4 h-4 text-orange-500" />
                       {selectedCityData.delay}
                     </p>
                   </div>
                   <div className="text-center md:text-right">
-                    <p className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">{L('Tarif indicatif', 'Indicative Rate')}</p>
-                    <p className="font-bold text-gray-800">{selectedCityData.price}</p>
+                    <p className="text-[11px] text-slate-500 font-black uppercase tracking-wider mb-1">{L('Tarif indicatif', 'Indicative Rate')}</p>
+                    <p className="font-black text-orange-600 text-base">{selectedCityData.price}</p>
                   </div>
                 </div>
               </div>
@@ -208,64 +208,63 @@ export default function LivraisonPage() {
       <AbidjanDeliveryZones />
 
       {/* Tracking & Inspection Guide */}
-      <section className="py-20 px-4 bg-gray-50">
+      <section className="py-20 px-4 bg-[#F8FAFC]">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-extrabold text-[var(--color-secondary)] mb-6">
+              <h2 className="text-3xl font-black text-slate-900 mb-6 tracking-tight">
                 {L('Guide de réception du colis', 'Parcel Reception Guide')}
               </h2>
-              <p className="text-gray-600 mb-8 text-lg">
+              <p className="text-slate-600 mb-8 text-base sm:text-lg leading-relaxed">
                 {L('Pour garantir votre satisfaction, veuillez toujours vérifier ces éléments avant de signer le bon de livraison ou de payer le livreur.', 'To guarantee your satisfaction, always check these items before signing the delivery note or paying the driver.')}
               </p>
 
               <div className="space-y-6">
                 <div className="flex gap-4">
                   <div className="flex-shrink-0 mt-1">
-                    <CheckCircle2 className="w-6 h-6 text-green-500" />
+                    <CheckCircle2 className="w-6 h-6 text-emerald-500" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-1">{L('Vérifiez l\'emballage', 'Check the packaging')}</h4>
-                    <p className="text-gray-600 text-sm">{L('Assurez-vous que le carton ou l\'emballage n\'est pas déchiré, ouvert ou endommagé.', 'Make sure the box or packaging is not torn, opened, or damaged.')}</p>
+                    <h4 className="font-bold text-slate-900 mb-1">{L('Vérifiez l\'emballage', 'Check the packaging')}</h4>
+                    <p className="text-slate-600 text-sm leading-relaxed">{L('Assurez-vous que le carton ou l\'emballage n\'est pas déchiré, ouvert ou endommagé.', 'Make sure the box or packaging is not torn, opened, or damaged.')}</p>
                   </div>
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-shrink-0 mt-1">
-                    <CheckCircle2 className="w-6 h-6 text-green-500" />
+                    <CheckCircle2 className="w-6 h-6 text-emerald-500" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-1">{L('Conformité de la pièce', 'Part conformity')}</h4>
-                    <p className="text-gray-600 text-sm">{L('Ouvrez le colis et vérifiez que la pièce correspond exactement à votre commande (référence, état).', 'Open the package and check that the part matches exactly your order (reference, condition).')}</p>
+                    <h4 className="font-bold text-slate-900 mb-1">{L('Conformité de la pièce', 'Part conformity')}</h4>
+                    <p className="text-slate-600 text-sm leading-relaxed">{L('Ouvrez le colis et vérifiez que la pièce correspond exactement à votre commande (référence, état).', 'Open the package and check that the part matches exactly your order (reference, condition).')}</p>
                   </div>
                 </div>
                 <div className="flex gap-4">
                   <div className="flex-shrink-0 mt-1">
-                    <ShieldCheck className="w-6 h-6 text-[var(--color-primary)]" />
+                    <ShieldCheck className="w-6 h-6 text-orange-500" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-gray-900 mb-1">{L('En cas de problème', 'In case of a problem')}</h4>
-                    <p className="text-gray-600 text-sm">{L('Refusez la livraison si la pièce est abîmée ou incorrecte, et contactez immédiatement notre service client.', 'Refuse delivery if the part is damaged or incorrect, and immediately contact our customer service.')}</p>
+                    <h4 className="font-bold text-slate-900 mb-1">{L('En cas de problème (Garantie 48h)', 'In case of a problem (48h warranty)')}</h4>
+                    <p className="text-slate-600 text-sm leading-relaxed">{L('Refusez la livraison si la pièce est abîmée ou incorrecte, et contactez immédiatement notre service client.', 'Refuse delivery if the part is damaged or incorrect, and immediately contact our customer service.')}</p>
                   </div>
                 </div>
               </div>
             </div>
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-tr from-[var(--color-primary)] to-[var(--color-warm-navy)] rounded-[2.5rem] transform rotate-3 opacity-20"></div>
-              <div className="bg-white p-8 md:p-10 rounded-[2.5rem] shadow-xl relative z-10 border border-gray-100">
-                <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6">
-                  <Phone className="w-8 h-8 text-blue-600" />
+              <div className="bg-white p-8 md:p-10 rounded-3xl shadow-xl shadow-slate-900/5 relative z-10 border border-slate-200/80">
+                <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center mb-6 border border-orange-200/60">
+                  <Phone className="w-8 h-8 text-orange-600" />
                 </div>
-                <h3 className="text-2xl font-bold text-[var(--color-secondary)] mb-4">
+                <h3 className="text-2xl font-black text-slate-900 mb-4 tracking-tight">
                   {L('Besoin d\'assistance pour une livraison en cours ?', 'Need assistance with an ongoing delivery?')}
                 </h3>
-                <p className="text-gray-600 mb-8">
+                <p className="text-slate-600 mb-8 text-sm leading-relaxed">
                   {L('Notre équipe de support client est disponible pour suivre votre commande et vous assister.', 'Our customer support team is available to track your order and assist you.')}
                 </p>
                 <Link 
                   href="/contact" 
-                  className="inline-flex items-center justify-center w-full py-4 px-6 bg-[var(--color-warm-navy)] text-white rounded-xl font-bold hover:bg-blue-900 transition-colors"
+                  className="inline-flex items-center justify-center w-full py-4 px-6 bg-slate-950 text-white rounded-2xl font-black hover:bg-slate-900 transition-colors text-sm shadow-md"
                 >
-                  {L('Contacter le support', 'Contact Support')}
+                  {L('Contacter le support direct', 'Contact Direct Support')}
                 </Link>
               </div>
             </div>
@@ -274,21 +273,21 @@ export default function LivraisonPage() {
       </section>
 
       {/* Bottom CTA */}
-      <section className="bg-[var(--color-primary)] text-white py-16 px-4 text-center">
+      <section className="bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white py-16 px-4 text-center">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl font-extrabold mb-6">
+          <h2 className="text-3xl sm:text-4xl font-black mb-4 tracking-tight">
             {L('Prêt à commander vos pièces auto ?', 'Ready to order your auto parts?')}
           </h2>
-          <p className="text-orange-100 text-lg mb-8 max-w-xl mx-auto">
+          <p className="text-orange-100 text-base sm:text-lg mb-8 max-w-xl mx-auto leading-relaxed">
             {L('Trouvez ce dont vous avez besoin dans notre catalogue et choisissez l\'option de livraison qui vous convient.', 'Find what you need in our catalog and choose the delivery option that suits you.')}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link 
               href="/catalogue" 
-              className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 bg-white text-[var(--color-primary)] font-bold rounded-xl shadow-lg hover:bg-gray-50 transition-colors gap-2"
+              className="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 bg-white text-slate-950 font-black rounded-2xl shadow-xl hover:bg-slate-100 hover:scale-[1.02] active:scale-[0.98] transition-all gap-2 text-sm"
             >
               {L('Explorer le catalogue', 'Explore the Catalog')}
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="w-5 h-5 text-orange-600" />
             </Link>
           </div>
         </div>

@@ -38,26 +38,26 @@ export default function DevenirVendeurPage() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Hero Section Vendeur */}
-        <div className="bg-gradient-to-r from-[var(--color-warm-navy)] via-[var(--color-secondary)] to-orange-950 rounded-3xl p-6 sm:p-10 md:p-14 text-white shadow-xl mb-12 border border-orange-900/30">
-          <span className="text-xs font-extrabold uppercase tracking-wider bg-orange-500/20 text-orange-300 px-3.5 py-1.5 rounded-full border border-orange-400/30">
+        <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950 rounded-3xl p-6 sm:p-10 md:p-14 text-white shadow-xl mb-12 border border-slate-800">
+          <span className="text-xs font-bold uppercase tracking-wider bg-orange-500/20 text-orange-400 px-3.5 py-1.5 rounded-full border border-orange-500/30">
             Espace Vendeurs & Garagistes
           </span>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mt-4 mb-4 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-black mt-4 mb-4 leading-tight tracking-tight">
             Vendez vos pièces détachées en Afrique de l&apos;Ouest
           </h1>
-          <p className="text-orange-100 text-base sm:text-lg max-w-2xl leading-relaxed mb-8">
+          <p className="text-slate-300 text-base sm:text-lg max-w-2xl leading-relaxed mb-8">
             Digitalisez votre magasin ou votre casse auto. Publiez vos annonces en 10 secondes et recevez vos paiements par Mobile Money garanti.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link
               href="/auth/register"
-              className="px-8 py-4 bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-center rounded-2xl transition-all shadow-lg border border-orange-400/30"
+              className="px-8 py-4 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black text-center rounded-2xl transition-all shadow-lg text-sm hover:scale-[1.02] active:scale-[0.98]"
             >
               S&apos;inscrire comme Vendeur
             </Link>
             <Link
               href="/tarifs"
-              className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold text-center rounded-2xl border border-white/20 transition-all"
+              className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold text-center rounded-2xl border border-white/15 transition-all text-sm"
             >
               Voir les Formules & Commission (Transparence)
             </Link>

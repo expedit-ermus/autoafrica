@@ -30,7 +30,7 @@ export default async function PublicCataloguePage() {
   }));
 
   return (
-    <div className="bg-[var(--color-bg)]">
+    <div className="bg-[#F8FAFC] text-slate-900">
       <BreadcrumbStructuredData
         items={[
           { name: 'Accueil', url: SITE_URL },
@@ -38,16 +38,16 @@ export default async function PublicCataloguePage() {
         ]}
       />
       {/* Hero section */}
-      <div className="bg-gradient-to-b from-[var(--color-bg-warm)] to-white pt-8 pb-0">
+      <div className="bg-gradient-to-b from-white via-slate-50 to-[#F8FAFC] pt-8 pb-0 border-b border-slate-200/70">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="pb-8 max-w-2xl">
-            <p className="text-xs font-extrabold uppercase tracking-wider text-orange-500 mb-2">
+            <p className="text-xs font-black uppercase tracking-wider text-orange-600 mb-2">
               Catalogue AutoAfrique Abidjan
             </p>
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mb-3 tracking-tight">
               Pièces détachées auto à Abidjan & Afrique de l&apos;Ouest
             </h1>
-            <p className="text-gray-500 leading-relaxed">
+            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
               Trouvez les pièces compatibles avec votre véhicule. Filtrez par marque, modèle et condition. Pièces neuves et d&apos;occasion contrôlée disponibles.
             </p>
           </div>

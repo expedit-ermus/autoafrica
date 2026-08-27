@@ -216,19 +216,19 @@ export default function RepairManualsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-16">
+    <div className="min-h-screen bg-[#F8FAFC] pb-16 text-slate-900">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-[var(--color-secondary)] to-gray-800 text-white py-20 px-6 sm:px-12 lg:px-24">
+      <section className="bg-gradient-to-br from-slate-950 via-slate-900 to-orange-950 text-white py-20 px-6 sm:px-12 lg:px-24 border-b border-slate-800">
         <div className="max-w-7xl mx-auto flex flex-col items-center text-center">
-          <span className="bg-orange-500/20 text-orange-400 border border-orange-500/50 px-4 py-1.5 rounded-full text-sm font-semibold mb-6 flex items-center gap-2">
+          <span className="bg-orange-500/20 text-orange-400 border border-orange-500/30 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider mb-6 flex items-center gap-2">
             <SvgBookOpen className="w-4 h-4" />
             {L('Centre de Connaissances & Diagnostics', 'Knowledge & Diagnostics Hub')}
           </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 leading-tight tracking-tight">
             {L('Manuels de Réparation &', 'Repair Manuals &')}{' '}
-            <span className="text-[var(--color-primary)]">{L('Schémas Techniques', 'Technical Diagrams')}</span>
+            <span className="text-orange-500">{L('Schémas Techniques', 'Technical Diagrams')}</span>
           </h1>
-          <p className="text-gray-300 max-w-2xl text-lg md:text-xl mb-10">
+          <p className="text-slate-300 max-w-2xl text-base sm:text-lg mb-10 leading-relaxed">
             {L(
               'Accédez à des guides détaillés, des schémas électriques et des tutoriels étape par étape pour entretenir et réparer votre véhicule en toute confiance.',
               'Access detailed guides, wiring diagrams and step-by-step tutorials to maintain and repair your vehicle with confidence.'
@@ -239,21 +239,21 @@ export default function RepairManualsPage() {
             <input 
               type="text" 
               placeholder={L("Rechercher un tutoriel, une pièce, un code erreur...", "Search for a tutorial, a part, an error code...")}
-              className="w-full pl-12 pr-4 py-4 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] shadow-lg"
+              className="w-full pl-12 pr-4 py-4 rounded-2xl text-slate-900 bg-white border-2 border-slate-200 focus:outline-none focus:border-orange-500 shadow-xl font-medium text-sm transition-colors"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <SvgSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <SvgSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
           </div>
         </div>
       </section>
 
       {/* Safety Disclaimer */}
       <div className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-24 -mt-6">
-        <div className="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r-xl shadow-sm flex items-start gap-4">
-          <SvgAlertTriangle className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-0.5" />
+        <div className="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-2xl shadow-md flex items-start gap-4 border border-amber-200">
+          <SvgAlertTriangle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="font-bold text-yellow-800">
+            <h3 className="font-bold text-amber-900 text-sm">
               {L('Avertissement de Sécurité', 'Safety Warning')}
             </h3>
             <p className="text-yellow-700 text-sm mt-1">
@@ -281,10 +281,10 @@ export default function RepairManualsPage() {
                   <button
                     key={brand}
                     onClick={() => setActiveBrand(brand)}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                       activeBrand === brand
-                        ? 'bg-[var(--color-primary)] text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                   >
                     {brand}
@@ -293,9 +293,9 @@ export default function RepairManualsPage() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-              <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
-                <SvgSettings className="w-5 h-5 text-gray-500" />
+            <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80">
+              <h3 className="font-black text-slate-900 text-base mb-4 flex items-center gap-2">
+                <SvgSettings className="w-5 h-5 text-orange-500" />
                 {L('Système', 'System')}
               </h3>
               <div className="flex flex-col gap-2">
@@ -305,13 +305,13 @@ export default function RepairManualsPage() {
                     <button
                       key={sys.id}
                       onClick={() => setActiveSystem(sys.id)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-colors ${
+                      className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-left text-xs font-bold transition-colors ${
                         activeSystem === sys.id
-                          ? 'bg-blue-50 text-blue-700 font-semibold'
-                          : 'text-gray-600 hover:bg-gray-50'
+                          ? 'bg-orange-500/10 text-orange-600 font-extrabold border border-orange-500/20'
+                          : 'text-slate-600 hover:bg-slate-50'
                       }`}
                     >
-                      <Icon className="w-5 h-5" />
+                      <Icon className="w-4 h-4" />
                       {sys.name}
                     </button>
                   );
@@ -325,54 +325,54 @@ export default function RepairManualsPage() {
             
             {/* Results Count & Sort */}
             <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-bold text-gray-900">
+              <h2 className="text-xl font-black text-slate-900">
                 {filteredManuals.length} {L('Manuels disponibles', 'Manuals available')}
               </h2>
-              <button className="flex items-center gap-2 text-gray-500 hover:text-gray-700">
+              <button className="flex items-center gap-2 text-slate-500 hover:text-slate-700">
                 <SvgFilter className="w-4 h-4" />
-                <span className="text-sm font-medium">{L('Trier par', 'Sort by')}</span>
+                <span className="text-xs font-bold">{L('Trier par', 'Sort by')}</span>
               </button>
             </div>
 
             {/* Manuals Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {filteredManuals.map(manual => (
-                <div key={manual.id} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-shadow group">
+                <div key={manual.id} className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200/80 hover:shadow-xl hover:border-orange-500/30 transition-all group">
                   <div className="flex justify-between items-start mb-4">
-                    <span className="text-xs font-bold uppercase tracking-wider text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-slate-600 bg-slate-100 px-2.5 py-1 rounded-md">
                       {manual.brand}
                     </span>
-                    <span className={`text-xs font-bold px-2.5 py-1 rounded-full border ${difficultyColors[manual.difficulty as keyof typeof difficultyColors]}`}>
+                    <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${difficultyColors[manual.difficulty as keyof typeof difficultyColors]}`}>
                       {manual.difficulty}
                     </span>
                   </div>
                   
-                  <h3 className="font-bold text-lg text-gray-900 mb-2 line-clamp-2 group-hover:text-[var(--color-primary)] transition-colors">
+                  <h3 className="font-bold text-base text-slate-900 mb-2 line-clamp-2 group-hover:text-orange-600 transition-colors">
                     {manual.title}
                   </h3>
                   
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                  <p className="text-slate-600 text-xs mb-4 line-clamp-2 leading-relaxed">
                     {manual.description}
                   </p>
                   
                   <div className="space-y-2 mb-6">
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
-                      <SvgClock className="w-4 h-4 text-gray-400" />
-                      <span>{L('Durée estimée :', 'Est. time:')} <span className="font-medium text-gray-700">{manual.time}</span></span>
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                      <SvgClock className="w-4 h-4 text-orange-500" />
+                      <span>{L('Durée estimée :', 'Est. time:')} <span className="font-bold text-slate-800">{manual.time}</span></span>
                     </div>
-                    <div className="flex items-start gap-2 text-sm text-gray-500">
-                      <SvgWrench className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
-                      <span>{L('Outils :', 'Tools:')} <span className="text-gray-700">{manual.tools}</span></span>
+                    <div className="flex items-start gap-2 text-xs text-slate-500">
+                      <SvgWrench className="w-4 h-4 text-slate-400 mt-0.5 flex-shrink-0" />
+                      <span>{L('Outils :', 'Tools:')} <span className="text-slate-700">{manual.tools}</span></span>
                     </div>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">
-                    <button className="flex-1 flex items-center justify-center gap-2 bg-blue-50 text-blue-700 hover:bg-blue-100 px-4 py-2 rounded-xl font-medium text-sm transition-colors">
+                  <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-100">
+                    <button className="flex-1 flex items-center justify-center gap-2 bg-slate-100 text-slate-800 hover:bg-slate-200 px-4 py-2.5 rounded-xl font-bold text-xs transition-colors">
                       <SvgEye className="w-4 h-4" />
                       {L('Lire le guide', 'Read guide')}
                     </button>
-                    <Link href={manual.partsLink} className="flex-1 flex items-center justify-center gap-2 bg-gray-900 text-white hover:bg-gray-800 px-4 py-2 rounded-xl font-medium text-sm transition-colors">
-                      <SvgShoppingCart className="w-4 h-4" />
+                    <Link href={manual.partsLink} className="flex-1 flex items-center justify-center gap-2 bg-slate-950 text-white hover:bg-slate-900 px-4 py-2.5 rounded-xl font-bold text-xs transition-colors shadow-sm">
+                      <SvgShoppingCart className="w-4 h-4 text-orange-400" />
                       {L('Pièces', 'Parts')}
                     </Link>
                   </div>
@@ -381,10 +381,10 @@ export default function RepairManualsPage() {
             </div>
 
             {filteredManuals.length === 0 && (
-              <div className="text-center py-16 bg-white rounded-2xl border border-gray-100">
-                <SvgBookOpen className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                <h3 className="text-lg font-bold text-gray-900 mb-2">{L('Aucun manuel trouvé', 'No manuals found')}</h3>
-                <p className="text-gray-500">
+              <div className="text-center py-16 bg-white rounded-3xl border border-slate-200/80">
+                <SvgBookOpen className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                <h3 className="text-lg font-bold text-slate-900 mb-2">{L('Aucun manuel trouvé', 'No manuals found')}</h3>
+                <p className="text-slate-500 text-xs">
                   {L('Essayez de modifier vos filtres ou votre recherche.', 'Try modifying your filters or search.')}
                 </p>
               </div>
@@ -395,16 +395,16 @@ export default function RepairManualsPage() {
 
       {/* CTA Banner: Diagnostic Estimator */}
       <section className="max-w-7xl mx-auto px-6 sm:px-12 lg:px-24 mb-8">
-        <div className="bg-[var(--color-primary)] rounded-3xl p-8 md:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
+        <div className="bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 rounded-3xl p-8 md:p-12 text-white flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden shadow-xl">
           {/* Decorative background circles */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-black opacity-10 rounded-full blur-2xl translate-y-1/2 -translate-x-1/2"></div>
           
           <div className="relative z-10 md:max-w-xl">
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-4">
+            <h2 className="text-3xl md:text-4xl font-black mb-4 tracking-tight">
               {L('Vous ne trouvez pas la panne ?', "Can't find the issue?")}
             </h2>
-            <p className="text-white/90 text-lg mb-6">
+            <p className="text-orange-100 text-base sm:text-lg mb-6 leading-relaxed">
               {L(
                 "Utilisez notre outil d'estimation de devis pour identifier le problème et obtenir une estimation des coûts de réparation et des pièces nécessaires.",
                 'Use our quote estimator tool to identify the problem and get an estimate for repair costs and required parts.'
@@ -412,9 +412,9 @@ export default function RepairManualsPage() {
             </p>
             <Link 
               href="/estimation-devis" 
-              className="inline-flex items-center gap-2 bg-white text-[var(--color-primary)] font-bold px-8 py-4 rounded-xl hover:bg-gray-50 transition-colors shadow-lg"
+              className="inline-flex items-center gap-2 bg-white text-slate-950 font-black px-8 py-4 rounded-2xl hover:bg-slate-100 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg text-sm"
             >
-              <SvgZap className="w-5 h-5" />
+              <SvgZap className="w-5 h-5 text-orange-600" />
               {L('Lancer le diagnostic en ligne', 'Start online diagnostic')}
             </Link>
           </div>

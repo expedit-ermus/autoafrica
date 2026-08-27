@@ -48,19 +48,19 @@ export default function WishlistPage() {
       </div>
 
       {wishlist.length === 0 ? (
-        <div className="bg-white rounded-3xl p-8 sm:p-12 text-center border border-[var(--color-warm-border)] max-w-lg mx-auto my-12">
+        <div className="bg-white rounded-3xl p-8 sm:p-12 text-center border border-slate-200/80 max-w-lg mx-auto my-12 shadow-sm">
           <div className="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">
             ❤️
           </div>
-          <h2 className="text-lg font-bold text-gray-900 mb-2">
+          <h2 className="text-lg font-black text-slate-900 mb-2">
             {L('Votre liste de favoris est vide', 'Your wishlist is empty')}
           </h2>
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="text-sm text-slate-600 mb-6 leading-relaxed">
             {L('Explorez notre catalogue de pièces détachées et cliquez sur le cœur pour sauvegarder vos articles.', 'Browse our spare parts catalog and click the heart icon to save items.')}
           </p>
           <Link
             href="/catalogue"
-            className="inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-bold px-6 py-3 rounded-xl transition-all shadow-md"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black px-6 py-3 rounded-2xl transition-all shadow-md text-sm hover:scale-[1.02] active:scale-[0.98]"
           >
             <span>{L('Découvrir le catalogue', 'Explore Catalog')}</span>
             <span>➔</span>
@@ -71,7 +71,7 @@ export default function WishlistPage() {
           {wishlist.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-orange-500/30 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col relative"
+              className="bg-white rounded-3xl border border-slate-200/80 hover:border-orange-500/40 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col relative group"
             >
               <button
                 type="button"
@@ -85,31 +85,31 @@ export default function WishlistPage() {
                 ✕
               </button>
 
-              <div className="relative aspect-square bg-gray-50 overflow-hidden p-4">
+              <div className="relative aspect-square bg-slate-50 overflow-hidden p-4">
                 <RemoteImage
                   src={item.image || '/logo.png'}
                   alt={item.title}
                   fill
-                  className="object-contain"
+                  className="object-contain group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
 
-              <div className="p-4 flex flex-col flex-1">
+              <div className="p-5 flex flex-col flex-1">
                 {item.category && (
-                  <span className="text-xs font-bold text-orange-600 uppercase tracking-wider mb-1">
+                  <span className="text-[11px] font-black text-orange-600 uppercase tracking-wider mb-1">
                     {item.category}
                   </span>
                 )}
 
                 <Link href={`/pieces/${item.id}`} className="hover:text-orange-600 transition-colors">
-                  <h3 className="text-sm font-bold text-gray-900 mb-2 line-clamp-2">{item.title}</h3>
+                  <h3 className="text-sm font-bold text-slate-900 mb-2 line-clamp-2 leading-snug">{item.title}</h3>
                 </Link>
 
-                <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between">
-                  <span className="text-base font-black text-gray-900">{formatPrice(item.price)}</span>
+                <div className="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between">
+                  <span className="text-base font-black text-slate-900">{formatPrice(item.price)}</span>
                   <Link
                     href={`/pieces/${item.id}`}
-                    className="px-3 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-xs font-bold transition-colors"
+                    className="px-3.5 py-1.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-xl text-xs font-black transition-all shadow-sm"
                   >
                     {L('Voir', 'View')}
                   </Link>

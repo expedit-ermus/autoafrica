@@ -48,7 +48,7 @@ export default async function PieceDetailPage({ params }: Props) {
   const firstImg = imagesArr.length > 0 ? String(imagesArr[0]) : '';
 
   return (
-    <div className="bg-[var(--color-bg)] min-h-screen">
+    <div className="bg-[#F8FAFC] text-slate-900 min-h-screen">
       <ProductStructuredData
         name={product.title}
         description={`Pièce ${product.title} pour ${brandName} ${product.model || ''}.`}

@@ -78,20 +78,20 @@ export default function BlogIndexPage() {
   const gridArticles = articles.slice(1);
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className="min-h-screen bg-[#F8FAFC] pb-20">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[var(--color-warm-navy)] via-[var(--color-secondary)] to-orange-950 text-white overflow-hidden pt-24 pb-32">
+      <section className="relative bg-gradient-to-br from-slate-950 via-slate-900 to-orange-950 text-white overflow-hidden pt-24 pb-32 border-b border-slate-800">
         <div className="absolute inset-0 bg-[url('/images/hero-pattern.svg')] opacity-10"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[var(--color-warm-navy)]/80"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-950/80"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/20 border border-orange-500/30 text-orange-400 font-medium text-sm mb-6">
+          <span className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-400 font-bold text-xs uppercase tracking-wider mb-6">
             <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
             Blog AutoAfrique
           </span>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-6 tracking-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
             {L('Conseils, astuces et actus auto', 'Auto tips, tricks and news')}
           </h1>
-          <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
             {L('Découvrez nos guides d\'experts pour l\'entretien de votre véhicule, l\'achat de pièces et les dernières actualités de l\'automobile en Afrique de l\'Ouest.', 'Discover our expert guides for vehicle maintenance, parts purchasing and the latest automotive news in West Africa.')}
           </p>
         </div>
@@ -99,30 +99,30 @@ export default function BlogIndexPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-20">
         {/* Featured Article */}
-        <Link href={`/blog/${featuredArticle.slug}`} className="group block mb-16 bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl transition-all duration-300">
+        <Link href={`/blog/${featuredArticle.slug}`} className="group block mb-16 bg-white rounded-3xl shadow-xl shadow-slate-900/5 border border-slate-200/80 overflow-hidden hover:shadow-2xl hover:border-orange-500/40 transition-all duration-300">
           <div className="flex flex-col lg:flex-row">
-            <div className="lg:w-1/2 h-64 lg:h-auto bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center p-8 relative overflow-hidden">
+            <div className="lg:w-1/2 h-64 lg:h-auto bg-gradient-to-br from-emerald-600 to-teal-800 flex items-center justify-center p-8 relative overflow-hidden">
               <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300"></div>
-              <span className="text-8xl transform group-hover:scale-110 transition-transform duration-500">🚘</span>
+              <span className="text-8xl transform group-hover:scale-110 transition-transform duration-500 select-none">🚘</span>
             </div>
             <div className="lg:w-1/2 p-8 md:p-12 flex flex-col justify-center">
               <div className="flex items-center gap-3 mb-4">
                 <span className={`px-3 py-1 rounded-full border text-xs font-semibold ${featuredArticle.categoryColor}`}>
                   {featuredArticle.category}
                 </span>
-                <span className="text-sm text-gray-500">{featuredArticle.date}</span>
-                <span className="text-sm text-gray-500 flex items-center gap-1">
+                <span className="text-sm text-slate-500">{featuredArticle.date}</span>
+                <span className="text-sm text-slate-500 flex items-center gap-1">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                   {featuredArticle.readTime}
                 </span>
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 group-hover:text-[var(--color-primary)] transition-colors">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mb-4 group-hover:text-orange-600 transition-colors leading-tight">
                 {featuredArticle.title}
               </h2>
-              <p className="text-gray-600 text-lg mb-8 line-clamp-3">
+              <p className="text-slate-600 text-base sm:text-lg mb-8 line-clamp-3 leading-relaxed">
                 {featuredArticle.excerpt}
               </p>
-              <div className="flex items-center text-[var(--color-primary)] font-semibold gap-2 group-hover:gap-3 transition-all">
+              <div className="flex items-center text-orange-600 font-bold gap-2 group-hover:gap-3 transition-all text-sm">
                 {L('Lire l\'article', 'Read article')}
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
               </div>
@@ -132,13 +132,13 @@ export default function BlogIndexPage() {
 
         {/* Article Grid */}
         <div className="mb-12">
-          <h3 className="text-2xl font-bold text-gray-900 mb-8">{L('Derniers articles', 'Latest articles')}</h3>
+          <h3 className="text-2xl font-black text-slate-900 mb-8">{L('Derniers articles', 'Latest articles')}</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {gridArticles.map((article, idx) => (
-              <Link key={article.slug} href={`/blog/${article.slug}`} className="group bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 flex flex-col h-full overflow-hidden">
-                <div className="h-48 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center relative overflow-hidden">
+              <Link key={article.slug} href={`/blog/${article.slug}`} className="group bg-white rounded-3xl shadow-md hover:shadow-xl border border-slate-200/80 hover:border-orange-500/40 transition-all duration-300 flex flex-col h-full overflow-hidden">
+                <div className="h-48 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center relative overflow-hidden">
                   <div className="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors duration-300"></div>
-                  <span className="text-6xl transform group-hover:scale-110 transition-transform duration-500">
+                  <span className="text-6xl transform group-hover:scale-110 transition-transform duration-500 select-none">
                     {idx === 0 ? '🔍' : idx === 1 ? '💳' : idx === 2 ? '💻' : idx === 3 ? '🚚' : '🏪'}
                   </span>
                 </div>
@@ -148,14 +148,14 @@ export default function BlogIndexPage() {
                       {article.category}
                     </span>
                   </div>
-                  <h4 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">
+                  <h4 className="text-lg font-bold text-slate-900 mb-3 group-hover:text-orange-600 transition-colors line-clamp-2">
                     {article.title}
                   </h4>
-                  <p className="text-gray-600 text-sm mb-6 line-clamp-2 flex-grow">
+                  <p className="text-slate-600 text-sm mb-6 line-clamp-2 flex-grow leading-relaxed">
                     {article.excerpt}
                   </p>
-                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-gray-100">
-                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-100">
+                    <div className="flex items-center gap-2 text-xs text-slate-500">
                       <span>{article.date}</span>
                       <span>•</span>
                       <span className="flex items-center gap-1">

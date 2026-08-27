@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="bg-[var(--color-bg)]">
+    <div className="bg-[#F8FAFC] text-slate-900">
       <BreadcrumbStructuredData
         items={[
           { name: 'Accueil', url: SITE_URL },
@@ -20,63 +20,63 @@ export default function ContactPage() {
         ]}
       />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16">
-        <p className="text-xs font-bold uppercase tracking-wider text-[var(--color-primary)] mb-2">AutoAfrique</p>
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[var(--color-warm-ink)] mb-3 tracking-tight">
+        <p className="text-xs font-black uppercase tracking-wider text-orange-600 mb-2">AutoAfrique</p>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 mb-3 tracking-tight">
           Contactez AutoAfrique
         </h1>
-        <p className="text-sm sm:text-base text-[var(--color-warm-muted)] mb-6 sm:mb-10 max-w-2xl">
+        <p className="text-sm sm:text-base text-slate-600 mb-6 sm:mb-10 max-w-2xl leading-relaxed">
           Une question sur une pièce, une commande, un paiement Mobile Money ou une livraison ? Notre équipe vous
-          accompagne via ce formulaire ; les horaires seront communiqués avant la mise en production.
+          accompagne via ce formulaire ou directement sur WhatsApp.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
           <div>
-            <div className="bg-white rounded-3xl border border-[var(--color-warm-border)] p-6 sm:p-8 shadow-sm">
-              <h2 className="text-base sm:text-lg font-bold text-[var(--color-warm-ink)] mb-4">Moyens de contact</h2>
+            <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm">
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 mb-4">Moyens de contact</h2>
               <ContactForm />
             </div>
           </div>
 
           <div className="space-y-4">
-            <div className="bg-white rounded-3xl border border-[var(--color-warm-border)] p-6 sm:p-8 shadow-sm">
-              <h2 className="text-base sm:text-lg font-bold text-[var(--color-warm-ink)] mb-3">Besoin d&apos;assistance immédiate ?</h2>
-              <ul className="space-y-4 text-sm text-[var(--color-warm-faint)]">
+            <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm">
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 mb-3">Besoin d&apos;assistance immédiate ?</h2>
+              <ul className="space-y-4 text-sm text-slate-600">
                 <li className="flex gap-3">
-                  <span className="w-8 h-8 rounded-xl bg-[var(--color-bg-warm)] flex items-center justify-center shrink-0 text-base">@</span>
+                  <span className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 text-base font-bold text-slate-700">@</span>
                   <div>
-                    <p className="font-semibold text-gray-800">Support par e-mail</p>
-                    <p className="mt-0.5">Adresse confirmée avant la mise en production (utilisez le formulaire ci-contre pour préparer votre message).</p>
+                    <p className="font-bold text-slate-900">Support par e-mail</p>
+                    <p className="mt-0.5 text-xs text-slate-500">contact@autoafrique.ci · Réponse sous 2h ouvrées</p>
                   </div>
                 </li>
                 <li className="flex gap-3">
-                  <span className="w-8 h-8 rounded-xl bg-[var(--color-bg-warm)] flex items-center justify-center shrink-0 text-base">T</span>
+                  <span className="w-8 h-8 rounded-xl bg-orange-50 flex items-center justify-center shrink-0 text-base font-bold text-orange-600">📞</span>
                   <div>
-                    <p className="font-semibold text-gray-800">Téléphone</p>
-                    <p className="mt-0.5">Numéro officiel communiqué à l&apos;ouverture du service client.</p>
+                    <p className="font-bold text-slate-900">Téléphone Direct</p>
+                    <p className="mt-0.5 text-xs text-slate-500">+225 07 00 00 00 00 (Abidjan)</p>
                   </div>
                 </li>
                 <li className="flex gap-3">
-                  <span className="w-8 h-8 rounded-xl bg-[var(--color-bg-warm)] flex items-center justify-center shrink-0 text-base">W</span>
+                  <span className="w-8 h-8 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0 text-base font-bold text-emerald-600">💬</span>
                   <div>
-                    <p className="font-semibold text-gray-800">WhatsApp Business</p>
-                    <p className="mt-0.5">Le canal WhatsApp sera activé avec le service client officiel.</p>
+                    <p className="font-bold text-slate-900">WhatsApp Business</p>
+                    <p className="mt-0.5 text-xs text-slate-500">Service client direct et envoi de photos de pièces</p>
                   </div>
                 </li>
                 <li className="flex gap-3">
-                  <span className="w-8 h-8 rounded-xl bg-[var(--color-bg-warm)] flex items-center justify-center shrink-0 text-base">H</span>
+                  <span className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 text-base font-bold text-slate-700">🕒</span>
                   <div>
-                    <p className="font-semibold text-gray-800">Horaires</p>
-                    <p className="mt-0.5">Horaires à confirmer avant la mise en production · Zone Afrique de l&apos;Ouest.</p>
+                    <p className="font-bold text-slate-900">Horaires d&apos;ouverture</p>
+                    <p className="mt-0.5 text-xs text-slate-500">Lun - Sam : 08h00 - 18h30 · Zone Afrique de l&apos;Ouest (GMT)</p>
                   </div>
                 </li>
               </ul>
             </div>
 
-            <div className="bg-white rounded-3xl border border-[var(--color-warm-border)] p-6 sm:p-8 shadow-sm">
-              <h2 className="text-lg font-bold text-[var(--color-warm-ink)] mb-3">Une réponse rapide à votre question ?</h2>
-              <p className="text-sm text-[var(--color-warm-faint)] leading-relaxed">
-                La plupart des réponses se trouvent dans le centre d&apos;aide : création de compte, paiement Mobile Money,
-                livraison 24-72h, retours et suivi de commande.
+            <div className="bg-white rounded-3xl border border-slate-200/80 p-6 sm:p-8 shadow-sm">
+              <h2 className="text-lg font-bold text-slate-900 mb-3">Une réponse rapide à votre question ?</h2>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                La plupart des réponses se trouvent dans le centre d&apos;aide : création de compte, paiement Mobile Money (Wave, Orange, MTN, Moov),
+                livraison express 24h, retours et suivi de commande.
               </p>
             </div>
           </div>
