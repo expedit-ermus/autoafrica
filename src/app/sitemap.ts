@@ -137,6 +137,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     {
+      url: `${BASE_URL}/blog/ou-trouver-pieces-detachees-auto-abidjan`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
       url: `${BASE_URL}/manuels-reparation`,
       lastModified: new Date(),
       changeFrequency: "weekly",

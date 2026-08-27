@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { WebsiteStructuredData, FAQStructuredData, BreadcrumbStructuredData } from '@/components/StructuredData';
 import { SITE_URL } from '@/lib/structured-data';
+import SellerRevenueSimulator from '@/components/SellerRevenueSimulator';
 
 export const metadata: Metadata = {
   title: 'Devenir Vendeur & Garagiste Partenaire à Abidjan',
@@ -124,6 +125,51 @@ export default function DevenirVendeurPage() {
               <span>📥</span> Télécharger l&apos;Extension (.zip)
             </a>
           </div>
+        </div>
+
+        {/* Étapes d'Onboarding / KYC */}
+        <div className="mb-12 bg-slate-50 rounded-3xl p-8 border border-slate-200 shadow-sm relative overflow-hidden">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 text-center mb-10">
+            Comment ça marche ?
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+            <div className="relative z-10 flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-2xl font-black mb-4 shadow-sm border border-orange-200">
+                1
+              </div>
+              <h3 className="font-extrabold text-gray-900 mb-2">Création compte (2 min)</h3>
+              <p className="text-sm text-gray-600">Inscrivez-vous avec votre numéro de téléphone et quelques informations basiques.</p>
+            </div>
+            <div className="relative z-10 flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-2xl font-black mb-4 shadow-sm border border-orange-200">
+                2
+              </div>
+              <h3 className="font-extrabold text-gray-900 mb-2">Validation identité & magasin / emplacement casse</h3>
+              <p className="text-sm text-gray-600">Vérification KYC express pour garantir un réseau de vendeurs de confiance.</p>
+            </div>
+            <div className="relative z-10 flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-2xl font-black mb-4 shadow-sm border border-orange-200">
+                3
+              </div>
+              <h3 className="font-extrabold text-gray-900 mb-2">Publication express par note vocale / photo</h3>
+              <p className="text-sm text-gray-600">Prenez une photo ou envoyez une note vocale, l&apos;IA génère l&apos;annonce.</p>
+            </div>
+            <div className="relative z-10 flex flex-col items-center text-center">
+              <div className="w-16 h-16 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-2xl font-black mb-4 shadow-sm border border-orange-200">
+                4
+              </div>
+              <h3 className="font-extrabold text-gray-900 mb-2">Encaissement direct Mobile Money</h3>
+              <p className="text-sm text-gray-600">Recevez vos paiements via Wave, Orange, MTN ou Djamo.</p>
+            </div>
+            
+            {/* Ligne de connexion pour la timeline (visible sur grand écran) */}
+            <div className="hidden lg:block absolute top-8 left-[12.5%] right-[12.5%] h-0.5 bg-orange-200 -z-0"></div>
+          </div>
+        </div>
+
+        {/* Simulateur de Revenus */}
+        <div className="mb-12">
+          <SellerRevenueSimulator />
         </div>
 
         {/* Transparence Tarifs & Conditions */}

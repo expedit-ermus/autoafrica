@@ -10,6 +10,15 @@ export default function BlogIndexPage() {
 
   const articles = [
     {
+      slug: 'ou-trouver-pieces-detachees-auto-abidjan',
+      title: L('Où trouver des pièces détachées auto de qualité à Abidjan ? Guide 2026', 'Where to find quality auto parts in Abidjan? 2026 Guide'),
+      category: L('Guide d\'achat', 'Buying guide'),
+      categoryColor: 'bg-blue-100 text-blue-800 border-blue-200',
+      excerpt: L('Guide complet pour acheter vos pièces auto à Abidjan : comparatif casse d\'Adjamé, ferraille Marcory, N\'Dotré et marketplace AutoAfrique.', 'Complete guide to buying your auto parts in Abidjan: Adjamé scrap yard, Marcory, N\'Dotré and AutoAfrique marketplace.'),
+      date: L('27 Août 2026', 'Aug 27, 2026'),
+      readTime: L('6 min', '6 min'),
+    },
+    {
       slug: 'verifier-compatibilite-piece-auto-vehicule',
       title: L('Comment vérifier la compatibilité d\'une pièce auto avec son véhicule ?', 'How to check auto part compatibility with your vehicle?'),
       category: L('Guide d\'achat', 'Buying guide'),
