@@ -20,9 +20,9 @@ export function PaymentLogo({ name, size = 32, className = '', showName = false 
     logoSvg = (
       <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect width="100" height="100" rx="20" fill="#FF7900" />
-        <path d="M22 68V32H40C45.5 32 49 35.5 49 40.5C49 45.5 45.5 49 40C49 49 49 49 49 49C49 49 55 60 55 68H42.5L37.5 56H30V68H22ZM30 48.5H38.5C41 48.5 42.5 47 42.5 45C42.5 43 41 41.5 38.5 41.5H30V48.5Z" fill="white" />
-        <circle cx="68" cy="50" r="14" fill="#000000" />
-        <circle cx="68" cy="50" r="8" fill="#FF7900" />
+        <text x="50" y="45" fill="#FFFFFF" fontFamily="sans-serif" fontWeight="900" fontSize="18" textAnchor="middle" letterSpacing="-0.5">orange</text>
+        <rect x="18" y="54" width="64" height="24" rx="8" fill="#000000" />
+        <text x="50" y="71" fill="#FF7900" fontFamily="sans-serif" fontWeight="900" fontSize="13" textAnchor="middle" letterSpacing="1">MONEY</text>
       </svg>
     );
   } else if (norm.includes('mtn') || norm.includes('momo')) {
