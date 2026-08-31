@@ -176,18 +176,18 @@ export default function CatalogPage({ kind, slug, name, description, products }:
           <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 mb-6 flex items-center gap-2">
             <span>❓</span> Foire aux questions — Pièces {name} à Abidjan
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <dl className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {faqs.map((faq, idx) => (
               <div key={idx} className="p-5 bg-gray-50 rounded-2xl border border-gray-100">
-                <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-2">
+                <dt className="text-sm sm:text-base font-bold text-gray-900 mb-2">
                   {faq.question}
-                </h3>
-                <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
+                </dt>
+                <dd className="text-xs sm:text-sm text-gray-600 leading-relaxed">
                   {faq.answer}
-                </p>
+                </dd>
               </div>
             ))}
-          </div>
+          </dl>
         </div>
       </div>
     </div>

@@ -124,29 +124,33 @@ export default function Footer() {
               <h4 className="text-white font-black mb-3 text-base">
                 {L('Abonnez-vous pour suivre l\'actualité AutoAfrique', 'Subscribe to follow AutoAfrique news')}
               </h4>
-              <div className="flex flex-col sm:flex-row gap-3">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (nlEmail.includes('@')) {
+                    addToast('success', L('Merci ! Vous êtes inscrit à la newsletter AutoAfrique.', 'Thanks! You are subscribed to AutoAfrique newsletter.'));
+                    setNlEmail('');
+                  } else {
+                    addToast('error', L('Veuillez entrer une adresse email valide.', 'Please enter a valid email address.'));
+                  }
+                }}
+                className="flex flex-col sm:flex-row gap-3"
+              >
                 <input
                   type="email"
+                  aria-label="Adresse email"
                   value={nlEmail}
                   onChange={(e) => setNlEmail(e.target.value)}
                   placeholder={L('Votre adresse email', 'Your email address')}
                   className="flex-1 min-w-0 px-5 py-3 rounded-2xl bg-slate-800 border border-slate-700 text-white placeholder-slate-400 text-sm focus:outline-none focus:border-orange-500 transition-all"
                 />
                 <button
-                  type="button"
-                  onClick={() => {
-                    if (nlEmail.includes('@')) {
-                      addToast('success', L('Merci ! Vous êtes inscrit à la newsletter AutoAfrique.', 'Thanks! You are subscribed to AutoAfrique newsletter.'));
-                      setNlEmail('');
-                    } else {
-                      addToast('error', L('Veuillez entrer une adresse email valide.', 'Please enter a valid email address.'));
-                    }
-                  }}
+                  type="submit"
                   className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-black rounded-2xl transition-all text-sm shadow-lg shadow-orange-950/30 cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
                 >
                   {L('S\'abonner', 'Subscribe')}
                 </button>
-              </div>
+              </form>
               <p className="text-slate-400 text-xs mt-2">
                 {L('En vous abonnant, vous acceptez notre politique de confidentialité.', 'By subscribing, you agree to our privacy policy.')}
               </p>

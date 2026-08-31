@@ -72,7 +72,7 @@ export default function Header() {
       {/* ── Top bar ── */}
       <div className="bg-slate-950 text-slate-300 text-xs py-1.5 border-b border-slate-800/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-          <div className="flex items-center gap-3 sm:gap-4 overflow-x-auto scrollbar-hide font-medium">
+          <nav aria-label="Liens rapides" className="flex items-center gap-3 sm:gap-4 overflow-x-auto scrollbar-hide font-medium">
             <Link href="/" className="hover:text-orange-400 transition-colors font-bold tracking-wide whitespace-nowrap text-white">
               {L('BOUTIQUE', 'SHOP')}
             </Link>
@@ -92,7 +92,7 @@ export default function Header() {
             <Link href="/dashboard/vehicles" className="hover:text-orange-400 transition-colors font-medium whitespace-nowrap hidden sm:inline text-slate-300">
               {L('VÉHICULES', 'VEHICLES')}
             </Link>
-          </div>
+          </nav>
           <div className="hidden md:flex items-center gap-4 text-slate-400 text-[11px] shrink-0 font-medium">
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
@@ -125,13 +125,15 @@ export default function Header() {
 
             {/* Search bar — desktop */}
             <div className="hidden md:flex flex-1 max-w-xl min-w-0 mx-2">
-              <div className="flex w-full items-center bg-slate-800/80 border border-slate-700/80 rounded-2xl overflow-hidden shadow-inner focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/20 transition-all">
+              <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} className="flex w-full items-center bg-slate-800/80 border border-slate-700/80 rounded-2xl overflow-hidden shadow-inner focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/20 transition-all">
                 <span className="pl-4 text-slate-400">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </span>
+                <label htmlFor="desktop-search" className="sr-only">Rechercher une pièce</label>
                 <input
+                  id="desktop-search"
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -140,13 +142,13 @@ export default function Header() {
                   className="flex-1 px-3 py-2.5 text-sm text-white placeholder-slate-400 focus:outline-none bg-transparent"
                 />
                 <button
-                  type="button"
+                  type="submit"
                   onClick={handleSearch}
                   className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-md"
                 >
                   <span>{L('Trouver', 'Find')}</span>
                 </button>
-              </div>
+              </form>
             </div>
 
             {/* Right icons */}
@@ -182,6 +184,7 @@ export default function Header() {
                 href={user ? '/dashboard' : '/auth/login'}
                 onClick={() => { if (!user) track('click_cta_login', { source: 'header' }); }}
                 className="flex items-center gap-2 px-2.5 sm:px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white"
+                aria-label={user ? L('Mon tableau de bord', 'My dashboard') : L('Se connecter', 'Log in')}
               >
                 <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -218,6 +221,7 @@ export default function Header() {
               <Link
                 href="/dashboard/cart"
                 className="flex items-center gap-2 px-2.5 sm:px-3 py-2 rounded-xl hover:bg-white/10 transition-colors text-white relative"
+                aria-label={L('Panier', 'Cart')}
               >
                 <div className="relative">
                   <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -269,8 +273,10 @@ export default function Header() {
       {/* ── Mobile search bar (expandable) ── */}
       {mobileSearchOpen && (
         <div className="md:hidden bg-slate-900 border-t border-slate-800 px-4 py-3">
-          <div className="flex gap-2">
+          <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} className="flex gap-2">
+            <label htmlFor="mobile-search" className="sr-only">Rechercher une pièce</label>
             <input
+              id="mobile-search"
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -280,6 +286,7 @@ export default function Header() {
               className="flex-1 px-4 py-2.5 rounded-xl text-sm text-slate-900 bg-white placeholder-slate-400 focus:outline-none border-2 border-transparent focus:border-orange-500"
             />
             <button
+              type="submit"
               onClick={handleSearch}
               className="px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm rounded-xl transition-all shadow-md cursor-pointer shrink-0"
             >
@@ -287,7 +294,7 @@ export default function Header() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
-          </div>
+          </form>
         </div>
       )}
 

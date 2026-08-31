@@ -33,6 +33,7 @@ export default function NotFound() {
             <input
               type="text"
               name="search"
+              aria-label="Rechercher"
               placeholder="Rechercher une pièce, un moteur, un filtre..."
               className="w-full bg-transparent px-3 py-2 text-sm text-gray-900 focus:outline-none"
               required

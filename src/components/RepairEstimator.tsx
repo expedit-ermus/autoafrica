@@ -293,14 +293,14 @@ export function RepairEstimator() {
         <h3 className="text-sm font-bold text-slate-300 uppercase tracking-wider mb-4 flex items-center gap-2">
           <span>🛠️</span> Maîtres Garagistes affiliés à proximité :
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <fieldset className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <legend className="sr-only">Choisissez un garagiste</legend>
           {DEFAULT_GARAGES.map((g) => {
             const isSelected = g.id === selectedGarageId
             return (
-              <div
+              <label
                 key={g.id}
-                onClick={() => setSelectedGarageId(g.id)}
-                className={`p-4 rounded-2xl cursor-pointer transition-all border text-left ${
+                className={`p-4 rounded-2xl cursor-pointer transition-all border text-left flex flex-col ${
                   isSelected
                     ? 'bg-slate-800 border-amber-500 ring-2 ring-amber-500/50 shadow-md'
                     : 'bg-slate-900/60 border-slate-700/80 hover:border-slate-600'
@@ -317,16 +317,16 @@ export function RepairEstimator() {
                   />
                 </div>
                 <p className="text-xs text-slate-400 mb-2">{g.location}</p>
-                <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center justify-between text-xs mt-auto">
                   <span className="text-amber-400 font-bold">★ {g.rating} <span className="text-slate-400 font-normal">({g.reviewsCount} avis)</span></span>
                   <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-300 font-semibold rounded text-[11px]">
                     {g.availability}
                   </span>
                 </div>
-              </div>
+              </label>
             )
           })}
-        </div>
+        </fieldset>
       </div>
 
       {/* Footer Security Note */}

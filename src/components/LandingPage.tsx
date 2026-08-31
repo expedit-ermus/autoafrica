@@ -1,15 +1,18 @@
 'use client';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { useApp } from '@/contexts/AppContext';
 import CarSelector from '@/components/CarSelector';
 import PromoBanner from '@/components/PromoBanner';
 import PartsCatalog from '@/components/PartsCatalog';
-import { RepairEstimator } from '@/components/RepairEstimator';
 import BrandGrid from '@/components/BrandGrid';
 import Bestsellers from '@/components/Bestsellers';
-import VtcCircuitCourtSection from '@/components/VtcCircuitCourtSection';
-import DiagnosticEstimator from '@/components/DiagnosticEstimator';
-import AbidjanDeliveryZones from '@/components/AbidjanDeliveryZones';
+
+// Lazy-load heavy components below the fold to reduce initial bundle & improve LCP
+const RepairEstimator = dynamic(() => import('@/components/RepairEstimator').then(mod => ({ default: mod.RepairEstimator })), { ssr: true });
+const VtcCircuitCourtSection = dynamic(() => import('@/components/VtcCircuitCourtSection'), { ssr: true });
+const DiagnosticEstimator = dynamic(() => import('@/components/DiagnosticEstimator'), { ssr: true });
+const AbidjanDeliveryZones = dynamic(() => import('@/components/AbidjanDeliveryZones'), { ssr: true });
 
 const trustFeatures = [
   {
@@ -242,41 +245,41 @@ export default function LandingPage() {
             <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 mb-6">
               {L('Questions fréquentes', 'Frequently asked questions')}
             </h2>
-            <div className="space-y-6">
+            <dl className="space-y-6">
               <div className="border-b border-slate-100 pb-5">
-                <h3 className="font-extrabold text-slate-900 mb-2 text-base">
+                <dt className="font-extrabold text-slate-900 mb-2 text-base">
                   {L('Comment savoir si une pièce auto est compatible avec mon véhicule ?', 'How do I know if an auto part fits my vehicle?')}
-                </h3>
-                <p className="text-sm md:text-base text-slate-600 leading-relaxed">
+                </dt>
+                <dd className="text-sm md:text-base text-slate-600 leading-relaxed">
                   {L(
                     'Utilisez la recherche par numéro d\'immatriculation ou sélectionnez la marque et le modèle de votre véhicule : nous ne proposons que des pièces référencées pour votre voiture.',
                     'Use the licence plate search or select your vehicle\'s brand and model: we only list parts referenced for your car.'
                   )}
-                </p>
+                </dd>
               </div>
               <div className="border-b border-slate-100 pb-5">
-                <h3 className="font-extrabold text-slate-900 mb-2 text-base">
+                <dt className="font-extrabold text-slate-900 mb-2 text-base">
                   {L('Quelle est la différence entre pièce d\'origine, pièce neuve et pièce d\'occasion contrôlée ?', 'What is the difference between an OEM part, a new part and a certified used part?')}
-                </h3>
-                <p className="text-sm md:text-base text-slate-600 leading-relaxed">
+                </dt>
+                <dd className="text-sm md:text-base text-slate-600 leading-relaxed">
                   {L(
                     'La pièce d\'origine est fabriquée par le constructeur. La pièce neuve est une pièce de remplacement neuve, garantie. L\'occasion contrôlée est une pièce de récupération inspectée et testée par AutoAfrique, avec sa propre garantie de 48h.',
                     'An OEM part is made by the manufacturer. A new part is a new replacement part, under warranty. A certified used part is a recovery part inspected and tested by AutoAfrique, with its own 48h warranty.'
                   )}
-                </p>
+                </dd>
               </div>
               <div>
-                <h3 className="font-extrabold text-slate-900 mb-2 text-base">
+                <dt className="font-extrabold text-slate-900 mb-2 text-base">
                   {L('Comment payer mes pièces auto sur AutoAfrique ?', 'How do I pay for my auto parts on AutoAfrique?')}
-                </h3>
-                <p className="text-sm md:text-base text-slate-600 leading-relaxed">
+                </dt>
+                <dd className="text-sm md:text-base text-slate-600 leading-relaxed">
                   {L(
                     'Le paiement se fait par Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money), directement et en toute sécurité grâce au compte séquestre qui protège vos fonds jusqu\'à la validation du montage.',
                     'Payment is made by Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money), directly and securely through an escrow account that protects your funds until parts are tested.'
                   )}
-                </p>
+                </dd>
               </div>
-            </div>
+            </dl>
             <p className="mt-8 pt-6 border-t border-slate-100 text-sm md:text-base text-slate-500">
               {L(
                 'Encore une question ? Parcourez le',

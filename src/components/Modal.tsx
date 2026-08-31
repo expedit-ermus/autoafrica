@@ -45,6 +45,9 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md', f
       ref={overlayRef}
       className="fixed inset-0 z-[90] flex items-end sm:items-center justify-center"
       onClick={(e) => { if (e.target === overlayRef.current) onClose(); }}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={title ? "modal-title" : undefined}
     >
       {/* Backdrop */}
       <div
@@ -73,7 +76,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md', f
         {/* Header */}
         {title && (
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100/80 sticky top-0 bg-white/95 backdrop-blur-sm z-10">
-            <h3 className="text-lg font-bold text-gray-900 tracking-tight">
+            <h3 id="modal-title" className="text-lg font-bold text-gray-900 tracking-tight">
               {title}
             </h3>
             <button

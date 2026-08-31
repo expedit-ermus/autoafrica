@@ -107,9 +107,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AppProvider>
           <WishlistProvider>
             <ToastProvider>
-              <div id="main-content" tabIndex={-1}>
+              <main id="main-content" tabIndex={-1}>
                 {children}
-              </div>
+              </main>
               <GlobalWidgets />
               <CookieConsentBanner />
             </ToastProvider>

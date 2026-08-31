@@ -129,14 +129,14 @@ export function ProductReviews({ productId }: ReviewsProps) {
       </button>
 
       {showForm && (
-        <div className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
+        <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="bg-white rounded-xl border border-gray-200 p-4 space-y-3">
           <div><p className="text-xs text-gray-500 mb-1">Note</p><StarRating rating={form.rating} interactive onChange={r => setForm({ ...form, rating: r })} size="lg" /></div>
           <input className="input-field" aria-label="Titre de l'avis (optionnel)" placeholder="Titre (optionnel)" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
           <textarea className="input-field" rows={3} aria-label="Votre avis" placeholder="Votre avis *" value={form.comment} onChange={e => setForm({ ...form, comment: e.target.value })} />
-          <button onClick={handleSubmit} disabled={submitting} className="btn-primary text-sm !py-2 px-4 disabled:opacity-50">
+          <button type="submit" onClick={handleSubmit} disabled={submitting} className="btn-primary text-sm !py-2 px-4 disabled:opacity-50">
             {submitting ? 'Envoi...' : 'Publier'}
           </button>
-        </div>
+        </form>
       )}
 
       {reviews.length > 0 && (

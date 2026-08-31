@@ -220,7 +220,7 @@ export default function CarSelector() {
         </p>
       </div>
 
-      <div className="p-6 sm:p-7">
+      <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} className="p-6 sm:p-7">
         {/* Immatriculation */}
         <div className="mb-6">
           <label htmlFor="regNumber" className="block text-xs font-black uppercase tracking-wider text-slate-700 mb-2">
@@ -357,7 +357,7 @@ export default function CarSelector() {
             {L('Conseiller WhatsApp', 'WhatsApp Advisor')}
           </Link>
         </p>
-      </div>
+      </form>
     </div>
   );
 }

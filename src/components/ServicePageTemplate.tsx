@@ -215,14 +215,14 @@ export default function ServicePageTemplate(props: ServicePageProps) {
         {/* 9. Questions fréquentes */}
         <section className="max-w-4xl mx-auto mb-12">
           <h2 className="text-2xl font-extrabold text-gray-900 text-center mb-6">Questions Fréquentes</h2>
-          <div className="space-y-4">
+          <dl className="space-y-4">
             {props.faq.map((f, i) => (
               <div key={i} className="p-5 bg-white rounded-2xl border border-gray-200 shadow-sm">
-                <h3 className="font-bold text-gray-900 text-base mb-2">{f.question}</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">{f.answer}</p>
+                <dt className="font-bold text-gray-900 text-base mb-2">{f.question}</dt>
+                <dd className="text-sm text-gray-600 leading-relaxed">{f.answer}</dd>
               </div>
             ))}
-          </div>
+          </dl>
         </section>
 
         {/* 10. CTA final */}

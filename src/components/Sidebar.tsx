@@ -346,7 +346,7 @@ export default function Sidebar() {
       </div>
 
       {/* ─── Mobile bottom tab bar ─── */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
+      <nav aria-label="Menu principal mobile" className="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
         <div
           className="bg-white/80 backdrop-blur-xl border-t border-white/20"
           style={{
@@ -440,7 +440,7 @@ export default function Sidebar() {
             </div>
           </div>
         </div>
-      </div>
+      </nav>
     </>
   );
 }

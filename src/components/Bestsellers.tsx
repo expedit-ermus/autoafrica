@@ -79,9 +79,9 @@ export default function Bestsellers() {
           </Link>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product) => (
-            <div 
+            <li 
               key={product.id} 
               className="bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md hover:ring-2 hover:ring-orange-500 transition-all duration-200 group flex flex-col"
             >
@@ -109,9 +109,9 @@ export default function Bestsellers() {
                   </div>
                 </div>
               </div>
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );

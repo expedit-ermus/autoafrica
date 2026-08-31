@@ -425,7 +425,7 @@ export default function VehiclePartsSearch() {
           </div>
 
           {searchMode === 'plate' && (
-            <div className="space-y-4" role="tabpanel">
+            <form onSubmit={(e) => { e.preventDefault(); handlePlateSearch(); }} className="space-y-4" role="tabpanel">
               <div className="flex gap-2">
                 <select
                   value={selectedCountry}
@@ -455,6 +455,7 @@ export default function VehiclePartsSearch() {
                   />
                   {plateNumber && (
                     <button
+                      type="button"
                       onClick={() => { setPlateNumber(''); setPlateError(''); }}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-warm-muted)] hover:text-red-500"
                       aria-label="Effacer"
@@ -474,6 +475,7 @@ export default function VehiclePartsSearch() {
                 <span>Format CI : AB-123-CD</span>
               </div>
               <button
+                type="submit"
                 onClick={handlePlateSearch}
                 disabled={!isPlateValid || searching}
                 className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] text-white font-bold hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] transition-all shadow-lg shadow-[var(--color-primary)]/30 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -487,11 +489,11 @@ export default function VehiclePartsSearch() {
                   '🔍 Rechercher'
                 )}
               </button>
-            </div>
+            </form>
           )}
 
           {searchMode === 'model' && (
-            <div className="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4" role="tabpanel">
+            <form onSubmit={(e) => { e.preventDefault(); handleModelSearch(); }} className="space-y-4 grid grid-cols-1 md:grid-cols-2 gap-4" role="tabpanel">
               <div>
                 <label className="block text-xs font-semibold text-[var(--color-warm-muted)] mb-2">
                   Marque
@@ -560,13 +562,14 @@ export default function VehiclePartsSearch() {
               </div>
 
               <button
+                type="submit"
                 onClick={handleModelSearch}
                 disabled={!selectedBrand || !selectedModel || !selectedYear || !selectedEngine}
                 className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent-warm)] text-white font-bold hover:from-[var(--color-orange-hover)] hover:to-[var(--color-primary-dark)] transition-all shadow-lg shadow-[var(--color-primary)]/30 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 🔍 Voir les pièces compatibles
               </button>
-            </div>
+            </form>
           )}
         </div>
 

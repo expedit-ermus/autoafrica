@@ -51,32 +51,33 @@ export default function BrandGrid() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-5">
+        <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 sm:gap-5">
           {brands.map((brand) => (
-            <Link
-              key={brand.name}
-              href={`/marques/${brand.slug}`}
-              onClick={() => track('click_brand', { brand_name: brand.name })}
-              className="group bg-slate-50/70 hover:bg-white rounded-3xl border border-slate-200/80 hover:border-orange-500/40 hover:shadow-xl hover:shadow-orange-500/10 p-5 sm:p-6 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1"
-            >
-              <div className="relative w-16 h-16 sm:w-20 sm:h-20 mb-3 flex items-center justify-center">
-                <RemoteImage
-                  src={brand.logo}
-                  alt={brand.name}
-                  fill
-                  sizes="80px"
-                  className="object-contain filter grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-300"
-                />
-              </div>
-              <div className="text-sm font-extrabold text-slate-900 group-hover:text-orange-600 transition-colors text-center mt-1">
-                {brand.name}
-              </div>
-              <div className="text-[11px] text-slate-400 mt-0.5 font-bold uppercase tracking-wider">
-                {L('Pièces dispo', 'In stock')}
-              </div>
-            </Link>
+            <li key={brand.name}>
+              <Link
+                href={`/marques/${brand.slug}`}
+                onClick={() => track('click_brand', { brand_name: brand.name })}
+                className="group bg-slate-50/70 hover:bg-white rounded-3xl border border-slate-200/80 hover:border-orange-500/40 hover:shadow-xl hover:shadow-orange-500/10 p-5 sm:p-6 flex flex-col items-center justify-center transition-all duration-300 hover:-translate-y-1"
+              >
+                <div className="relative w-16 h-16 sm:w-20 sm:h-20 mb-3 flex items-center justify-center">
+                  <RemoteImage
+                    src={brand.logo}
+                    alt={brand.name}
+                    fill
+                    sizes="80px"
+                    className="object-contain filter grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-300"
+                  />
+                </div>
+                <div className="text-sm font-extrabold text-slate-900 group-hover:text-orange-600 transition-colors text-center mt-1">
+                  {brand.name}
+                </div>
+                <div className="text-[11px] text-slate-400 mt-0.5 font-bold uppercase tracking-wider">
+                  {L('Pièces dispo', 'In stock')}
+                </div>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );

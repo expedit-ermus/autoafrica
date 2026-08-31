@@ -75,9 +75,9 @@ export default function PromoBanner() {
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-white/90 font-extrabold text-[11px] uppercase tracking-wider mb-3 border border-white/15 shadow-sm">
                   {banner.tag[locale as 'fr' | 'en']}
                 </div>
-                <h3 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2 sm:mb-3 tracking-tight leading-tight">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white mb-2 sm:mb-3 tracking-tight leading-tight">
                   {banner.title[locale as 'fr' | 'en']}
-                </h3>
+                </h2>
                 <p className="text-white/80 text-xs sm:text-sm md:text-base mb-6 max-w-md leading-relaxed font-medium">
                   {banner.subtitle[locale as 'fr' | 'en']}
                 </p>
@@ -115,10 +115,12 @@ export default function PromoBanner() {
             key={i}
             onClick={() => setCurrent(i)}
             aria-label={`Bannière ${i + 1}`}
-            className={`h-2 rounded-full transition-all duration-300 ${
+            className={`min-h-6 min-w-6 flex items-center justify-center rounded-full transition-all duration-300`}
+          >
+            <span className={`h-2 rounded-full block transition-all duration-300 ${
               i === current ? 'bg-orange-500 w-6' : 'bg-white/40 hover:bg-white/70 w-2'
-            }`}
-          />
+            }`} />
+          </button>
         ))}
       </div>
     </div>

@@ -188,7 +188,7 @@ export default function ProductCard({
           <div className="flex items-baseline gap-2 mb-1">
             <span className="text-lg font-extrabold text-emerald-900">{formatPrice(price)}</span>
             {oldPrice && (
-              <span className="text-sm text-gray-400 line-through">{formatPrice(oldPrice)}</span>
+              <del className="text-sm text-gray-400">{formatPrice(oldPrice)}</del>
             )}
           </div>
           <div className="text-xs text-gray-400 mb-3 font-medium">{L('Prix par pièce', 'Price per piece')}</div>

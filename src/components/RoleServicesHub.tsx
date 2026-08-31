@@ -87,9 +87,9 @@ export default function RoleServicesHub() {
         <div className="space-y-6 animate-fade-in">
           
           {/* Cartes résumé rapide */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50/50 rounded-2xl p-4 border border-blue-100">
+            <li className="bg-gradient-to-br from-blue-50 to-indigo-50/50 rounded-2xl p-4 border border-blue-100">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">🚗</span>
                 <span className="text-xs font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
@@ -99,9 +99,9 @@ export default function RoleServicesHub() {
               <div className="text-xs text-gray-500 font-medium">{L('Mon Garage Virtuel', 'My Virtual Garage')}</div>
               <div className="text-sm font-extrabold text-gray-900 mt-1">Toyota Corolla & Peugeot 307</div>
               <div className="text-[11px] text-blue-600 font-semibold mt-2">{L('Vidange préventive dans 2 500 km', 'Preventive oil change in 2,500 km')}</div>
-            </div>
+            </li>
 
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50/50 rounded-2xl p-4 border border-amber-100">
+            <li className="bg-gradient-to-br from-amber-50 to-orange-50/50 rounded-2xl p-4 border border-amber-100">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">🛠️</span>
                 <span className="text-xs font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
@@ -111,9 +111,9 @@ export default function RoleServicesHub() {
               <div className="text-xs text-gray-500 font-medium">{L('Mes RDV Garagistes', 'My Mechanic Appointments')}</div>
               <div className="text-sm font-extrabold text-gray-900 mt-1">Maître Garage Diallo</div>
               <div className="text-[11px] text-amber-700 font-semibold mt-2">{L('Dépannage Amortisseurs • Demain 14h', 'Shock Repair • Tomorrow 2 PM')}</div>
-            </div>
+            </li>
 
-            <div className="bg-gradient-to-br from-emerald-50 to-teal-50/50 rounded-2xl p-4 border border-emerald-100">
+            <li className="bg-gradient-to-br from-emerald-50 to-teal-50/50 rounded-2xl p-4 border border-emerald-100">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">📦</span>
                 <span className="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
@@ -123,9 +123,9 @@ export default function RoleServicesHub() {
               <div className="text-xs text-gray-500 font-medium">{L('Commande Pièce d\'occasion', 'Used Part Order')}</div>
               <div className="text-sm font-extrabold text-gray-900 mt-1">{L('Amortisseur N\'Dotré #14', 'Shock Absorber N\'Dotre #14')}</div>
               <div className="text-[11px] text-emerald-700 font-semibold mt-2">{L('Livreur Tiak-Tiak en route', 'Express Courier in transit')}</div>
-            </div>
+            </li>
 
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50/50 rounded-2xl p-4 border border-purple-100">
+            <li className="bg-gradient-to-br from-purple-50 to-pink-50/50 rounded-2xl p-4 border border-purple-100">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">🛡️</span>
                 <span className="text-xs font-bold bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">
@@ -135,9 +135,9 @@ export default function RoleServicesHub() {
               <div className="text-xs text-gray-500 font-medium">{L('Double Garantie SAV', 'Dual Warranty')}</div>
               <div className="text-sm font-extrabold text-gray-900 mt-1">{L('Pièce ET Main d\'œuvre', 'Part AND Labor')}</div>
               <div className="text-[11px] text-purple-700 font-semibold mt-2">{L('Paiement séquestre Wave sécurisé', 'Secure Wave Escrow Payment')}</div>
-            </div>
+            </li>
 
-          </div>
+          </ul>
 
           {/* Actions & RDV en détail */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -243,9 +243,9 @@ export default function RoleServicesHub() {
         <div className="space-y-6 animate-fade-in">
           
           {/* Métriques Prestataire */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             
-            <div className="bg-gradient-to-br from-emerald-50 to-teal-50/50 rounded-2xl p-4 border border-emerald-100">
+            <li className="bg-gradient-to-br from-emerald-50 to-teal-50/50 rounded-2xl p-4 border border-emerald-100">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">💰</span>
                 <span className="text-xs font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
@@ -255,9 +255,9 @@ export default function RoleServicesHub() {
               <div className="text-xs text-gray-500 font-medium">{L('Revenus Séquestre Débloqués', 'Unlocked Escrow Revenue')}</div>
               <div className="text-lg font-extrabold text-emerald-900 mt-1">485 000 FCFA</div>
               <div className="text-[11px] text-emerald-700 font-semibold mt-1">{L('12 montages & ventes validés', '12 installations & sales validated')}</div>
-            </div>
+            </li>
 
-            <div className="bg-gradient-to-br from-amber-50 to-orange-50/50 rounded-2xl p-4 border border-amber-100">
+            <li className="bg-gradient-to-br from-amber-50 to-orange-50/50 rounded-2xl p-4 border border-amber-100">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">🔒</span>
                 <span className="text-xs font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
@@ -267,9 +267,9 @@ export default function RoleServicesHub() {
               <div className="text-xs text-gray-500 font-medium">{L('En Séquestre Client', 'In Customer Escrow')}</div>
               <div className="text-lg font-extrabold text-amber-900 mt-1">140 000 FCFA</div>
               <div className="text-[11px] text-amber-700 font-semibold mt-1">{L('Déblocage après test 24h', 'Release after 24h test')}</div>
-            </div>
+            </li>
 
-            <div className="bg-gradient-to-br from-blue-50 to-cyan-50/50 rounded-2xl p-4 border border-blue-100">
+            <li className="bg-gradient-to-br from-blue-50 to-cyan-50/50 rounded-2xl p-4 border border-blue-100">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">📋</span>
                 <span className="text-xs font-bold bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full">
@@ -279,9 +279,9 @@ export default function RoleServicesHub() {
               <div className="text-xs text-gray-500 font-medium">{L('Demandes d\'Intervention', 'Job Requests')}</div>
               <div className="text-lg font-extrabold text-gray-900 mt-1">{L('3 Demandes', '3 Requests')}</div>
               <div className="text-[11px] text-blue-700 font-semibold mt-1">Yopougon & Abobo N&apos;Dotré</div>
-            </div>
+            </li>
 
-            <div className="bg-gradient-to-br from-purple-50 to-indigo-50/50 rounded-2xl p-4 border border-purple-100">
+            <li className="bg-gradient-to-br from-purple-50 to-indigo-50/50 rounded-2xl p-4 border border-purple-100">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-2xl">⭐</span>
                 <span className="text-xs font-bold bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">
@@ -291,9 +291,9 @@ export default function RoleServicesHub() {
               <div className="text-xs text-gray-500 font-medium">{L('Ma Réputation Garagiste', 'Mechanic Reputation')}</div>
               <div className="text-lg font-extrabold text-purple-900 mt-1">4.9 / 5 ⭐</div>
               <div className="text-[11px] text-purple-700 font-semibold mt-1">{L('128 clients satisfaits', '128 satisfied clients')}</div>
-            </div>
+            </li>
 
-          </div>
+          </ul>
 
           {/* Demandes reçues & Actions Prestataire */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
