@@ -20,24 +20,28 @@ const trustFeatures = [
     gradient: 'from-orange-500 to-amber-500',
     title: { fr: 'Livraison Express 24h', en: '24h Express Delivery' },
     desc: { fr: 'Par coursier moto à Abidjan & gares vers l\'intérieur', en: 'By courier in Abidjan & bus stations to regions' },
+    href: '/livraison',
   },
   {
     icon: '📱',
     gradient: 'from-blue-600 to-cyan-500',
     title: { fr: 'Séquestre Mobile Money', en: 'Mobile Money Escrow' },
     desc: { fr: 'Wave, Orange Money, MTN MoMo, Moov, Djamo & CB', en: 'Wave, Orange Money, MTN MoMo, Moov, Djamo & Cards' },
+    href: '/paiement',
   },
   {
     icon: '🛡️',
     gradient: 'from-emerald-500 to-teal-500',
     title: { fr: 'Garantie Conformité 48h', en: '48h Fit Guarantee' },
     desc: { fr: 'Testez avec votre mécanicien, satisfait ou remboursé', en: 'Test with your mechanic, satisfaction or refund' },
+    href: '/retours',
   },
   {
     icon: '👨‍🔧',
     gradient: 'from-violet-600 to-indigo-500',
     title: { fr: 'Support Expert Abidjan', en: 'Abidjan Expert Support' },
     desc: { fr: 'Assistance WhatsApp 6j/7 pour trouver les pièces rares', en: 'WhatsApp help 6d/7 to find rare parts' },
+    href: '/contact',
   },
 ];
 
@@ -83,19 +87,19 @@ export default function LandingPage() {
             </p>
 
             {/* Quick Metrics Bar */}
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm font-bold text-slate-300">
-              <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl backdrop-blur-md">
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs sm:text-sm font-bold text-slate-300">
+              <Link href="/catalogue" className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-orange-500/40 px-4 py-2 rounded-2xl backdrop-blur-md transition-all">
                 <span className="text-orange-400 text-base">📦</span>
                 <span>+15 000 pièces certifiées</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl backdrop-blur-md">
+              </Link>
+              <Link href="/retours" className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-emerald-500/40 px-4 py-2 rounded-2xl backdrop-blur-md transition-all">
                 <span className="text-emerald-400 text-base">🛡️</span>
                 <span>99.4% compatibilité garantie</span>
-              </div>
-              <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl backdrop-blur-md">
+              </Link>
+              <Link href="/livraison" className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-500/40 px-4 py-2 rounded-2xl backdrop-blur-md transition-all">
                 <span className="text-cyan-400 text-base">⚡</span>
                 <span>Livraison 24h Abidjan</span>
-              </div>
+              </Link>
             </div>
           </div>
 
@@ -115,22 +119,24 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
             {trustFeatures.map((feat, i) => (
-              <div
+              <Link
                 key={i}
-                className="flex items-center gap-4 p-5 rounded-3xl bg-slate-900/60 hover:bg-slate-800/80 transition-all duration-300 border border-white/10 hover:border-orange-500/40 hover:shadow-xl hover:shadow-orange-500/5 group"
+                href={feat.href}
+                className="flex items-center gap-4 p-5 rounded-3xl bg-slate-900/60 hover:bg-slate-800/90 transition-all duration-300 border border-white/10 hover:border-orange-500/50 hover:shadow-xl hover:shadow-orange-500/10 group cursor-pointer"
               >
                 <div className={`shrink-0 w-13 h-13 rounded-2xl bg-gradient-to-br ${feat.gradient} flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition-transform`}>
                   {feat.icon}
                 </div>
                 <div className="min-w-0">
-                  <div className="text-sm sm:text-base font-extrabold text-white leading-tight font-heading group-hover:text-orange-400 transition-colors">
-                    {feat.title[locale as 'fr' | 'en']}
+                  <div className="text-sm sm:text-base font-extrabold text-white leading-tight font-heading group-hover:text-orange-400 transition-colors flex items-center gap-1.5">
+                    <span>{feat.title[locale as 'fr' | 'en']}</span>
+                    <span className="text-xs text-orange-400 opacity-0 group-hover:opacity-100 transition-opacity transform group-hover:translate-x-1">→</span>
                   </div>
                   <div className="text-xs text-slate-400 font-medium mt-1 leading-snug">
                     {feat.desc[locale as 'fr' | 'en']}
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
