@@ -54,7 +54,7 @@ export default function LandingPage() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-4xl mx-auto mb-8 sm:mb-10">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-50 border border-orange-200/80 text-orange-700 font-extrabold text-xs uppercase tracking-wider mb-4 shadow-xs">
+            <div className="glow-pill-10k mb-4 shadow-sm">
               <span className="w-2 h-2 rounded-full bg-orange-500 animate-ping shrink-0" />
               <span>⚡</span> {L('Marketplace N°1 Pièces Auto & Garages à Abidjan', 'Top Auto Parts & Garage Marketplace in Abidjan')}
             </div>
@@ -90,7 +90,7 @@ export default function LandingPage() {
             {trustFeatures.map((feat, i) => (
               <div
                 key={i}
-                className="flex items-center gap-4 p-4 sm:p-5 rounded-2xl bg-slate-50/80 hover:bg-white hover:shadow-lg hover:shadow-slate-200/60 transition-all duration-300 border border-slate-200/70"
+                className="card-10k-bento flex items-center gap-4 p-4 sm:p-5 rounded-2xl"
               >
                 <div className={`shrink-0 w-12 h-12 rounded-2xl bg-gradient-to-br ${feat.gradient} flex items-center justify-center text-white text-xl shadow-md`}>
                   {feat.icon}

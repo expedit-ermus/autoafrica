@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/contexts/AppContext";
 import { WishlistProvider } from "@/contexts/WishlistContext";
@@ -88,6 +88,12 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-heading",
+});
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr" dir="ltr" className="scroll-smooth">
@@ -97,7 +103,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className={`${inter.variable} antialiased bg-[#F8FAFC] text-slate-900 min-h-screen overflow-x-hidden selection:bg-orange-500/20 selection:text-slate-900`}>
+      <body className={`${inter.variable} ${plusJakartaSans.variable} font-sans antialiased bg-[#F8FAFC] text-slate-900 min-h-screen overflow-x-hidden selection:bg-orange-500/20 selection:text-slate-900`}>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-xl focus:bg-orange-600 focus:text-white focus:font-semibold focus:shadow-lg"
