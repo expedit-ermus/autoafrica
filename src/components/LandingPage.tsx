@@ -46,33 +46,60 @@ export default function LandingPage() {
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
 
   return (
-    <div className="overflow-x-hidden bg-[#F8FAFC]">
-      {/* ── Modern Hero Section ── */}
-      <section className="relative py-8 sm:py-12 bg-gradient-to-b from-white via-slate-50 to-[#F8FAFC] border-b border-slate-200/70 overflow-hidden">
-        {/* Subtle Ambient Mesh Glow with Parallax */}
-        <div className="parallax-glow absolute -top-24 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+    <div className="overflow-x-hidden bg-[#080C14] text-slate-100">
+      {/* ── Modern 10K Luxury Hero Section ── */}
+      <section className="relative pt-10 pb-16 sm:pt-16 sm:pb-24 bg-radial from-[#1A1F2C] via-[#0B0F19] to-[#080C14] border-b border-white/10 overflow-hidden">
+        {/* Ambient Glow Orbs with Parallax */}
+        <div className="parallax-glow absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[450px] bg-gradient-to-r from-orange-500/20 via-amber-500/15 to-blue-600/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="parallax-glow-fast absolute top-1/3 right-10 w-96 h-96 bg-orange-600/10 rounded-full blur-[100px] pointer-events-none" />
+
+        {/* Ambient Grid overlay */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center max-w-4xl mx-auto mb-8 sm:mb-10">
-            <div className="glow-pill-10k mb-4 shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-orange-500 animate-ping shrink-0" />
+          <div className="text-center max-w-4xl mx-auto mb-10 sm:mb-14">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 font-extrabold text-xs uppercase tracking-widest mb-6 shadow-lg shadow-orange-500/10 backdrop-blur-md">
+              <span className="w-2.5 h-2.5 rounded-full bg-orange-400 animate-ping shrink-0" />
               <span>⚡</span> {L('Marketplace N°1 Pièces Auto & Garages à Abidjan', 'Top Auto Parts & Garage Marketplace in Abidjan')}
             </div>
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-tight mb-4">
-              {L(
-                'Trouvez vos pièces auto neuves & d\'occasion contrôlée à Abidjan',
-                'Find new and certified used auto parts in Abidjan'
+            
+            <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] mb-6 font-heading">
+              {locale === 'fr' ? (
+                <>
+                  Trouvez vos pièces auto <span className="bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-400 bg-clip-text text-transparent drop-shadow-sm">neuves & d'occasion contrôlée</span> à Abidjan
+                </>
+              ) : (
+                <>
+                  Find new & certified used <span className="bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-400 bg-clip-text text-transparent drop-shadow-sm">auto parts</span> in Abidjan
+                </>
               )}
             </h1>
-            <p className="text-sm sm:text-base md:text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
+
+            <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-3xl mx-auto leading-relaxed font-medium">
               {L(
                 'Prix fixes transparents, garantie 48h, paiement Mobile Money sécurisé et livraison express en 24h par moto dans toutes les communes.',
                 'Transparent fixed prices, 48h warranty, secure Mobile Money payment, and express 24h motorcycle delivery across all communes.'
               )}
             </p>
+
+            {/* Quick Metrics Bar */}
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs sm:text-sm font-bold text-slate-300">
+              <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl backdrop-blur-md">
+                <span className="text-orange-400 text-base">📦</span>
+                <span>+15 000 pièces certifiées</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl backdrop-blur-md">
+                <span className="text-emerald-400 text-base">🛡️</span>
+                <span>99.4% compatibilité garantie</span>
+              </div>
+              <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-2xl backdrop-blur-md">
+                <span className="text-cyan-400 text-base">⚡</span>
+                <span>Livraison 24h Abidjan</span>
+              </div>
+            </div>
           </div>
 
-          <div className="grid lg:grid-cols-5 gap-6 items-start">
+          <div className="grid lg:grid-cols-5 gap-8 items-start">
             <div className="lg:col-span-3 min-w-0 order-first">
               <PromoBanner />
             </div>
@@ -83,23 +110,23 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Modern Trust Badges Strip ── */}
-      <section className="parallax-reveal py-6 sm:py-8 bg-white border-b border-slate-200/80">
+      {/* ── Modern 10K Trust Badges Strip ── */}
+      <section className="parallax-reveal py-10 sm:py-12 bg-[#0C121E] border-b border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
             {trustFeatures.map((feat, i) => (
               <div
                 key={i}
-                className="card-10k-bento flex items-center gap-4 p-4 sm:p-5 rounded-2xl"
+                className="flex items-center gap-4 p-5 rounded-3xl bg-slate-900/60 hover:bg-slate-800/80 transition-all duration-300 border border-white/10 hover:border-orange-500/40 hover:shadow-xl hover:shadow-orange-500/5 group"
               >
-                <div className={`shrink-0 w-12 h-12 rounded-2xl bg-gradient-to-br ${feat.gradient} flex items-center justify-center text-white text-xl shadow-md`}>
+                <div className={`shrink-0 w-13 h-13 rounded-2xl bg-gradient-to-br ${feat.gradient} flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 transition-transform`}>
                   {feat.icon}
                 </div>
                 <div className="min-w-0">
-                  <div className="text-sm sm:text-base font-extrabold text-slate-900 leading-tight">
+                  <div className="text-sm sm:text-base font-extrabold text-white leading-tight font-heading group-hover:text-orange-400 transition-colors">
                     {feat.title[locale as 'fr' | 'en']}
                   </div>
-                  <div className="text-xs text-slate-500 font-medium mt-1 leading-snug">
+                  <div className="text-xs text-slate-400 font-medium mt-1 leading-snug">
                     {feat.desc[locale as 'fr' | 'en']}
                   </div>
                 </div>
