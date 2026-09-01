@@ -88,37 +88,37 @@ export default function ProductCard({
   };
 
   return (
-    <div className="group bg-white rounded-2xl border border-[var(--color-warm-border)] hover:border-[var(--color-primary)]/40 hover:shadow-xl hover:shadow-[var(--color-primary)]/10 transition-all duration-300 overflow-hidden flex flex-col relative">
+    <div className="group bg-white rounded-3xl border border-slate-200/80 hover:border-orange-500/40 hover:shadow-2xl hover:shadow-slate-300/50 hover:-translate-y-1.5 transition-all duration-300 overflow-hidden flex flex-col relative">
       
       {/* Image & Badges */}
-      <div className="relative aspect-square bg-[var(--color-bg-warm)] overflow-hidden">
+      <div className="relative aspect-square bg-slate-50/80 overflow-hidden border-b border-slate-100">
         <Link href={productUrl} className="block w-full h-full">
           <RemoteImage
             src={image || '/logo.png'}
             alt={name}
             fill
             sizes="(max-width: 640px) 50vw, 33vw"
-            className="object-contain p-4 group-hover:scale-105 transition-transform duration-500"
+            className="object-contain p-4 group-hover:scale-108 transition-transform duration-500"
             priority={priority}
           />
         </Link>
 
         {discount && discount > 0 && (
-          <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-md pointer-events-none">
+          <div className="absolute top-3 left-3 bg-gradient-to-r from-red-500 to-rose-600 text-white text-xs font-black px-3 py-1 rounded-full shadow-md pointer-events-none tracking-wide">
             -{discount}%
           </div>
         )}
 
-        {/* Bouton Favori */}
+        {/* Bouton Favori Glassmorphism */}
         <button
           type="button"
           onClick={handleFavoriteClick}
           title={L('Ajouter aux favoris', 'Add to favorites')}
-          className="absolute top-3 right-3 w-10 h-10 bg-white/90 hover:bg-white rounded-xl flex items-center justify-center transition-all duration-300 shadow-sm z-10 cursor-pointer"
+          className="absolute top-3 right-3 w-10 h-10 bg-white/85 hover:bg-white backdrop-blur-md rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm z-10 cursor-pointer border border-white/60 hover:scale-110 active:scale-95"
         >
           <svg
             className={`w-5 h-5 transition-colors ${
-              isFav ? 'text-red-500 fill-red-500' : 'text-gray-400 hover:text-red-500'
+              isFav ? 'text-red-500 fill-red-500' : 'text-slate-400 hover:text-red-500'
             }`}
             fill={isFav ? 'currentColor' : 'none'}
             stroke="currentColor"
@@ -135,97 +135,98 @@ export default function ProductCard({
       </div>
 
       {/* Détails Produit */}
-      <div className="p-4 flex flex-col flex-1">
+      <div className="p-5 flex flex-col flex-1">
         
-        {/* Étoiles Avis */}
-        <div className="flex items-center gap-1 mb-2">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <svg
-              key={i}
-              className={`w-4 h-4 ${i < rating ? 'text-amber-400' : 'text-gray-200'}`}
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-            </svg>
-          ))}
-          <span className="text-xs text-gray-500 ml-1 font-medium">({reviewCount})</span>
+        {/* Étoiles Avis & Marque */}
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <div className="text-xs font-extrabold uppercase tracking-wider text-orange-600 bg-orange-50/80 px-2.5 py-0.5 rounded-md border border-orange-200/60">{brand}</div>
+          <div className="flex items-center gap-1">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <svg
+                key={i}
+                className={`w-3.5 h-3.5 ${i < rating ? 'text-amber-400' : 'text-slate-200'}`}
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            ))}
+            <span className="text-[11px] text-slate-400 font-medium">({reviewCount})</span>
+          </div>
         </div>
 
         {/* État de la Pièce */}
         <div className="flex items-center gap-2 mb-2">
           {condition === 'new' && (
-            <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide">
+            <span className="bg-emerald-50 text-emerald-700 border border-emerald-200/80 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide">
               {L('Neuf (OEM)', 'New (OEM)')}
             </span>
           )}
           {condition === 'aftermarket' && (
-            <span className="bg-amber-100 text-amber-800 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide">
+            <span className="bg-amber-50 text-amber-700 border border-amber-200/80 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide">
               {L('Adaptable', 'Aftermarket')}
             </span>
           )}
           {condition === 'used_imported' && (
-            <span className="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide">
+            <span className="bg-blue-50 text-blue-700 border border-blue-200/80 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide">
               {L('Venant (Occasion)', 'Imported Used')}
             </span>
           )}
           {condition === 'used_local' && (
-            <span className="bg-gray-100 text-gray-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide">
+            <span className="bg-slate-100 text-slate-700 border border-slate-200/80 px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-wide">
               {L('Occasion Locale', 'Local Used')}
             </span>
           )}
         </div>
-
-        <div className="text-xs text-emerald-600 mb-1 font-bold">{brand}</div>
         
-        <Link href={productUrl} className="hover:text-emerald-600 transition-colors">
-          <h3 className="text-sm font-bold text-gray-900 mb-1 line-clamp-2 flex-1">{name}</h3>
+        <Link href={productUrl} className="hover:text-orange-600 transition-colors group/title">
+          <h3 className="text-sm font-extrabold text-slate-900 mb-1 line-clamp-2 flex-1 font-heading leading-snug">{name}</h3>
         </Link>
         
-        <div className="text-xs text-gray-400 mb-3 font-medium">Réf.: {reference}</div>
+        <div className="text-[11px] text-slate-400 mb-4 font-mono font-medium">Réf. {reference}</div>
 
-        <div className="mt-auto">
-          <div className="flex items-baseline gap-2 mb-1">
-            <span className="text-lg font-extrabold text-emerald-900">{formatPrice(price)}</span>
+        <div className="mt-auto pt-3 border-t border-slate-100">
+          <div className="flex items-baseline gap-2 mb-0.5">
+            <span className="text-lg font-black text-slate-900 font-heading">{formatPrice(price)}</span>
             {oldPrice && (
-              <del className="text-sm text-gray-400">{formatPrice(oldPrice)}</del>
+              <del className="text-xs text-slate-400 font-medium">{formatPrice(oldPrice)}</del>
             )}
           </div>
-          <div className="text-xs text-gray-400 mb-3 font-medium">{L('Prix par pièce', 'Price per piece')}</div>
+          <div className="text-[11px] text-slate-400 mb-3 font-medium">{L('Prix fixe garanti', 'Guaranteed fixed price')}</div>
 
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5">
               {inStock ? (
                 <>
-                  <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
-                  <span className="text-xs text-emerald-700 font-bold">
+                  <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                  <span className="text-[11px] text-emerald-700 font-extrabold">
                     {location ? `${L('Dispo', 'Available')} ${location}` : L('En stock', 'In stock')}
                   </span>
                 </>
               ) : (
                 <>
-                  <span className="w-2.5 h-2.5 bg-red-500 rounded-full"></span>
-                  <span className="text-xs text-red-600 font-bold">{L('Sur commande', 'On order')}</span>
+                  <span className="w-2 h-2 bg-amber-500 rounded-full"></span>
+                  <span className="text-[11px] text-amber-700 font-extrabold">{L('Sur commande', 'On order')}</span>
                 </>
               )}
             </div>
 
-            {/* Bouton Ajout Panier */}
+            {/* Bouton Ajout Panier 10K */}
             <button
               type="button"
               onClick={handleAddToCart}
               title={L('Ajouter au panier', 'Add to cart')}
-              className={`h-10 px-3 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md font-bold text-xs cursor-pointer ${
+              className={`h-9 px-3.5 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md font-extrabold text-xs cursor-pointer active:scale-95 ${
                 addedToCart
                   ? 'bg-emerald-600 text-white shadow-emerald-900/30'
-                  : 'bg-orange-500 hover:bg-orange-600 text-white shadow-orange-950/20'
+                  : 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-orange-500/25 border border-white/20'
               }`}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"
                 />
               </svg>

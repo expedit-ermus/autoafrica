@@ -107,28 +107,28 @@ export default function Header() {
         </div>
       </div>
 
-      {/* ── Main nav bar ── */}
-      <div className="bg-slate-900/95 backdrop-blur-md border-b border-slate-800/80">
+      {/* ── Main nav bar (10K Glassmorphism) ── */}
+      <div className="bg-slate-950/90 backdrop-blur-xl border-b border-white/10 shadow-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 gap-4">
 
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/25 group-hover:scale-105 transition-all">
-                <span className="text-white font-bold text-lg sm:text-xl">🔧</span>
+              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-orange-500 via-orange-600 to-amber-500 flex items-center justify-center shadow-lg shadow-orange-500/30 group-hover:scale-105 group-hover:shadow-orange-500/50 transition-all border border-white/20">
+                <span className="text-white font-bold text-lg sm:text-xl drop-shadow">🔧</span>
               </div>
               <div className="hidden sm:block leading-none">
-                <span className="text-xl font-black text-white tracking-tight">Auto<span className="text-orange-500">Afrique</span></span>
-                <span className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Marketplace & ERP</span>
+                <span className="text-xl font-black text-white tracking-tight font-heading">Auto<span className="text-orange-500">Afrique</span></span>
+                <span className="block text-[10px] font-extrabold text-slate-400 uppercase tracking-widest mt-0.5">Marketplace & ERP</span>
               </div>
             </Link>
 
             {/* Search bar — desktop */}
             <div className="hidden md:flex flex-1 max-w-xl min-w-0 mx-2">
-              <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} className="flex w-full items-center bg-slate-800/80 border border-slate-700/80 rounded-2xl overflow-hidden shadow-inner focus-within:border-orange-500 focus-within:ring-2 focus-within:ring-orange-500/20 transition-all">
+              <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} className="flex w-full items-center bg-slate-900/90 border border-white/10 rounded-2xl overflow-hidden shadow-inner focus-within:border-orange-500 focus-within:ring-4 focus-within:ring-orange-500/20 transition-all">
                 <span className="pl-4 text-slate-400">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </span>
                 <label htmlFor="desktop-search" className="sr-only">Rechercher une pièce</label>
@@ -144,7 +144,7 @@ export default function Header() {
                 <button
                   type="submit"
                   onClick={handleSearch}
-                  className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-md"
+                  className="px-5 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer shrink-0 shadow-md active:scale-95"
                 >
                   <span>{L('Trouver', 'Find')}</span>
                 </button>
