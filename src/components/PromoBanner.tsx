@@ -102,8 +102,8 @@ export default function PromoBanner() {
               </div>
             </div>
             
-            {/* Background Glow Ring */}
-            <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full blur-3xl pointer-events-none" />
+            {/* Background Glow Ring with Parallax Depth */}
+            <div className="parallax-glow-fast absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full blur-3xl pointer-events-none" />
           </div>
         ))}
       </div>

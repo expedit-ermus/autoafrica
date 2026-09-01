@@ -1130,4 +1130,57 @@ img[loading="lazy"] {
   color: #0F172A;
 }
 
+/* ════════════════════════════════════════════════════════
+   EFFETS PARALLAXE & SCROLL-DRIVEN ANIMATIONS
+   ════════════════════════════════════════════════════════ */
+@keyframes parallax-float-slow {
+  from { transform: translateY(-30px); }
+  to { transform: translateY(30px); }
 }
+
+@keyframes parallax-float-fast {
+  from { transform: translateY(-50px) scale(0.95); }
+  to { transform: translateY(50px) scale(1.05); }
+}
+
+@keyframes parallax-reveal {
+  from {
+    opacity: 0.3;
+    transform: translateY(28px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@supports ((animation-timeline: view()) and (animation-range: entry)) {
+  .parallax-glow {
+    animation: parallax-float-slow linear both;
+    animation-timeline: view();
+    animation-range: entry 0% exit 100%;
+  }
+
+  .parallax-glow-fast {
+    animation: parallax-float-fast linear both;
+    animation-timeline: view();
+    animation-range: entry 0% exit 100%;
+  }
+
+  .parallax-reveal {
+    animation: parallax-reveal linear both;
+    animation-timeline: view();
+    animation-range: entry 5% cover 35%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .parallax-glow,
+  .parallax-glow-fast,
+  .parallax-reveal {
+    animation: none !important;
+  }
+}
+
+}
+

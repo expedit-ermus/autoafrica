@@ -49,8 +49,8 @@ export default function LandingPage() {
     <div className="overflow-x-hidden bg-[#F8FAFC]">
       {/* ── Modern Hero Section ── */}
       <section className="relative py-8 sm:py-12 bg-gradient-to-b from-white via-slate-50 to-[#F8FAFC] border-b border-slate-200/70 overflow-hidden">
-        {/* Subtle Ambient Mesh Glow */}
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+        {/* Subtle Ambient Mesh Glow with Parallax */}
+        <div className="parallax-glow absolute -top-24 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-blue-500/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-4xl mx-auto mb-8 sm:mb-10">
@@ -84,7 +84,7 @@ export default function LandingPage() {
       </section>
 
       {/* ── Modern Trust Badges Strip ── */}
-      <section className="py-6 sm:py-8 bg-white border-b border-slate-200/80">
+      <section className="parallax-reveal py-6 sm:py-8 bg-white border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {trustFeatures.map((feat, i) => (
