@@ -238,6 +238,7 @@ export default function RepairManualsPage() {
           <div className="w-full max-w-2xl relative">
             <input 
               type="text" 
+              aria-label={L("Rechercher un manuel ou un tutoriel de réparation", "Search for a manual or repair tutorial")}
               placeholder={L("Rechercher un tutoriel, une pièce, un code erreur...", "Search for a tutorial, a part, an error code...")}
               className="w-full pl-12 pr-4 py-4 rounded-2xl text-slate-900 bg-white border-2 border-slate-200 focus:outline-none focus:border-orange-500 shadow-xl font-medium text-sm transition-colors"
               value={searchQuery}

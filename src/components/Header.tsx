@@ -278,6 +278,7 @@ export default function Header() {
             <input
               id="mobile-search"
               type="text"
+              aria-label={L('Rechercher une pièce détachée', 'Search for a spare part')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -287,6 +288,7 @@ export default function Header() {
             />
             <button
               type="submit"
+              aria-label={L('Lancer la recherche', 'Submit search')}
               onClick={handleSearch}
               className="px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-bold text-sm rounded-xl transition-all shadow-md cursor-pointer shrink-0"
             >

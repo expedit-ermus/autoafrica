@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Product } from '@/shared/types';
+import RemoteImage from '@/components/RemoteImage';
 
 interface CatalogueFiltersProps {
   products: Product[];
@@ -487,11 +488,12 @@ function CatalogueFiltersContent({ products }: CatalogueFiltersProps) {
                 >
                   <div className="relative w-full aspect-square bg-gray-50 overflow-hidden">
                     {img ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
+                      <RemoteImage
                         src={img}
                         alt={p.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        fill
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">

@@ -200,6 +200,7 @@ export default function BlogIndexPage() {
             <form className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto" onSubmit={(e) => e.preventDefault()}>
               <input 
                 type="email" 
+                aria-label={L('Votre adresse email pour la newsletter', 'Your email address for the newsletter')}
                 placeholder={L('Votre adresse email', 'Your email address')} 
                 className="flex-grow px-4 py-3 rounded-xl text-gray-900 focus:ring-2 focus:ring-white focus:outline-none"
                 required

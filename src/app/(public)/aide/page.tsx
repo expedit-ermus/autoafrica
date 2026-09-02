@@ -189,6 +189,7 @@ export default function AidePage() {
             </div>
             <input
               type="text"
+              aria-label={L('Rechercher une question ou un sujet d\'aide', 'Search a question or help topic')}
               placeholder={L('Rechercher une question (ex: Wave, Livraison, Retour...)', 'Search for a question (e.g., Wave, Delivery, Return...)')}
               className="w-full pl-12 pr-4 py-4 rounded-2xl bg-white/10 border border-white/20 text-white placeholder-slate-400 focus:bg-white focus:text-slate-900 focus:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-300 shadow-lg backdrop-blur-sm"
               value={searchTerm}

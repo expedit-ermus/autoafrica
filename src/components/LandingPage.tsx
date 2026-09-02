@@ -6,10 +6,8 @@ import CarSelector from '@/components/CarSelector';
 import PromoBanner from '@/components/PromoBanner';
 import PartsCatalog from '@/components/PartsCatalog';
 import BrandGrid from '@/components/BrandGrid';
-import Bestsellers from '@/components/Bestsellers';
 
 // Lazy-load heavy components below the fold to reduce initial bundle & improve LCP
-const RepairEstimator = dynamic(() => import('@/components/RepairEstimator').then(mod => ({ default: mod.RepairEstimator })), { ssr: true });
 const VtcCircuitCourtSection = dynamic(() => import('@/components/VtcCircuitCourtSection'), { ssr: true });
 const DiagnosticEstimator = dynamic(() => import('@/components/DiagnosticEstimator'), { ssr: true });
 const AbidjanDeliveryZones = dynamic(() => import('@/components/AbidjanDeliveryZones'), { ssr: true });
