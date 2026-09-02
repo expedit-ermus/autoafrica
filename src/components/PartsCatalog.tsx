@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useApp } from '@/contexts/AppContext';
 import { track } from '@/lib/tracking';
 
@@ -141,11 +142,16 @@ export default function PartsCatalog() {
               onClick={() => track('click_category', { category_name: cat.name[locale as 'fr' | 'en'] })}
               className="group relative bg-white rounded-3xl border border-slate-200/80 hover:border-orange-500/40 hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1"
             >
-              <div className={`relative aspect-square overflow-hidden bg-gradient-to-br ${cat.bg} p-6 flex flex-col items-center justify-center transition-transform group-hover:scale-105 duration-300`}>
-                <span className="text-4xl sm:text-5xl filter drop-shadow-md select-none transform group-hover:scale-110 transition-transform">
-                  {cat.emoji}
-                </span>
-                <span className="absolute bottom-2 text-[10px] font-extrabold uppercase tracking-widest text-white/80 bg-black/20 px-2 py-0.5 rounded-full backdrop-blur-xs">
+              <div className="relative aspect-square overflow-hidden bg-slate-900">
+                <Image
+                  src={`/images/categories/${cat.slug}.jpg`}
+                  alt={cat.name[locale as 'fr' | 'en']}
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/15 to-transparent" />
+                <span className="absolute bottom-2 left-2 right-2 text-center text-[10px] font-black uppercase tracking-wider text-white bg-slate-950/70 px-2 py-0.5 rounded-lg backdrop-blur-xs border border-white/10 shadow-sm truncate">
                   {cat.slug}
                 </span>
               </div>
