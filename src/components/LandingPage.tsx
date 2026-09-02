@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import Image from 'next/image';
 import dynamic from 'next/dynamic';
 import { useApp } from '@/contexts/AppContext';
 import CarSelector from '@/components/CarSelector';
@@ -164,9 +165,18 @@ export default function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
-            <div className="bg-gradient-to-br from-slate-50 to-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm hover:shadow-md transition-all">
-              <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-2xl font-bold mb-4">
-                ✨
+            <div className="group bg-gradient-to-br from-slate-50 to-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300">
+              <div className="relative w-full h-48 sm:h-56 rounded-2xl overflow-hidden mb-5 bg-slate-100">
+                <Image
+                  src="/images/pieces-neuves-oem.jpg"
+                  alt={L('Pièces neuves d\'origine et adaptables', 'New OEM & aftermarket parts')}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+                <div className="absolute top-3 left-3 px-3 py-1 bg-blue-600/90 backdrop-blur-md text-white font-extrabold text-xs rounded-full shadow-lg">
+                  ✨ {L('100% Neuves d\'Origine', '100% Brand New OEM')}
+                </div>
               </div>
               <h3 className="text-xl font-extrabold text-slate-900 mb-2">
                 {L('Pièces neuves d\'origine & adaptables', 'New OEM & aftermarket parts')}
@@ -182,9 +192,18 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-amber-50/40 to-white rounded-3xl p-6 sm:p-8 border border-amber-200/80 shadow-sm hover:shadow-md transition-all">
-              <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-2xl font-bold mb-4">
-                🔧
+            <div className="group bg-gradient-to-br from-amber-50/40 to-white rounded-3xl p-6 sm:p-8 border border-amber-200/80 shadow-sm hover:shadow-xl transition-all duration-300">
+              <div className="relative w-full h-48 sm:h-56 rounded-2xl overflow-hidden mb-5 bg-amber-50">
+                <Image
+                  src="/images/pieces-occasion-controlee.jpg"
+                  alt={L('Pièces d\'occasion contrôlée (Venantes)', 'Certified used parts (Venantes)')}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+                <div className="absolute top-3 left-3 px-3 py-1 bg-amber-600/90 backdrop-blur-md text-white font-extrabold text-xs rounded-full shadow-lg">
+                  🔧 {L('Contrôlées & Certifiées', 'Inspected & Certified')}
+                </div>
               </div>
               <h3 className="text-xl font-extrabold text-slate-900 mb-2">
                 {L('Pièces d\'occasion contrôlée (Venantes)', 'Certified used parts (Venantes)')}

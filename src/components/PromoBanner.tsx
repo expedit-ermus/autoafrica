@@ -1,10 +1,9 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useApp } from '@/contexts/AppContext';
 
-// Bannières neutres et véridiques : aucun faux chiffre, aucune offre inventée,
-// aucune image distante non validée.
 const banners = [
   {
     id: 1,
@@ -12,8 +11,9 @@ const banners = [
     title: { fr: 'Estimateur de Devis & Panne Express', en: 'Fast Breakdown Quote Estimator' },
     subtitle: { fr: 'Calculez le coût moyen des pièces et main d\'œuvre à Abidjan en 30 secondes.', en: 'Calculate average parts and labor cost in Abidjan in 30 seconds.' },
     cta: { fr: 'Calculer mon devis', en: 'Calculate my quote' },
-    bg: 'from-slate-900 via-orange-950 to-orange-900',
+    bg: 'from-slate-950 via-orange-950/80 to-slate-900',
     accentColor: 'from-orange-500 to-amber-500',
+    image: '/images/hero-diagnostic-workshop.jpg',
     link: '/estimation-devis',
   },
   {
@@ -22,8 +22,9 @@ const banners = [
     title: { fr: 'Pièces auto neuves & d\'occasion contrôlée', en: 'New & certified used auto parts' },
     subtitle: { fr: 'Plus de 15 marques disponibles : Toyota, Peugeot, Hyundai, Suzuki, Nissan...', en: 'Over 15 car makes available: Toyota, Peugeot, Hyundai, Suzuki, Nissan...' },
     cta: { fr: 'Explorer le catalogue', en: 'Browse catalogue' },
-    bg: 'from-orange-600 via-orange-500 to-amber-600',
+    bg: 'from-slate-950 via-slate-900/90 to-amber-950/60',
     accentColor: 'from-slate-900 to-slate-800',
+    image: '/images/pieces-neuves-oem.jpg',
     link: '/catalogue',
   },
   {
@@ -32,8 +33,9 @@ const banners = [
     title: { fr: 'Paiement sous séquestre Mobile Money', en: 'Secure Mobile Money payment' },
     subtitle: { fr: 'Wave, Djamo, Orange Money, MTN MoMo. Votre argent est libéré après réception de la bonne pièce.', en: 'Wave, Djamo, Orange Money, MTN MoMo. Your funds are released after part inspection.' },
     cta: { fr: 'Comment ça marche ?', en: 'How it works' },
-    bg: 'from-slate-950 via-slate-900 to-indigo-950',
+    bg: 'from-slate-950 via-slate-900/85 to-indigo-950/70',
     accentColor: 'from-blue-500 to-cyan-400',
+    image: '/images/sequestre-mobile-money.jpg',
     link: '/paiement',
   },
   {
@@ -42,8 +44,9 @@ const banners = [
     title: { fr: 'Livraison express 24h à Abidjan', en: '24h Express Delivery in Abidjan' },
     subtitle: { fr: 'Livré directement à votre garage ou domicile par coursier moto, ou expédié par gare UTB.', en: 'Delivered directly to your garage or home by motorbike, or shipped via UTB stations.' },
     cta: { fr: 'Voir les délais & tarifs', en: 'View times & rates' },
-    bg: 'from-emerald-950 via-teal-900 to-slate-900',
+    bg: 'from-slate-950 via-emerald-950/80 to-slate-900',
     accentColor: 'from-emerald-500 to-teal-400',
+    image: '/images/livraison-express-abidjan.jpg',
     link: '/livraison',
   },
 ];
@@ -68,8 +71,24 @@ export default function PromoBanner() {
         {banners.map((banner) => (
           <div
             key={banner.id}
-            className={`w-full shrink-0 bg-gradient-to-r ${banner.bg} relative text-white`}
+            className={`w-full shrink-0 bg-gradient-to-r ${banner.bg} relative text-white overflow-hidden`}
           >
+            {/* Background Photographic Realistic Layer */}
+            {banner.image && (
+              <div className="absolute inset-0 z-0 pointer-events-none">
+                <Image
+                  src={banner.image}
+                  alt={banner.title[locale as 'fr' | 'en']}
+                  fill
+                  priority={banner.id === 1}
+                  className="object-cover object-center opacity-30 mix-blend-luminosity"
+                  sizes="(max-width: 1024px) 100vw, 60vw"
+                />
+                <div className={`absolute inset-0 bg-gradient-to-r ${banner.bg} opacity-90`} />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-black/30" />
+              </div>
+            )}
+
             <div className="relative z-10 flex flex-col justify-between p-6 sm:p-8 md:p-10 min-h-[260px] sm:min-h-[340px]">
               <div>
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-white/90 font-extrabold text-[11px] uppercase tracking-wider mb-3 border border-white/15 shadow-sm">
