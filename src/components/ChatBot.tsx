@@ -317,18 +317,24 @@ export default function ChatBot() {
     <>
       {!isOpen && (
         <button onClick={openChat}
-          className="fixed bottom-20 sm:bottom-24 md:bottom-6 right-3 sm:right-4 lg:right-6 z-[80] w-14 h-14 rounded-full gradient-primary flex items-center justify-center shadow-lg hover:shadow-xl transition-all hover:scale-110"
-          aria-label={L('Ouvrir l\'assistant AutoBot', 'Open AutoBot assistant')}>
-          <span className="text-white text-xl">💬</span>
+          className="fixed bottom-24 right-4 sm:right-6 z-[80] w-14 h-14 rounded-full gradient-primary flex items-center justify-center shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 group cursor-pointer border-2 border-white/20"
+          aria-label={L('Ouvrir l\'assistant AutoBot', 'Open AutoBot assistant')}
+          title={L('Discuter avec AutoBot IA', 'Chat with AutoBot AI')}>
+          <span className="text-white text-2xl group-hover:scale-110 transition-transform">💬</span>
           {unread > 0 && (
             <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full border-2 border-white flex items-center justify-center text-[10px] text-white font-bold">{unread}</span>
           )}
-          <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+          <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-400 rounded-full border-2 border-slate-900 shadow-sm animate-pulse"></span>
+
+          {/* Hover Tooltip */}
+          <span className="absolute right-full mr-3 px-3 py-1.5 rounded-xl bg-slate-900/90 text-white text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg border border-white/10 backdrop-blur-md hidden sm:block">
+            🤖 {L('Assistant AutoBot IA', 'AutoBot AI Assistant')}
+          </span>
         </button>
       )}
 
       {isOpen && (
-        <div className="fixed bottom-20 sm:bottom-24 md:bottom-6 right-3 sm:right-4 lg:right-6 z-[80] w-[calc(100vw-1.5rem)] sm:w-[380px] lg:w-[400px] h-[calc(100vh-7rem)] sm:h-[550px] lg:h-[650px] max-h-[calc(100vh-3rem)] bg-white rounded-2xl shadow-2xl border border-gray-200 flex flex-col overflow-hidden animate-fade-in"
+        <div className="fixed bottom-6 right-4 sm:right-6 z-[90] w-[calc(100vw-2rem)] sm:w-[390px] lg:w-[410px] h-[calc(100vh-6rem)] sm:h-[580px] lg:h-[640px] max-h-[calc(100vh-4rem)] bg-white rounded-3xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-fade-in"
           role="dialog" aria-label={L('Assistant AutoBot', 'AutoBot assistant')}>
           <div className="gradient-primary p-4 flex items-center gap-3">
             <div className="relative">
