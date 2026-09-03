@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useApp } from '@/contexts/AppContext';
 
 export default function VtcCircuitCourtSection() {
@@ -33,10 +34,19 @@ export default function VtcCircuitCourtSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* Carte 1: VTC & Taxis */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-lg shadow-slate-900/5 flex flex-col justify-between hover:border-amber-400 hover:shadow-xl transition-all">
+          <div className="group bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-lg shadow-slate-900/5 flex flex-col justify-between hover:border-amber-400 hover:shadow-xl transition-all">
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-2xl font-bold mb-5 border border-amber-500/20">
-                🚕
+              <div className="relative w-full h-44 rounded-2xl overflow-hidden mb-5 bg-amber-50">
+                <Image
+                  src="/images/vtc-taxis-abidjan.jpg"
+                  alt={L('Flottes de taxis wôrô-wôrô et VTC à Abidjan', 'Taxis and VTC fleets in Abidjan')}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+                <div className="absolute top-3 left-3 px-3 py-1 bg-amber-500/90 backdrop-blur-md text-white font-black text-xs rounded-full shadow-lg">
+                  🚕 {L('Taxis & VTC Abidjan', 'Abidjan Taxis & VTC')}
+                </div>
               </div>
               <h3 className="text-lg font-black text-slate-900 mb-2">
                 {L('Pack Chauffeurs VTC & Taxis', 'VTC & Taxi Driver Pack')}
@@ -68,10 +78,19 @@ export default function VtcCircuitCourtSection() {
           </div>
 
           {/* Carte 2: Circuit Court & Indigène */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-lg shadow-slate-900/5 flex flex-col justify-between hover:border-emerald-400 hover:shadow-xl transition-all">
+          <div className="group bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-lg shadow-slate-900/5 flex flex-col justify-between hover:border-emerald-400 hover:shadow-xl transition-all">
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-2xl font-bold mb-5 border border-emerald-500/20">
-                ♻️
+              <div className="relative w-full h-44 rounded-2xl overflow-hidden mb-5 bg-emerald-50">
+                <Image
+                  src="/images/pieces-occasion-controlee.jpg"
+                  alt={L('Ferrailles et pièces de réemploi contrôlées en Côte d\'Ivoire', 'Inspected salvaged parts in Côte d\'Ivoire')}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+                <div className="absolute top-3 left-3 px-3 py-1 bg-emerald-600/90 backdrop-blur-md text-white font-black text-xs rounded-full shadow-lg">
+                  ♻️ {L('Ferrailles & Venantes CI', 'Inspected Reused Parts')}
+                </div>
               </div>
               <h3 className="text-lg font-black text-slate-900 mb-2">
                 {L('Circuit Court Économique', 'Local Economic Loop')}
@@ -103,10 +122,19 @@ export default function VtcCircuitCourtSection() {
           </div>
 
           {/* Carte 3: Sociétés & Flottes Entreprises */}
-          <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/90 shadow-lg shadow-slate-900/5 flex flex-col justify-between hover:border-orange-400 hover:shadow-xl transition-all">
+          <div className="group bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/90 shadow-lg shadow-slate-900/5 flex flex-col justify-between hover:border-orange-400 hover:shadow-xl transition-all">
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-orange-500/10 text-orange-600 flex items-center justify-center text-2xl font-bold mb-5 border border-orange-500/20">
-                🏢
+              <div className="relative w-full h-44 rounded-2xl overflow-hidden mb-5 bg-orange-50">
+                <Image
+                  src="/images/hero-diagnostic-workshop.jpg"
+                  alt={L('Diagnostic et maintenance flottes utilitaires et Pick-ups Hilux à Abidjan', 'Diagnostic and maintenance for utility fleets and Hilux in Abidjan')}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                />
+                <div className="absolute top-3 left-3 px-3 py-1 bg-orange-600/90 backdrop-blur-md text-white font-black text-xs rounded-full shadow-lg">
+                  🏢 {L('Flottes Hilux / L200', 'Hilux / L200 Fleets')}
+                </div>
               </div>
               <h3 className="text-lg font-black text-slate-900 mb-2">
                 {L('Flottes Entreprises & Sociétés', 'Corporate Fleets')}
