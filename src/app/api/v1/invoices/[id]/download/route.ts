@@ -37,18 +37,18 @@ export async function GET(_request: NextRequest, context: Context) {
   <meta charset="UTF-8">
   <title>Facture ${invoice.invoiceNumber} - AutoAfrique</title>
   <style>
-    body { font-family: system-ui, -apple-system, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; color: #111827; background: #fff; }
-    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #059669; padding-bottom: 20px; margin-bottom: 30px; }
-    .logo { font-size: 28px; font-weight: 900; color: #059669; }
-    .title { font-size: 20px; font-weight: 800; color: #111827; }
-    .details { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; background: #f9fafb; padding: 20px; border-radius: 12px; }
+    body { font-family: system-ui, -apple-system, sans-serif; padding: 40px; max-width: 800px; margin: 0 auto; color: #090d16; background: #fff; }
+    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #FF6B35; padding-bottom: 20px; margin-bottom: 30px; }
+    .logo { font-size: 28px; font-weight: 900; color: #FF6B35; }
+    .title { font-size: 20px; font-weight: 800; color: #090d16; }
+    .details { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; }
     table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-    th { text-align: left; background: #f3f4f6; padding: 12px; font-size: 14px; color: #374151; }
-    td { padding: 12px; border-bottom: 1px solid #e5e7eb; font-size: 14px; }
+    th { text-align: left; background: #f1f5f9; padding: 12px; font-size: 14px; color: #334155; }
+    td { padding: 12px; border-bottom: 1px solid #e2e8f0; font-size: 14px; }
     .totals { margin-left: auto; width: 300px; text-align: right; }
     .totals div { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
-    .totals .grand-total { font-weight: 800; font-size: 18px; color: #059669; border-top: 2px solid #059669; padding-top: 10px; margin-top: 10px; }
-    .footer { margin-top: 50px; text-align: center; font-size: 12px; color: #6b7280; border-top: 1px solid #e5e7eb; padding-top: 20px; }
+    .totals .grand-total { font-weight: 800; font-size: 18px; color: #ea580c; border-top: 2px solid #FF6B35; padding-top: 10px; margin-top: 10px; }
+    .footer { margin-top: 50px; text-align: center; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 20px; }
     @media print {
       body { padding: 0; }
       .no-print { display: none; }
@@ -57,7 +57,7 @@ export async function GET(_request: NextRequest, context: Context) {
 </head>
 <body>
   <div class="no-print" style="margin-bottom: 20px; text-align: right;">
-    <button onclick="window.print()" style="background: #059669; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer;">🖨️ Imprimer / Sauvegarder PDF</button>
+    <button onclick="window.print()" style="background: #FF6B35; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">🖨️ Imprimer / Sauvegarder PDF</button>
   </div>
 
   <div class="header">
