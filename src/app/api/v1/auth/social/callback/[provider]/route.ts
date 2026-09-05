@@ -84,7 +84,7 @@ export async function GET(
     lastName = 'Social'
   }
 
-  let user: { id: string; role: string; status: string }
+  let user: { id: string; role: string; status: string; tenantId: string | null }
   try {
     let dbUser = await prisma.user.findUnique({ where: { email } })
 
@@ -103,12 +103,12 @@ export async function GET(
         },
       })
     }
-    user = { id: dbUser.id, role: dbUser.role, status: dbUser.status }
+    user = { id: dbUser.id, role: dbUser.role, status: dbUser.status, tenantId: dbUser.tenantId }
   } catch {
-    user = { id: `usr_social_${Date.now()}`, role: 'BUYER', status: 'ACTIVE' }
+    user = { id: `usr_social_${Date.now()}`, role: 'BUYER', status: 'ACTIVE', tenantId: null }
   }
 
-  const token = generateToken(user.id, user.role, user.status)
+  const token = generateToken(user.id, user.role, user.status, user.tenantId)
   const targetUrl = user.role === 'SELLER' ? '/dashboard/inventory' : '/catalogue'
 
   const response = NextResponse.redirect(`${baseUrl}${targetUrl}`)

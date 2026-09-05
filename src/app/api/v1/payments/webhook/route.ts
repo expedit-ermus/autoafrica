@@ -1,10 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { paymentsService } from '@/modules/payments/payments.service'
+import { verifyWebhookSignature } from '@/lib/webhook-signature'
+import { enforceRateLimit } from '@/lib/rate-limit'
 import { handleApiError } from '@/shared/utils/response'
 
 export async function POST(req: NextRequest) {
   try {
-    const payload = await req.json()
+    const limited = enforceRateLimit(req, 'webhook')
+    if (limited) return limited
+
+    // Corps brut requis : le HMAC porte sur les octets reçus, pas sur un JSON re-sérialisé.
+    const rawBody = await req.text()
+
+    const verification = verifyWebhookSignature(req.headers, rawBody)
+    if (!verification.ok) {
+      // Pas de détail renvoyé à l'appelant : inutile de l'aider à forger une signature.
+      console.warn(`[webhook] Rejeté — ${verification.reason}`)
+      return NextResponse.json({ error: 'Webhook non autorisé' }, { status: verification.status })
+    }
+
+    let payload: Record<string, unknown> & { data?: Record<string, unknown> }
+    try {
+      payload = JSON.parse(rawBody)
+    } catch {
+      return NextResponse.json({ error: 'Corps JSON invalide' }, { status: 400 })
+    }
 
     // Support both standardized & operator-specific webhook payloads
     const paymentId = payload.paymentId || payload.reference || payload.order_id || payload.data?.reference
@@ -17,10 +37,10 @@ export async function POST(req: NextRequest) {
     }
 
     const result = await paymentsService.handleWebhook({
-      paymentId,
+      paymentId: String(paymentId),
       status,
-      transactionId,
-      failureReason,
+      transactionId: transactionId ? String(transactionId) : undefined,
+      failureReason: failureReason ? String(failureReason) : undefined,
       rawPayload: payload,
     })
 

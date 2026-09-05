@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { subscriptionsService, SAAS_PLANS } from './subscriptions.service'
+import { subscriptionsService } from './subscriptions.service'
 import { prisma } from '@/lib/prisma'
-import { paymentProviders } from '@/modules/payments/providers/registry'
 
 vi.mock('@/lib/prisma', () => ({
   prisma: {
@@ -61,7 +60,7 @@ describe('SubscriptionsService', () => {
           metadata: null,
         },
       ],
-    } as any)
+    } as unknown as Awaited<ReturnType<typeof prisma.tenant.findUnique>>)
 
     vi.mocked(prisma.product.count).mockResolvedValue(45)
     vi.mocked(prisma.warehouse.count).mockResolvedValue(1)
@@ -81,7 +80,7 @@ describe('SubscriptionsService', () => {
       name: 'Petit Garage',
       plan: 'FREE',
       subscriptions: [],
-    } as any)
+    } as unknown as Awaited<ReturnType<typeof prisma.tenant.findUnique>>)
 
     vi.mocked(prisma.product.count).mockResolvedValue(10)
     vi.mocked(prisma.warehouse.count).mockResolvedValue(1)

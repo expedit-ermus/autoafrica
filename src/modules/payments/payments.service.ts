@@ -4,11 +4,27 @@ import { NotFoundError, ValidationError, PaymentError } from '@/shared/errors'
 import { paymentProviders } from './providers/registry'
 import { smsWhatsAppProvider } from '../notifications/providers/sms-whatsapp.provider'
 
+/** Violation de contrainte d'unicite Prisma (P2002). */
+function isUniqueConstraintError(error: unknown): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    (error as { code?: string }).code === 'P2002'
+  )
+}
+
 interface ProcessPaymentInput {
   orderId: string
   method: string
   phone: string
-  amount: number
+  /**
+   * Montant annoncé par le client, facultatif. Il n'est JAMAIS utilisé pour
+   * débiter : le montant réel vient toujours de `order.totalAmount`. S'il est
+   * fourni et diffère, la demande est rejetée — signe que le panier affiché
+   * n'est plus à jour, ou d'une tentative de sous-paiement.
+   */
+  amount?: number
 }
 
 export class PaymentsService {
@@ -23,18 +39,41 @@ export class PaymentsService {
     }
     const provider = paymentProviders.get(input.method)
 
-    const payment = await prisma.payment.create({
-      data: {
-        orderId: input.orderId,
-        userId,
-        method: input.method as PaymentMethod,
-        amount: input.amount,
-        currency: order.currency,
-        status: PaymentTransactionStatus.PENDING,
-        phone: input.phone,
-        providerRef: provider.shortCode,
-      },
-    })
+    // Le montant fait autorite cote serveur. Sans ce garde-fou, un acheteur
+    // pouvait poster `amount: 100` sur une commande de 500 000 FCFA et la faire
+    // passer en payee : le montant client n'etait jamais compare a la commande.
+    const amount = order.totalAmount
+    if (input.amount !== undefined && input.amount !== amount) {
+      throw new ValidationError(
+        `Montant incorrect : la commande s'élève à ${amount} ${order.currency}.`,
+      )
+    }
+
+    // `Payment.orderId` est unique : deux demandes simultanees sur la meme
+    // commande (double appui sur un reseau instable) ne peuvent pas creer deux
+    // paiements. La seconde est rejetee proprement plutot qu'en erreur 500.
+    let payment
+    try {
+      payment = await prisma.payment.create({
+        data: {
+          orderId: input.orderId,
+          userId,
+          method: input.method as PaymentMethod,
+          amount,
+          currency: order.currency,
+          status: PaymentTransactionStatus.PENDING,
+          phone: input.phone,
+          providerRef: provider.shortCode,
+        },
+      })
+    } catch (error) {
+      if (isUniqueConstraintError(error)) {
+        throw new ValidationError(
+          'Un paiement est déjà en cours pour cette commande. Vérifiez son statut avant de réessayer.',
+        )
+      }
+      throw error
+    }
 
     await prisma.orderTimeline.create({
       data: {
@@ -49,7 +88,7 @@ export class PaymentsService {
 
     const result = await provider.initiate({
       phone: input.phone,
-      amount: input.amount,
+      amount,
       currency: order.currency,
       reference: payment.id,
       description: `Order ${order.orderNumber}`,
@@ -94,7 +133,7 @@ export class PaymentsService {
     await smsWhatsAppProvider.sendPaymentConfirmation({
       phone: input.phone,
       orderNumber: order.orderNumber,
-      amount: input.amount,
+      amount,
       currency: order.currency,
       method: provider.name,
     })

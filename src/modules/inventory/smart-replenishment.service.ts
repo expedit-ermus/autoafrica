@@ -1,3 +1,4 @@
+import type { Prisma } from '@/generated/prisma/client'
 import { prisma } from '@/lib/prisma'
 
 export interface ReplenishmentPrediction {
@@ -16,6 +17,15 @@ export interface ReplenishmentPrediction {
   urgency: 'CRITICAL' | 'WARNING' | 'NORMAL'
   estimatedCostFcfa: number
   supplierName?: string
+}
+
+/** Synthèse renvoyée avec les prédictions par /api/v1/inventory/replenishment. */
+export interface ReplenishmentSummary {
+  totalItems: number
+  criticalCount: number
+  warningCount: number
+  normalCount: number
+  totalEstimatedCostFcfa: number
 }
 
 export interface SeasonalFactorResult {
@@ -73,7 +83,7 @@ export class SmartReplenishmentService {
    * Predicts stockout dates, reorder points, and replenishment suggestions for tenant inventory.
    */
   async predictReplenishment(tenantId?: string): Promise<ReplenishmentPrediction[]> {
-    const where: any = {}
+    const where: Prisma.ProductWhereInput = {}
     if (tenantId) where.tenantId = tenantId
 
     const products = await prisma.product.findMany({

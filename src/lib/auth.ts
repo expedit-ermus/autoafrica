@@ -17,15 +17,33 @@ export async function verifyPassword(password: string, hashedPassword: string): 
   return bcrypt.compare(password, hashedPassword)
 }
 
-export function generateToken(userId: string, role?: string, status?: string): string {
-  const secret = getJwtSecret()
-  return jwt.sign({ userId, role, status }, secret, { algorithm: 'HS256', expiresIn: '24h' })
+/** Charge utile du jeton de session. */
+export type AuthPayload = {
+  userId: string
+  role?: string
+  status?: string
+  /**
+   * Locataire (tenant) auquel l'utilisateur appartient. Porte par le jeton pour que
+   * le cloisonnement multi-locataire vienne de la session, jamais d'un parametre client.
+   * Optionnel : les jetons emis avant cette evolution ne le contiennent pas.
+   */
+  tenantId?: string | null
 }
 
-export function verifyToken(token: string): { userId: string; role?: string; status?: string } | null {
+export function generateToken(
+  userId: string,
+  role?: string,
+  status?: string,
+  tenantId?: string | null,
+): string {
+  const secret = getJwtSecret()
+  return jwt.sign({ userId, role, status, tenantId }, secret, { algorithm: 'HS256', expiresIn: '24h' })
+}
+
+export function verifyToken(token: string): AuthPayload | null {
   try {
     const secret = getJwtSecret()
-    return jwt.verify(token, secret, { algorithms: ['HS256'] }) as { userId: string; role?: string; status?: string }
+    return jwt.verify(token, secret, { algorithms: ['HS256'] }) as AuthPayload
   } catch {
     return null
   }

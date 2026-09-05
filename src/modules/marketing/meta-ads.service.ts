@@ -223,7 +223,7 @@ export class MetaAdsService {
   /**
    * Builds Meta Conversions API (CAPI) server event payload
    */
-  buildConversionsApiEvent(eventName: string, userData: { email?: string; phone?: string }, customData: any) {
+  buildConversionsApiEvent(eventName: string, userData: { email?: string; phone?: string }, customData: Record<string, unknown>) {
     return {
       data: [
         {

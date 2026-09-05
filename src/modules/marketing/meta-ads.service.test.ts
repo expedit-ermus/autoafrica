@@ -47,7 +47,10 @@ describe('MetaAdsService', () => {
       },
     ]
 
-    vi.mocked(prisma.product.findMany).mockResolvedValue(mockProducts as any)
+    // Mock volontairement partiel : seuls les champs lus par le service sont fournis.
+    vi.mocked(prisma.product.findMany).mockResolvedValue(
+      mockProducts as unknown as Awaited<ReturnType<typeof prisma.product.findMany>>,
+    )
 
     const xmlFeed = await metaAdsService.generateMetaCatalogFeedXML()
 

@@ -1,3 +1,4 @@
+import { SUPPORTED_COUNTRY_CODES } from '@/shared/utils/phone'
 import { z } from 'zod'
 
 export const registerDto = z.object({
@@ -6,7 +7,8 @@ export const registerDto = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
   phone: z.string().optional(),
-  country: z.enum(['CI', 'SN', 'ML', 'BF', 'NE', 'BJ', 'TG', 'GW', 'NG', 'GH']),
+  // Liste partagee avec le formulaire d'inscription : voir SUPPORTED_COUNTRIES.
+  country: z.enum(SUPPORTED_COUNTRY_CODES),
   city: z.string().optional(),
   shopName: z.string().optional(),
   role: z.enum(['SELLER', 'BUYER']).optional(),

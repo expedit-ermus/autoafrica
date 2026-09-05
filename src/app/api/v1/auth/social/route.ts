@@ -40,7 +40,7 @@ async function createSocialSessionAndRedirect(provider: string, baseUrl: string)
   const [firstName, ...lastNameParts] = name.split(' ')
   const lastName = lastNameParts.join(' ') || 'Social'
 
-  let user: { id: string; role: string; status: string }
+  let user: { id: string; role: string; status: string; tenantId: string | null }
   try {
     let dbUser = await prisma.user.findUnique({ where: { email } })
     if (!dbUser) {
@@ -49,12 +49,12 @@ async function createSocialSessionAndRedirect(provider: string, baseUrl: string)
         data: { email, password: pw, firstName, lastName, role: 'BUYER', status: 'ACTIVE', emailVerified: true, country: 'CI' },
       })
     }
-    user = { id: dbUser.id, role: dbUser.role, status: dbUser.status }
+    user = { id: dbUser.id, role: dbUser.role, status: dbUser.status, tenantId: dbUser.tenantId }
   } catch {
-    user = { id: `usr_social_${Date.now()}`, role: 'BUYER', status: 'ACTIVE' }
+    user = { id: `usr_social_${Date.now()}`, role: 'BUYER', status: 'ACTIVE', tenantId: null }
   }
 
-  const token = generateToken(user.id, user.role, user.status)
+  const token = generateToken(user.id, user.role, user.status, user.tenantId)
   const response = NextResponse.redirect(`${baseUrl}/catalogue`)
   response.cookies.set('token', token, {
     httpOnly: true,
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
     const [firstName, ...lastNameParts] = name.split(' ')
     const lastName = lastNameParts.join(' ') || 'Social'
 
-    let user: { id: string; email: string; firstName: string; lastName: string; role: string; status: string; country: string }
+    let user: { id: string; email: string; firstName: string; lastName: string; role: string; status: string; country: string; tenantId: string | null }
 
     try {
       let dbUser = await prisma.user.findUnique({
@@ -110,6 +110,7 @@ export async function POST(request: NextRequest) {
         role: dbUser.role,
         status: dbUser.status,
         country: dbUser.country || 'CI',
+        tenantId: dbUser.tenantId,
       }
     } catch (dbError) {
       console.warn('DB write warning during social auth (using fallback profile):', dbError)
@@ -121,10 +122,11 @@ export async function POST(request: NextRequest) {
         role,
         status: role === 'SELLER' ? 'PENDING_VERIFICATION' : 'ACTIVE',
         country: 'CI',
+        tenantId: null,
       }
     }
 
-    const token = generateToken(user.id, user.role, user.status)
+    const token = generateToken(user.id, user.role, user.status, user.tenantId)
 
     const response = successResponse({ user, token }, `Connexion avec ${provider === 'google' ? 'Google' : 'Facebook'} réussie`)
 

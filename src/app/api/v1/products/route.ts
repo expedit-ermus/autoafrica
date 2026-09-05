@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { productsService } from '@/modules/products/products.service'
-import { requireAuth, requireActiveSeller } from '@/modules/auth/auth.guard'
+import { requireActiveSeller } from '@/modules/auth/auth.guard'
 import { successResponse, handleApiError } from '@/shared/utils/response'
 
 
