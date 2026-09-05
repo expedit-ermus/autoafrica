@@ -18,7 +18,7 @@ export default function EntretienVehiculeAfriquePage() {
       author={{ name: 'Équipe AutoAfrique', role: 'Experts Automobile' }}
       datePublished="2026-08-12"
       mainImage={{
-        url: '/images/hero-bg.jpg',
+        url: '/images/hero-diagnostic-workshop.jpg',
         alt: 'Mécanicien vérifiant le moteur d\'une voiture dans un garage en Afrique de l\'Ouest',
         caption: 'L\'entretien régulier est la clé pour rouler en toute sécurité sous le climat ouest-africain.',
       }}

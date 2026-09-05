@@ -954,10 +954,23 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 - **Performance & Compétitivité** : Build Next.js 16 (Turbopack) 100% propre (97 routes compilées, **0 erreur**).
 - **Fiabilité** : **341 / 341 tests unitaires passés avec succès**.
 
+---
 
+## D17 : H1 de la page d’accueil, image d’en-tête des articles et fiabilisation des tests E2E
 
+**Date** : 05/09/2026 — exécution de la chaîne de vérification complète d’`AGENTS.md` (lint, typecheck, tests unitaires, build, E2E). Lint, TypeScript, 389 tests unitaires et le build de production étaient au vert ; la suite Playwright rapportait 5 échecs sur 13.
 
+**Contradiction relevée** : `03-PAGES.md` imposait pour `/` un H1 de marque ("AutoAfrique — Pièces Auto Marketplace Afrique de l’Ouest"), alors que `src/components/LandingPage.tsx` affiche depuis les refontes visuelles `fb1f660` puis `cadd9e5` un H1 orienté requête : "Trouvez vos pièces auto neuves & d’occasion contrôlée à Abidjan". `06-SEO.md` ne spécifie pas de H1 pour la page d’accueil : il n’y a donc pas de conflit entre documents SEO, mais un écart entre `03-PAGES.md` et le code.
 
+**Décision** : conserver le H1 implémenté et mettre `03-PAGES.md` en conformité. Le H1 orienté requête reprend les termes du `<title>` documenté dans `06-SEO.md` ("Pièces détachées auto Abidjan, neuf & occasion") ; la marque reste portée par le `<title>`, le logo du header et `og:site_name`. Le choix a été posé délibérément à deux reprises côté code : le revenir aurait été une régression SEO non demandée.
 
+**Correctifs applicatifs** :
+1. **Hiérarchie des titres — `/estimation-devis`** : la page ne comportait aucun `h1` (le titre de tête de `RepairEstimator` était un `h2`), en violation de `05-UX-ACCESSIBILITY.md` et `06-SEO.md`. Le composant n’étant monté que par cette route, son titre de tête est promu en `h1`.
+2. **Image d’en-tête des articles de blog** : les 9 articles référençaient `/images/hero-bg.jpg`, fichier absent de `public/images/` — l’optimiseur Next échouait ("isn’t a valid image"), l’image de tête ne s’affichait pas et la propriété `image` du schéma `Article` de `/blog/ou-trouver-pieces-detachees-auto-abidjan` pointait dans le vide. Chaque article est remappé vers la photographie ouest-africaine réelle correspondant à son sujet (`pieces-occasion-controlee.jpg`, `pieces-neuves-oem.jpg`, `hero-diagnostic-workshop.jpg`, `livraison-express-abidjan.jpg`, `sequestre-mobile-money.jpg`, `vtc-taxis-abidjan.jpg`), avec un texte alternatif décrivant fidèlement la photographie retenue conformément à `17-IMAGES-MEDIA.md`. Une bannière générique `og-image.png` a été écartée : elle aurait contredit les textes alternatifs spécifiques de chaque article.
 
+**Corrections de tests** (assertions périmées, application conforme) :
+- `a[aria-label*="WhatsApp"]` : le widget flottant est un `button` depuis `90cd1ad` (il ouvre le formulaire de demande express avant `wa.me`), plus un lien. Locator aligné sur le rôle `button`.
+- `/tarifs` et `/blog/verifier-compatibilite-piece-auto-vehicule` : `getByText` résolvait 2 nœuds (titre + lien de sommaire ou CTA), d’où une violation du mode strict Playwright. Assertions basculées sur le rôle `heading`.
+- `/` : l’assertion de marque est remplacée par l’unicité du `h1` et la présence du marqueur géographique, conformément au H1 documenté ci-dessus.
 
+**Écart de couverture signalé (non traité)** : `22-TESTS.md` exige des tests E2E sur 4 flux critiques — inscription, achat avec paiement Mobile Money, gestion produit vendeur et CRM. Les 13 scénarios Playwright existants ne couvrent que le rendu de pages publiques ; aucun de ces 4 flux n’est testé de bout en bout.

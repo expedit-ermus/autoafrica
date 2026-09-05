@@ -18,8 +18,8 @@ export default function GestionStockGarageErpPage() {
       author={{ name: 'Équipe AutoAfrique', role: 'Conseillers ERP Automobile' }}
       datePublished="2026-08-05"
       mainImage={{
-        url: '/images/hero-bg.jpg',
-        alt: 'Gestion informatisée d\'un stock de pièces détachées auto dans un garage à Abidjan',
+        url: '/images/pieces-neuves-oem.jpg',
+        alt: 'Gestion informatisée d\'un stock de pièces détachées auto dans une boutique d\'Abidjan',
         caption: 'L\'ERP AutoAfrique permet le suivi en temps réel des références et des seuils d\'alerte de stock.',
       }}
       tableOfContents={[
