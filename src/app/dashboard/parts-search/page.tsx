@@ -5,35 +5,22 @@ const VehiclePartsSearch = dynamic(() => import('@/components/VehiclePartsSearch
   loading: () => <LoadingSkeleton height="h-64" />
 });
 import { Metadata } from 'next';
-import { SITE_URL, PARTS_SEARCH_URL } from '@/lib/structured-data';
-import { BreadcrumbStructuredData } from '@/components/StructuredData';
 
+// Outil interne au tableau de bord : la version indexable de cette recherche
+// vit sur /recherche-pieces. Ici, /dashboard est bloque par robots.txt et
+// protege par le middleware : le referencement n'aurait aucun effet.
 export const metadata: Metadata = {
-  title: 'Trouvez les pièces pour votre véhicule | AutoAfrique',
-  description: 'Recherchez les pièces détachées compatibles par numéro d\'immatriculation ou en sélectionnant votre modèle. Livraison rapide en Afrique de l\'Ouest.',
-  openGraph: {
-    title: 'Trouvez les pièces pour votre véhicule | AutoAfrique',
-    description: 'Recherchez les pièces détachées compatibles par numéro d\'immatriculation ou en sélectionnant votre modèle.',
-    url: `${SITE_URL}/dashboard/parts-search`,
-    type: 'website',
-  },
+  title: 'Recherche de pièces',
+  robots: { index: false, follow: false },
 };
 
 export default function PartsSearchPage() {
   return (
     <div className="min-h-screen bg-gray-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Breadcrumb */}
-        <BreadcrumbStructuredData 
-          items={[
-            { name: 'AutoAfrique', url: SITE_URL },
-            { name: 'Recherche pièces', url: PARTS_SEARCH_URL },
-          ]} 
-        />
-        
         <div className="mb-8">
           <nav className="flex items-center gap-2 text-sm text-gray-500" aria-label="Fil d'Ariane">
-            <a href={SITE_URL} className="hover:text-orange-500 transition">AutoAfrique</a>
+            <a href="/dashboard" className="hover:text-orange-500 transition">Tableau de bord</a>
             <span>/</span>
             <a href="/dashboard/marketplace" className="hover:text-orange-500 transition">Marketplace</a>
             <span>/</span>
@@ -41,7 +28,9 @@ export default function PartsSearchPage() {
           </nav>
         </div>
 
-        <VehiclePartsSearch />
+        <main>
+          <VehiclePartsSearch />
+        </main>
       </div>
     </div>
   );

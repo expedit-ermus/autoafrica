@@ -1,7 +1,7 @@
 export const SITE_URL = 'https://autoafrique-saas.vercel.app'
 export const MARKETPLACE_URL = `${SITE_URL}/dashboard/marketplace`
 export const VEHICLES_URL = `${SITE_URL}/dashboard/vehicles`
-export const PARTS_SEARCH_URL = `${SITE_URL}/dashboard/parts-search`
+export const PARTS_SEARCH_URL = `${SITE_URL}/recherche-pieces`
 
 export interface BreadcrumbEntry {
   name: string
