@@ -1,5 +1,6 @@
 'use client';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
+import { useDialogBehavior } from '@/lib/useDialogBehavior';
 
 interface ModalProps {
   isOpen: boolean;
@@ -12,23 +13,8 @@ interface ModalProps {
 
 export default function Modal({ isOpen, onClose, title, children, size = 'md', footer }: ModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => { document.body.style.overflow = ''; };
-  }, [isOpen]);
-
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) onClose();
-    };
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
-  }, [isOpen, onClose]);
+  // Échap, blocage du défilement, focus initial, piège de tabulation et restitution du focus.
+  const panelRef = useDialogBehavior<HTMLDivElement>(isOpen, onClose);
 
   if (!isOpen) return null;
 
@@ -57,6 +43,7 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md', f
 
       {/* Modal Panel */}
       <div
+        ref={panelRef}
         className={`
           relative bg-white w-full ${sizeClass}
           max-h-[92vh] sm:max-h-[85vh]
