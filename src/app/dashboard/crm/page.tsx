@@ -893,7 +893,7 @@ export default function CRMPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label htmlFor="lead-value" className="block text-xs font-semibold text-gray-700 mb-1.5">Valeur (FCFA)</label>
-                    <input id="lead-value" className="input-field" type="number" placeholder="Ex: 500000" value={leadForm.value || ''} onChange={(e) => setLeadForm({ ...leadForm, value: Number(e.target.value) })} />
+                    <input id="lead-value" className="input-field" type="number" inputMode="numeric" placeholder="Ex: 500000" value={leadForm.value || ''} onChange={(e) => setLeadForm({ ...leadForm, value: Number(e.target.value) })} />
                   </div>
                   <div>
                     <label htmlFor="lead-source" className="block text-xs font-semibold text-gray-700 mb-1.5">Source</label>
@@ -984,7 +984,7 @@ export default function CRMPage() {
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label htmlFor="editlead-value" className="block text-xs font-semibold text-gray-700 mb-1.5">Valeur (FCFA)</label>
-                    <input id="editlead-value" className="input-field" type="number" placeholder="Valeur" value={leadForm.value || ''} onChange={(e) => setLeadForm({ ...leadForm, value: Number(e.target.value) })} />
+                    <input id="editlead-value" className="input-field" type="number" inputMode="numeric" placeholder="Valeur" value={leadForm.value || ''} onChange={(e) => setLeadForm({ ...leadForm, value: Number(e.target.value) })} />
                   </div>
                   <div>
                     <label htmlFor="editlead-source" className="block text-xs font-semibold text-gray-700 mb-1.5">Source</label>

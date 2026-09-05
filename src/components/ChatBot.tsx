@@ -461,7 +461,7 @@ export default function ChatBot() {
                 <form onSubmit={handleLeadSubmit} className="space-y-2.5">
                   <div>
                     <label className="block text-[10px] font-bold text-emerald-800 uppercase tracking-wide mb-1">Nom / Nom du Garage</label>
-                    <input
+                    <input aria-label="Garage Koné / Mamadou Diallo"
                       type="text"
                       required
                       placeholder="Ex: Garage Koné / Mamadou Diallo"
@@ -486,8 +486,8 @@ export default function ChatBot() {
                         <option value="+228">🇹🇬 +228</option>
                         <option value="+234">🇳🇬 +234</option>
                       </select>
-                      <input
-                        type="tel"
+                      <input aria-label="Votre numéro de téléphone"
+                        type="tel" inputMode="tel" autoComplete="tel"
                         required
                         placeholder="07 01 02 03 04"
                         value={leadData.phone}
@@ -498,7 +498,7 @@ export default function ChatBot() {
                   </div>
                   <div>
                     <label className="block text-[10px] font-bold text-emerald-800 uppercase tracking-wide mb-1">Pièce ou Véhicule recherché</label>
-                    <input
+                    <input aria-label="Amortisseurs Toyota Corolla 2018"
                       type="text"
                       placeholder="Ex: Amortisseurs Toyota Corolla 2018"
                       value={leadData.need}

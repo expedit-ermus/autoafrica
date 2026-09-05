@@ -1,4 +1,5 @@
 import {
+  buildArticleSchema,
   buildAutoRepairListSchema,
   buildBreadcrumbSchema,
   buildFAQPageSchema,
@@ -117,7 +118,7 @@ export function ArticleStructuredData(props: {
   imageUrl?: string
   url?: string
 }) {
-  const { buildArticleSchema } = require('@/lib/structured-data')
+
   return <JsonLdScript id="article-schema" data={buildArticleSchema(props)} />
 }
 

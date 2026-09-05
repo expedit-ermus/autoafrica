@@ -6,6 +6,7 @@ import { useToast } from '@/contexts/ToastContext';
 import { useApp } from '@/contexts/AppContext';
 import Modal from '@/components/Modal';
 import { Product } from '@/shared/types';
+import type { ReplenishmentPrediction, ReplenishmentSummary } from '@/modules/inventory/smart-replenishment.service';
 
 type Warehouse = {
   id: string;
@@ -78,7 +79,10 @@ export default function InventoryPage() {
   const [stock, setStock] = useState<StockLine[]>([]);
   const [movements, setMovements] = useState<Movement[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [replenishmentData, setReplenishmentData] = useState<{ summary?: any; predictions?: any[] }>({});
+  const [replenishmentData, setReplenishmentData] = useState<{
+    summary?: ReplenishmentSummary;
+    predictions?: ReplenishmentPrediction[];
+  }>({});
 
   const [search, setSearch] = useState('');
   const [warehouseFilter, setWarehouseFilter] = useState('all');
@@ -338,7 +342,7 @@ export default function InventoryPage() {
             <>
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="p-4 flex flex-col sm:flex-row gap-3 border-b border-gray-100">
-                  <input
+                  <input aria-label="Rechercher"
                     type="text"
                     placeholder="Rechercher..."
                     value={search}
@@ -501,7 +505,7 @@ export default function InventoryPage() {
                       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div>
                           <span className="text-xs uppercase font-extrabold tracking-wider text-amber-400">🔥 Moteur IA Prédictif</span>
-                          <h3 className="text-xl font-extrabold text-white mt-1">Prédiction des Ruptures & Commandes Suggérées</h3>
+                          <h2 className="text-xl font-extrabold text-white mt-1">Prédiction des Ruptures & Commandes Suggérées</h2>
                           <p className="text-xs text-slate-300 mt-1 max-w-2xl">
                             Calcule les seuils de réapprovisionnement en temps réel en fonction du délai fournisseur, de la consommation quotidienne et des pics saisonniers (Saison des pluies & Fêtes).
                           </p>
@@ -528,7 +532,7 @@ export default function InventoryPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-50">
-                        {(replenishmentData.predictions || []).map((p: any) => (
+                        {(replenishmentData.predictions || []).map((p) => (
                           <tr key={p.productId} className="hover:bg-gray-50/60 transition-colors">
                             <td className="px-4 py-3">
                               <span className="font-semibold text-gray-900 block">{p.productName}</span>
@@ -587,38 +591,38 @@ export default function InventoryPage() {
           <Modal isOpen={showAddWarehouse} onClose={() => setShowAddWarehouse(false)} title="Nouvel entrepôt">
             <div className="space-y-4">
               <div>
-                <label className={labelCls}>Nom *</label>
-                <input type="text" value={whForm.name} onChange={e => setWhForm({ ...whForm, name: e.target.value })} className={inputCls} placeholder="Ex : Depot Abidjan Zone Industrielle" />
+                <label htmlFor="nom" className={labelCls}>Nom *</label>
+                <input id="nom" type="text" value={whForm.name} onChange={e => setWhForm({ ...whForm, name: e.target.value })} className={inputCls} placeholder="Ex : Depot Abidjan Zone Industrielle" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Code</label>
-                  <input type="text" value={whForm.code} onChange={e => setWhForm({ ...whForm, code: e.target.value })} className={inputCls} placeholder="Ex : ABJ-01" />
+                  <label htmlFor="code" className={labelCls}>Code</label>
+                  <input id="code" type="text" value={whForm.code} onChange={e => setWhForm({ ...whForm, code: e.target.value })} className={inputCls} placeholder="Ex : ABJ-01" />
                 </div>
                 <div>
-                  <label className={labelCls}>Type</label>
-                  <select value={whForm.type} onChange={e => setWhForm({ ...whForm, type: e.target.value })} className={inputCls}>
+                  <label htmlFor="type" className={labelCls}>Type</label>
+                  <select id="type" value={whForm.type} onChange={e => setWhForm({ ...whForm, type: e.target.value })} className={inputCls}>
                     {WAREHOUSE_TYPES.map(t => <option key={t} value={t}>{TYPE_LABELS[t]}</option>)}
                   </select>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Pays *</label>
-                  <input type="text" value={whForm.country} onChange={e => setWhForm({ ...whForm, country: e.target.value })} className={inputCls} />
+                  <label htmlFor="pays" className={labelCls}>Pays *</label>
+                  <input id="pays" type="text" value={whForm.country} onChange={e => setWhForm({ ...whForm, country: e.target.value })} className={inputCls} />
                 </div>
                 <div>
-                  <label className={labelCls}>Ville *</label>
-                  <input type="text" value={whForm.city} onChange={e => setWhForm({ ...whForm, city: e.target.value })} className={inputCls} />
+                  <label htmlFor="ville" className={labelCls}>Ville *</label>
+                  <input id="ville" type="text" value={whForm.city} onChange={e => setWhForm({ ...whForm, city: e.target.value })} className={inputCls} />
                 </div>
               </div>
               <div>
-                <label className={labelCls}>Adresse</label>
-                <input type="text" value={whForm.address} onChange={e => setWhForm({ ...whForm, address: e.target.value })} className={inputCls} />
+                <label htmlFor="adresse" className={labelCls}>Adresse</label>
+                <input id="adresse" type="text" value={whForm.address} onChange={e => setWhForm({ ...whForm, address: e.target.value })} className={inputCls} />
               </div>
               <div>
-                <label className={labelCls}>Capacite (unites)</label>
-                <input type="number" value={whForm.capacity} onChange={e => setWhForm({ ...whForm, capacity: e.target.value })} className={inputCls} />
+                <label htmlFor="capacite-unites" className={labelCls}>Capacite (unites)</label>
+                <input id="capacite-unites" type="number" inputMode="numeric" value={whForm.capacity} onChange={e => setWhForm({ ...whForm, capacity: e.target.value })} className={inputCls} />
               </div>
               <button onClick={handleAddWarehouse} className="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold hover:opacity-95 transition-opacity">
                 Creer l&apos;entrepôt
@@ -629,42 +633,42 @@ export default function InventoryPage() {
           <Modal isOpen={showAddStock} onClose={() => setShowAddStock(false)} title="Nouvelle ligne de stock">
             <div className="space-y-4">
               <div>
-                <label className={labelCls}>Produit *</label>
-                <select value={stockForm.productId} onChange={e => setStockForm({ ...stockForm, productId: e.target.value })} className={inputCls}>
+                <label htmlFor="produit" className={labelCls}>Produit *</label>
+                <select id="produit" value={stockForm.productId} onChange={e => setStockForm({ ...stockForm, productId: e.target.value })} className={inputCls}>
                   <option value="">— Selectionner —</option>
                   {products.map(p => <option key={p.id} value={p.id}>{p.title} {p.reference ? `(${p.reference})` : ''}</option>)}
                 </select>
               </div>
               <div>
-                <label className={labelCls}>Entrepôt *</label>
-                <select value={stockForm.warehouseId} onChange={e => setStockForm({ ...stockForm, warehouseId: e.target.value })} className={inputCls}>
+                <label htmlFor="entrepot" className={labelCls}>Entrepôt *</label>
+                <select id="entrepot" value={stockForm.warehouseId} onChange={e => setStockForm({ ...stockForm, warehouseId: e.target.value })} className={inputCls}>
                   <option value="">— Selectionner —</option>
                   {warehouses.map(w => <option key={w.id} value={w.id}>{w.name} ({w.city})</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Quantite</label>
-                  <input type="number" value={stockForm.quantity} onChange={e => setStockForm({ ...stockForm, quantity: e.target.value })} className={inputCls} min="0" />
+                  <label htmlFor="quantite" className={labelCls}>Quantite</label>
+                  <input id="quantite" type="number" inputMode="numeric" value={stockForm.quantity} onChange={e => setStockForm({ ...stockForm, quantity: e.target.value })} className={inputCls} min="0" />
                 </div>
                 <div>
-                  <label className={labelCls}>Reserve</label>
-                  <input type="number" value={stockForm.reserved} onChange={e => setStockForm({ ...stockForm, reserved: e.target.value })} className={inputCls} min="0" />
+                  <label htmlFor="reserve" className={labelCls}>Reserve</label>
+                  <input id="reserve" type="number" inputMode="numeric" value={stockForm.reserved} onChange={e => setStockForm({ ...stockForm, reserved: e.target.value })} className={inputCls} min="0" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Emplacement</label>
-                  <input type="text" value={stockForm.binLocation} onChange={e => setStockForm({ ...stockForm, binLocation: e.target.value })} className={inputCls} placeholder="Ex : A-01-03" />
+                  <label htmlFor="emplacement" className={labelCls}>Emplacement</label>
+                  <input id="emplacement" type="text" value={stockForm.binLocation} onChange={e => setStockForm({ ...stockForm, binLocation: e.target.value })} className={inputCls} placeholder="Ex : A-01-03" />
                 </div>
                 <div>
-                  <label className={labelCls}>Lot</label>
-                  <input type="text" value={stockForm.lotNumber} onChange={e => setStockForm({ ...stockForm, lotNumber: e.target.value })} className={inputCls} />
+                  <label htmlFor="lot" className={labelCls}>Lot</label>
+                  <input id="lot" type="text" value={stockForm.lotNumber} onChange={e => setStockForm({ ...stockForm, lotNumber: e.target.value })} className={inputCls} />
                 </div>
               </div>
               <div>
-                <label className={labelCls}>Cout unitaire (XOF)</label>
-                <input type="number" value={stockForm.costBasis} onChange={e => setStockForm({ ...stockForm, costBasis: e.target.value })} className={inputCls} min="0" />
+                <label htmlFor="cout-unitaire-xof" className={labelCls}>Cout unitaire (XOF)</label>
+                <input id="cout-unitaire-xof" type="number" inputMode="numeric" value={stockForm.costBasis} onChange={e => setStockForm({ ...stockForm, costBasis: e.target.value })} className={inputCls} min="0" />
               </div>
               <button onClick={handleAddStock} className="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold hover:opacity-95 transition-opacity">
                 Ajouter la ligne de stock
@@ -675,35 +679,35 @@ export default function InventoryPage() {
           <Modal isOpen={showTransfer} onClose={() => setShowTransfer(false)} title="Transferer du stock">
             <div className="space-y-4">
               <div>
-                <label className={labelCls}>Produit *</label>
-                <select value={transferForm.productId} onChange={e => setTransferForm({ ...transferForm, productId: e.target.value })} className={inputCls}>
+                <label htmlFor="produit-2" className={labelCls}>Produit *</label>
+                <select id="produit-2" value={transferForm.productId} onChange={e => setTransferForm({ ...transferForm, productId: e.target.value })} className={inputCls}>
                   <option value="">— Selectionner —</option>
                   {products.map(p => <option key={p.id} value={p.id}>{p.title} {p.reference ? `(${p.reference})` : ''}</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Depuis *</label>
-                  <select value={transferForm.fromWarehouseId} onChange={e => setTransferForm({ ...transferForm, fromWarehouseId: e.target.value })} className={inputCls}>
+                  <label htmlFor="depuis" className={labelCls}>Depuis *</label>
+                  <select id="depuis" value={transferForm.fromWarehouseId} onChange={e => setTransferForm({ ...transferForm, fromWarehouseId: e.target.value })} className={inputCls}>
                     <option value="">— Selectionner —</option>
                     {warehouses.map(w => <option key={w.id} value={w.id}>{w.name} ({w.city})</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className={labelCls}>Vers *</label>
-                  <select value={transferForm.toWarehouseId} onChange={e => setTransferForm({ ...transferForm, toWarehouseId: e.target.value })} className={inputCls}>
+                  <label htmlFor="vers" className={labelCls}>Vers *</label>
+                  <select id="vers" value={transferForm.toWarehouseId} onChange={e => setTransferForm({ ...transferForm, toWarehouseId: e.target.value })} className={inputCls}>
                     <option value="">— Selectionner —</option>
                     {warehouses.map(w => <option key={w.id} value={w.id}>{w.name} ({w.city})</option>)}
                   </select>
                 </div>
               </div>
               <div>
-                <label className={labelCls}>Quantite *</label>
-                <input type="number" value={transferForm.quantity} onChange={e => setTransferForm({ ...transferForm, quantity: e.target.value })} className={inputCls} min="1" />
+                <label htmlFor="quantite-2" className={labelCls}>Quantite *</label>
+                <input id="quantite-2" type="number" inputMode="numeric" value={transferForm.quantity} onChange={e => setTransferForm({ ...transferForm, quantity: e.target.value })} className={inputCls} min="1" />
               </div>
               <div>
-                <label className={labelCls}>Notes</label>
-                <textarea value={transferForm.notes} onChange={e => setTransferForm({ ...transferForm, notes: e.target.value })} className={inputCls} rows={2} />
+                <label htmlFor="notes" className={labelCls}>Notes</label>
+                <textarea id="notes" value={transferForm.notes} onChange={e => setTransferForm({ ...transferForm, notes: e.target.value })} className={inputCls} rows={2} />
               </div>
               <button onClick={handleTransfer} className="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold hover:opacity-95 transition-opacity">
                 Transferer le stock

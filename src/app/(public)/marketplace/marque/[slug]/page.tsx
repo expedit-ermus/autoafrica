@@ -27,7 +27,7 @@ export default async function MarqueCataloguePage({ params }: PageProps) {
   const brand = resolveBrand(slug);
   if (!brand) notFound();
 
-  let res = await productsService.list({ brand: brand.name }, { page: 1, pageSize: 24 });
+  const res = await productsService.list({ brand: brand.name }, { page: 1, pageSize: 24 });
   let productsList = (res.data || []) as unknown as Product[];
 
   if (productsList.length === 0) {

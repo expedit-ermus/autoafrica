@@ -45,12 +45,13 @@ export default function SellerRevenueSimulator() {
         <div className="space-y-8">
           <div>
             <div className="flex justify-between items-end mb-2">
-              <label className="text-sm font-bold text-slate-300">
+              <label htmlFor="sim-parts-sold" className="text-sm font-bold text-slate-300">
                 {L('Pièces vendues / mois', 'Parts sold / month')}
               </label>
               <span className="text-lg font-black text-orange-400">{partsSold}</span>
             </div>
             <input
+              id="sim-parts-sold"
               type="range"
               min="5"
               max="100"
@@ -63,12 +64,13 @@ export default function SellerRevenueSimulator() {
 
           <div>
             <div className="flex justify-between items-end mb-2">
-              <label className="text-sm font-bold text-slate-300">
+              <label htmlFor="sim-avg-price" className="text-sm font-bold text-slate-300">
                 {L('Prix moyen par pièce', 'Average price per part')}
               </label>
               <span className="text-lg font-black text-orange-400">{formatFCFA(avgPrice)}</span>
             </div>
             <input
+              id="sim-avg-price"
               type="range"
               min="15000"
               max="250000"

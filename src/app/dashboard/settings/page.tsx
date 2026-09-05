@@ -1,10 +1,14 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { useToast } from '@/contexts/ToastContext';
-import { useApp } from '@/contexts/AppContext';
 import Modal from '@/components/Modal';
+import type { subscriptionsService } from '@/modules/subscriptions/subscriptions.service';
+import { detectOperator, isValidPhone } from '@/shared/utils/phone';
+
+/** Forme exacte renvoyee par le service : evite un type fige qui derive. */
+type TenantSubscription = Awaited<ReturnType<typeof subscriptionsService.getTenantSubscription>>;
 
 function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
   return (
@@ -26,8 +30,6 @@ function ToggleSwitch({ checked, onChange }: { checked: boolean; onChange: (v: b
 
 export default function SettingsPage() {
   const { addToast } = useToast();
-  const { locale } = useApp();
-  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
   const [saving, setSaving] = useState(false);
 
   const [general, setGeneral] = useState({ language: 'fr', currency: 'XOF', timezone: 'Africa/Abidjan' });
@@ -56,32 +58,43 @@ export default function SettingsPage() {
     }
   };
 
-  const [subData, setSubData] = useState<any>(null);
+  const [subData, setSubData] = useState<TenantSubscription | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<'STARTER' | 'PRO' | 'ENTERPRISE'>('PRO');
   const [paymentMethod, setPaymentMethod] = useState<'ORANGE_MONEY' | 'WAVE' | 'MTN_MOMO' | 'MOOV_MONEY'>('ORANGE_MONEY');
-  const [payPhone, setPayPhone] = useState('0707070707');
+  const [payPhone, setPayPhone] = useState('');
   const [upgrading, setUpgrading] = useState(false);
 
-  const fetchSubscription = async () => {
+  const fetchSubscription = useCallback(async (signal?: AbortSignal) => {
     try {
-      const res = await fetch('/api/v1/subscriptions');
+      const res = await fetch('/api/v1/subscriptions', { signal });
       const data = await res.json();
       if (data.currentSubscription) {
         setSubData(data.currentSubscription);
       }
     } catch (e) {
-      console.error(e);
+      // Requete annulee au demontage : ce n'est pas une erreur.
+      if ((e as Error)?.name !== 'AbortError') console.error(e);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchSubscription();
-  }, []);
+    // L'abandon evite d'ecrire dans l'etat d'un composant deja demonte.
+    const controller = new AbortController();
+    // La regle vise les setState synchrones ; ici l'ecriture d'etat a lieu apres
+    // un await, une fois la reponse reseau recue. Chargement de donnees legitime.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchSubscription(controller.signal);
+    return () => controller.abort();
+  }, [fetchSubscription]);
 
   const handleUpgrade = async () => {
     if (!payPhone) {
       addToast('error', 'Numéro de téléphone Mobile Money requis');
+      return;
+    }
+    if (!isValidPhone(payPhone, 'CI')) {
+      addToast('error', 'Numéro invalide : 10 chiffres attendus, ex. 07 12 34 56 78');
       return;
     }
     setUpgrading(true);
@@ -90,8 +103,7 @@ export default function SettingsPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          tenantId: subData?.tenantId || 'demo-tenant-id',
-          userId: 'usr_demo_1',
+          // tenantId et userId sont derives de la session cote serveur.
           planId: selectedPlan,
           billingCycle: 'monthly',
           paymentMethod,
@@ -106,8 +118,8 @@ export default function SettingsPage() {
       } else {
         addToast('error', data.error || 'Erreur lors du surclassement');
       }
-    } catch (err: any) {
-      addToast('error', err.message || 'Échec du paiement Mobile Money');
+    } catch (err) {
+      addToast('error', err instanceof Error ? err.message : 'Échec du paiement Mobile Money');
     } finally {
       setUpgrading(false);
     }
@@ -476,12 +488,21 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">Numéro Mobile Money *</label>
+                <label htmlFor="settings-momo-phone" className="block text-xs font-semibold text-gray-700 mb-1">Numéro Mobile Money *</label>
                 <input
-                  type="text"
+                  id="settings-momo-phone"
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
                   value={payPhone}
-                  onChange={e => setPayPhone(e.target.value)}
-                  placeholder="Ex : 0707070707"
+                  onChange={e => {
+                    const next = e.target.value;
+                    setPayPhone(next);
+                    // Le prefixe designe l'operateur : evite un choix manuel errone.
+                    const operator = detectOperator(next, 'CI');
+                    if (operator) setPaymentMethod(operator);
+                  }}
+                  placeholder="Ex : 07 07 07 07 07"
                   className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm font-mono"
                 />
               </div>

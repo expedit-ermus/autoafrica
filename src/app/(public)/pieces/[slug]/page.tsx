@@ -86,7 +86,7 @@ export default async function PieceDetailPage({ params }: Props) {
         ]}
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         {/* Fil d'ariane */}
         <nav className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-6" aria-label="Fil d'Ariane">
           <Link href="/" className="hover:text-emerald-600">Accueil</Link>
@@ -211,7 +211,7 @@ export default async function PieceDetailPage({ params }: Props) {
             })}
           </div>
         </div>
-      </main>
+      </div>
 
     </div>
   );

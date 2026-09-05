@@ -69,7 +69,7 @@ export default function LandingPage() {
             <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] mb-6 font-heading">
               {locale === 'fr' ? (
                 <>
-                  Trouvez vos pièces auto <span className="bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-400 bg-clip-text text-transparent drop-shadow-sm">neuves & d'occasion contrôlée</span> à Abidjan
+                  Trouvez vos pièces auto <span className="bg-gradient-to-r from-orange-400 via-amber-300 to-yellow-400 bg-clip-text text-transparent drop-shadow-sm">neuves & d’occasion contrôlée</span> à Abidjan
                 </>
               ) : (
                 <>

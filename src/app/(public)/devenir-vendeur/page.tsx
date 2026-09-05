@@ -37,7 +37,7 @@ export default function DevenirVendeurPage() {
       <WebsiteStructuredData />
       <FAQStructuredData items={faqSeller} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {/* Hero Section Vendeur */}
         <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950 rounded-3xl p-6 sm:p-10 md:p-14 text-white shadow-xl mb-12 border border-slate-800">
           <span className="text-xs font-bold uppercase tracking-wider bg-orange-500/20 text-orange-400 px-3.5 py-1.5 rounded-full border border-orange-500/30">
@@ -233,7 +233,7 @@ export default function DevenirVendeurPage() {
             Créer un compte Vendeur Gratuit
           </Link>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

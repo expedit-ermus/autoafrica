@@ -2,6 +2,10 @@
 
 import { useState } from 'react'
 import { DEFAULT_GARAGES, type CertifiedGarage } from '@/lib/garages'
+import type { repairEstimatorService } from '@/modules/repair-estimator/repair-estimator.service'
+
+/** Forme exacte renvoyee par le service de devis. */
+type RepairLeadResult = Awaited<ReturnType<typeof repairEstimatorService.captureRepairLead>>
 export { DEFAULT_GARAGES, type CertifiedGarage }
 
 export interface RepairOption {
@@ -98,7 +102,7 @@ export function RepairEstimator() {
   const [locationCity, setLocationCity] = useState('Abidjan')
   const [paymentMethod, setPaymentMethod] = useState('Paiement sécurisé sur place / Mobile Money')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [confirmationData, setConfirmationData] = useState<any>(null)
+  const [confirmationData, setConfirmationData] = useState<RepairLeadResult | null>(null)
   const [errorMessage, setErrorMessage] = useState('')
 
   const activeOption = DEFAULT_OPTIONS.find(o => o.id === selectedIssueId) || DEFAULT_OPTIONS[0]
@@ -141,8 +145,8 @@ export function RepairEstimator() {
       }
 
       setConfirmationData(json.data)
-    } catch (err: any) {
-      setErrorMessage(err.message || 'Problème de connexion. Veuillez réespérer.')
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : 'Problème de connexion. Veuillez réessayer.')
     } finally {
       setIsSubmitting(false)
     }
@@ -409,7 +413,7 @@ export function RepairEstimator() {
                   <label className="block text-xs font-bold text-slate-300 mb-1">
                     Nom & Prénom <span className="text-rose-400">*</span>
                   </label>
-                  <input
+                  <input aria-label="ex. Kouassi Jean"
                     type="text"
                     required
                     placeholder="ex. Kouassi Jean"
@@ -423,8 +427,8 @@ export function RepairEstimator() {
                   <label className="block text-xs font-bold text-slate-300 mb-1">
                     Téléphone WhatsApp / Mobile Money <span className="text-rose-400">*</span>
                   </label>
-                  <input
-                    type="tel"
+                  <input aria-label="ex. +225 07 07 07 07 07"
+                    type="tel" inputMode="tel" autoComplete="tel"
                     required
                     placeholder="ex. +225 07 07 07 07 07"
                     value={customerPhone}
@@ -437,7 +441,7 @@ export function RepairEstimator() {
                   <label className="block text-xs font-bold text-slate-300 mb-1">
                     Marque & Modèle du Véhicule <span className="text-rose-400">*</span>
                   </label>
-                  <input
+                  <input aria-label="ex. Toyota Corolla 2014 / Peugeot 308"
                     type="text"
                     required
                     placeholder="ex. Toyota Corolla 2014 / Peugeot 308"
@@ -451,7 +455,7 @@ export function RepairEstimator() {
                   <label className="block text-xs font-bold text-slate-300 mb-1">
                     Ville ou Quartier (ex. Yopougon, Abidjan)
                   </label>
-                  <input
+                  <input aria-label="Ville ou commune"
                     type="text"
                     placeholder="Abidjan"
                     value={locationCity}

@@ -1,7 +1,6 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
 import { track } from '@/lib/tracking';
@@ -9,7 +8,6 @@ import { track } from '@/lib/tracking';
 export default function LoginPage() {
   const { t, setUser } = useApp();
   const { addToast } = useToast();
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -201,7 +199,7 @@ export default function LoginPage() {
                   </div>
                   <input
                     id="login-email"
-                    type="email" value={email}
+                    type="email" inputMode="email" value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     onBlur={() => setEmailTouched(true)}
                     autoComplete="email"

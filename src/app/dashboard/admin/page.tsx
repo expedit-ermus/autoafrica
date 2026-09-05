@@ -2,7 +2,6 @@
 import { useState, useEffect } from 'react';
 import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
-import { useApp } from '@/contexts/AppContext';
 
 interface SellerProfile {
   businessName?: string | null;
@@ -43,8 +42,6 @@ interface Tenant {
 }
 
 export default function AdminPage() {
-  const { locale } = useApp();
-  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
   const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'tenants' | 'settings'>('overview');
   const [users, setUsers] = useState<User[]>([]);
   const [tenants, setTenants] = useState<Tenant[]>([]);
@@ -300,7 +297,7 @@ export default function AdminPage() {
               {/* Recent Activity */}
               <div className="grid lg:grid-cols-2 gap-5">
                 <div className="card-modern p-6">
-                  <h3 className="font-bold text-gray-900 text-sm mb-4">Derniers utilisateurs</h3>
+                  <h2 className="font-bold text-gray-900 text-sm mb-4">Derniers utilisateurs</h2>
                   <div className="space-y-3">
                     {users.slice(0, 5).map((u) => (
                       <div key={u.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors">
@@ -320,7 +317,7 @@ export default function AdminPage() {
                 </div>
 
                 <div className="card-modern p-6">
-                  <h3 className="font-bold text-gray-900 text-sm mb-4">Derniers tenants</h3>
+                  <h2 className="font-bold text-gray-900 text-sm mb-4">Derniers tenants</h2>
                   <div className="space-y-3">
                     {tenants.slice(0, 5).map((t) => (
                       <div key={t.id} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition-colors">
@@ -349,7 +346,7 @@ export default function AdminPage() {
                 <div className="p-5 border-b border-gray-100">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-bold text-gray-900">Gestion des utilisateurs</h3>
+                      <h2 className="font-bold text-gray-900">Gestion des utilisateurs</h2>
                       <p className="text-sm text-gray-500 mt-0.5">{users.length} utilisateurs au total</p>
                     </div>
                     {stats.pendingUsers > 0 && (
@@ -471,7 +468,7 @@ export default function AdminPage() {
                 <div className="p-5 border-b border-gray-100">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="font-bold text-gray-900">Gestion des tenants</h3>
+                      <h2 className="font-bold text-gray-900">Gestion des tenants</h2>
                       <p className="text-sm text-gray-500 mt-0.5">{tenants.length} tenants au total</p>
                     </div>
                   </div>
@@ -540,7 +537,7 @@ export default function AdminPage() {
           {activeTab === 'settings' && (
             <div className="space-y-6" style={{ animation: 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both' }}>
               <div className="card-modern p-6">
-                <h3 className="font-bold text-gray-900 mb-4">Paramètres de la plateforme</h3>
+                <h2 className="font-bold text-gray-900 mb-4">Paramètres de la plateforme</h2>
                 <div className="space-y-4">
                   {[
                     { label: 'Mode Maintenance', desc: "Désactiver l'accès public au site", active: false },
@@ -561,7 +558,7 @@ export default function AdminPage() {
               </div>
 
               <div className="card-modern p-6">
-                <h3 className="font-bold text-gray-900 mb-4">Informations système</h3>
+                <h2 className="font-bold text-gray-900 mb-4">Informations système</h2>
                 <div className="grid grid-cols-2 gap-4">
                   {[
                     { label: 'Version', value: '1.0.0' },
@@ -590,7 +587,7 @@ export default function AdminPage() {
                       🔍
                     </div>
                     <div>
-                      <h3 className="font-bold text-gray-900 text-base">Dossier KYC Vendeur</h3>
+                      <h2 className="font-bold text-gray-900 text-base">Dossier KYC Vendeur</h2>
                       <p className="text-xs text-gray-400">Vérification des coordonnées entreprise</p>
                     </div>
                   </div>

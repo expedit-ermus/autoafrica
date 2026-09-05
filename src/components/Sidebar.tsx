@@ -144,7 +144,6 @@ export default function Sidebar() {
   const tabItems = menuItems.filter((item) => mobileTabKeys.includes(item.key));
   const moreItems = menuItems.filter((item) => !mobileTabKeys.includes(item.key));
   const activeMoreItem = moreItems.find((item) => isActive(item.href));
-  const isPendingSeller = user?.role === 'SELLER' && user?.status === 'PENDING_VERIFICATION';
 
 
   const handleDesktopEnter = () => { if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current); setExpanded(true); };

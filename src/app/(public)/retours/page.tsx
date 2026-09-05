@@ -312,7 +312,7 @@ export default function RetoursPage() {
             {/* Connecting line for desktop */}
             <div className="hidden lg:block absolute top-1/2 left-0 w-full h-0.5 bg-slate-200 dark:bg-slate-800 -translate-y-1/2 z-0"></div>
 
-            {processSteps.map((step, idx) => (
+            {processSteps.map((step) => (
               <div key={step.id} className="relative z-10 flex flex-col items-center text-center group">
                 <div className="w-20 h-20 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 shadow-xl shadow-slate-200/20 dark:shadow-none flex items-center justify-center mb-6 relative group-hover:-translate-y-2 transition-transform duration-300">
                   <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-slate-900 text-white font-bold flex items-center justify-center border-4 border-white dark:border-slate-950">

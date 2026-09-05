@@ -64,7 +64,7 @@ export default function WhatsAppIntegration() {
       <div className="bg-[#F0F0F0] rounded-b-2xl p-3 flex items-center gap-2">
         <input aria-label="Tapez un message" value={input} onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-          className="flex-1 bg-white rounded-full px-4 py-2 text-base sm:text-sm outline-none"
+          className="flex-1 bg-white rounded-full px-4 py-2 text-base sm:text-sm outline-none focus-visible:ring-2 focus-visible:ring-green-600"
           placeholder="Tapez un message..." />
         <button onClick={handleSend} className="w-10 h-10 rounded-full bg-[#075E54] flex items-center justify-center text-white text-lg" aria-label="Envoyer">
           ➤

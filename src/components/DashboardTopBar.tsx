@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { useRouter } from 'next/navigation';
 import { track } from '@/lib/tracking';
@@ -18,15 +18,6 @@ interface SearchProduct {
   title: string;
   price: number;
   brand?: { name?: string } | null;
-}
-
-interface ApiNotification {
-  id: string;
-  title: string;
-  message: string;
-  type?: string;
-  read?: boolean;
-  createdAt?: string;
 }
 
 interface PendingOrder {
@@ -49,7 +40,8 @@ const formatCFA = (n: number) => new Intl.NumberFormat('fr-FR').format(n);
 
 export default function DashboardTopBar() {
   const { locale, setLocale, sidebarOpen, setSidebarOpen, user } = useApp();
-  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
+  // Memorise : l'effet de notifications en depend, la dependance doit etre stable.
+  const L = useCallback((fr: string, en: string) => (locale === 'fr' ? fr : en), [locale]);
   const router = useRouter();
   const [showNotif, setShowNotif] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -143,7 +135,7 @@ export default function DashboardTopBar() {
     return () => {
       cancelled = true;
     };
-  }, [locale]);
+  }, [L]);
 
   const handleMarkAllRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
@@ -583,7 +575,7 @@ export default function DashboardTopBar() {
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
-              <input
+              <input aria-label="Rechercher pièces, commandes"
                 ref={mobileSearchInputRef}
                 type="text"
                 value={search}

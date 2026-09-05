@@ -366,7 +366,7 @@ export default function FinancePage() {
                 <div className="glass-card animate-fade-in">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-6 pb-4 border-b border-gray-100">
                     <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                      <input
+                      <input aria-label="Rechercher facture"
                         value={invSearch}
                         onChange={e => setInvSearch(e.target.value)}
                         placeholder="Rechercher facture..."
@@ -482,7 +482,7 @@ export default function FinancePage() {
                 <div className="glass-card animate-fade-in">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-6 pb-4 border-b border-gray-100">
                     <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                      <input
+                      <input aria-label="Rechercher compte"
                         value={accSearch}
                         onChange={e => setAccSearch(e.target.value)}
                         placeholder="Rechercher compte..."
@@ -570,7 +570,7 @@ export default function FinancePage() {
                 <div className="glass-card animate-fade-in">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-6 pb-4 border-b border-gray-100">
                     <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                      <input
+                      <input aria-label="Rechercher écriture"
                         value={txSearch}
                         onChange={e => setTxSearch(e.target.value)}
                         placeholder="Rechercher écriture..."
@@ -665,8 +665,8 @@ export default function FinancePage() {
           <Modal isOpen={showAddInvoice} onClose={() => setShowAddInvoice(false)} title="Nouvelle facture">
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Vendeur (ID)</label>
-                <input
+                <label htmlFor="vendeur-id" className="block text-xs font-semibold text-gray-600 mb-1.5">Vendeur (ID)</label>
+                <input id="vendeur-id"
                   value={invForm.sellerId}
                   onChange={e => setInvForm(f => ({ ...f, sellerId: e.target.value }))}
                   placeholder="ID utilisateur vendeur"
@@ -674,8 +674,8 @@ export default function FinancePage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Acheteur (ID)</label>
-                <input
+                <label htmlFor="acheteur-id" className="block text-xs font-semibold text-gray-600 mb-1.5">Acheteur (ID)</label>
+                <input id="acheteur-id"
                   value={invForm.buyerId}
                   onChange={e => setInvForm(f => ({ ...f, buyerId: e.target.value }))}
                   placeholder="ID utilisateur acheteur"
@@ -684,9 +684,9 @@ export default function FinancePage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Sous-total (FCFA)</label>
-                  <input
-                    type="number"
+                  <label htmlFor="sous-total-fcfa" className="block text-xs font-semibold text-gray-600 mb-1.5">Sous-total (FCFA)</label>
+                  <input id="sous-total-fcfa"
+                    type="number" inputMode="numeric"
                     value={invForm.subtotal}
                     onChange={e => setInvForm(f => ({ ...f, subtotal: e.target.value }))}
                     placeholder="10000"
@@ -694,9 +694,9 @@ export default function FinancePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">TVA (%)</label>
-                  <input
-                    type="number"
+                  <label htmlFor="tva" className="block text-xs font-semibold text-gray-600 mb-1.5">TVA (%)</label>
+                  <input id="tva"
+                    type="number" inputMode="numeric"
                     value={invForm.taxRate}
                     onChange={e => setInvForm(f => ({ ...f, taxRate: e.target.value }))}
                     placeholder="18"
@@ -705,8 +705,8 @@ export default function FinancePage() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Échéance</label>
-                <input
+                <label htmlFor="echeance" className="block text-xs font-semibold text-gray-600 mb-1.5">Échéance</label>
+                <input id="echeance"
                   type="date"
                   value={invForm.dueDate}
                   onChange={e => setInvForm(f => ({ ...f, dueDate: e.target.value }))}
@@ -714,8 +714,8 @@ export default function FinancePage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Notes</label>
-                <textarea
+                <label htmlFor="notes" className="block text-xs font-semibold text-gray-600 mb-1.5">Notes</label>
+                <textarea id="notes"
                   value={invForm.notes}
                   onChange={e => setInvForm(f => ({ ...f, notes: e.target.value }))}
                   placeholder="Notes internes..."
@@ -734,8 +734,8 @@ export default function FinancePage() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Code</label>
-                  <input
+                  <label htmlFor="code" className="block text-xs font-semibold text-gray-600 mb-1.5">Code</label>
+                  <input id="code"
                     value={accForm.code}
                     onChange={e => setAccForm(f => ({ ...f, code: e.target.value }))}
                     placeholder="A1 / 411..."
@@ -743,8 +743,8 @@ export default function FinancePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Type</label>
-                  <select
+                  <label htmlFor="type" className="block text-xs font-semibold text-gray-600 mb-1.5">Type</label>
+                  <select id="type"
                     value={accForm.type}
                     onChange={e => setAccForm(f => ({ ...f, type: e.target.value }))}
                     className="input-field !text-sm"
@@ -756,8 +756,8 @@ export default function FinancePage() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Nom</label>
-                <input
+                <label htmlFor="nom" className="block text-xs font-semibold text-gray-600 mb-1.5">Nom</label>
+                <input id="nom"
                   value={accForm.name}
                   onChange={e => setAccForm(f => ({ ...f, name: e.target.value }))}
                   placeholder="Caisse, Banque, Ventes..."
@@ -766,8 +766,8 @@ export default function FinancePage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Compte parent (ID)</label>
-                  <input
+                  <label htmlFor="compte-parent-id" className="block text-xs font-semibold text-gray-600 mb-1.5">Compte parent (ID)</label>
+                  <input id="compte-parent-id"
                     value={accForm.parentId}
                     onChange={e => setAccForm(f => ({ ...f, parentId: e.target.value }))}
                     placeholder="Optionnel"
@@ -775,9 +775,9 @@ export default function FinancePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Solde initial</label>
-                  <input
-                    type="number"
+                  <label htmlFor="solde-initial" className="block text-xs font-semibold text-gray-600 mb-1.5">Solde initial</label>
+                  <input id="solde-initial"
+                    type="number" inputMode="numeric"
                     value={accForm.balance}
                     onChange={e => setAccForm(f => ({ ...f, balance: e.target.value }))}
                     placeholder="0"
@@ -795,8 +795,8 @@ export default function FinancePage() {
           <Modal isOpen={showAddTxn} onClose={() => setShowAddTxn(false)} title="Nouvelle écriture comptable">
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Compte</label>
-                <select
+                <label htmlFor="compte" className="block text-xs font-semibold text-gray-600 mb-1.5">Compte</label>
+                <select id="compte"
                   value={txForm.accountId}
                   onChange={e => setTxForm(f => ({ ...f, accountId: e.target.value }))}
                   className="input-field !text-sm"
@@ -809,8 +809,8 @@ export default function FinancePage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Type</label>
-                  <select
+                  <label htmlFor="type-2" className="block text-xs font-semibold text-gray-600 mb-1.5">Type</label>
+                  <select id="type-2"
                     value={txForm.type}
                     onChange={e => setTxForm(f => ({ ...f, type: e.target.value }))}
                     className="input-field !text-sm"
@@ -820,9 +820,9 @@ export default function FinancePage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Montant (FCFA)</label>
-                  <input
-                    type="number"
+                  <label htmlFor="montant-fcfa" className="block text-xs font-semibold text-gray-600 mb-1.5">Montant (FCFA)</label>
+                  <input id="montant-fcfa"
+                    type="number" inputMode="numeric"
                     value={txForm.amount}
                     onChange={e => setTxForm(f => ({ ...f, amount: e.target.value }))}
                     placeholder="0"
@@ -831,8 +831,8 @@ export default function FinancePage() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Description</label>
-                <input
+                <label htmlFor="description" className="block text-xs font-semibold text-gray-600 mb-1.5">Description</label>
+                <input id="description"
                   value={txForm.description}
                   onChange={e => setTxForm(f => ({ ...f, description: e.target.value }))}
                   placeholder="Description de l'écriture"
@@ -841,8 +841,8 @@ export default function FinancePage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Référence</label>
-                  <input
+                  <label htmlFor="reference" className="block text-xs font-semibold text-gray-600 mb-1.5">Référence</label>
+                  <input id="reference"
                     value={txForm.reference}
                     onChange={e => setTxForm(f => ({ ...f, reference: e.target.value }))}
                     placeholder="N° facture / PO"
@@ -850,8 +850,8 @@ export default function FinancePage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Date</label>
-                  <input
+                  <label htmlFor="date" className="block text-xs font-semibold text-gray-600 mb-1.5">Date</label>
+                  <input id="date"
                     type="date"
                     value={txForm.date}
                     onChange={e => setTxForm(f => ({ ...f, date: e.target.value }))}
@@ -874,8 +874,8 @@ export default function FinancePage() {
                   <span className="text-sm font-bold text-gray-900">{formatCFA(showStatus.totalAmount)} {showStatus.currency}</span>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Statut</label>
-                  <select
+                  <label htmlFor="statut" className="block text-xs font-semibold text-gray-600 mb-1.5">Statut</label>
+                  <select id="statut"
                     value={statusForm}
                     onChange={e => setStatusForm(e.target.value)}
                     className="input-field !text-sm"
