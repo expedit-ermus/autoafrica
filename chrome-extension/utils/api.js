@@ -1,4 +1,3 @@
-import { formatFCFA } from './formatter.js';
 
 // Pre-seeded high quality catalog database for instant offline/online search
 const LOCAL_CATALOG = [

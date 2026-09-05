@@ -17,6 +17,13 @@ const eslintConfig = defineConfig([
     "playwright-report/**",
     "test-results/**",
   ]),
+  {
+    // Scripts Node/CommonJS de l'extension Chrome : require() y est légitime.
+    files: ["chrome-extension/**/*.js"],
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;

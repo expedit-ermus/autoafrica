@@ -13,7 +13,6 @@
  * ──────────────────────────────────────────────────────────
  */
 
-// @ts-ignore – seed script not in Next.js module graph; resolve via bundler
 import { PrismaClient } from '../src/generated/prisma/client'
 
 import bcrypt from 'bcryptjs'
