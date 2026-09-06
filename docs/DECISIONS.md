@@ -1045,3 +1045,32 @@ Ces points sortent du perimetre des tests et demandent un arbitrage produit :
 `21-PERFORMANCE.md` fixe un budget de 200 Ko de JS ; l'ajout du formulaire de publication n'a pas ete mesure contre ce budget. Aucun outil de mesure n'est cable dans le projet.
 
 **Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 389/389 tests unitaires, build de production reussi, 22/22 tests E2E, aucune erreur serveur dans les journaux.
+
+---
+
+## D56 : Mesure des budgets de bundle
+
+**Date** : 06/09/2026 — dernier point laisse ouvert par D55 : `21-PERFORMANCE.md` fixe des budgets de bundle qu'aucun outil ne verifiait.
+
+**Contexte** : le build Turbopack de Next 16 n'imprime plus le tableau des tailles par route. Les budgets etaient donc declaratifs depuis la migration, sans aucune mesure.
+
+**Decision** : mesurer sur la sortie de build plutot que d'ajouter une dependance d'analyse. `scripts/check-bundle-budget.mjs` (Node seul, `zlib` natif) lit les balises `<script>` et `<link rel=stylesheet>` de chaque page prerendue de `.next/server/app`, gzip les fichiers referencies, deduplique par route et compare aux trois budgets. Expose via `npm run check:budget`, qui sort en erreur si un budget est depasse.
+
+**Precision de methode determinante** : une premiere mesure donnait 51 routes sur 54 hors budget, avec un plancher de 198,5 Ko pour une simple page 404. Le bundle de polyfills que Next sert en `noModule` (38,7 Ko gzip) etait compte alors qu'aucun navigateur moderne ne le telecharge. Une fois exclu, tous les budgets sont respectes. Compter ce chunk aurait conduit a un chantier d'optimisation entierement injustifie.
+
+**Etat mesure** :
+
+| Indicateur | Valeur | Budget |
+|------------|--------|--------|
+| Socle commun | 142,3 Ko | — |
+| JS total, route la plus lourde (`/dashboard/crm`) | 194,0 Ko | < 200 Ko |
+| JS propre a la page, maximum (`/dashboard/crm`) | 51,7 Ko | < 80 Ko |
+| CSS | 32,2 Ko | < 50 Ko |
+
+`/dashboard/inventory`, ou D55 a ajoute le formulaire de publication, se situe a 181,5 Ko : l'ajout n'approche pas le budget.
+
+**Point de vigilance** : la marge sur le JS total est de 6 Ko sur la route la plus lourde. Le socle commun consommant 142,3 Ko des 200 Ko autorises, toute dependance ajoutee au socle sortira plusieurs routes du budget d'un coup. Lancer `npm run check:budget` apres tout ajout de dependance cliente.
+
+**Limites assumees** : seules les routes prerendues produisent un HTML mesurable ; les routes dynamiques ne sont pas couvertes mais partagent le meme socle. La mesure porte sur gzip, alors qu'un CDN sert generalement du brotli — les tailles reelles transmises sont donc legerement inferieures.
+
+**Impact** : `scripts/check-bundle-budget.mjs`, `package.json`, `docs/21-PERFORMANCE.md`.
