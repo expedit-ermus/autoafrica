@@ -65,8 +65,9 @@ Depuis D55, les quatre parcours sont pilotes entierement par l interface :
 - **CRM** : la conversion d un lead cree un client, verifie dans l onglet
   Contacts.
 
-Un scenario verifie en outre que `/dashboard/inventory` s affiche sans erreur
-client : cet ecran tombait entierement dans le filet d erreur global.
+`tests-e2e/dashboard-smoke.spec.ts` charge en outre les vingt ecrans du
+dashboard et verifie, pour chacun, la presence d un h1 visible, l absence
+d erreur client et l absence du filet d erreur global (cf. D58).
 
 ## Tests de non-regression
 

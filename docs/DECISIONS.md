@@ -1096,3 +1096,36 @@ Ces points sortent du perimetre des tests et demandent un arbitrage produit :
 **Point non traite** : `deploy` ne depend que de `build` et porte `continue-on-error: true`. Le deploiement en production part donc meme si les tests unitaires ou E2E echouent. Faire dependre `deploy` de `unit-tests` et `e2e` releve d'une decision de politique de livraison, laissee au proprietaire du projet.
 
 **Impact** : `.github/workflows/ci-cd.yml`.
+
+---
+
+## D58 : Chaine d'integration remise au vert et audit de rendu du dashboard
+
+**Date** : 06/09/2026 — la premiere execution reelle de la CI, declenchee par la pull request des travaux D53 a D57, a echoue sur `build` et `unit-tests`.
+
+### La CI etait rouge en continu, avant ces travaux
+
+L'historique des executions montre **15 executions consecutives en echec sur `main`**, du 01/09 au 05/09, soit toutes celles anterieures a cette branche. La chaine n'a donc jamais ete verte : les echecs n'etaient pas signales parce que personne ne consultait l'onglet Actions, et parce que le job `deploy` ne dependait que de `build`.
+
+**Cause racine unique** : aucun job ne creait le schema de base de donnees.
+
+- `build` : `/catalogue` interroge le catalogue au prerendu. Sans schema, le build s'arretait sur `Error occurred prerendering page "/catalogue" — SQLITE_ERROR: no such table: main.Product`.
+- `unit-tests` : `src/modules/audit/audit.service.test.ts` s'execute contre une vraie base, contrairement aux autres tests qui simulent Prisma. Sans schema, deux tests echouaient sur `no such table: main.User`.
+
+**Correction** : `npx prisma db push` ajoute aux jobs `build` et `unit-tests`, comme deja fait pour `e2e` en D57. Une base vide suffit : verifie localement en rejouant `npm run build` puis `npx vitest run` contre une base fraichement creee sans donnees — build reussi et 389/389 tests au vert.
+
+### Deploiement conditionne aux tests
+
+`deploy` ne dependait que de `build` : la production partait meme si les tests unitaires ou les flux critiques echouaient. Il depend desormais de `build`, `unit-tests` et `e2e`. `continue-on-error` est conserve pour qu'une indisponibilite de Vercel ne fasse pas echouer toute la chaine, mais il ne masque plus un deploiement lance sur du code casse, puisque les tests sont passes avant.
+
+### Audit de rendu du dashboard
+
+Le defaut qui rendait `/dashboard/inventory` inutilisable (deballage errone des reponses paginees, cf. D55) appartenait a une classe de pannes qu'aucune verification ne couvrait. L'analyse statique des vingt ecrans n'a revele aucun autre deballage errone, mais elle ne prouve rien : le defaut initial n'etait sorti qu'en chargeant la page. Les vingt ecrans ont donc ete charges pour de vrai.
+
+Resultat : aucun autre plantage au rendu, et un defaut d'accessibilite trouve — **`/dashboard/cart` n'exposait aucun `h1` dans son etat vide**, le titre « Votre panier est vide » etant un `h2` et le `h1` « Mon Panier » n'existant que dans la branche non vide. Meme classe de defaut que `/estimation-devis` en D53. Le titre de l'etat vide est promu en `h1`.
+
+La sonde est conservee comme test de non-regression : `tests-e2e/dashboard-smoke.spec.ts` charge les vingt ecrans, verifie la presence d'un `h1` visible, l'absence d'erreur client et l'absence du filet d'erreur global. Il collecte tous les ecrans en panne en un seul passage plutot que de s'arreter au premier. La suite E2E passe de 22 a 23 scenarios.
+
+**Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 389/389 tests unitaires, build de production reussi, 23/23 tests E2E.
+
+**Impact** : `.github/workflows/ci-cd.yml`, `src/app/dashboard/cart/page.tsx`, `tests-e2e/dashboard-smoke.spec.ts`.

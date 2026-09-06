@@ -46,6 +46,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx prisma generate
+      # `/catalogue` interroge le catalogue au prerendu : sans schema, le build
+      # s'arrete sur « no such table: main.Product ». Une base vide suffit.
+      - run: npx prisma db push
       - run: npm run build
 
   unit-tests:
@@ -62,6 +65,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx prisma generate
+      # `audit.service.test.ts` s'execute contre une vraie base : sans schema,
+      # ces tests echouaient sur « no such table: main.User ».
+      - run: npx prisma db push
       - run: npx vitest run
 
   # Les tests E2E tournent aussi sur les pull requests : restreints a `main`,
@@ -102,9 +108,14 @@ jobs:
           path: test-results/
           retention-days: 7
 
+  # Le deploiement en production attend les tests : il ne dependait que de
+  # `build`, et partait donc meme si les tests unitaires ou les flux critiques
+  # echouaient. `continue-on-error` est conserve pour que l'indisponibilite de
+  # Vercel ne fasse pas echouer toute la chaine, mais il ne masque plus un
+  # deploiement lance sur du code casse : les tests sont passes avant.
   deploy:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [build, unit-tests, e2e]
     if: github.ref == 'refs/heads/main'
     continue-on-error: true
     steps:

@@ -171,9 +171,11 @@ export default function CartPage() {
               <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
                 🛒
               </div>
-              <h2 className="text-xl font-extrabold text-slate-900 mb-2">
+              {/* Seul titre de la page dans cet etat : il doit etre le h1,
+                  sans quoi l'ecran ne commence par aucun niveau 1. */}
+              <h1 className="text-xl font-extrabold text-slate-900 mb-2">
                 {L('Votre panier est vide', 'Your cart is empty')}
-              </h2>
+              </h1>
               <p className="text-sm text-slate-500 mb-6">
                 {L('Explorez le catalogue pour ajouter des pièces neuves ou d\'occasion contrôlée.', 'Explore the catalog to add new or certified used parts.')}
               </p>
