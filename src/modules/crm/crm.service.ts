@@ -47,7 +47,7 @@ export class CrmService {
     if (filters.country) where.country = filters.country
     if (filters.segment) where.segment = filters.segment
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { name: searchFilter },
         { phone: searchFilter },
@@ -148,7 +148,7 @@ export class CrmService {
     const where: Prisma.LeadWhereInput = {}
     if (filters.status) where.status = filters.status
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { name: searchFilter },
         { phone: searchFilter },

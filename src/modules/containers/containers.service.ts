@@ -37,7 +37,7 @@ export class ContainersService {
     if (filters.originPort) where.originPort = filters.originPort
     if (filters.destinationPort) where.destinationPort = filters.destinationPort
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { containerNumber: searchFilter },
         { vesselName: searchFilter },

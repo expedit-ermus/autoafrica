@@ -46,7 +46,7 @@ Inscription vendeur/acheteur
 | brands | array | oui | API | aucun |
 
 ### SEO
-- Un seul H1 : "Trouvez vos pièces auto neuves & d’occasion contrôlée à Abidjan" (H1 orienté requête, aligné sur le `<title>` de `06-SEO.md` ; la marque reste portée par le `<title>`, le logo et `og:site_name` — cf. D17)
+- Un seul H1 : "Trouvez vos pièces auto neuves & d’occasion contrôlée à Abidjan" (H1 orienté requête, aligné sur le `<title>` de `06-SEO.md` ; la marque reste portée par le `<title>`, le logo et `og:site_name` — cf. D53)
 - Title : "AutoAfrique : Pièces détachées auto & Marketplace Afrique de l'Ouest"
 - Meta description : "Achetez pièces détachées auto neuves et occasion à Abidjan, Côte d'Ivoire. Prix transparents, garantie incluse, paiement Mobile Money, Afrique de l'Ouest."
 - URL canonique : `/`

@@ -37,7 +37,7 @@ export class CustomsRecordsService {
     if (filters.containerId) where.containerId = filters.containerId
     if (filters.broker) where.broker = { contains: filters.broker }
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { declarationNumber: searchFilter },
         { hsCode: searchFilter },

@@ -14,7 +14,7 @@ interface CompatInput {
 }
 
 interface ProductListWhere extends Prisma.ProductWhereInput {
-  model?: { contains: string; mode: 'insensitive' }
+  model?: { contains: string }
 }
 
 interface CreateProductInput {
@@ -52,7 +52,7 @@ export class ProductsService {
     const where: Prisma.ProductWhereInput = { active: true }
     if (filters.brand) where.brand = { name: filters.brand }
     if (filters.model) {
-      const searchFilter = { contains: filters.model, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.model }
       ;(where as ProductListWhere).model = searchFilter
     }
     if (filters.category) where.category = { slug: filters.category }
@@ -66,7 +66,7 @@ export class ProductsService {
       where.price = priceFilter
     }
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { title: searchFilter },
         { reference: searchFilter },

@@ -956,7 +956,7 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 
 ---
 
-## D17 : H1 de la page d’accueil, image d’en-tête des articles et fiabilisation des tests E2E
+## D53 : H1 de la page d’accueil, image d’en-tête des articles et fiabilisation des tests E2E
 
 **Date** : 05/09/2026 — exécution de la chaîne de vérification complète d’`AGENTS.md` (lint, typecheck, tests unitaires, build, E2E). Lint, TypeScript, 389 tests unitaires et le build de production étaient au vert ; la suite Playwright rapportait 5 échecs sur 13.
 
@@ -974,3 +974,42 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 - `/` : l’assertion de marque est remplacée par l’unicité du `h1` et la présence du marqueur géographique, conformément au H1 documenté ci-dessus.
 
 **Écart de couverture signalé (non traité)** : `22-TESTS.md` exige des tests E2E sur 4 flux critiques — inscription, achat avec paiement Mobile Money, gestion produit vendeur et CRM. Les 13 scénarios Playwright existants ne couvrent que le rendu de pages publiques ; aucun de ces 4 flux n’est testé de bout en bout.
+
+---
+
+## D54 : Couverture E2E des 4 flux critiques et defauts bloquants mis au jour
+
+**Date** : 06/09/2026 — mise en oeuvre de l'exigence de `22-TESTS.md` : tests E2E des flux inscription, achat avec paiement Mobile Money, gestion produit vendeur et CRM. La suite Playwright passe de 13 a 21 scenarios (`tests-e2e/critical-flows.spec.ts`, helpers dans `tests-e2e/helpers/session.ts`).
+
+L'ecriture de ces parcours a revele que trois des quatre flux etaient casses en profondeur. Les tests n'ont pas ete adaptes aux defauts : les defauts ont ete corriges.
+
+### Defauts applicatifs corriges
+
+1. **Toute recherche renvoyait 500.** Les services passaient `mode: 'insensitive'` a Prisma, argument que le connecteur SQLite/libSQL n'accepte pas (`Unknown argument 'mode'`). Chaque requete filtree par `search` echouait : produits, CRM, inventaire, finance, livraison, fournisseurs, bons de commande, notifications, conteneurs, douanes, vehicules — 26 occurrences dans 11 modules. La production tournant sur Turso (libSQL), le defaut n'etait pas limite au poste de developpement. `mode` est supprime : sous SQLite, `contains` (LIKE) est deja insensible a la casse pour l'ASCII. Le test unitaire `suppliers.service.test.ts` qui figeait la forme de requete rejetee par la base est aligne.
+
+2. **L'inscription n'ouvrait pas de session.** `POST /api/v1/auth/register` generait bien un jeton mais, contrairement a `POST /api/v1/auth/login`, ne posait jamais le cookie `token`. Le client affichait « Compte cree avec succes » puis poussait vers `/dashboard`, ou le middleware, ne trouvant pas de cookie, renvoyait le nouvel inscrit vers `/auth/login`. La route pose desormais le meme cookie que la connexion (httpOnly, sameSite lax, 24 h, aligne sur la duree du JWT).
+
+3. **Le paiement confirmait des commandes inexistantes.** `processPayment` envoyait une requete par article au format `{ productId, quantity }`, alors que `POST /api/v1/orders` attend `{ items: [...] }` : le serveur echouait en 500 (`e.items is not iterable`). La reponse n'etant jamais verifiee — `fetch` ne rejette pas sur un statut d'erreur — le `catch` ne se declenchait pas : le panier etait vide, « Paiement Sequestre valide avec succes » s'affichait et l'acheteur etait redirige vers une liste de commandes vide. Le panier envoie desormais une commande unique portant toutes les lignes (l'API calcule sous-total et taxe sur l'ensemble) et leve si la reponse n'est pas `ok`, laissant le panier intact et affichant l'erreur.
+
+### Accessibilite
+
+- Le `<select>` de statut d'un lead (`/dashboard/crm`) n'avait aucun nom accessible : ajout d'un `aria-label` nommant le lead concerne.
+- Le champ de code PIN du paiement Mobile Money portait `aria-label="••••"` — un lecteur d'ecran annoncait quatre puces. Remplace par « Code PIN Mobile Money ».
+
+### Environnement de test
+
+`playwright.config.ts` fournit desormais explicitement `DATABASE_URL` et `JWT_SECRET` au serveur de test (surchargeables via `E2E_DATABASE_URL` / `E2E_JWT_SECRET`). Un `.env.production.local` issu de `vercel env pull` contient des valeurs vides qui, en mode production, ecrasent le secret reel et cassent l'authentification sur tout `next start` local. Le serveur de test ne depend plus de l'ordre de precedence des fichiers `.env`.
+
+### Constats signales, non traites
+
+Ces points sortent du perimetre des tests et demandent un arbitrage produit :
+
+- **Aucune interface de creation de produit cote vendeur.** `POST /api/v1/products` existe et fonctionne, mais aucun ecran ne l'appelle : `/dashboard/inventory` ne gere que lignes de stock, entrepots et transferts. Le flux « Creer produit / formulaire / upload images / publier » de `22-TESTS.md` est donc couvert par l'API, pas par l'interface.
+- **La conversion d'un lead ne cree pas de client.** `handleUpdateLeadStatus` ne fait que passer le statut a `converted` ; l'etape « Voir dans liste clients » de `22-TESTS.md` n'a pas d'implementation.
+- **`/catalogue` est prerendu statiquement sans revalidation.** Une piece publiee apres le build n'apparait jamais au catalogue public. Passer la page en ISR ou en rendu dynamique a un cout mesure par `21-PERFORMANCE.md` : decision a prendre.
+- **`Product.slug` n'est utilise par aucun lien.** La colonne est generee a la creation, mais `/pieces/[slug]` resout par identifiant et tous les liens de l'application pointent vers `/pieces/{id}`.
+- **`ProductCard` affiche un faux succes.** Son bouton « Ajouter au panier » declenche un toast « Piece ajoutee au panier ! » sans rien ecrire dans le panier : seuls `/dashboard/marketplace` et `PieceDetailCTA` alimentent reellement `localStorage`.
+- **Deux scripts de seed divergents.** `npm run db:seed` pointe vers `prisma/seed.mjs` (comptes `@example.com`, mot de passe `password123`) alors que la base de developpement a ete peuplee par `prisma/seed.ts` (comptes `@autoafrique.com`, mot de passe `Password123!`). Les tests utilisent les identifiants de `seed.ts`, seuls presents en base.
+- **La base de developpement ne contient aucun produit de catalogue.** Les scenarios d'achat et de publication creent donc leur propre piece plutot que de dependre d'un etat prealable.
+
+**Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 389/389 tests unitaires, build de production reussi, 21/21 tests E2E Playwright sur deux executions consecutives, aucune erreur serveur dans les journaux.

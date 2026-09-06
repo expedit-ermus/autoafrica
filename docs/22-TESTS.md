@@ -50,6 +50,23 @@
 3. Convertir en client
 4. Voir dans liste clients
 
+## Couverture des flux critiques
+
+Les quatre flux ci-dessus sont couverts par `tests-e2e/critical-flows.spec.ts`
+(helpers de session dans `tests-e2e/helpers/session.ts`). Les scenarios creent
+leurs propres donnees : la base de developpement ne garantit aucun catalogue ni
+compte prealable.
+
+Deux etapes ne sont pas couvertes par l interface parce qu elles n y existent
+pas encore (cf. D54) :
+
+- **Gestion produit** : aucun ecran vendeur n appelle `POST /api/v1/products` ;
+  la publication est verifiee au niveau de l API, puis la visibilite de la piece
+  est controlee sur sa fiche publique et via la recherche du catalogue.
+- **CRM** : la conversion d un lead se limite au passage du statut a
+  `converted` ; aucun client n est cree, l etape « Voir dans liste clients »
+  reste sans implementation.
+
 ## Tests de non-regression
 
 ### Pages
