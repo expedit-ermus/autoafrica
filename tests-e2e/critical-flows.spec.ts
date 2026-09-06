@@ -149,43 +149,53 @@ test.describe('Flux critique : achat et paiement Mobile Money', () => {
 // ---------------------------------------------------------------------------
 
 test.describe('Flux critique : gestion produit vendeur', () => {
+  test('l ecran d inventaire s affiche sans tomber dans le filet d erreur', async ({ page }) => {
+    // Garde-fou : les listes paginees mal deballees faisaient lever une
+    // TypeError au rendu et l ecran entier etait remplace par « Reessayer ».
+    const clientErrors: string[] = [];
+    page.on('pageerror', (error) => clientErrors.push(error.message));
+
+    await login(page, SEED_SELLER_EMAIL);
+    await page.goto('/dashboard/inventory');
+
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(/Inventaire/i);
+    await expect(page.getByRole('button', { name: /Publier une pièce/i })).toBeVisible();
+    expect(clientErrors).toEqual([]);
+  });
+
   test('un vendeur publie une piece qui devient visible au catalogue', async ({ page }) => {
     await login(page, SEED_SELLER_EMAIL);
 
     const reference = `E2E-${uniqueSuffix().toUpperCase()}`;
     const title = `Plaquettes de frein avant ${reference}`;
 
-    // Aucune interface de creation de produit n'existe cote vendeur : le flux
-    // passe par l'API, seule voie de publication actuellement implementee.
-    const created = await page.request.post('/api/v1/products', {
-      data: {
-        title,
-        description: 'Jeu de plaquettes de frein avant, piece de test E2E.',
-        reference,
-        brand: 'Toyota',
-        price: 25000,
-        stock: 4,
-        condition: 'NEW',
-      },
-    });
-    expect(created.status()).toBe(201);
-    const payload = await created.json();
-    const productId: string = payload.data.id;
-    expect(productId).toBeTruthy();
+    // Publication depuis l ecran d inventaire (R006), qui heberge la creation
+    // de piece faute de route dediee dans 02-ROUTES.md.
+    await page.goto('/dashboard/inventory');
+    await page.getByRole('button', { name: /Publier une pièce/i }).click();
 
-    // La piece publiee doit etre servie par sa fiche publique. La route
-    // /pieces/[slug] resout par identifiant : la colonne `Product.slug`
-    // generee a la creation n est utilisee par aucun lien de l application.
-    await page.goto(`/pieces/${productId}`);
-    await expect(page.getByRole('heading', { level: 1 })).toContainText(title);
+    await page.locator('#piece-titre').fill(title);
+    await page.locator('#piece-reference').fill(reference);
+    await page.locator('#piece-etat').selectOption('NEW');
+    await page.locator('#piece-marque').selectOption('Toyota');
+    await page.locator('#piece-prix').fill('25000');
+    await page.locator('#piece-stock').fill('4');
+    await page.locator('#piece-description').fill('Jeu de plaquettes de frein avant, piece de test E2E.');
+    await page.getByRole('button', { name: 'Publier au catalogue' }).click();
 
-    // ... et remontee par la recherche du catalogue.
+    await expect(page.getByText(/publiee au catalogue/i)).toBeVisible({ timeout: 20000 });
+
+    // La piece doit etre remontee par la recherche du catalogue...
     const listed = await page.request.get(`/api/v1/products?search=${encodeURIComponent(reference)}`);
     expect(listed.ok()).toBeTruthy();
     const listing = await listed.json();
-    const rows = listing.data?.data ?? listing.data ?? [];
-    const titles: string[] = rows.map((p: { title: string }) => p.title);
-    expect(titles).toContain(title);
+    const rows: Array<{ id: string; title: string }> = listing.data?.data ?? listing.data ?? [];
+    const published = rows.find((p) => p.title === title);
+    expect(published).toBeTruthy();
+
+    // ... et servie par sa fiche publique.
+    await page.goto(`/pieces/${published!.id}`);
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(title);
   });
 
   test('un acheteur ne peut pas publier de piece', async ({ page }) => {
@@ -231,6 +241,11 @@ test.describe('Flux critique : CRM', () => {
 
     await statusSelect.selectOption('converted');
     await expect(statusSelect).toHaveValue('converted', { timeout: 20000 });
+
+    // La conversion doit materialiser un client (etape 3 du cycle lead de
+    // 14-CRM.md) : le statut seul ne suffisait pas, aucun contact n etait cree.
+    await page.getByRole('button', { name: /^Contacts/ }).click();
+    await expect(page.getByText(leadName).first()).toBeVisible({ timeout: 20000 });
   });
 
   test('le CRM est refuse a un acheteur', async ({ page }) => {

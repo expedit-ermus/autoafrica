@@ -25,6 +25,16 @@ interface CreateLeadInput {
   customerId?: string
 }
 
+interface UpdateLeadInput {
+  name?: string
+  phone?: string
+  email?: string
+  source?: string
+  value?: number
+  notes?: string
+  status?: string
+}
+
 interface CreateInteractionInput {
   customerId: string
   type: string
@@ -181,10 +191,55 @@ export class CrmService {
     })
   }
 
-  async updateLeadStatus(id: string, status: string) {
+  /**
+   * Met a jour un lead. Le passage au statut `converted` materialise l'etape 3
+   * du cycle lead de `14-CRM.md` : un client est cree a partir des donnees du
+   * prospect et rattache au lead. Sans cela, la conversion se limitait a un
+   * libelle et le client n'apparaissait jamais dans la liste des contacts.
+   */
+  async updateLead(id: string, data: UpdateLeadInput) {
     const lead = await prisma.lead.findUnique({ where: { id } })
     if (!lead) throw new NotFoundError('Lead', id)
-    return prisma.lead.update({ where: { id }, data: { status } })
+
+    let customerId = lead.customerId
+    const becomesConverted = data.status === 'converted' && lead.status !== 'converted'
+    if (becomesConverted && !customerId) {
+      const customer = await prisma.customer.create({
+        data: {
+          name: data.name ?? lead.name,
+          phone: data.phone ?? lead.phone,
+          email: data.email ?? lead.email,
+          // Le formulaire de lead ne collecte ni type ni pays : on reprend les
+          // valeurs par defaut du formulaire de contact du CRM plutot que
+          // d'inventer une segmentation.
+          type: 'garage',
+          country: 'CI',
+          segment: 'new',
+          source: data.source ?? lead.source ?? 'web',
+          notes: data.notes ?? lead.notes,
+        } satisfies Prisma.CustomerUncheckedCreateInput,
+      })
+      customerId = customer.id
+    }
+
+    return prisma.lead.update({
+      where: { id },
+      data: {
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        source: data.source,
+        value: data.value,
+        notes: data.notes,
+        status: data.status,
+        customerId: customerId ?? undefined,
+      },
+    })
+  }
+
+  /** @deprecated Utiliser `updateLead`, qui gere aussi la conversion en client. */
+  async updateLeadStatus(id: string, status: string) {
+    return this.updateLead(id, { status })
   }
 
   async deleteLead(id: string) {

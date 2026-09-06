@@ -6,6 +6,21 @@ import RemoteImage from '@/components/RemoteImage';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
 import { useWishlist } from '@/contexts/WishlistContext';
+import { track } from '@/lib/tracking';
+
+/** Cle et forme de ligne partagees avec /dashboard/cart et PieceDetailCTA. */
+const CART_KEY = 'cart';
+
+interface CartLine {
+  id: string;
+  productId: string;
+  title: string;
+  brand: string;
+  reference: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
 
 interface ProductCardProps {
   id?: string;
@@ -79,6 +94,36 @@ export default function ProductCard({
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // Le bouton se contentait auparavant d'afficher « ajoutée au panier »
+    // sans rien ecrire : le panier restait vide. On utilise ici le meme
+    // contrat de stockage que /dashboard/marketplace et PieceDetailCTA.
+    try {
+      const saved = localStorage.getItem(CART_KEY);
+      const cart: CartLine[] = saved ? JSON.parse(saved) : [];
+      const existing = cart.find((item) => item.productId === productId);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({
+          id: crypto.randomUUID(),
+          productId,
+          title: name,
+          brand,
+          reference,
+          price,
+          quantity: 1,
+          image,
+        });
+      }
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      window.dispatchEvent(new Event('aa-cart-updated'));
+    } catch {
+      addToast('error', L('Impossible d\'ajouter la pièce au panier', 'Could not add the part to the cart'));
+      return;
+    }
+
+    track('add_to_cart', { entity: 'product', entityId: productId, product_id: productId, price, quantity: 1 });
     setAddedToCart(true);
     addToast(
       'success',

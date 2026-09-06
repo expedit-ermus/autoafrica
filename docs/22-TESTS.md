@@ -57,15 +57,16 @@ Les quatre flux ci-dessus sont couverts par `tests-e2e/critical-flows.spec.ts`
 leurs propres donnees : la base de developpement ne garantit aucun catalogue ni
 compte prealable.
 
-Deux etapes ne sont pas couvertes par l interface parce qu elles n y existent
-pas encore (cf. D54) :
+Depuis D55, les quatre parcours sont pilotes entierement par l interface :
 
-- **Gestion produit** : aucun ecran vendeur n appelle `POST /api/v1/products` ;
-  la publication est verifiee au niveau de l API, puis la visibilite de la piece
-  est controlee sur sa fiche publique et via la recherche du catalogue.
-- **CRM** : la conversion d un lead se limite au passage du statut a
-  `converted` ; aucun client n est cree, l etape « Voir dans liste clients »
-  reste sans implementation.
+- **Gestion produit** : la publication passe par la modale « Publier une piece »
+  de `/dashboard/inventory` (R006), puis la piece est recherchee au catalogue et
+  ouverte sur sa fiche publique.
+- **CRM** : la conversion d un lead cree un client, verifie dans l onglet
+  Contacts.
+
+Un scenario verifie en outre que `/dashboard/inventory` s affiche sans erreur
+client : cet ecran tombait entierement dans le filet d erreur global.
 
 ## Tests de non-regression
 

@@ -53,6 +53,7 @@
 | API responses | Stale-while-revalidate | 60s |
 | Pages privees | No-cache | - |
 | Landing page | ISR | 3600s |
+| Catalogue (`/catalogue`) | ISR | 60s |
 
 ### Bundle budget
 

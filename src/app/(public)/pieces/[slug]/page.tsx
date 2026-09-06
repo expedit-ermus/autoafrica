@@ -17,13 +17,10 @@ async function getProductBySlugOrId(slug: string): Promise<Product | null> {
     const product = await productsService.getById(slug);
     if (product) return product as unknown as Product;
   } catch {
-    // Not found by ID, try list lookup
+    // Pas trouve par identifiant : on tente la colonne `slug`.
   }
-  const result = await productsService.list({}, { page: 1, pageSize: 100 });
-  const rawProducts = (result.data || []) as unknown as Product[];
-  return rawProducts.find(
-    (p) => p.id === slug || (p.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug
-  ) || null;
+  const bySlug = await productsService.getBySlug(slug);
+  return (bySlug as unknown as Product) || null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

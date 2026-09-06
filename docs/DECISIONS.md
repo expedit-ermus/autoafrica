@@ -1013,3 +1013,35 @@ Ces points sortent du perimetre des tests et demandent un arbitrage produit :
 - **La base de developpement ne contient aucun produit de catalogue.** Les scenarios d'achat et de publication creent donc leur propre piece plutot que de dependre d'un etat prealable.
 
 **Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 389/389 tests unitaires, build de production reussi, 21/21 tests E2E Playwright sur deux executions consecutives, aucune erreur serveur dans les journaux.
+
+---
+
+## D55 : Traitement des constats de l'audit D54
+
+**Date** : 06/09/2026 — reprise des constats laisses ouverts par D54. La suite E2E passe de 21 a 22 scenarios. Un defaut bloquant supplementaire, non identifie par D54, a ete decouvert en instrumentant l'ecran d'inventaire.
+
+### Defaut bloquant decouvert
+
+**`/dashboard/inventory` (R006) n'a jamais fonctionne.** Les quatre listes de la page (entrepots, stock, mouvements, produits) lisaient `data` alors que les routes renvoient une reponse paginee `{ data: { data: [...], total, page, pageSize } }`. L'etat recevait donc un objet la ou un tableau etait attendu, `stats` appelait `stock.reduce`, et la `TypeError` faisait basculer l'ecran entier dans le filet d'erreur global : le vendeur ne voyait qu'un bouton « Reessayer ». Le deballage suit desormais le motif deja utilise par `/dashboard/crm` (`data?.data || data || []`). Un scenario E2E verifie que la page s'affiche sans erreur client.
+
+### Constats D54 traites
+
+1. **Publication d'une piece cote vendeur.** `POST /api/v1/products` (R106) existait sans aucun appelant : un vendeur ne pouvait pas mettre une piece en vente depuis l'application. `02-ROUTES.md` ne prevoyant aucune route de page pour cette action, la creation est hebergee dans `/dashboard/inventory` (R006, « Gerer stock ») aux cotes des modales entrepot, ligne de stock et transfert, plutot que d'ouvrir une route non documentee. Le formulaire tire ses marques et categories de `src/lib/marketplace-catalog.ts`, source de verite designee par `15-CATALOGUE.md`, et ses etats de l'enum `ProductCondition`. Le scenario E2E de gestion produit passe desormais par cette interface.
+
+2. **Conversion d'un lead en client.** `updateLeadStatus` se limitait a changer le libelle du statut ; l'etape 3 du cycle lead de `14-CRM.md` (« Conversion en client ») et l'etape « Voir dans liste clients » de `22-TESTS.md` n'avaient aucune implementation. `crmService.updateLead` cree desormais un `Customer` a partir des donnees du prospect au premier passage a `converted` et le rattache via `Lead.customerId`, relation deja presente au schema. Le formulaire de lead ne collectant ni type ni pays, ces champs obligatoires reprennent les valeurs par defaut du formulaire de contact du CRM (`type: garage`, `country: CI`) plutot qu'une segmentation inventee.
+
+   Defaut connexe corrige au passage : `PUT /api/v1/leads/[id]` ne lisait que `body.status`. Les modifications de nom, telephone, e-mail, source, valeur et notes envoyees par la modale « Modifier le lead » etaient silencieusement perdues alors que l'interface affichait « Lead mis a jour ».
+
+3. **`/catalogue` fige au build.** La page etait entierement prerendue : une piece publiee ensuite n'y apparaissait jamais. `export const revalidate = 60` aligne sa fraicheur sur celle deja retenue pour les reponses API dans `21-PERFORMANCE.md`, sans rendre la page a chaque requete. Les pages soeurs `/marketplace/categorie/[slug]` et `/marketplace/marque/[slug]` restent en `force-dynamic` comme le prescrit `15-CATALOGUE.md` ; basculer `/catalogue` sur la meme strategie reste possible si la fraicheur a la minute ne suffit pas. La table de cache de `21-PERFORMANCE.md` documente le choix.
+
+4. **`ProductCard` affichait un faux succes.** Son bouton « Ajouter au panier » declenchait le toast « Piece ajoutee au panier ! » sans rien ecrire : le panier restait vide. Il utilise desormais le meme contrat de stockage que `/dashboard/marketplace` et `PieceDetailCTA` (cle `cart`, incrementation si la piece y figure deja, evenement `aa-cart-updated`), et emet l'evenement de suivi `add_to_cart` prevu par `09-TRACKING.md`.
+
+5. **`Product.slug` inutilise par le routage.** La colonne etait generee a la creation mais aucune route ne l'exploitait : `/pieces/[slug]` resolvait par identifiant puis, a defaut, balayait les 100 premiers produits en comparant un slug recalcule depuis le titre — un repli qui ne pouvait jamais aboutir puisque le slug stocke porte un suffixe temporel. `productsService.getBySlug` remplace ce balayage par une resolution directe sur la colonne. Les liens de l'application continuent de pointer vers `/pieces/{id}`, desormais complete par la resolution par slug.
+
+6. **Scripts de seed divergents.** `prisma/seed.ts` et `prisma/seed.mjs` ne sont pas redondants mais complementaires : le premier ne cree que le tenant, les comptes et les profils, le second le catalogue et les donnees commerciales de demonstration. Une base alimentee par le seul premier possede des comptes mais un catalogue vide — ce qui explique l'absence de produits en developpement. Plutot que de repointer `db:seed` (ce qui aurait contourne le garde-fou distant pose par D43), deux entrees explicites sont ajoutees : `db:seed:accounts` et `db:seed:demo`. `23-DEPLOIEMENT.md` documente le role de chacune.
+
+### Constat restant
+
+`21-PERFORMANCE.md` fixe un budget de 200 Ko de JS ; l'ajout du formulaire de publication n'a pas ete mesure contre ce budget. Aucun outil de mesure n'est cable dans le projet.
+
+**Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 389/389 tests unitaires, build de production reussi, 22/22 tests E2E, aucune erreur serveur dans les journaux.

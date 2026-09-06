@@ -126,6 +126,33 @@ export class ProductsService {
     }
   }
 
+  /**
+   * Resolution par la colonne `slug` generee a la creation. Elle n'etait
+   * exploitee par aucune route : la fiche piece ne savait resoudre que par
+   * identifiant, et retombait sinon sur un balayage des 100 premiers produits.
+   */
+  async getBySlug(slug: string) {
+    const product = await prisma.product.findUnique({
+      where: { slug },
+      include: {
+        seller: { select: { id: true, firstName: true, lastName: true, shopName: true, country: true, city: true } },
+        brand: true,
+        category: true,
+        compatible: true,
+        reviews: { where: { active: true }, take: 5 },
+      },
+    })
+    if (!product) return null
+
+    await prisma.product.update({ where: { id: product.id }, data: { views: { increment: 1 } } })
+
+    return {
+      ...product,
+      images: product.images || [],
+      compatible: product.compatible || [],
+    }
+  }
+
   async create(data: CreateProductInput, sellerId: string) {
     const slug = data.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') + '-' + Date.now().toString(36)
 
