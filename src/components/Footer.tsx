@@ -64,6 +64,7 @@ export default function Footer() {
                 <li><Link href="/a-propos" className="hover:text-orange-400 transition-colors font-medium">{L('Qui sommes-nous ?', 'About us?')}</Link></li>
                 <li><Link href="/tarifs" className="hover:text-orange-400 transition-colors font-medium">{L('Tarifs & Abonnements SaaS', 'Pricing & Subscriptions')}</Link></li>
                 <li><Link href="/catalogue" className="hover:text-orange-400 transition-colors font-medium">{L('Catalogue de pièces', 'Parts Catalogue')}</Link></li>
+                <li><Link href="/recherche-pieces" className="hover:text-orange-400 transition-colors font-medium">{L('Recherche par véhicule', 'Search by vehicle')}</Link></li>
                 <li><Link href="/devenir-vendeur" className="hover:text-orange-400 transition-colors font-medium">{L('Devenir Vendeur', 'Become a Seller')}</Link></li>
               </ul>
             </div>

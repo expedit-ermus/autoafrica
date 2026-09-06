@@ -54,7 +54,7 @@ function BlockedContent() {
 
         {isBanned && (
           <p className="text-slate-400 text-sm mb-6">
-            Si vous pensez qu'il s'agit d'une erreur, contactez notre support avec votre adresse e-mail.
+            Si vous pensez qu’il s’agit d’une erreur, contactez notre support avec votre adresse e-mail.
           </p>
         )}
 
@@ -73,7 +73,7 @@ function BlockedContent() {
             href="/"
             className="w-full py-3 rounded-xl font-semibold bg-white/[0.05] border border-white/[0.1] text-slate-300 hover:bg-white/[0.10] transition-all duration-200"
           >
-            ← Retour à l'accueil
+            ← Retour à l’accueil
           </Link>
         </div>
       </div>

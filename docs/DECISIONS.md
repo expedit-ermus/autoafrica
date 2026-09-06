@@ -954,10 +954,178 @@ Le test `payments.service.test.ts` mocke le registry `paymentProviders` pour inj
 - **Performance & Compétitivité** : Build Next.js 16 (Turbopack) 100% propre (97 routes compilées, **0 erreur**).
 - **Fiabilité** : **341 / 341 tests unitaires passés avec succès**.
 
+---
 
+## D53 : H1 de la page d’accueil, image d’en-tête des articles et fiabilisation des tests E2E
 
+**Date** : 05/09/2026 — exécution de la chaîne de vérification complète d’`AGENTS.md` (lint, typecheck, tests unitaires, build, E2E). Lint, TypeScript, 389 tests unitaires et le build de production étaient au vert ; la suite Playwright rapportait 5 échecs sur 13.
 
+**Contradiction relevée** : `03-PAGES.md` imposait pour `/` un H1 de marque ("AutoAfrique — Pièces Auto Marketplace Afrique de l’Ouest"), alors que `src/components/LandingPage.tsx` affiche depuis les refontes visuelles `fb1f660` puis `cadd9e5` un H1 orienté requête : "Trouvez vos pièces auto neuves & d’occasion contrôlée à Abidjan". `06-SEO.md` ne spécifie pas de H1 pour la page d’accueil : il n’y a donc pas de conflit entre documents SEO, mais un écart entre `03-PAGES.md` et le code.
 
+**Décision** : conserver le H1 implémenté et mettre `03-PAGES.md` en conformité. Le H1 orienté requête reprend les termes du `<title>` documenté dans `06-SEO.md` ("Pièces détachées auto Abidjan, neuf & occasion") ; la marque reste portée par le `<title>`, le logo du header et `og:site_name`. Le choix a été posé délibérément à deux reprises côté code : le revenir aurait été une régression SEO non demandée.
 
+**Correctifs applicatifs** :
+1. **Hiérarchie des titres — `/estimation-devis`** : la page ne comportait aucun `h1` (le titre de tête de `RepairEstimator` était un `h2`), en violation de `05-UX-ACCESSIBILITY.md` et `06-SEO.md`. Le composant n’étant monté que par cette route, son titre de tête est promu en `h1`.
+2. **Image d’en-tête des articles de blog** : les 9 articles référençaient `/images/hero-bg.jpg`, fichier absent de `public/images/` — l’optimiseur Next échouait ("isn’t a valid image"), l’image de tête ne s’affichait pas et la propriété `image` du schéma `Article` de `/blog/ou-trouver-pieces-detachees-auto-abidjan` pointait dans le vide. Chaque article est remappé vers la photographie ouest-africaine réelle correspondant à son sujet (`pieces-occasion-controlee.jpg`, `pieces-neuves-oem.jpg`, `hero-diagnostic-workshop.jpg`, `livraison-express-abidjan.jpg`, `sequestre-mobile-money.jpg`, `vtc-taxis-abidjan.jpg`), avec un texte alternatif décrivant fidèlement la photographie retenue conformément à `17-IMAGES-MEDIA.md`. Une bannière générique `og-image.png` a été écartée : elle aurait contredit les textes alternatifs spécifiques de chaque article.
 
+**Corrections de tests** (assertions périmées, application conforme) :
+- `a[aria-label*="WhatsApp"]` : le widget flottant est un `button` depuis `90cd1ad` (il ouvre le formulaire de demande express avant `wa.me`), plus un lien. Locator aligné sur le rôle `button`.
+- `/tarifs` et `/blog/verifier-compatibilite-piece-auto-vehicule` : `getByText` résolvait 2 nœuds (titre + lien de sommaire ou CTA), d’où une violation du mode strict Playwright. Assertions basculées sur le rôle `heading`.
+- `/` : l’assertion de marque est remplacée par l’unicité du `h1` et la présence du marqueur géographique, conformément au H1 documenté ci-dessus.
 
+**Écart de couverture signalé (non traité)** : `22-TESTS.md` exige des tests E2E sur 4 flux critiques — inscription, achat avec paiement Mobile Money, gestion produit vendeur et CRM. Les 13 scénarios Playwright existants ne couvrent que le rendu de pages publiques ; aucun de ces 4 flux n’est testé de bout en bout.
+
+---
+
+## D54 : Couverture E2E des 4 flux critiques et defauts bloquants mis au jour
+
+**Date** : 06/09/2026 — mise en oeuvre de l'exigence de `22-TESTS.md` : tests E2E des flux inscription, achat avec paiement Mobile Money, gestion produit vendeur et CRM. La suite Playwright passe de 13 a 21 scenarios (`tests-e2e/critical-flows.spec.ts`, helpers dans `tests-e2e/helpers/session.ts`).
+
+L'ecriture de ces parcours a revele que trois des quatre flux etaient casses en profondeur. Les tests n'ont pas ete adaptes aux defauts : les defauts ont ete corriges.
+
+### Defauts applicatifs corriges
+
+1. **Toute recherche renvoyait 500.** Les services passaient `mode: 'insensitive'` a Prisma, argument que le connecteur SQLite/libSQL n'accepte pas (`Unknown argument 'mode'`). Chaque requete filtree par `search` echouait : produits, CRM, inventaire, finance, livraison, fournisseurs, bons de commande, notifications, conteneurs, douanes, vehicules — 26 occurrences dans 11 modules. La production tournant sur Turso (libSQL), le defaut n'etait pas limite au poste de developpement. `mode` est supprime : sous SQLite, `contains` (LIKE) est deja insensible a la casse pour l'ASCII. Le test unitaire `suppliers.service.test.ts` qui figeait la forme de requete rejetee par la base est aligne.
+
+2. **L'inscription n'ouvrait pas de session.** `POST /api/v1/auth/register` generait bien un jeton mais, contrairement a `POST /api/v1/auth/login`, ne posait jamais le cookie `token`. Le client affichait « Compte cree avec succes » puis poussait vers `/dashboard`, ou le middleware, ne trouvant pas de cookie, renvoyait le nouvel inscrit vers `/auth/login`. La route pose desormais le meme cookie que la connexion (httpOnly, sameSite lax, 24 h, aligne sur la duree du JWT).
+
+3. **Le paiement confirmait des commandes inexistantes.** `processPayment` envoyait une requete par article au format `{ productId, quantity }`, alors que `POST /api/v1/orders` attend `{ items: [...] }` : le serveur echouait en 500 (`e.items is not iterable`). La reponse n'etant jamais verifiee — `fetch` ne rejette pas sur un statut d'erreur — le `catch` ne se declenchait pas : le panier etait vide, « Paiement Sequestre valide avec succes » s'affichait et l'acheteur etait redirige vers une liste de commandes vide. Le panier envoie desormais une commande unique portant toutes les lignes (l'API calcule sous-total et taxe sur l'ensemble) et leve si la reponse n'est pas `ok`, laissant le panier intact et affichant l'erreur.
+
+### Accessibilite
+
+- Le `<select>` de statut d'un lead (`/dashboard/crm`) n'avait aucun nom accessible : ajout d'un `aria-label` nommant le lead concerne.
+- Le champ de code PIN du paiement Mobile Money portait `aria-label="••••"` — un lecteur d'ecran annoncait quatre puces. Remplace par « Code PIN Mobile Money ».
+
+### Environnement de test
+
+`playwright.config.ts` fournit desormais explicitement `DATABASE_URL` et `JWT_SECRET` au serveur de test (surchargeables via `E2E_DATABASE_URL` / `E2E_JWT_SECRET`). Un `.env.production.local` issu de `vercel env pull` contient des valeurs vides qui, en mode production, ecrasent le secret reel et cassent l'authentification sur tout `next start` local. Le serveur de test ne depend plus de l'ordre de precedence des fichiers `.env`.
+
+### Constats signales, non traites
+
+Ces points sortent du perimetre des tests et demandent un arbitrage produit :
+
+- **Aucune interface de creation de produit cote vendeur.** `POST /api/v1/products` existe et fonctionne, mais aucun ecran ne l'appelle : `/dashboard/inventory` ne gere que lignes de stock, entrepots et transferts. Le flux « Creer produit / formulaire / upload images / publier » de `22-TESTS.md` est donc couvert par l'API, pas par l'interface.
+- **La conversion d'un lead ne cree pas de client.** `handleUpdateLeadStatus` ne fait que passer le statut a `converted` ; l'etape « Voir dans liste clients » de `22-TESTS.md` n'a pas d'implementation.
+- **`/catalogue` est prerendu statiquement sans revalidation.** Une piece publiee apres le build n'apparait jamais au catalogue public. Passer la page en ISR ou en rendu dynamique a un cout mesure par `21-PERFORMANCE.md` : decision a prendre.
+- **`Product.slug` n'est utilise par aucun lien.** La colonne est generee a la creation, mais `/pieces/[slug]` resout par identifiant et tous les liens de l'application pointent vers `/pieces/{id}`.
+- **`ProductCard` affiche un faux succes.** Son bouton « Ajouter au panier » declenche un toast « Piece ajoutee au panier ! » sans rien ecrire dans le panier : seuls `/dashboard/marketplace` et `PieceDetailCTA` alimentent reellement `localStorage`.
+- **Deux scripts de seed divergents.** `npm run db:seed` pointe vers `prisma/seed.mjs` (comptes `@example.com`, mot de passe `password123`) alors que la base de developpement a ete peuplee par `prisma/seed.ts` (comptes `@autoafrique.com`, mot de passe `Password123!`). Les tests utilisent les identifiants de `seed.ts`, seuls presents en base.
+- **La base de developpement ne contient aucun produit de catalogue.** Les scenarios d'achat et de publication creent donc leur propre piece plutot que de dependre d'un etat prealable.
+
+**Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 389/389 tests unitaires, build de production reussi, 21/21 tests E2E Playwright sur deux executions consecutives, aucune erreur serveur dans les journaux.
+
+---
+
+## D55 : Traitement des constats de l'audit D54
+
+**Date** : 06/09/2026 — reprise des constats laisses ouverts par D54. La suite E2E passe de 21 a 22 scenarios. Un defaut bloquant supplementaire, non identifie par D54, a ete decouvert en instrumentant l'ecran d'inventaire.
+
+### Defaut bloquant decouvert
+
+**`/dashboard/inventory` (R006) n'a jamais fonctionne.** Les quatre listes de la page (entrepots, stock, mouvements, produits) lisaient `data` alors que les routes renvoient une reponse paginee `{ data: { data: [...], total, page, pageSize } }`. L'etat recevait donc un objet la ou un tableau etait attendu, `stats` appelait `stock.reduce`, et la `TypeError` faisait basculer l'ecran entier dans le filet d'erreur global : le vendeur ne voyait qu'un bouton « Reessayer ». Le deballage suit desormais le motif deja utilise par `/dashboard/crm` (`data?.data || data || []`). Un scenario E2E verifie que la page s'affiche sans erreur client.
+
+### Constats D54 traites
+
+1. **Publication d'une piece cote vendeur.** `POST /api/v1/products` (R106) existait sans aucun appelant : un vendeur ne pouvait pas mettre une piece en vente depuis l'application. `02-ROUTES.md` ne prevoyant aucune route de page pour cette action, la creation est hebergee dans `/dashboard/inventory` (R006, « Gerer stock ») aux cotes des modales entrepot, ligne de stock et transfert, plutot que d'ouvrir une route non documentee. Le formulaire tire ses marques et categories de `src/lib/marketplace-catalog.ts`, source de verite designee par `15-CATALOGUE.md`, et ses etats de l'enum `ProductCondition`. Le scenario E2E de gestion produit passe desormais par cette interface.
+
+2. **Conversion d'un lead en client.** `updateLeadStatus` se limitait a changer le libelle du statut ; l'etape 3 du cycle lead de `14-CRM.md` (« Conversion en client ») et l'etape « Voir dans liste clients » de `22-TESTS.md` n'avaient aucune implementation. `crmService.updateLead` cree desormais un `Customer` a partir des donnees du prospect au premier passage a `converted` et le rattache via `Lead.customerId`, relation deja presente au schema. Le formulaire de lead ne collectant ni type ni pays, ces champs obligatoires reprennent les valeurs par defaut du formulaire de contact du CRM (`type: garage`, `country: CI`) plutot qu'une segmentation inventee.
+
+   Defaut connexe corrige au passage : `PUT /api/v1/leads/[id]` ne lisait que `body.status`. Les modifications de nom, telephone, e-mail, source, valeur et notes envoyees par la modale « Modifier le lead » etaient silencieusement perdues alors que l'interface affichait « Lead mis a jour ».
+
+3. **`/catalogue` fige au build.** La page etait entierement prerendue : une piece publiee ensuite n'y apparaissait jamais. `export const revalidate = 60` aligne sa fraicheur sur celle deja retenue pour les reponses API dans `21-PERFORMANCE.md`, sans rendre la page a chaque requete. Les pages soeurs `/marketplace/categorie/[slug]` et `/marketplace/marque/[slug]` restent en `force-dynamic` comme le prescrit `15-CATALOGUE.md` ; basculer `/catalogue` sur la meme strategie reste possible si la fraicheur a la minute ne suffit pas. La table de cache de `21-PERFORMANCE.md` documente le choix.
+
+4. **`ProductCard` affichait un faux succes.** Son bouton « Ajouter au panier » declenchait le toast « Piece ajoutee au panier ! » sans rien ecrire : le panier restait vide. Il utilise desormais le meme contrat de stockage que `/dashboard/marketplace` et `PieceDetailCTA` (cle `cart`, incrementation si la piece y figure deja, evenement `aa-cart-updated`), et emet l'evenement de suivi `add_to_cart` prevu par `09-TRACKING.md`.
+
+5. **`Product.slug` inutilise par le routage.** La colonne etait generee a la creation mais aucune route ne l'exploitait : `/pieces/[slug]` resolvait par identifiant puis, a defaut, balayait les 100 premiers produits en comparant un slug recalcule depuis le titre — un repli qui ne pouvait jamais aboutir puisque le slug stocke porte un suffixe temporel. `productsService.getBySlug` remplace ce balayage par une resolution directe sur la colonne. Les liens de l'application continuent de pointer vers `/pieces/{id}`, desormais complete par la resolution par slug.
+
+6. **Scripts de seed divergents.** `prisma/seed.ts` et `prisma/seed.mjs` ne sont pas redondants mais complementaires : le premier ne cree que le tenant, les comptes et les profils, le second le catalogue et les donnees commerciales de demonstration. Une base alimentee par le seul premier possede des comptes mais un catalogue vide — ce qui explique l'absence de produits en developpement. Plutot que de repointer `db:seed` (ce qui aurait contourne le garde-fou distant pose par D43), deux entrees explicites sont ajoutees : `db:seed:accounts` et `db:seed:demo`. `23-DEPLOIEMENT.md` documente le role de chacune.
+
+### Constat restant
+
+`21-PERFORMANCE.md` fixe un budget de 200 Ko de JS ; l'ajout du formulaire de publication n'a pas ete mesure contre ce budget. Aucun outil de mesure n'est cable dans le projet.
+
+**Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 389/389 tests unitaires, build de production reussi, 22/22 tests E2E, aucune erreur serveur dans les journaux.
+
+---
+
+## D56 : Mesure des budgets de bundle
+
+**Date** : 06/09/2026 — dernier point laisse ouvert par D55 : `21-PERFORMANCE.md` fixe des budgets de bundle qu'aucun outil ne verifiait.
+
+**Contexte** : le build Turbopack de Next 16 n'imprime plus le tableau des tailles par route. Les budgets etaient donc declaratifs depuis la migration, sans aucune mesure.
+
+**Decision** : mesurer sur la sortie de build plutot que d'ajouter une dependance d'analyse. `scripts/check-bundle-budget.mjs` (Node seul, `zlib` natif) lit les balises `<script>` et `<link rel=stylesheet>` de chaque page prerendue de `.next/server/app`, gzip les fichiers referencies, deduplique par route et compare aux trois budgets. Expose via `npm run check:budget`, qui sort en erreur si un budget est depasse.
+
+**Precision de methode determinante** : une premiere mesure donnait 51 routes sur 54 hors budget, avec un plancher de 198,5 Ko pour une simple page 404. Le bundle de polyfills que Next sert en `noModule` (38,7 Ko gzip) etait compte alors qu'aucun navigateur moderne ne le telecharge. Une fois exclu, tous les budgets sont respectes. Compter ce chunk aurait conduit a un chantier d'optimisation entierement injustifie.
+
+**Etat mesure** :
+
+| Indicateur | Valeur | Budget |
+|------------|--------|--------|
+| Socle commun | 142,3 Ko | — |
+| JS total, route la plus lourde (`/dashboard/crm`) | 194,0 Ko | < 200 Ko |
+| JS propre a la page, maximum (`/dashboard/crm`) | 51,7 Ko | < 80 Ko |
+| CSS | 32,2 Ko | < 50 Ko |
+
+`/dashboard/inventory`, ou D55 a ajoute le formulaire de publication, se situe a 181,5 Ko : l'ajout n'approche pas le budget.
+
+**Point de vigilance** : la marge sur le JS total est de 6 Ko sur la route la plus lourde. Le socle commun consommant 142,3 Ko des 200 Ko autorises, toute dependance ajoutee au socle sortira plusieurs routes du budget d'un coup. Lancer `npm run check:budget` apres tout ajout de dependance cliente.
+
+**Limites assumees** : seules les routes prerendues produisent un HTML mesurable ; les routes dynamiques ne sont pas couvertes mais partagent le meme socle. La mesure porte sur gzip, alors qu'un CDN sert generalement du brotli — les tailles reelles transmises sont donc legerement inferieures.
+
+**Impact** : `scripts/check-bundle-budget.mjs`, `package.json`, `docs/21-PERFORMANCE.md`.
+
+---
+
+## D57 : Remise en etat du job E2E de la CI
+
+**Date** : 06/09/2026 — verification de la chaine d'integration avant livraison des travaux D53 a D56.
+
+**Constat** : le job `e2e` de `.github/workflows/ci-cd.yml` etait casse sur trois points, invisibles jusqu'ici parce qu'il ne se declenche que sur `main` (`if: github.ref == 'refs/heads/main'`) et que le job `deploy` ne depend pas de lui.
+
+1. `npx prisma db push --skip-generate` : l'option `--skip-generate` a disparu avec Prisma 7. La commande sortait en erreur (`unknown or unexpected option`) et le job echouait avant meme d'installer le navigateur.
+2. Aucune etape de peuplement : `db push` cree une base vide. Les scenarios de flux critiques ajoutes en D54 se connectent avec les comptes du seed ; sur une base vide, tous echouaient.
+3. Aucune etape de build : `needs: [build]` ordonne les jobs mais ne partage pas le disque entre runners. Le serveur de test lance `next start`, qui s'arrete sur « Could not find a production build in the '.next' directory ». Le job aurait donc echoue meme apres correction des deux premiers points. Verifie en deplacant `.next` puis en lancant `next start`.
+
+**Decision** : `npx prisma db push` sans option (aucune donnee a perdre sur une base neuve, et l'option evite le garde-fou de Prisma 7 sur `--accept-data-loss`), suivi de `npm run db:seed:accounts` et de `npm run build`. Le seed de demonstration n'est pas necessaire : les scenarios creent eux-memes les pieces dont ils ont besoin.
+
+**Portee elargie** : les tests E2E ne tournaient que sur `main`. Une regression n'etait donc signalee qu'une fois la fusion faite — et le job `deploy` n'attend pas `e2e`. La condition `if: github.ref == 'refs/heads/main'` est retiree : le job s'execute desormais aussi sur les pull requests. Les traces Playwright sont publiees en artefact lorsqu'un test echoue.
+
+**Verification** : la sequence complete du job a ete rejouee localement sur une base jetable — `prisma db push`, `db:seed:accounts`, `npm run build`, puis `npm run test:e2e` — avec 22/22 tests au vert. Le fichier de test a ensuite ete supprime.
+
+**Point non traite** : `deploy` ne depend que de `build` et porte `continue-on-error: true`. Le deploiement en production part donc meme si les tests unitaires ou E2E echouent. Faire dependre `deploy` de `unit-tests` et `e2e` releve d'une decision de politique de livraison, laissee au proprietaire du projet.
+
+**Impact** : `.github/workflows/ci-cd.yml`.
+
+---
+
+## D58 : Chaine d'integration remise au vert et audit de rendu du dashboard
+
+**Date** : 06/09/2026 — la premiere execution reelle de la CI, declenchee par la pull request des travaux D53 a D57, a echoue sur `build` et `unit-tests`.
+
+### La CI etait rouge en continu, avant ces travaux
+
+L'historique des executions montre **15 executions consecutives en echec sur `main`**, du 01/09 au 05/09, soit toutes celles anterieures a cette branche. La chaine n'a donc jamais ete verte : les echecs n'etaient pas signales parce que personne ne consultait l'onglet Actions, et parce que le job `deploy` ne dependait que de `build`.
+
+**Cause racine unique** : aucun job ne creait le schema de base de donnees.
+
+- `build` : `/catalogue` interroge le catalogue au prerendu. Sans schema, le build s'arretait sur `Error occurred prerendering page "/catalogue" — SQLITE_ERROR: no such table: main.Product`.
+- `unit-tests` : `src/modules/audit/audit.service.test.ts` s'execute contre une vraie base, contrairement aux autres tests qui simulent Prisma. Sans schema, deux tests echouaient sur `no such table: main.User`.
+
+**Correction** : `npx prisma db push` ajoute aux jobs `build` et `unit-tests`, comme deja fait pour `e2e` en D57. Une base vide suffit : verifie localement en rejouant `npm run build` puis `npx vitest run` contre une base fraichement creee sans donnees — build reussi et 389/389 tests au vert.
+
+### Deploiement conditionne aux tests
+
+`deploy` ne dependait que de `build` : la production partait meme si les tests unitaires ou les flux critiques echouaient. Il depend desormais de `build`, `unit-tests` et `e2e`. `continue-on-error` est conserve pour qu'une indisponibilite de Vercel ne fasse pas echouer toute la chaine, mais il ne masque plus un deploiement lance sur du code casse, puisque les tests sont passes avant.
+
+### Audit de rendu du dashboard
+
+Le defaut qui rendait `/dashboard/inventory` inutilisable (deballage errone des reponses paginees, cf. D55) appartenait a une classe de pannes qu'aucune verification ne couvrait. L'analyse statique des vingt ecrans n'a revele aucun autre deballage errone, mais elle ne prouve rien : le defaut initial n'etait sorti qu'en chargeant la page. Les vingt ecrans ont donc ete charges pour de vrai.
+
+Resultat : aucun autre plantage au rendu, et un defaut d'accessibilite trouve — **`/dashboard/cart` n'exposait aucun `h1` dans son etat vide**, le titre « Votre panier est vide » etant un `h2` et le `h1` « Mon Panier » n'existant que dans la branche non vide. Meme classe de defaut que `/estimation-devis` en D53. Le titre de l'etat vide est promu en `h1`.
+
+La sonde est conservee comme test de non-regression : `tests-e2e/dashboard-smoke.spec.ts` charge les vingt ecrans, verifie la presence d'un `h1` visible, l'absence d'erreur client et l'absence du filet d'erreur global. Il collecte tous les ecrans en panne en un seul passage plutot que de s'arreter au premier. La suite E2E passe de 22 a 23 scenarios.
+
+**Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 389/389 tests unitaires, build de production reussi, 23/23 tests E2E.
+
+**Impact** : `.github/workflows/ci-cd.yml`, `src/app/dashboard/cart/page.tsx`, `tests-e2e/dashboard-smoke.spec.ts`.

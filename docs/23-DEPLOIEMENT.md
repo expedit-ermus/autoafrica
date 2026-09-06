@@ -132,8 +132,19 @@ npx prisma migrate reset
 
 ### Seed
 
+Deux scripts complementaires, a ne pas confondre :
+
+| Script | Commande | Contenu |
+|--------|----------|---------|
+| `prisma/seed.ts` | `npm run db:seed:accounts` | Tenant, comptes et profils vendeur/acheteur uniquement. Aucun produit. |
+| `prisma/seed.mjs` | `npm run db:seed:demo` (alias historique : `npm run db:seed`) | Jeu de demonstration complet : catalogue, commandes, finances. Donnees commerciales fictives, reservees au developpement (cf. D43) ; le script refuse une base distante sauf `SEED_ALLOW_REMOTE=1`. |
+
+Une base alimentee par `db:seed:accounts` seul possede des comptes mais un
+catalogue vide : lancer aussi `db:seed:demo` pour disposer de produits.
+
 ```bash
-npx tsx prisma/seed.ts
+npm run db:seed:accounts
+npm run db:seed:demo
 ```
 
 ## Monitoring

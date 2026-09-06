@@ -58,7 +58,10 @@ describe('SmartReplenishmentService', () => {
       },
     ]
 
-    vi.mocked(prisma.product.findMany).mockResolvedValue(mockProducts as any)
+    // Mock volontairement partiel : seuls les champs lus par le service sont fournis.
+    vi.mocked(prisma.product.findMany).mockResolvedValue(
+      mockProducts as unknown as Awaited<ReturnType<typeof prisma.product.findMany>>,
+    )
 
     const predictions = await smartReplenishmentService.predictReplenishment()
 
@@ -77,7 +80,9 @@ describe('SmartReplenishmentService', () => {
       totalAmount: 150000,
     }
 
-    vi.mocked(prisma.purchaseOrder.create).mockResolvedValue(mockPO as any)
+    vi.mocked(prisma.purchaseOrder.create).mockResolvedValue(
+      mockPO as unknown as Awaited<ReturnType<typeof prisma.purchaseOrder.create>>,
+    )
 
     const result = await smartReplenishmentService.generateReplenishmentPurchaseOrder('sup-1', [
       { productId: 'p1', quantity: 20, unitPrice: 7500 },

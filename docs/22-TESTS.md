@@ -50,6 +50,25 @@
 3. Convertir en client
 4. Voir dans liste clients
 
+## Couverture des flux critiques
+
+Les quatre flux ci-dessus sont couverts par `tests-e2e/critical-flows.spec.ts`
+(helpers de session dans `tests-e2e/helpers/session.ts`). Les scenarios creent
+leurs propres donnees : la base de developpement ne garantit aucun catalogue ni
+compte prealable.
+
+Depuis D55, les quatre parcours sont pilotes entierement par l interface :
+
+- **Gestion produit** : la publication passe par la modale « Publier une piece »
+  de `/dashboard/inventory` (R006), puis la piece est recherchee au catalogue et
+  ouverte sur sa fiche publique.
+- **CRM** : la conversion d un lead cree un client, verifie dans l onglet
+  Contacts.
+
+`tests-e2e/dashboard-smoke.spec.ts` charge en outre les vingt ecrans du
+dashboard et verifie, pour chacun, la presence d un h1 visible, l absence
+d erreur client et l absence du filet d erreur global (cf. D58).
+
 ## Tests de non-regression
 
 ### Pages

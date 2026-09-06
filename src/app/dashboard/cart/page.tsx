@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import RemoteImage from '@/components/RemoteImage';
 import Sidebar from '@/components/Sidebar';
@@ -9,6 +9,8 @@ import { useToast } from '@/contexts/ToastContext';
 import { useApp } from '@/contexts/AppContext';
 import { track } from '@/lib/tracking';
 import { PaymentLogo } from '@/components/PaymentLogos';
+import { detectOperator, isValidPhone, OPERATOR_LABELS } from '@/shared/utils/phone';
+import { useLocalStorageValue, writeLocalStorage, removeLocalStorage } from '@/lib/useLocalStorage';
 
 interface CartItem {
   id: string;
@@ -20,6 +22,30 @@ interface CartItem {
   quantity: number;
   image: string;
 }
+
+/** Identifiants d'opérateur du module partagé -> identifiants utilisés par ce formulaire. */
+const CART_KEY = 'cart';
+
+/** Reference stable : un tableau recree a chaque rendu boucle indefiniment. */
+const EMPTY_CART: CartItem[] = [];
+
+/** Un panier illisible est traite comme un panier vide plutot que de casser la page. */
+function parseCart(raw: string | null): CartItem[] {
+  if (!raw) return EMPTY_CART;
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as CartItem[]) : EMPTY_CART;
+  } catch {
+    return EMPTY_CART;
+  }
+}
+
+const OPERATOR_TO_UI_ID: Record<string, string> = {
+  ORANGE_MONEY: 'orange',
+  MTN_MOMO: 'mtn',
+  MOOV_MONEY: 'moov',
+  WAVE: 'wave',
+};
 
 const MOBILE_MONEY_OPERATORS = [
   { id: 'wave', name: 'Wave' },
@@ -47,18 +73,10 @@ export default function CartPage() {
   const { locale } = useApp();
   const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
   
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('cart');
-    if (saved) {
-      try {
-        setCart(JSON.parse(saved));
-      } catch (e) {}
-    }
-    setMounted(true);
-  }, []);
+  // Le panier est lu directement depuis le stockage du navigateur.
+  // Cote serveur il est vide ; React bascule sur la vraie valeur apres hydratation,
+  // sans rendu en cascade ni garde `mounted`. Les autres onglets se synchronisent.
+  const cart = useLocalStorageValue(CART_KEY, parseCart, EMPTY_CART);
 
   const [checking, setChecking] = useState(false);
   const [selectedZone, setSelectedZone] = useState('cocody');
@@ -66,13 +84,14 @@ export default function CartPage() {
   // Modal de paiement Mobile Money Séquestre
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedOperator, setSelectedOperator] = useState('wave');
-  const [phone, setPhone] = useState('0708091011');
+  const [phone, setPhone] = useState('');
+  // Opérateur déduit du numéro saisi (null tant que le numéro est incomplet).
+  const detectedOperator = detectOperator(phone, 'CI');
   const [pinCode, setPinCode] = useState('');
   const [paymentStep, setPaymentStep] = useState<'operator' | 'pin' | 'success'>('operator');
 
   const updateCart = (newCart: CartItem[]) => {
-    setCart(newCart);
-    localStorage.setItem('cart', JSON.stringify(newCart));
+    writeLocalStorage(CART_KEY, newCart);
     window.dispatchEvent(new Event('aa-cart-updated'));
   };
 
@@ -105,19 +124,25 @@ export default function CartPage() {
   const processPayment = async () => {
     setChecking(true);
     try {
-      for (const item of cart) {
-        await fetch('/api/v1/orders', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            productId: item.productId,
-            quantity: item.quantity,
-          }),
-        });
+      // Une seule commande porte l'ensemble du panier : l'API attend `items`
+      // et calcule le total et la taxe sur la totalite des lignes. L'ancien
+      // envoi ligne par ligne (`{ productId, quantity }`) etait rejete en 500,
+      // et la reponse n'etant pas verifiee, l'echec passait pour un succes :
+      // le panier etait vide et aucune commande n'existait.
+      const res = await fetch('/api/v1/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          items: cart.map((item) => ({ productId: item.productId, quantity: item.quantity })),
+          shippingMethod: currentZone?.name,
+        }),
+      });
+      if (!res.ok) {
+        throw new Error('order-creation-failed');
       }
-      localStorage.removeItem('cart');
-      setCart([]);
+      removeLocalStorage(CART_KEY);
+      window.dispatchEvent(new Event('aa-cart-updated'));
       setPaymentStep('success');
       track('payment_success', { amount: total, provider: selectedOperator });
       addToast('success', L(`Paiement Séquestre ${selectedOperator.toUpperCase()} validé avec succès !`, `Escrow Payment ${selectedOperator.toUpperCase()} successfully validated!`));
@@ -134,8 +159,6 @@ export default function CartPage() {
     }
   };
 
-  if (!mounted) return null;
-
   return (
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar />
@@ -148,9 +171,11 @@ export default function CartPage() {
               <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
                 🛒
               </div>
-              <h2 className="text-xl font-extrabold text-slate-900 mb-2">
+              {/* Seul titre de la page dans cet etat : il doit etre le h1,
+                  sans quoi l'ecran ne commence par aucun niveau 1. */}
+              <h1 className="text-xl font-extrabold text-slate-900 mb-2">
                 {L('Votre panier est vide', 'Your cart is empty')}
-              </h2>
+              </h1>
               <p className="text-sm text-slate-500 mb-6">
                 {L('Explorez le catalogue pour ajouter des pièces neuves ou d\'occasion contrôlée.', 'Explore the catalog to add new or certified used parts.')}
               </p>
@@ -376,14 +401,33 @@ export default function CartPage() {
                   </label>
                   <div className="flex items-center border border-slate-300 rounded-xl overflow-hidden px-3 py-2 bg-slate-50">
                     <span className="text-xs font-bold text-slate-500 mr-2">+225</span>
-                    <input
-                      type="tel"
+                    <input aria-label="Numéro de téléphone Mobile Money"
+                      type="tel" inputMode="tel" autoComplete="tel"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={(e) => {
+                        const next = e.target.value;
+                        setPhone(next);
+                        // Le préfixe désigne l'opérateur : on évite à l'acheteur
+                        // de choisir lui-même, source d'échec de paiement.
+                        const operator = detectOperator(next, 'CI');
+                        if (operator) setSelectedOperator(OPERATOR_TO_UI_ID[operator]);
+                      }}
                       placeholder="0708091011"
-                      className="w-full text-sm font-mono font-bold bg-transparent outline-none text-slate-900"
+                      className="w-full text-sm font-mono font-bold bg-transparent outline-none text-slate-900 focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-1 rounded"
                     />
                   </div>
+                  {detectedOperator ? (
+                    <p className="mt-1.5 text-xs font-semibold text-emerald-700">
+                      {L(
+                        `Numéro ${OPERATOR_LABELS[detectedOperator]} reconnu — opérateur présélectionné.`,
+                        `${OPERATOR_LABELS[detectedOperator]} number detected — provider preselected.`,
+                      )}
+                    </p>
+                  ) : phone.length > 0 && !isValidPhone(phone, 'CI') ? (
+                    <p className="mt-1.5 text-xs font-semibold text-slate-500">
+                      {L('Numéro ivoirien à 10 chiffres, ex. 07 12 34 56 78.', 'Ivorian 10-digit number, e.g. 07 12 34 56 78.')}
+                    </p>
+                  ) : null}
                 </div>
 
                 <button
@@ -412,7 +456,7 @@ export default function CartPage() {
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
                     {L('Code PIN de démonstration', 'Demo PIN Code')} (ex: 1234)
                   </label>
-                  <input
+                  <input aria-label="Code PIN Mobile Money"
                     type="password"
                     maxLength={4}
                     value={pinCode}

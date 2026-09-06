@@ -50,7 +50,9 @@ export default function Home() {
       <WebsiteStructuredData />
       <FAQStructuredData items={faq} />
       <Header />
-      <LandingPage />
+      <main>
+        <LandingPage />
+      </main>
       <Footer />
     </div>
   );

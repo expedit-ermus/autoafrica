@@ -166,14 +166,14 @@ export default function UssdPaymentFlow() {
                 <div className="border border-gray-600 rounded p-3 space-y-3">
                   <div>
                     <label htmlFor="ussd-phone" className="text-[10px] text-gray-400">Numéro de téléphone :</label>
-                    <input id="ussd-phone" type="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
-                      className="w-full bg-transparent border-b border-gray-600 text-white text-sm py-1 outline-none font-mono"
+                    <input id="ussd-phone" type="tel" inputMode="tel" autoComplete="tel" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)}
+                      className="w-full bg-transparent border-b border-gray-600 text-white text-sm py-1 outline-none font-mono focus-visible:border-orange-400 focus-visible:ring-2 focus-visible:ring-orange-400/60 rounded-sm"
                       placeholder="+225 XX XX XX XX" />
                   </div>
                   <div>
                     <label htmlFor="ussd-amount" className="text-[10px] text-gray-400">Montant (FCFA) :</label>
-                    <input id="ussd-amount" type="number" value={amount} onChange={(e) => setAmount(e.target.value)}
-                      className="w-full bg-transparent border-b border-gray-600 text-white text-sm py-1 outline-none font-mono"
+                    <input id="ussd-amount" type="number" inputMode="numeric" value={amount} onChange={(e) => setAmount(e.target.value)}
+                      className="w-full bg-transparent border-b border-gray-600 text-white text-sm py-1 outline-none font-mono focus-visible:border-orange-400 focus-visible:ring-2 focus-visible:ring-orange-400/60 rounded-sm"
                       placeholder="500000" />
                   </div>
                 </div>
@@ -194,7 +194,7 @@ export default function UssdPaymentFlow() {
                   <div>
                     <label htmlFor="ussd-pin" className="text-[10px] text-gray-400">Entrez votre PIN :</label>
                     <input id="ussd-pin" type="password" value={pin} onChange={(e) => setPin(e.target.value)}
-                      className="w-full bg-transparent border-b border-gray-600 text-white text-sm py-1 outline-none font-mono text-center tracking-[0.5em]"
+                      className="w-full bg-transparent border-b border-gray-600 text-white text-sm py-1 outline-none font-mono focus-visible:border-orange-400 focus-visible:ring-2 focus-visible:ring-orange-400/60 rounded-sm text-center tracking-[0.5em]"
                       placeholder="••••" maxLength={4} />
                   </div>
                 </div>

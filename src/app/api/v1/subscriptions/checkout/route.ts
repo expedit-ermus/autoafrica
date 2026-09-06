@@ -1,14 +1,24 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { subscriptionsService } from '@/modules/subscriptions/subscriptions.service'
+import { requireAuth, requireTenantId } from '@/modules/auth/auth.guard'
+import { handleApiError } from '@/shared/utils/response'
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { tenantId, userId, planId, billingCycle, paymentMethod, phone } = body
+    const auth = await requireAuth(request)
 
-    if (!tenantId || !userId || !planId || !paymentMethod || !phone) {
+    // L'identité du payeur et son organisation viennent de la session.
+    // Les accepter depuis le corps de la requête permettait de souscrire
+    // un abonnement Mobile Money au nom de n'importe quel utilisateur.
+    const tenantId = await requireTenantId(auth)
+    const userId = auth.userId
+
+    const body = await request.json()
+    const { planId, billingCycle, paymentMethod, phone } = body
+
+    if (!planId || !paymentMethod || !phone) {
       return NextResponse.json(
-        { error: 'Champs requis manquants (tenantId, userId, planId, paymentMethod, phone)' },
+        { error: 'Champs requis manquants (planId, paymentMethod, phone)' },
         { status: 400 }
       )
     }
@@ -23,10 +33,7 @@ export async function POST(request: Request) {
     })
 
     return NextResponse.json(result)
-  } catch (error: any) {
-    return NextResponse.json(
-      { error: error?.message || 'Erreur lors du règlement de l’abonnement SaaS' },
-      { status: 500 }
-    )
+  } catch (error) {
+    return handleApiError(error)
   }
 }

@@ -1,9 +1,13 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { seoAuditService } from '@/modules/seo/seo-audit.service'
+import { requireRole } from '@/modules/auth/auth.guard'
 import { handleApiError } from '@/shared/utils/response'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Rapport d'audit interne : admins uniquement.
+    await requireRole(request, ['SUPER_ADMIN', 'TENANT_ADMIN'])
+
     const report = await seoAuditService.getLatestAuditReport()
 
     return NextResponse.json({
@@ -15,8 +19,10 @@ export async function GET() {
   }
 }
 
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
+    await requireRole(request, ['SUPER_ADMIN', 'TENANT_ADMIN'])
+
     const report = await seoAuditService.runNewAudit()
 
     return NextResponse.json({

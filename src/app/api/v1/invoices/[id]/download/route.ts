@@ -1,35 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { financeService } from '@/modules/finance/finance.service';
+import { requireAuth, requireOwnershipOrAdmin } from '@/modules/auth/auth.guard';
+import { handleApiError } from '@/shared/utils/response';
 
 type Context = { params: Promise<{ id: string }> };
 
-export async function GET(_request: NextRequest, context: Context) {
+export async function GET(request: NextRequest, context: Context) {
   try {
+    const auth = await requireAuth(request);
     const { id } = await context.params;
-    let invoice;
-    try {
-      invoice = await financeService.getInvoiceById(id);
-    } catch {
-      // Fallback dummy for testing or preview
-      invoice = {
-        id,
-        invoiceNumber: `INV-${id.substring(0, 8).toUpperCase()}`,
-        createdAt: new Date(),
-        status: 'PAID',
-        currency: 'XOF',
-        subtotal: 125000,
-        taxRate: 18,
-        taxAmount: 22500,
-        totalAmount: 147500,
-        sellerId: 'Vendeur AutoAfrique',
-        buyerId: 'Client Pro',
-        notes: 'Facture normalisée selon réglementations UEMOA.',
-        order: {
-          id: 'ORD-89412',
-          status: 'PAID',
-        },
-      };
-    }
+
+    // Laisse remonter NotFoundError : une facture inexistante doit renvoyer 404,
+    // jamais un document fabrique (sinon l'enumeration d'identifiants est silencieuse).
+    const invoice = await financeService.getInvoiceById(id);
+
+    // Accessible a l'acheteur, au vendeur de la facture, ou a un admin plateforme.
+    requireOwnershipOrAdmin(
+      auth,
+      [invoice.buyerId, invoice.sellerId],
+      'Acces non autorise a cette facture',
+    );
 
     const htmlContent = `<!DOCTYPE html>
 <html lang="fr">
@@ -121,7 +111,8 @@ export async function GET(_request: NextRequest, context: Context) {
         'Content-Type': 'text/html; charset=utf-8',
       },
     });
-  } catch {
-    return new NextResponse('Erreur de génération de facture', { status: 500 });
+  } catch (error) {
+    // Conserve les vrais statuts : 401 non connecte, 403 pas proprietaire, 404 introuvable.
+    return handleApiError(error);
   }
 }

@@ -18,7 +18,7 @@ export default function LivraisonPiecesGareRoutierePage() {
       author={{ name: 'Équipe AutoAfrique', role: 'Spécialistes Logistique Auto' }}
       datePublished="2026-08-02"
       mainImage={{
-        url: '/images/hero-bg.jpg',
+        url: '/images/livraison-express-abidjan.jpg',
         alt: 'Colis et pièces automobiles prêts à l\'expédition par coursier et car de transport à Abidjan',
         caption: 'L\'acheminement rapide depuis les hubs d\'Abidjan permet de dépanner les véhicules partout en Côte d\'Ivoire.',
       }}

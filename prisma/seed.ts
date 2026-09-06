@@ -18,6 +18,7 @@ import { PrismaClient } from '../src/generated/prisma/client'
 import { PrismaLibSql } from '@prisma/adapter-libsql'
 import bcrypt from 'bcryptjs'
 import path from 'path'
+import type { PayoutMethod } from '../src/generated/prisma/client'
 
 const dbUrl = process.env.DATABASE_URL || `file:${path.join(process.cwd(), 'dev.db')}`
 const adapter = new PrismaLibSql({ url: dbUrl })
@@ -229,7 +230,7 @@ async function main() {
         displayName: s.displayName,
         city: s.city,
         phoneForOrders: s.phone,
-        payoutMethod: s.payoutMethod as any,
+        payoutMethod: s.payoutMethod as PayoutMethod,
         payoutNumber: s.payoutNumber,
         verified: true,
         rating: s.rating,

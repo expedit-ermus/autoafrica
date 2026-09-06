@@ -18,7 +18,7 @@ export default function PaiementMobileMoneyPage() {
       author={{ name: 'Équipe AutoAfrique', role: 'Experts Automobile' }}
       datePublished="2026-08-08"
       mainImage={{
-        url: '/images/hero-bg.jpg',
+        url: '/images/sequestre-mobile-money.jpg',
         alt: 'Paiement mobile sur smartphone avec opérateurs Mobile Money à Abidjan',
         caption: 'Le paiement Mobile Money sécurisé par séquestre transforme le commerce auto à Abidjan et en Afrique de l\'Ouest.',
       }}

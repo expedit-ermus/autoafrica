@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
@@ -28,15 +28,25 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<'google' | 'facebook' | null>(null);
 
+  // Retour depuis le fournisseur OAuth : ?provider=google|facebook.
+  // On redirige sans toucher a l'etat : la page est remplacee dans la foulee,
+  // afficher un indicateur de chargement ne servirait qu'a declencher un rendu
+  // supplementaire pour rien.
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const provider = params.get('provider');
-      if (provider === 'google' || provider === 'facebook') {
-        handleSocialAuth(provider);
-      }
+    const params = new URLSearchParams(window.location.search);
+    const provider = params.get('provider');
+    if (provider === 'google' || provider === 'facebook') {
+      window.location.href = `/api/v1/auth/social?provider=${provider}`;
     }
   }, []);
+
+  // Depuis un clic utilisateur : l'indicateur a du sens, la page reste visible
+  // le temps de la redirection.
+  const handleSocialAuth = useCallback((provider: 'google' | 'facebook') => {
+    setSocialLoading(provider);
+    addToast('info', `Redirection vers ${provider === 'google' ? 'Google' : 'Facebook'}...`);
+    window.location.href = `/api/v1/auth/social?provider=${provider}`;
+  }, [addToast]);
 
 
   const selectedCountry = COUNTRIES.find(c => c.code === form.country);
@@ -54,12 +64,6 @@ export default function RegisterPage() {
   };
 
   const passwordStrength = getPasswordStrength(form.password);
-
-  const handleSocialAuth = (provider: 'google' | 'facebook') => {
-    setSocialLoading(provider);
-    addToast('info', `Redirection vers ${provider === 'google' ? 'Google' : 'Facebook'}...`);
-    window.location.href = `/api/v1/auth/social?provider=${provider}`;
-  };
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -291,7 +295,7 @@ export default function RegisterPage() {
                   <div className="auth-input-icon">
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
                   </div>
-                  <input id="reg-email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  <input id="reg-email" type="email" inputMode="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
                     autoComplete="email"
                     className="input-field !min-h-[52px] rounded-xl text-base" placeholder="vous@exemple.com" required />
                 </div>
@@ -305,7 +309,7 @@ export default function RegisterPage() {
                     <div className="auth-input-icon">
                       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>
                     </div>
-                    <input id="reg-phone" type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    <input id="reg-phone" type="tel" inputMode="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
                       autoComplete="tel"
                       className="input-field !min-h-[52px] rounded-xl text-base" placeholder="+225 XX XX XX XX" />
                   </div>

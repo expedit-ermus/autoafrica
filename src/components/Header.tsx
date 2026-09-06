@@ -1,13 +1,15 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
 import { useWishlist } from '@/contexts/WishlistContext';
 import { track } from '@/lib/tracking';
+import { useDialogBehavior } from '@/lib/useDialogBehavior';
 
 const categoryNav = [
   { name: { fr: 'Catalogue complet', en: 'Full catalogue' }, icon: '🔍', href: '/catalogue', highlight: true },
+  { name: { fr: 'Recherche par véhicule', en: 'Search by vehicle' }, icon: '🚗', href: '/recherche-pieces' },
   { name: { fr: 'Tarifs & Abonnements', en: 'Pricing' }, icon: '🏷️', href: '/tarifs' },
   { name: { fr: 'Pneus & Jantes', en: 'Tyres & Rims' }, icon: '🛞', href: '/categories/pneus-jantes' },
   { name: { fr: 'Freinage', en: 'Brakes' }, icon: '🔴', href: '/categories/frein' },
@@ -28,6 +30,10 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const router = useRouter();
+
+  // Tiroir mobile : Échap, blocage du défilement, piège de focus, retour au bouton.
+  const closeMobileMenu = useCallback(() => setMobileMenuOpen(false), []);
+  const drawerRef = useDialogBehavior<HTMLDivElement>(mobileMenuOpen, closeMobileMenu);
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -332,7 +338,13 @@ export default function Header() {
             aria-hidden="true"
           />
           {/* Drawer */}
-          <div className="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-slate-950 border-r border-slate-800 z-50 md:hidden flex flex-col shadow-2xl overflow-y-auto">
+          <div
+            ref={drawerRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={locale === 'fr' ? 'Menu de navigation' : 'Navigation menu'}
+            className="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] bg-slate-950 border-r border-slate-800 z-50 md:hidden flex flex-col shadow-2xl overflow-y-auto"
+          >
             {/* Drawer header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800">
               <Link href="/" onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-2">

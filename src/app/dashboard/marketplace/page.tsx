@@ -404,7 +404,7 @@ export default function MarketplacePage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
-                <input
+                <input aria-label="Rechercher une pièce (référence, marque, modèle)"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -555,15 +555,15 @@ export default function MarketplacePage() {
                 <div className="bg-white rounded-2xl border border-gray-100/80 p-4 shadow-sm">
                   <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Fourchette de prix</h4>
                   <div className="space-y-3">
-                    <input
-                      type="number"
+                    <input aria-label="Prix minimum (FCFA)"
+                      type="number" inputMode="numeric"
                       value={minPrice}
                       onChange={(e) => setMinPrice(e.target.value)}
                       placeholder="Prix minimum (FCFA)"
                       className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-400 transition-all"
                     />
-                    <input
-                      type="number"
+                    <input aria-label="Prix maximum (FCFA)"
+                      type="number" inputMode="numeric"
                       value={maxPrice}
                       onChange={(e) => setMaxPrice(e.target.value)}
                       placeholder="Prix maximum (FCFA)"
@@ -628,9 +628,9 @@ export default function MarketplacePage() {
                       <option value="USED">Occasion</option>
                       <option value="REFURBISHED">Reconditionné</option>
                     </select>
-                    <input type="number" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} placeholder="Prix min"
+                    <input aria-label="Prix min" type="number" inputMode="numeric" value={minPrice} onChange={(e) => setMinPrice(e.target.value)} placeholder="Prix min"
                       className="px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20" />
-                    <input type="number" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} placeholder="Prix max"
+                    <input aria-label="Prix max" type="number" inputMode="numeric" value={maxPrice} onChange={(e) => setMaxPrice(e.target.value)} placeholder="Prix max"
                       className="px-3 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20" />
                     <button onClick={() => { setPage(1); setShowFilters(false); }}
                       className="px-4 py-2.5 rounded-xl bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 transition-colors">

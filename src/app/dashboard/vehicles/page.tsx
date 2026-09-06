@@ -163,9 +163,9 @@ export default function VehiclesPage() {
           )}
         </div>
         <div className="p-4 flex flex-col flex-1 min-w-0">
-          <h3 className="font-bold text-gray-900 text-sm leading-snug line-clamp-1 group-hover:text-orange-600 transition-colors">
+          <h2 className="font-bold text-gray-900 text-sm leading-snug line-clamp-1 group-hover:text-orange-600 transition-colors">
             {v.brand?.name || ''} {v.name} {v.year}
-          </h3>
+          </h2>
           <p className="text-[11px] text-gray-500 mt-1">
             {v.city ? `📍 ${v.city}` : 'Côte d\'Ivoire'}
             {v.gearbox ? ` • ${GEARBOX_LABELS[v.gearbox] || v.gearbox}` : ''}

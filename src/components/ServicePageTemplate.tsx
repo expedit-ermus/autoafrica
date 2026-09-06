@@ -86,7 +86,7 @@ export default function ServicePageTemplate(props: ServicePageProps) {
       <FAQStructuredData items={props.faq} />
       <BreadcrumbStructuredData items={breadcrumbItems} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         {/* 1. Fil d'Ariane */}
         <nav aria-label="Breadcrumb" className="mb-6 flex items-center gap-2 text-xs font-semibold text-gray-500">
           <Link href="/" className="hover:text-orange-600 transition-colors">Accueil</Link>
@@ -237,7 +237,7 @@ export default function ServicePageTemplate(props: ServicePageProps) {
             {props.ctaButtonText}
           </Link>
         </section>
-      </main>
+      </div>
     </div>
   )
 }

@@ -322,7 +322,7 @@ export default function RepairManualsPage() {
           </aside>
 
           {/* Main Content Area */}
-          <main className="w-full lg:w-3/4">
+          <div className="w-full lg:w-3/4">
             
             {/* Results Count & Sort */}
             <div className="flex justify-between items-center mb-6">
@@ -390,7 +390,7 @@ export default function RepairManualsPage() {
                 </p>
               </div>
             )}
-          </main>
+          </div>
         </div>
       </div>
 

@@ -6,6 +6,16 @@ import { useToast } from '@/contexts/ToastContext';
 import { useApp } from '@/contexts/AppContext';
 import Modal from '@/components/Modal';
 import { Product } from '@/shared/types';
+import { BRAND_SLUGS, CATEGORY_SLUGS } from '@/lib/marketplace-catalog';
+import type { ReplenishmentPrediction, ReplenishmentSummary } from '@/modules/inventory/smart-replenishment.service';
+
+/** Etats de piece exposes par l'enum Prisma `ProductCondition`. */
+const PRODUCT_CONDITIONS = [
+  { value: 'NEW', label: 'Neuve' },
+  { value: 'OEM_AFTERMARKET', label: 'Adaptable / aftermarket' },
+  { value: 'REFURBISHED', label: 'Reconditionnee' },
+  { value: 'USED', label: "Occasion controlee" },
+];
 
 type Warehouse = {
   id: string;
@@ -78,7 +88,10 @@ export default function InventoryPage() {
   const [stock, setStock] = useState<StockLine[]>([]);
   const [movements, setMovements] = useState<Movement[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [replenishmentData, setReplenishmentData] = useState<{ summary?: any; predictions?: any[] }>({});
+  const [replenishmentData, setReplenishmentData] = useState<{
+    summary?: ReplenishmentSummary;
+    predictions?: ReplenishmentPrediction[];
+  }>({});
 
   const [search, setSearch] = useState('');
   const [warehouseFilter, setWarehouseFilter] = useState('all');
@@ -87,10 +100,13 @@ export default function InventoryPage() {
   const [showAddWarehouse, setShowAddWarehouse] = useState(false);
   const [showAddStock, setShowAddStock] = useState(false);
   const [showTransfer, setShowTransfer] = useState(false);
+  const [showPublishProduct, setShowPublishProduct] = useState(false);
 
   const [whForm, setWhForm] = useState({ name: '', code: '', type: 'STANDARD', country: 'CI', city: '', address: '', capacity: '' });
   const [stockForm, setStockForm] = useState({ productId: '', warehouseId: '', quantity: '', reserved: '0', binLocation: '', lotNumber: '', costBasis: '' });
   const [transferForm, setTransferForm] = useState({ productId: '', fromWarehouseId: '', toWarehouseId: '', quantity: '', notes: '' });
+  const emptyProductForm = { title: '', reference: '', brand: '', category: '', price: '', stock: '', condition: 'USED', description: '' };
+  const [productForm, setProductForm] = useState(emptyProductForm);
 
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -115,10 +131,15 @@ export default function InventoryPage() {
           wRes.json(), sRes.json(), mRes.json(), pRes.json(), rRes.json()
         ]);
 
-        if (wData.success) setWarehouses(wData.data || []);
-        if (sData.success) setStock(sData.data || []);
-        if (mData.success) setMovements(mData.data || []);
-        if (pData.success) setProducts(pData.data || pData.products || []);
+        // Ces routes renvoient une reponse paginee : { data: { data: [...],
+        // total, page, pageSize } }. La page lisait `data` directement et
+        // stockait donc un objet la ou un tableau etait attendu : `stats`
+        // appelait `stock.reduce`, ce qui levait une TypeError et faisait
+        // tomber tout l'ecran dans le filet d'erreur global.
+        if (wData.success) setWarehouses(wData.data?.data || wData.data || []);
+        if (sData.success) setStock(sData.data?.data || sData.data || []);
+        if (mData.success) setMovements(mData.data?.data || mData.data || []);
+        if (pData.success) setProducts(pData.data?.data || pData.data || pData.products || []);
         if (rData.predictions) setReplenishmentData(rData);
       } catch (err) {
         console.error(err);
@@ -171,6 +192,46 @@ export default function InventoryPage() {
     } catch (err) {
       console.error(err);
       addToast('error', 'Erreur lors de la creation de l\'entrepôt');
+    }
+  };
+
+  /**
+   * Publication d'une piece au catalogue. `POST /api/v1/products` (R106) existait
+   * mais n'etait appele par aucun ecran : un vendeur ne pouvait pas mettre une
+   * piece en vente depuis l'application. La creation est hebergee ici plutot que
+   * sur une route dediee, `02-ROUTES.md` n'en prevoyant aucune.
+   */
+  const handlePublishProduct = async () => {
+    if (!productForm.title.trim() || !productForm.price) {
+      addToast('error', 'Titre et prix requis');
+      return;
+    }
+    try {
+      const res = await fetch('/api/v1/products', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+        body: JSON.stringify({
+          title: productForm.title.trim(),
+          reference: productForm.reference.trim() || undefined,
+          brand: productForm.brand || undefined,
+          category: productForm.category || undefined,
+          description: productForm.description.trim() || undefined,
+          price: Number(productForm.price),
+          stock: Number(productForm.stock) || 0,
+          condition: productForm.condition,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        addToast('success', `Piece « ${productForm.title.trim()} » publiee au catalogue`);
+        setShowPublishProduct(false);
+        setProductForm(emptyProductForm);
+        setRefreshKey(k => k + 1);
+      } else {
+        addToast('error', data.error || data.message || 'Erreur lors de la publication');
+      }
+    } catch (err) {
+      console.error(err);
+      addToast('error', 'Erreur lors de la publication de la piece');
     }
   };
 
@@ -294,6 +355,9 @@ export default function InventoryPage() {
               <button onClick={() => setShowTransfer(true)} className="px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-all">
                 {L('Transférer', 'Transfer')}
               </button>
+              <button onClick={() => setShowPublishProduct(true)} className="px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-all">
+                {L('Publier une pièce', 'Publish a part')}
+              </button>
               <button
                 onClick={() => { if (tab === 'warehouses') setShowAddWarehouse(true); else setShowAddStock(true); }}
                 className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold shadow-lg shadow-orange-500/25 hover:opacity-95 transition-opacity"
@@ -338,7 +402,7 @@ export default function InventoryPage() {
             <>
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="p-4 flex flex-col sm:flex-row gap-3 border-b border-gray-100">
-                  <input
+                  <input aria-label="Rechercher"
                     type="text"
                     placeholder="Rechercher..."
                     value={search}
@@ -501,7 +565,7 @@ export default function InventoryPage() {
                       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div>
                           <span className="text-xs uppercase font-extrabold tracking-wider text-amber-400">🔥 Moteur IA Prédictif</span>
-                          <h3 className="text-xl font-extrabold text-white mt-1">Prédiction des Ruptures & Commandes Suggérées</h3>
+                          <h2 className="text-xl font-extrabold text-white mt-1">Prédiction des Ruptures & Commandes Suggérées</h2>
                           <p className="text-xs text-slate-300 mt-1 max-w-2xl">
                             Calcule les seuils de réapprovisionnement en temps réel en fonction du délai fournisseur, de la consommation quotidienne et des pics saisonniers (Saison des pluies & Fêtes).
                           </p>
@@ -528,7 +592,7 @@ export default function InventoryPage() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-50">
-                        {(replenishmentData.predictions || []).map((p: any) => (
+                        {(replenishmentData.predictions || []).map((p) => (
                           <tr key={p.productId} className="hover:bg-gray-50/60 transition-colors">
                             <td className="px-4 py-3">
                               <span className="font-semibold text-gray-900 block">{p.productName}</span>
@@ -587,38 +651,38 @@ export default function InventoryPage() {
           <Modal isOpen={showAddWarehouse} onClose={() => setShowAddWarehouse(false)} title="Nouvel entrepôt">
             <div className="space-y-4">
               <div>
-                <label className={labelCls}>Nom *</label>
-                <input type="text" value={whForm.name} onChange={e => setWhForm({ ...whForm, name: e.target.value })} className={inputCls} placeholder="Ex : Depot Abidjan Zone Industrielle" />
+                <label htmlFor="nom" className={labelCls}>Nom *</label>
+                <input id="nom" type="text" value={whForm.name} onChange={e => setWhForm({ ...whForm, name: e.target.value })} className={inputCls} placeholder="Ex : Depot Abidjan Zone Industrielle" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Code</label>
-                  <input type="text" value={whForm.code} onChange={e => setWhForm({ ...whForm, code: e.target.value })} className={inputCls} placeholder="Ex : ABJ-01" />
+                  <label htmlFor="code" className={labelCls}>Code</label>
+                  <input id="code" type="text" value={whForm.code} onChange={e => setWhForm({ ...whForm, code: e.target.value })} className={inputCls} placeholder="Ex : ABJ-01" />
                 </div>
                 <div>
-                  <label className={labelCls}>Type</label>
-                  <select value={whForm.type} onChange={e => setWhForm({ ...whForm, type: e.target.value })} className={inputCls}>
+                  <label htmlFor="type" className={labelCls}>Type</label>
+                  <select id="type" value={whForm.type} onChange={e => setWhForm({ ...whForm, type: e.target.value })} className={inputCls}>
                     {WAREHOUSE_TYPES.map(t => <option key={t} value={t}>{TYPE_LABELS[t]}</option>)}
                   </select>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Pays *</label>
-                  <input type="text" value={whForm.country} onChange={e => setWhForm({ ...whForm, country: e.target.value })} className={inputCls} />
+                  <label htmlFor="pays" className={labelCls}>Pays *</label>
+                  <input id="pays" type="text" value={whForm.country} onChange={e => setWhForm({ ...whForm, country: e.target.value })} className={inputCls} />
                 </div>
                 <div>
-                  <label className={labelCls}>Ville *</label>
-                  <input type="text" value={whForm.city} onChange={e => setWhForm({ ...whForm, city: e.target.value })} className={inputCls} />
+                  <label htmlFor="ville" className={labelCls}>Ville *</label>
+                  <input id="ville" type="text" value={whForm.city} onChange={e => setWhForm({ ...whForm, city: e.target.value })} className={inputCls} />
                 </div>
               </div>
               <div>
-                <label className={labelCls}>Adresse</label>
-                <input type="text" value={whForm.address} onChange={e => setWhForm({ ...whForm, address: e.target.value })} className={inputCls} />
+                <label htmlFor="adresse" className={labelCls}>Adresse</label>
+                <input id="adresse" type="text" value={whForm.address} onChange={e => setWhForm({ ...whForm, address: e.target.value })} className={inputCls} />
               </div>
               <div>
-                <label className={labelCls}>Capacite (unites)</label>
-                <input type="number" value={whForm.capacity} onChange={e => setWhForm({ ...whForm, capacity: e.target.value })} className={inputCls} />
+                <label htmlFor="capacite-unites" className={labelCls}>Capacite (unites)</label>
+                <input id="capacite-unites" type="number" inputMode="numeric" value={whForm.capacity} onChange={e => setWhForm({ ...whForm, capacity: e.target.value })} className={inputCls} />
               </div>
               <button onClick={handleAddWarehouse} className="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold hover:opacity-95 transition-opacity">
                 Creer l&apos;entrepôt
@@ -626,45 +690,99 @@ export default function InventoryPage() {
             </div>
           </Modal>
 
+          <Modal isOpen={showPublishProduct} onClose={() => setShowPublishProduct(false)} title="Publier une pièce au catalogue">
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="piece-titre" className={labelCls}>Designation *</label>
+                <input id="piece-titre" type="text" value={productForm.title} onChange={e => setProductForm({ ...productForm, title: e.target.value })} className={inputCls} placeholder="Ex : Plaquettes de frein avant Corolla" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="piece-reference" className={labelCls}>Reference OEM</label>
+                  <input id="piece-reference" type="text" value={productForm.reference} onChange={e => setProductForm({ ...productForm, reference: e.target.value })} className={inputCls} placeholder="Ex : 04465-0K280" />
+                </div>
+                <div>
+                  <label htmlFor="piece-etat" className={labelCls}>Etat *</label>
+                  <select id="piece-etat" value={productForm.condition} onChange={e => setProductForm({ ...productForm, condition: e.target.value })} className={inputCls}>
+                    {PRODUCT_CONDITIONS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="piece-marque" className={labelCls}>Marque</label>
+                  <select id="piece-marque" value={productForm.brand} onChange={e => setProductForm({ ...productForm, brand: e.target.value })} className={inputCls}>
+                    <option value="">— Selectionner —</option>
+                    {BRAND_SLUGS.map(b => <option key={b.slug} value={b.name}>{b.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="piece-categorie" className={labelCls}>Categorie</label>
+                  <select id="piece-categorie" value={productForm.category} onChange={e => setProductForm({ ...productForm, category: e.target.value })} className={inputCls}>
+                    <option value="">— Selectionner —</option>
+                    {CATEGORY_SLUGS.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="piece-prix" className={labelCls}>Prix (XOF) *</label>
+                  <input id="piece-prix" type="number" inputMode="numeric" value={productForm.price} onChange={e => setProductForm({ ...productForm, price: e.target.value })} className={inputCls} min="0" />
+                </div>
+                <div>
+                  <label htmlFor="piece-stock" className={labelCls}>Quantite disponible</label>
+                  <input id="piece-stock" type="number" inputMode="numeric" value={productForm.stock} onChange={e => setProductForm({ ...productForm, stock: e.target.value })} className={inputCls} min="0" />
+                </div>
+              </div>
+              <div>
+                <label htmlFor="piece-description" className={labelCls}>Description</label>
+                <textarea id="piece-description" rows={3} value={productForm.description} onChange={e => setProductForm({ ...productForm, description: e.target.value })} className={inputCls} placeholder="Etat, compatibilite, garantie…" />
+              </div>
+              <button onClick={handlePublishProduct} className="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold hover:opacity-95 transition-opacity">
+                Publier au catalogue
+              </button>
+            </div>
+          </Modal>
+
           <Modal isOpen={showAddStock} onClose={() => setShowAddStock(false)} title="Nouvelle ligne de stock">
             <div className="space-y-4">
               <div>
-                <label className={labelCls}>Produit *</label>
-                <select value={stockForm.productId} onChange={e => setStockForm({ ...stockForm, productId: e.target.value })} className={inputCls}>
+                <label htmlFor="produit" className={labelCls}>Produit *</label>
+                <select id="produit" value={stockForm.productId} onChange={e => setStockForm({ ...stockForm, productId: e.target.value })} className={inputCls}>
                   <option value="">— Selectionner —</option>
                   {products.map(p => <option key={p.id} value={p.id}>{p.title} {p.reference ? `(${p.reference})` : ''}</option>)}
                 </select>
               </div>
               <div>
-                <label className={labelCls}>Entrepôt *</label>
-                <select value={stockForm.warehouseId} onChange={e => setStockForm({ ...stockForm, warehouseId: e.target.value })} className={inputCls}>
+                <label htmlFor="entrepot" className={labelCls}>Entrepôt *</label>
+                <select id="entrepot" value={stockForm.warehouseId} onChange={e => setStockForm({ ...stockForm, warehouseId: e.target.value })} className={inputCls}>
                   <option value="">— Selectionner —</option>
                   {warehouses.map(w => <option key={w.id} value={w.id}>{w.name} ({w.city})</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Quantite</label>
-                  <input type="number" value={stockForm.quantity} onChange={e => setStockForm({ ...stockForm, quantity: e.target.value })} className={inputCls} min="0" />
+                  <label htmlFor="quantite" className={labelCls}>Quantite</label>
+                  <input id="quantite" type="number" inputMode="numeric" value={stockForm.quantity} onChange={e => setStockForm({ ...stockForm, quantity: e.target.value })} className={inputCls} min="0" />
                 </div>
                 <div>
-                  <label className={labelCls}>Reserve</label>
-                  <input type="number" value={stockForm.reserved} onChange={e => setStockForm({ ...stockForm, reserved: e.target.value })} className={inputCls} min="0" />
+                  <label htmlFor="reserve" className={labelCls}>Reserve</label>
+                  <input id="reserve" type="number" inputMode="numeric" value={stockForm.reserved} onChange={e => setStockForm({ ...stockForm, reserved: e.target.value })} className={inputCls} min="0" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Emplacement</label>
-                  <input type="text" value={stockForm.binLocation} onChange={e => setStockForm({ ...stockForm, binLocation: e.target.value })} className={inputCls} placeholder="Ex : A-01-03" />
+                  <label htmlFor="emplacement" className={labelCls}>Emplacement</label>
+                  <input id="emplacement" type="text" value={stockForm.binLocation} onChange={e => setStockForm({ ...stockForm, binLocation: e.target.value })} className={inputCls} placeholder="Ex : A-01-03" />
                 </div>
                 <div>
-                  <label className={labelCls}>Lot</label>
-                  <input type="text" value={stockForm.lotNumber} onChange={e => setStockForm({ ...stockForm, lotNumber: e.target.value })} className={inputCls} />
+                  <label htmlFor="lot" className={labelCls}>Lot</label>
+                  <input id="lot" type="text" value={stockForm.lotNumber} onChange={e => setStockForm({ ...stockForm, lotNumber: e.target.value })} className={inputCls} />
                 </div>
               </div>
               <div>
-                <label className={labelCls}>Cout unitaire (XOF)</label>
-                <input type="number" value={stockForm.costBasis} onChange={e => setStockForm({ ...stockForm, costBasis: e.target.value })} className={inputCls} min="0" />
+                <label htmlFor="cout-unitaire-xof" className={labelCls}>Cout unitaire (XOF)</label>
+                <input id="cout-unitaire-xof" type="number" inputMode="numeric" value={stockForm.costBasis} onChange={e => setStockForm({ ...stockForm, costBasis: e.target.value })} className={inputCls} min="0" />
               </div>
               <button onClick={handleAddStock} className="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold hover:opacity-95 transition-opacity">
                 Ajouter la ligne de stock
@@ -675,35 +793,35 @@ export default function InventoryPage() {
           <Modal isOpen={showTransfer} onClose={() => setShowTransfer(false)} title="Transferer du stock">
             <div className="space-y-4">
               <div>
-                <label className={labelCls}>Produit *</label>
-                <select value={transferForm.productId} onChange={e => setTransferForm({ ...transferForm, productId: e.target.value })} className={inputCls}>
+                <label htmlFor="produit-2" className={labelCls}>Produit *</label>
+                <select id="produit-2" value={transferForm.productId} onChange={e => setTransferForm({ ...transferForm, productId: e.target.value })} className={inputCls}>
                   <option value="">— Selectionner —</option>
                   {products.map(p => <option key={p.id} value={p.id}>{p.title} {p.reference ? `(${p.reference})` : ''}</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Depuis *</label>
-                  <select value={transferForm.fromWarehouseId} onChange={e => setTransferForm({ ...transferForm, fromWarehouseId: e.target.value })} className={inputCls}>
+                  <label htmlFor="depuis" className={labelCls}>Depuis *</label>
+                  <select id="depuis" value={transferForm.fromWarehouseId} onChange={e => setTransferForm({ ...transferForm, fromWarehouseId: e.target.value })} className={inputCls}>
                     <option value="">— Selectionner —</option>
                     {warehouses.map(w => <option key={w.id} value={w.id}>{w.name} ({w.city})</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className={labelCls}>Vers *</label>
-                  <select value={transferForm.toWarehouseId} onChange={e => setTransferForm({ ...transferForm, toWarehouseId: e.target.value })} className={inputCls}>
+                  <label htmlFor="vers" className={labelCls}>Vers *</label>
+                  <select id="vers" value={transferForm.toWarehouseId} onChange={e => setTransferForm({ ...transferForm, toWarehouseId: e.target.value })} className={inputCls}>
                     <option value="">— Selectionner —</option>
                     {warehouses.map(w => <option key={w.id} value={w.id}>{w.name} ({w.city})</option>)}
                   </select>
                 </div>
               </div>
               <div>
-                <label className={labelCls}>Quantite *</label>
-                <input type="number" value={transferForm.quantity} onChange={e => setTransferForm({ ...transferForm, quantity: e.target.value })} className={inputCls} min="1" />
+                <label htmlFor="quantite-2" className={labelCls}>Quantite *</label>
+                <input id="quantite-2" type="number" inputMode="numeric" value={transferForm.quantity} onChange={e => setTransferForm({ ...transferForm, quantity: e.target.value })} className={inputCls} min="1" />
               </div>
               <div>
-                <label className={labelCls}>Notes</label>
-                <textarea value={transferForm.notes} onChange={e => setTransferForm({ ...transferForm, notes: e.target.value })} className={inputCls} rows={2} />
+                <label htmlFor="notes" className={labelCls}>Notes</label>
+                <textarea id="notes" value={transferForm.notes} onChange={e => setTransferForm({ ...transferForm, notes: e.target.value })} className={inputCls} rows={2} />
               </div>
               <button onClick={handleTransfer} className="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold hover:opacity-95 transition-opacity">
                 Transferer le stock

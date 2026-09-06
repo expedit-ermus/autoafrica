@@ -262,7 +262,7 @@ export default function SuppliersPage() {
 
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row gap-3">
-                  <input
+                  <input aria-label="Rechercher un fournisseur (nom, contact, email...)"
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                     placeholder="Rechercher un fournisseur (nom, contact, email...)"
@@ -360,7 +360,7 @@ export default function SuppliersPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
                   <label className={labelCls}>Nom *</label>
-                  <input className={inputCls} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="ex: Guangzhou Parts Co." />
+                  <input aria-label="Guangzhou Parts Co" className={inputCls} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="ex: Guangzhou Parts Co." />
                 </div>
                 <div>
                   <label className={labelCls}>Raison sociale</label>
@@ -406,7 +406,7 @@ export default function SuppliersPage() {
                 </div>
                 <div>
                   <label className={labelCls}>Delai moyen (jours)</label>
-                  <input className={inputCls} type="number" min="0" value={form.leadTimeDays} onChange={e => setForm({ ...form, leadTimeDays: e.target.value })} />
+                  <input className={inputCls} type="number" inputMode="numeric" min="0" value={form.leadTimeDays} onChange={e => setForm({ ...form, leadTimeDays: e.target.value })} />
                 </div>
                 <div>
                   <label className={labelCls}>Conditions de paiement</label>
@@ -416,7 +416,7 @@ export default function SuppliersPage() {
                 </div>
                 <div>
                   <label className={labelCls}>MOQ (quantite min.)</label>
-                  <input className={inputCls} type="number" min="0" value={form.moq} onChange={e => setForm({ ...form, moq: e.target.value })} />
+                  <input className={inputCls} type="number" inputMode="numeric" min="0" value={form.moq} onChange={e => setForm({ ...form, moq: e.target.value })} />
                 </div>
                 <div className="col-span-2 flex items-center gap-2 pt-1">
                   <input id="supplier-verified" type="checkbox" checked={form.verified} onChange={e => setForm({ ...form, verified: e.target.checked })} className="w-4 h-4 rounded border-gray-300 text-orange-500 focus:ring-orange-500" />

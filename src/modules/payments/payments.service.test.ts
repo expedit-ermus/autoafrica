@@ -65,7 +65,7 @@ describe('PaymentsService', () => {
     });
 
     it('rejects paying another user order', async () => {
-      mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'other', status: 'PENDING', currency: 'XOF' });
+      mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'other', status: 'PENDING', currency: 'XOF', totalAmount: 1000 });
 
       await expect(
         paymentsService.process({ orderId: 'o1', method: 'orange_money', phone: '+225', amount: 1000 }, 'user-1'),
@@ -73,7 +73,7 @@ describe('PaymentsService', () => {
     });
 
     it('rejects an already paid order', async () => {
-      mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'user-1', status: 'PAID', currency: 'XOF' });
+      mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'user-1', status: 'PAID', currency: 'XOF', totalAmount: 1000 });
 
       await expect(
         paymentsService.process({ orderId: 'o1', method: 'orange_money', phone: '+225', amount: 1000 }, 'user-1'),
@@ -81,7 +81,7 @@ describe('PaymentsService', () => {
     });
 
     it('rejects an unsupported payment method', async () => {
-      mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'user-1', status: 'PENDING', currency: 'XOF' });
+      mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'user-1', status: 'PENDING', currency: 'XOF', totalAmount: 1000 });
       mockProviders.isSupported.mockReturnValue(false);
 
       await expect(
@@ -90,7 +90,7 @@ describe('PaymentsService', () => {
     });
 
     it('completes a payment and marks the order as paid', async () => {
-      mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'user-1', status: 'PENDING', currency: 'XOF', orderNumber: 'AAF-1' });
+      mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'user-1', status: 'PENDING', currency: 'XOF', orderNumber: 'AAF-1', totalAmount: 1000 });
       mockProviders.isSupported.mockReturnValue(true);
       const provider = makeProvider();
       mockProviders.get.mockReturnValue(provider);
@@ -112,8 +112,53 @@ describe('PaymentsService', () => {
       expect(result.transactionId).toBe('txn-1');
     });
 
+    it('refuse un montant client inférieur au total de la commande', async () => {
+      mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'user-1', status: 'PENDING', currency: 'XOF', totalAmount: 500000 });
+      mockProviders.isSupported.mockReturnValue(true);
+      mockProviders.get.mockReturnValue(makeProvider());
+
+      await expect(
+        paymentsService.process({ orderId: 'o1', method: 'orange_money', phone: '+225', amount: 100 }, 'user-1'),
+      ).rejects.toBeInstanceOf(ValidationError);
+
+      expect(mockPrisma.payment.create).not.toHaveBeenCalled();
+      expect(mockPrisma.order.update).not.toHaveBeenCalled();
+    });
+
+    it('débite le total de la commande, pas le montant annoncé par le client', async () => {
+      mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'user-1', status: 'PENDING', currency: 'XOF', orderNumber: 'AAF-1', totalAmount: 500000 });
+      mockProviders.isSupported.mockReturnValue(true);
+      const provider = makeProvider();
+      mockProviders.get.mockReturnValue(provider);
+      mockPrisma.payment.create.mockResolvedValue({ id: 'pay-1', amount: 500000 });
+
+      // Aucun montant transmis : le serveur retient celui de la commande.
+      await paymentsService.process({ orderId: 'o1', method: 'orange_money', phone: '+225' }, 'user-1');
+
+      expect(mockPrisma.payment.create).toHaveBeenCalledWith(
+        expect.objectContaining({ data: expect.objectContaining({ amount: 500000 }) }),
+      );
+      expect(provider.initiate).toHaveBeenCalledWith(
+        expect.objectContaining({ amount: 500000 }),
+      );
+    });
+
+    it('rejette proprement un second paiement simultané sur la même commande', async () => {
+      mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'user-1', status: 'PENDING', currency: 'XOF', orderNumber: 'AAF-1', totalAmount: 1000 });
+      mockProviders.isSupported.mockReturnValue(true);
+      mockProviders.get.mockReturnValue(makeProvider());
+      // Contrainte d'unicité sur Payment.orderId : la seconde demande échoue.
+      mockPrisma.payment.create.mockRejectedValue(Object.assign(new Error('Unique constraint'), { code: 'P2002' }));
+
+      await expect(
+        paymentsService.process({ orderId: 'o1', method: 'orange_money', phone: '+225' }, 'user-1'),
+      ).rejects.toBeInstanceOf(ValidationError);
+
+      expect(mockPrisma.order.update).not.toHaveBeenCalled();
+    });
+
     it('marks the payment failed and throws PaymentError when the provider rejects', async () => {
-      mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'user-1', status: 'PENDING', currency: 'XOF', orderNumber: 'AAF-1' });
+      mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'user-1', status: 'PENDING', currency: 'XOF', orderNumber: 'AAF-1', totalAmount: 1000 });
       mockProviders.isSupported.mockReturnValue(true);
       mockProviders.get.mockReturnValue(makeProvider({ success: false, error: 'Solde insuffisant', message: 'Insufficient balance' }));
       mockPrisma.payment.create.mockResolvedValue({ id: 'pay-1' });

@@ -1,9 +1,11 @@
 import { NextRequest } from 'next/server'
 import { inventoryService } from '@/modules/inventory/inventory.service'
+import { requireAuth } from '@/modules/auth/auth.guard'
 import { successResponse, handleApiError } from '@/shared/utils/response'
 
 export async function GET(request: NextRequest) {
   try {
+    await requireAuth(request)
     const { searchParams } = new URL(request.url)
     const filters = {
       type: searchParams.get('type') || undefined,

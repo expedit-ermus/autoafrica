@@ -53,6 +53,7 @@
 | API responses | Stale-while-revalidate | 60s |
 | Pages privees | No-cache | - |
 | Landing page | ISR | 3600s |
+| Catalogue (`/catalogue`) | ISR | 60s |
 
 ### Bundle budget
 
@@ -62,6 +63,27 @@
 | CSS total | < 50KB gzipped |
 | JS par page | < 80KB gzipped |
 | Image hero | < 150KB |
+
+### Mesure
+
+```bash
+npm run build && npm run check:budget
+```
+
+`scripts/check-bundle-budget.mjs` lit les balises `<script>` et
+`<link rel=stylesheet>` de chaque page prerendue dans `.next/server/app`, gzip
+les fichiers correspondants et compare le resultat par route aux budgets
+ci-dessus. Le JS propre a la page est obtenu en retranchant le socle commun,
+defini comme l ensemble des chunks charges par toutes les routes. La commande
+sort en erreur si un budget est depasse.
+
+Deux precisions de methode :
+
+- Le bundle de polyfills que Next sert en `noModule` (~39 Ko gzip) est exclu :
+  les navigateurs modernes ne le telechargent jamais. Le compter surevaluait
+  chaque route d'autant et faisait paraitre l'ensemble du projet hors budget.
+- Seules les routes prerendues produisent un HTML mesurable. Les routes
+  dynamiques ne sont pas couvertes, mais partagent le meme socle commun.
 
 ## Monitoring
 

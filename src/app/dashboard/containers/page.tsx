@@ -244,7 +244,7 @@ export default function ContainersPage() {
 
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="p-4 flex flex-col sm:flex-row gap-3 border-b border-gray-100">
-                  <input
+                  <input aria-label="Rechercher (numero, port, navire, bon de commande...)"
                     type="text"
                     placeholder="Rechercher (numero, port, navire, bon de commande...)"
                     value={search}
@@ -320,58 +320,58 @@ export default function ContainersPage() {
           <Modal isOpen={showAdd} onClose={() => setShowAdd(false)} title="Nouveau conteneur">
             <div className="space-y-4">
               <div>
-                <label className={labelCls}>Numero de conteneur *</label>
-                <input type="text" value={form.containerNumber} onChange={e => setForm({ ...form, containerNumber: e.target.value })} className={inputCls} placeholder="Ex : MSKU1234567" />
+                <label htmlFor="numero-de-conteneur" className={labelCls}>Numero de conteneur *</label>
+                <input id="numero-de-conteneur" type="text" value={form.containerNumber} onChange={e => setForm({ ...form, containerNumber: e.target.value })} className={inputCls} placeholder="Ex : MSKU1234567" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Taille</label>
-                  <select value={form.size} onChange={e => setForm({ ...form, size: e.target.value })} className={inputCls}>
+                  <label htmlFor="taille" className={labelCls}>Taille</label>
+                  <select id="taille" value={form.size} onChange={e => setForm({ ...form, size: e.target.value })} className={inputCls}>
                     {SIZES.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className={labelCls}>Statut</label>
-                  <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} className={inputCls}>
+                  <label htmlFor="statut" className={labelCls}>Statut</label>
+                  <select id="statut" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} className={inputCls}>
                     {CONTAINER_STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s] || s}</option>)}
                   </select>
                 </div>
               </div>
               <div>
-                <label className={labelCls}>Bon de commande</label>
-                <select value={form.purchaseOrderId} onChange={e => setForm({ ...form, purchaseOrderId: e.target.value })} className={inputCls}>
+                <label htmlFor="bon-de-commande" className={labelCls}>Bon de commande</label>
+                <select id="bon-de-commande" value={form.purchaseOrderId} onChange={e => setForm({ ...form, purchaseOrderId: e.target.value })} className={inputCls}>
                   <option value="">— Aucun —</option>
                   {purchaseOrders.map(po => <option key={po.id} value={po.id}>{po.poNumber}</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Port d&apos;origine *</label>
-                  <input type="text" value={form.originPort} onChange={e => setForm({ ...form, originPort: e.target.value })} className={inputCls} placeholder="Ex : Ningbo" />
+                  <label htmlFor="port-d-apos-origine" className={labelCls}>Port d&apos;origine *</label>
+                  <input id="port-d-apos-origine" type="text" value={form.originPort} onChange={e => setForm({ ...form, originPort: e.target.value })} className={inputCls} placeholder="Ex : Ningbo" />
                 </div>
                 <div>
-                  <label className={labelCls}>Port de destination *</label>
-                  <input type="text" value={form.destinationPort} onChange={e => setForm({ ...form, destinationPort: e.target.value })} className={inputCls} placeholder="Ex : Abidjan" />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className={labelCls}>Ligne maritime</label>
-                  <input type="text" value={form.shippingLine} onChange={e => setForm({ ...form, shippingLine: e.target.value })} className={inputCls} placeholder="Ex : CMA CGM" />
-                </div>
-                <div>
-                  <label className={labelCls}>Navire</label>
-                  <input type="text" value={form.vesselName} onChange={e => setForm({ ...form, vesselName: e.target.value })} className={inputCls} />
+                  <label htmlFor="port-de-destination" className={labelCls}>Port de destination *</label>
+                  <input id="port-de-destination" type="text" value={form.destinationPort} onChange={e => setForm({ ...form, destinationPort: e.target.value })} className={inputCls} placeholder="Ex : Abidjan" />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>ETA origine</label>
-                  <input type="date" value={form.etaOrigin} onChange={e => setForm({ ...form, etaOrigin: e.target.value })} className={inputCls} />
+                  <label htmlFor="ligne-maritime" className={labelCls}>Ligne maritime</label>
+                  <input id="ligne-maritime" type="text" value={form.shippingLine} onChange={e => setForm({ ...form, shippingLine: e.target.value })} className={inputCls} placeholder="Ex : CMA CGM" />
                 </div>
                 <div>
-                  <label className={labelCls}>ETA destination</label>
-                  <input type="date" value={form.etaDestination} onChange={e => setForm({ ...form, etaDestination: e.target.value })} className={inputCls} />
+                  <label htmlFor="navire" className={labelCls}>Navire</label>
+                  <input id="navire" type="text" value={form.vesselName} onChange={e => setForm({ ...form, vesselName: e.target.value })} className={inputCls} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="eta-origine" className={labelCls}>ETA origine</label>
+                  <input id="eta-origine" type="date" value={form.etaOrigin} onChange={e => setForm({ ...form, etaOrigin: e.target.value })} className={inputCls} />
+                </div>
+                <div>
+                  <label htmlFor="eta-destination" className={labelCls}>ETA destination</label>
+                  <input id="eta-destination" type="date" value={form.etaDestination} onChange={e => setForm({ ...form, etaDestination: e.target.value })} className={inputCls} />
                 </div>
               </div>
               <button onClick={handleAdd} className="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold hover:opacity-95 transition-opacity">

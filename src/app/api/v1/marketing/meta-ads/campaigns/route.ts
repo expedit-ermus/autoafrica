@@ -1,14 +1,28 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { metaAdsService } from '@/modules/marketing/meta-ads.service'
+import { requireRole } from '@/modules/auth/auth.guard'
+import { handleApiError } from '@/shared/utils/response'
 
-export async function GET() {
-  const campaigns = await metaAdsService.listCampaigns()
-  const summary = await metaAdsService.getPerformanceSummary()
-  return NextResponse.json({ summary, campaigns })
+const MARKETING_ROLES = ['SUPER_ADMIN', 'TENANT_ADMIN']
+
+export async function GET(request: NextRequest) {
+  try {
+    // Budgets et performances des campagnes : admins uniquement.
+    await requireRole(request, MARKETING_ROLES)
+
+    const campaigns = await metaAdsService.listCampaigns()
+    const summary = await metaAdsService.getPerformanceSummary()
+    return NextResponse.json({ summary, campaigns })
+  } catch (error) {
+    return handleApiError(error)
+  }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    // Lancer une campagne engage un budget journalier reel : admins uniquement.
+    await requireRole(request, MARKETING_ROLES)
+
     const body = await request.json()
     const { name, targetCity, dailyBudget } = body
 
@@ -30,10 +44,7 @@ export async function POST(request: Request) {
       message: 'Campagne Meta Ads lancée avec succès !',
       campaign,
     })
-  } catch (error: any) {
-    return NextResponse.json(
-      { error: error?.message || 'Erreur lors du lancement de la campagne Meta Ads' },
-      { status: 500 }
-    )
+  } catch (error) {
+    return handleApiError(error)
   }
 }

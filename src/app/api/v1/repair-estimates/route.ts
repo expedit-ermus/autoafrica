@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { repairEstimatorService, RepairLeadPayload } from '@/modules/repair-estimator/repair-estimator.service'
+import { handleApiError } from '@/shared/utils/response'
 
 export async function GET() {
   const options = repairEstimatorService.getOptions()
@@ -25,10 +26,7 @@ export async function POST(request: Request) {
       message: 'Votre devis a été validé et votre RDV est enregistré !',
       data: result,
     })
-  } catch (error: any) {
-    return NextResponse.json(
-      { error: error?.message || 'Erreur lors de la réservation du devis' },
-      { status: 500 }
-    )
+  } catch (error) {
+    return handleApiError(error)
   }
 }

@@ -183,7 +183,7 @@ export default function NotificationsPage() {
               ))}
             </div>
             <div className="flex flex-col sm:flex-row gap-2 lg:ml-auto">
-              <input
+              <input aria-label="Rechercher une notification"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Rechercher une notification..."

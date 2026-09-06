@@ -4,7 +4,6 @@ import Sidebar from '@/components/Sidebar';
 import DashboardTopBar from '@/components/DashboardTopBar';
 import { FAQStructuredData } from '@/components/StructuredData';
 import { useToast } from '@/contexts/ToastContext';
-import { useApp } from '@/contexts/AppContext';
 
 const faq = [
   { q: 'Comment ajouter une pièce à mon inventaire ?', a: 'Allez dans l\'onglet Inventaire, cliquez sur "+ Ajouter", remplissez les informations (titre, marque, catégorie, prix, stock) et enregistrez. Votre pièce apparaîtra immédiatement sur le marketplace.', category: 'Inventaire' },
@@ -42,8 +41,6 @@ const categoryColors: Record<string, string> = {
 
 export default function HelpPage() {
   const { addToast } = useToast();
-  const { locale } = useApp();
-  const L = (fr: string, en: string) => (locale === 'fr' ? fr : en);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [faqFilter, setFaqFilter] = useState('all');
   const [contactForm, setContactForm] = useState({ name: '', email: '', subject: '', message: '' });
@@ -117,7 +114,7 @@ export default function HelpPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            <input
+            <input aria-label="Rechercher dans l'aide... (ex: paiement, commande, inventaire)"
               type="text"
               placeholder="Rechercher dans l'aide... (ex: paiement, commande, inventaire)"
               value={searchQuery}

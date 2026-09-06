@@ -1,9 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { metaAdsService } from '@/modules/marketing/meta-ads.service'
+import { requireRole } from '@/modules/auth/auth.guard'
 import { handleApiError } from '@/shared/utils/response'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Donnees publicitaires (budgets, performances) : admins uniquement.
+    await requireRole(request, ['SUPER_ADMIN', 'TENANT_ADMIN'])
+
     const campaigns = await metaAdsService.listCampaigns()
     const summary = await metaAdsService.getPerformanceSummary()
 
@@ -19,6 +23,8 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
+    await requireRole(req, ['SUPER_ADMIN', 'TENANT_ADMIN'])
+
     const body = await req.json()
     const campaign = await metaAdsService.createCampaign(body)
 

@@ -259,7 +259,7 @@ export default function PurchaseOrdersPage() {
 
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row gap-3">
-                  <input
+                  <input aria-label="Rechercher (n°, fournisseur, tracking...)"
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                     placeholder="Rechercher (n°, fournisseur, tracking...)"
@@ -335,8 +335,8 @@ export default function PurchaseOrdersPage() {
               <h2 className="text-lg font-bold text-gray-900 mb-4">Nouveau bon de commande</h2>
               <div className="grid grid-cols-2 gap-4">
                 <div className="col-span-2">
-                  <label className={labelCls}>Fournisseur *</label>
-                  <select className={inputCls} value={form.supplierId} onChange={e => setForm({ ...form, supplierId: e.target.value })}>
+                  <label htmlFor="fournisseur" className={labelCls}>Fournisseur *</label>
+                  <select id="fournisseur" className={inputCls} value={form.supplierId} onChange={e => setForm({ ...form, supplierId: e.target.value })}>
                     <option value="">Selectionner un fournisseur</option>
                     {suppliers.map(s => (
                       <option key={s.id} value={s.id}>{s.name} ({s.country})</option>
@@ -344,14 +344,14 @@ export default function PurchaseOrdersPage() {
                   </select>
                 </div>
                 <div>
-                  <label className={labelCls}>Statut</label>
-                  <select className={inputCls} value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
+                  <label htmlFor="statut" className={labelCls}>Statut</label>
+                  <select id="statut" className={inputCls} value={form.status} onChange={e => setForm({ ...form, status: e.target.value })}>
                     {PO_STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s] || s}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className={labelCls}>Devise</label>
-                  <select className={inputCls} value={form.currency} onChange={e => setForm({ ...form, currency: e.target.value })}>
+                  <label htmlFor="devise" className={labelCls}>Devise</label>
+                  <select id="devise" className={inputCls} value={form.currency} onChange={e => setForm({ ...form, currency: e.target.value })}>
                     <option value="USD">USD</option>
                     <option value="CNY">CNY</option>
                     <option value="EUR">EUR</option>
@@ -359,8 +359,8 @@ export default function PurchaseOrdersPage() {
                   </select>
                 </div>
                 <div>
-                  <label className={labelCls}>Conditions de paiement</label>
-                  <select className={inputCls} value={form.paymentTerms} onChange={e => setForm({ ...form, paymentTerms: e.target.value })}>
+                  <label htmlFor="conditions-de-paiement" className={labelCls}>Conditions de paiement</label>
+                  <select id="conditions-de-paiement" className={inputCls} value={form.paymentTerms} onChange={e => setForm({ ...form, paymentTerms: e.target.value })}>
                     <option value="NET30">NET30</option>
                     <option value="NET60">NET60</option>
                     <option value="NET90">NET90</option>
@@ -370,22 +370,22 @@ export default function PurchaseOrdersPage() {
                   </select>
                 </div>
                 <div>
-                  <label className={labelCls}>Transport</label>
-                  <select className={inputCls} value={form.shippingMethod} onChange={e => setForm({ ...form, shippingMethod: e.target.value })}>
+                  <label htmlFor="transport" className={labelCls}>Transport</label>
+                  <select id="transport" className={inputCls} value={form.shippingMethod} onChange={e => setForm({ ...form, shippingMethod: e.target.value })}>
                     {SHIPPING_METHODS.map(m => <option key={m} value={m}>{m.toUpperCase()}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className={labelCls}>Echeance</label>
-                  <input className={inputCls} type="date" value={form.expectedDate} onChange={e => setForm({ ...form, expectedDate: e.target.value })} />
+                  <label htmlFor="echeance" className={labelCls}>Echeance</label>
+                  <input id="echeance" className={inputCls} type="date" value={form.expectedDate} onChange={e => setForm({ ...form, expectedDate: e.target.value })} />
                 </div>
                 <div className="col-span-2">
-                  <label className={labelCls}>Tracking number</label>
-                  <input className={inputCls} value={form.trackingNumber} onChange={e => setForm({ ...form, trackingNumber: e.target.value })} />
+                  <label htmlFor="tracking-number" className={labelCls}>Tracking number</label>
+                  <input id="tracking-number" className={inputCls} value={form.trackingNumber} onChange={e => setForm({ ...form, trackingNumber: e.target.value })} />
                 </div>
                 <div className="col-span-2">
-                  <label className={labelCls}>Notes</label>
-                  <textarea className={inputCls} rows={2} value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} />
+                  <label htmlFor="notes" className={labelCls}>Notes</label>
+                  <textarea id="notes" className={inputCls} rows={2} value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} />
                 </div>
               </div>
 
@@ -402,30 +402,30 @@ export default function PurchaseOrdersPage() {
                 <div className="space-y-2">
                   {items.map((item, idx) => (
                     <div key={idx} className="grid grid-cols-12 gap-2 items-center">
-                      <input
+                      <input aria-label="Produit"
                         className={`${inputCls} col-span-4`}
                         placeholder="Produit"
                         value={item.productName}
                         onChange={e => { const next = [...items]; next[idx] = { ...item, productName: e.target.value }; setItems(next); }}
                       />
-                      <input
+                      <input aria-label="Reference"
                         className={`${inputCls} col-span-3`}
                         placeholder="Reference"
                         value={item.reference}
                         onChange={e => { const next = [...items]; next[idx] = { ...item, reference: e.target.value }; setItems(next); }}
                       />
-                      <input
+                      <input aria-label="Quantité commandée"
                         className={`${inputCls} col-span-2`}
                         placeholder="Qte"
-                        type="number"
+                        type="number" inputMode="numeric"
                         min="1"
                         value={item.quantity}
                         onChange={e => { const next = [...items]; next[idx] = { ...item, quantity: e.target.value }; setItems(next); }}
                       />
-                      <input
+                      <input aria-label="Prix unitaire en FCFA"
                         className={`${inputCls} col-span-2`}
                         placeholder="PU"
-                        type="number"
+                        type="number" inputMode="numeric"
                         min="0"
                         value={item.unitPrice}
                         onChange={e => { const next = [...items]; next[idx] = { ...item, unitPrice: e.target.value }; setItems(next); }}

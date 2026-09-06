@@ -321,7 +321,7 @@ export default function AnalyticsPage() {
           <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm p-6 mb-8 animate-fade-in">
             <div className="flex items-center justify-between mb-5">
               <div>
-                <h3 className="font-bold text-gray-900 text-sm">Entonnoir de conversion</h3>
+                <h2 className="font-bold text-gray-900 text-sm">Entonnoir de conversion</h2>
                 <p className="text-xs text-gray-400 mt-0.5">Vues produit → commandes ({visitToCartRate}% de conversion vue → panier)</p>
               </div>
             </div>
@@ -357,7 +357,7 @@ export default function AnalyticsPage() {
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm p-6 animate-fade-in">
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Revenus par méthode</h3>
+                  <h2 className="font-bold text-gray-900 text-sm">Revenus par méthode</h2>
                   <p className="text-xs text-gray-400 mt-0.5">Répartition des paiements</p>
                 </div>
                 <div className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center">
@@ -385,7 +385,7 @@ export default function AnalyticsPage() {
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm p-6 animate-fade-in" style={{ animationDelay: '100ms' }}>
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Statut des commandes</h3>
+                  <h2 className="font-bold text-gray-900 text-sm">Statut des commandes</h2>
                   <p className="text-xs text-gray-400 mt-0.5">Répartition par état</p>
                 </div>
                 <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
@@ -416,7 +416,7 @@ export default function AnalyticsPage() {
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm p-6 animate-fade-in" style={{ animationDelay: '200ms' }}>
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Revenus par catégorie</h3>
+                  <h2 className="font-bold text-gray-900 text-sm">Revenus par catégorie</h2>
                   <p className="text-xs text-gray-400 mt-0.5">Performance des catégories</p>
                 </div>
                 <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center">
@@ -442,7 +442,7 @@ export default function AnalyticsPage() {
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm p-6 animate-fade-in" style={{ animationDelay: '300ms' }}>
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Commandes par pays</h3>
+                  <h2 className="font-bold text-gray-900 text-sm">Commandes par pays</h2>
                   <p className="text-xs text-gray-400 mt-0.5">Distribution géographique</p>
                 </div>
                 <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
@@ -494,7 +494,7 @@ export default function AnalyticsPage() {
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm p-6 animate-fade-in" style={{ animationDelay: '400ms' }}>
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Santé du stock</h3>
+                  <h2 className="font-bold text-gray-900 text-sm">Santé du stock</h2>
                   <p className="text-xs text-gray-400 mt-0.5">État de l&apos;inventaire</p>
                 </div>
                 <div className="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
@@ -548,7 +548,7 @@ export default function AnalyticsPage() {
             <div className="lg:col-span-2 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 shadow-sm p-6 animate-fade-in" style={{ animationDelay: '500ms' }}>
               <div className="flex items-center justify-between mb-5">
                 <div>
-                  <h3 className="font-bold text-gray-900 text-sm">Top produits</h3>
+                  <h2 className="font-bold text-gray-900 text-sm">Top produits</h2>
                   <p className="text-xs text-gray-400 mt-0.5">Classement par revenu</p>
                 </div>
                 <div className="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">

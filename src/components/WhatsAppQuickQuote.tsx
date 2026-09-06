@@ -100,7 +100,7 @@ export default function WhatsAppQuickQuote() {
                   <label className="block text-xs font-bold text-gray-700 mb-1">
                     {L('Marque *', 'Make *')}
                   </label>
-                  <input
+                  <input aria-label="Toyota, Peugeot"
                     type="text"
                     required
                     placeholder="Ex: Toyota, Peugeot"
@@ -113,7 +113,7 @@ export default function WhatsAppQuickQuote() {
                   <label className="block text-xs font-bold text-gray-700 mb-1">
                     {L('Modèle *', 'Model *')}
                   </label>
-                  <input
+                  <input aria-label="Corolla, 206, Tucson"
                     type="text"
                     required
                     placeholder="Ex: Corolla, 206, Tucson"
@@ -129,7 +129,7 @@ export default function WhatsAppQuickQuote() {
                   <label className="block text-xs font-bold text-gray-700 mb-1">
                     {L('Année du véhicule', 'Vehicle Year')}
                   </label>
-                  <input
+                  <input aria-label="Année du véhicule"
                     type="text"
                     placeholder="Ex: 2012"
                     value={year}
@@ -165,7 +165,7 @@ export default function WhatsAppQuickQuote() {
                 <label className="block text-xs font-bold text-gray-700 mb-1">
                   {L('Pièce(s) recherchée(s) *', 'Part(s) needed *')}
                 </label>
-                <textarea
+                <textarea aria-label="Alternateur, Amortisseurs avant, Rétroviseur gauche, Disques de frein"
                   required
                   rows={2}
                   placeholder="Ex: Alternateur, Amortisseurs avant, Rétroviseur gauche, Disques de frein..."

@@ -101,7 +101,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="google-site-verification" content="google67878e31d8998189" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/manifest.json" />
       </head>
       <body className={`${inter.variable} ${plusJakartaSans.variable} font-sans antialiased bg-[#F8FAFC] text-slate-900 min-h-screen overflow-x-hidden selection:bg-orange-500/20 selection:text-slate-900`}>
         <a
@@ -113,9 +112,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AppProvider>
           <WishlistProvider>
             <ToastProvider>
-              <main id="main-content" tabIndex={-1}>
+              <div id="main-content" tabIndex={-1}>
                 {children}
-              </main>
+              </div>
               <GlobalWidgets />
               <CookieConsentBanner />
             </ToastProvider>

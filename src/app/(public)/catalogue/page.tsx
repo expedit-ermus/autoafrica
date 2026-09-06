@@ -10,6 +10,14 @@ import { SITE_URL } from '@/lib/structured-data';
 import { productsService } from '@/modules/products/products.service';
 import { Product } from '@/shared/types';
 
+/**
+ * La page etait entierement prerendue au build : une piece publiee ensuite
+ * n'apparaissait jamais au catalogue public. La revalidation reprend la
+ * fraicheur deja retenue pour les reponses API dans `21-PERFORMANCE.md` (60 s),
+ * ce qui reflete le catalogue reel sans rendre la page a chaque requete.
+ */
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: 'Catalogue pièces détachées auto Abidjan',
   description:

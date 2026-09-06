@@ -248,7 +248,7 @@ export default function CustomsPage() {
 
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="p-4 flex flex-col sm:flex-row gap-3 border-b border-gray-100">
-                  <input
+                  <input aria-label="Rechercher (declaration, conteneur, courtier...)"
                     type="text"
                     placeholder="Rechercher (declaration, conteneur, courtier...)"
                     value={search}
@@ -327,65 +327,65 @@ export default function CustomsPage() {
           <Modal isOpen={showAdd} onClose={() => setShowAdd(false)} title="Nouveau dossier douane">
             <div className="space-y-4">
               <div>
-                <label className={labelCls}>Conteneur *</label>
-                <select value={form.containerId} onChange={e => setForm({ ...form, containerId: e.target.value })} className={inputCls}>
+                <label htmlFor="conteneur" className={labelCls}>Conteneur *</label>
+                <select id="conteneur" value={form.containerId} onChange={e => setForm({ ...form, containerId: e.target.value })} className={inputCls}>
                   <option value="">— Selectionner —</option>
                   {containers.map(c => <option key={c.id} value={c.id}>{c.containerNumber}</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Numero de declaration</label>
-                  <input type="text" value={form.declarationNumber} onChange={e => setForm({ ...form, declarationNumber: e.target.value })} className={inputCls} placeholder="Ex : D2024-001" />
+                  <label htmlFor="numero-de-declaration" className={labelCls}>Numero de declaration</label>
+                  <input id="numero-de-declaration" type="text" value={form.declarationNumber} onChange={e => setForm({ ...form, declarationNumber: e.target.value })} className={inputCls} placeholder="Ex : D2024-001" />
                 </div>
                 <div>
-                  <label className={labelCls}>Code SH</label>
-                  <input type="text" value={form.hsCode} onChange={e => setForm({ ...form, hsCode: e.target.value })} className={inputCls} placeholder="Ex : 8708" />
+                  <label htmlFor="code-sh" className={labelCls}>Code SH</label>
+                  <input id="code-sh" type="text" value={form.hsCode} onChange={e => setForm({ ...form, hsCode: e.target.value })} className={inputCls} placeholder="Ex : 8708" />
                 </div>
               </div>
               <div>
-                <label className={labelCls}>Statut</label>
-                <select value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} className={inputCls}>
+                <label htmlFor="statut" className={labelCls}>Statut</label>
+                <select id="statut" value={form.status} onChange={e => setForm({ ...form, status: e.target.value })} className={inputCls}>
                   {CUSTOMS_STATUSES.map(s => <option key={s} value={s}>{STATUS_LABELS[s] || s}</option>)}
                 </select>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Valeur CIF (XOF)</label>
-                  <input type="number" value={form.cifValue} onChange={e => setForm({ ...form, cifValue: e.target.value })} className={inputCls} />
+                  <label htmlFor="valeur-cif-xof" className={labelCls}>Valeur CIF (XOF)</label>
+                  <input id="valeur-cif-xof" type="number" inputMode="numeric" value={form.cifValue} onChange={e => setForm({ ...form, cifValue: e.target.value })} className={inputCls} />
                 </div>
                 <div>
-                  <label className={labelCls}>Total droits (XOF)</label>
-                  <input type="number" value={form.totalDuty} onChange={e => setForm({ ...form, totalDuty: e.target.value })} className={inputCls} />
+                  <label htmlFor="total-droits-xof" className={labelCls}>Total droits (XOF)</label>
+                  <input id="total-droits-xof" type="number" inputMode="numeric" value={form.totalDuty} onChange={e => setForm({ ...form, totalDuty: e.target.value })} className={inputCls} />
                 </div>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className={labelCls}>Droits</label>
-                  <input type="number" value={form.duties} onChange={e => setForm({ ...form, duties: e.target.value })} className={inputCls} />
+                  <label htmlFor="droits" className={labelCls}>Droits</label>
+                  <input id="droits" type="number" inputMode="numeric" value={form.duties} onChange={e => setForm({ ...form, duties: e.target.value })} className={inputCls} />
                 </div>
                 <div>
-                  <label className={labelCls}>Taxes</label>
-                  <input type="number" value={form.taxes} onChange={e => setForm({ ...form, taxes: e.target.value })} className={inputCls} />
+                  <label htmlFor="taxes" className={labelCls}>Taxes</label>
+                  <input id="taxes" type="number" inputMode="numeric" value={form.taxes} onChange={e => setForm({ ...form, taxes: e.target.value })} className={inputCls} />
                 </div>
                 <div>
-                  <label className={labelCls}>Frais</label>
-                  <input type="number" value={form.fees} onChange={e => setForm({ ...form, fees: e.target.value })} className={inputCls} />
+                  <label htmlFor="frais" className={labelCls}>Frais</label>
+                  <input id="frais" type="number" inputMode="numeric" value={form.fees} onChange={e => setForm({ ...form, fees: e.target.value })} className={inputCls} />
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className={labelCls}>Courtier</label>
-                  <input type="text" value={form.broker} onChange={e => setForm({ ...form, broker: e.target.value })} className={inputCls} placeholder="Ex : SGS" />
+                  <label htmlFor="courtier" className={labelCls}>Courtier</label>
+                  <input id="courtier" type="text" value={form.broker} onChange={e => setForm({ ...form, broker: e.target.value })} className={inputCls} placeholder="Ex : SGS" />
                 </div>
                 <div>
-                  <label className={labelCls}>Contact courtier</label>
-                  <input type="text" value={form.brokerContact} onChange={e => setForm({ ...form, brokerContact: e.target.value })} className={inputCls} />
+                  <label htmlFor="contact-courtier" className={labelCls}>Contact courtier</label>
+                  <input id="contact-courtier" type="text" value={form.brokerContact} onChange={e => setForm({ ...form, brokerContact: e.target.value })} className={inputCls} />
                 </div>
               </div>
               <div>
-                <label className={labelCls}>Notes</label>
-                <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} className={inputCls} rows={2} />
+                <label htmlFor="notes" className={labelCls}>Notes</label>
+                <textarea id="notes" value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} className={inputCls} rows={2} />
               </div>
               <button onClick={handleAdd} className="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold hover:opacity-95 transition-opacity">
                 Creer le dossier douane

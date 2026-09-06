@@ -49,10 +49,11 @@ export class AuthService {
       select: {
         id: true, email: true, firstName: true, lastName: true,
         role: true, status: true, country: true, city: true, shopName: true,
+        tenantId: true,
       },
     })
 
-    const token = generateToken(user.id, user.role, user.status)
+    const token = generateToken(user.id, user.role, user.status, user.tenantId)
     const refreshToken = await generateRefreshToken(user.id)
 
     // Trigger automatic welcome email asynchronously
@@ -79,7 +80,7 @@ export class AuthService {
       data: { lastLoginAt: new Date() },
     })
 
-    const token = generateToken(user.id, user.role, user.status)
+    const token = generateToken(user.id, user.role, user.status, user.tenantId)
     const refreshToken = await generateRefreshToken(user.id)
 
     const { password, ...userWithoutPassword } = user
@@ -99,7 +100,7 @@ export class AuthService {
 
     await prisma.refreshToken.delete({ where: { id: stored.id } })
 
-    const newToken = generateToken(stored.userId, stored.user.role, stored.user.status)
+    const newToken = generateToken(stored.userId, stored.user.role, stored.user.status, stored.user.tenantId)
     const newRefreshToken = await generateRefreshToken(stored.userId)
 
     return { token: newToken, refreshToken: newRefreshToken }

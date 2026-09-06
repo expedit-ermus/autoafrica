@@ -449,7 +449,7 @@ export default function DeliveryPage() {
                 <div className="glass-card animate-fade-in">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-6 pb-4 border-b border-gray-100">
                     <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                      <input
+                      <input aria-label="Rechercher livraison"
                         value={shpSearch}
                         onChange={e => setShpSearch(e.target.value)}
                         placeholder="Rechercher livraison..."
@@ -484,7 +484,7 @@ export default function DeliveryPage() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25" />
                         </svg>
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-1">Aucune livraison</h3>
+                      <h2 className="text-lg font-bold text-gray-900 mb-1">Aucune livraison</h2>
                       <p className="text-sm text-gray-500 mb-5 max-w-sm">
                         {shpSearch || shpStatus !== 'all'
                           ? 'Aucune livraison ne correspond à vos critères. Essayez de modifier vos filtres.'
@@ -573,7 +573,7 @@ export default function DeliveryPage() {
                 <div className="glass-card animate-fade-in">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-6 pb-4 border-b border-gray-100">
                     <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                      <input
+                      <input aria-label="Rechercher tournée"
                         value={routeSearch}
                         onChange={e => setRouteSearch(e.target.value)}
                         placeholder="Rechercher tournée..."
@@ -599,7 +599,7 @@ export default function DeliveryPage() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                         </svg>
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-1">Aucune tournée</h3>
+                      <h2 className="text-lg font-bold text-gray-900 mb-1">Aucune tournée</h2>
                       <p className="text-sm text-gray-500 mb-5 max-w-sm">
                         {routeSearch || routeStatus !== 'all'
                           ? 'Aucune tournée ne correspond à vos critères. Essayez de modifier vos filtres.'
@@ -681,7 +681,7 @@ export default function DeliveryPage() {
                 <div className="glass-card animate-fade-in">
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-6 pb-4 border-b border-gray-100">
                     <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                      <input
+                      <input aria-label="Rechercher véhicule"
                         value={vehSearch}
                         onChange={e => setVehSearch(e.target.value)}
                         placeholder="Rechercher véhicule..."
@@ -707,7 +707,7 @@ export default function DeliveryPage() {
                           <path strokeLinecap="round" strokeLinejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M2 12l4.5-4.5A2 2 0 017.83 7H16a2 2 0 011.414.586L21 11h-3m-9.5-3v9m9-4v-4" />
                         </svg>
                       </div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-1">Aucun véhicule de flotte</h3>
+                      <h2 className="text-lg font-bold text-gray-900 mb-1">Aucun véhicule de flotte</h2>
                       <p className="text-sm text-gray-500 mb-5 max-w-sm">
                         {vehSearch || vehStatus !== 'all'
                           ? 'Aucun véhicule ne correspond à vos critères. Essayez de modifier vos filtres.'
@@ -781,8 +781,8 @@ export default function DeliveryPage() {
           <Modal isOpen={showAddShipment} onClose={() => setShowAddShipment(false)} title="Nouvelle livraison">
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Commande</label>
-                <select
+                <label htmlFor="commande" className="block text-xs font-semibold text-gray-600 mb-1.5">Commande</label>
+                <select id="commande"
                   value={shipmentForm.orderId}
                   onChange={e => setShipmentForm(f => ({ ...f, orderId: e.target.value }))}
                   className="input-field !text-sm"
@@ -795,8 +795,8 @@ export default function DeliveryPage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">N° de suivi</label>
-                  <input
+                  <label htmlFor="n-de-suivi" className="block text-xs font-semibold text-gray-600 mb-1.5">N° de suivi</label>
+                  <input id="n-de-suivi"
                     value={shipmentForm.trackingNumber}
                     onChange={e => setShipmentForm(f => ({ ...f, trackingNumber: e.target.value }))}
                     placeholder="Ex : 1234-5678..."
@@ -804,8 +804,8 @@ export default function DeliveryPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Transporteur</label>
-                  <input
+                  <label htmlFor="transporteur" className="block text-xs font-semibold text-gray-600 mb-1.5">Transporteur</label>
+                  <input id="transporteur"
                     value={shipmentForm.carrier}
                     onChange={e => setShipmentForm(f => ({ ...f, carrier: e.target.value }))}
                     placeholder="Ex : partenaire / local..."
@@ -815,8 +815,8 @@ export default function DeliveryPage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Méthode</label>
-                  <select
+                  <label htmlFor="methode" className="block text-xs font-semibold text-gray-600 mb-1.5">Méthode</label>
+                  <select id="methode"
                     value={shipmentForm.method}
                     onChange={e => setShipmentForm(f => ({ ...f, method: e.target.value }))}
                     className="input-field !text-sm"
@@ -827,8 +827,8 @@ export default function DeliveryPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Livraison estimée</label>
-                  <input
+                  <label htmlFor="livraison-estimee" className="block text-xs font-semibold text-gray-600 mb-1.5">Livraison estimée</label>
+                  <input id="livraison-estimee"
                     type="date"
                     value={shipmentForm.estimatedDelivery}
                     onChange={e => setShipmentForm(f => ({ ...f, estimatedDelivery: e.target.value }))}
@@ -837,8 +837,8 @@ export default function DeliveryPage() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Position actuelle</label>
-                <input
+                <label htmlFor="position-actuelle" className="block text-xs font-semibold text-gray-600 mb-1.5">Position actuelle</label>
+                <input id="position-actuelle"
                   value={shipmentForm.currentLocation}
                   onChange={e => setShipmentForm(f => ({ ...f, currentLocation: e.target.value }))}
                   placeholder="Ville / point de passage"
@@ -855,8 +855,8 @@ export default function DeliveryPage() {
           <Modal isOpen={showAddRoute} onClose={() => setShowAddRoute(false)} title="Nouvelle tournée">
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-600 mb-1.5">Nom</label>
-                <input
+                <label htmlFor="nom" className="block text-xs font-semibold text-gray-600 mb-1.5">Nom</label>
+                <input id="nom"
                   value={routeForm.name}
                   onChange={e => setRouteForm(f => ({ ...f, name: e.target.value }))}
                   placeholder="Tournée Yopougon matin"
@@ -865,8 +865,8 @@ export default function DeliveryPage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Ville</label>
-                  <input
+                  <label htmlFor="ville" className="block text-xs font-semibold text-gray-600 mb-1.5">Ville</label>
+                  <input id="ville"
                     value={routeForm.city}
                     onChange={e => setRouteForm(f => ({ ...f, city: e.target.value }))}
                     placeholder="Abidjan"
@@ -874,8 +874,8 @@ export default function DeliveryPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Date</label>
-                  <input
+                  <label htmlFor="date" className="block text-xs font-semibold text-gray-600 mb-1.5">Date</label>
+                  <input id="date"
                     type="date"
                     value={routeForm.date}
                     onChange={e => setRouteForm(f => ({ ...f, date: e.target.value }))}
@@ -885,8 +885,8 @@ export default function DeliveryPage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Véhicule (ID)</label>
-                  <input
+                  <label htmlFor="vehicule-id" className="block text-xs font-semibold text-gray-600 mb-1.5">Véhicule (ID)</label>
+                  <input id="vehicule-id"
                     value={routeForm.vehicleId}
                     onChange={e => setRouteForm(f => ({ ...f, vehicleId: e.target.value }))}
                     placeholder="Optionnel"
@@ -894,9 +894,9 @@ export default function DeliveryPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Distance (km)</label>
-                  <input
-                    type="number"
+                  <label htmlFor="distance-km" className="block text-xs font-semibold text-gray-600 mb-1.5">Distance (km)</label>
+                  <input id="distance-km"
+                    type="number" inputMode="numeric"
                     value={routeForm.distance}
                     onChange={e => setRouteForm(f => ({ ...f, distance: e.target.value }))}
                     placeholder="0"
@@ -915,8 +915,8 @@ export default function DeliveryPage() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Plaque</label>
-                  <input
+                  <label htmlFor="plaque" className="block text-xs font-semibold text-gray-600 mb-1.5">Plaque</label>
+                  <input id="plaque"
                     value={vehicleForm.plateNumber}
                     onChange={e => setVehicleForm(f => ({ ...f, plateNumber: e.target.value }))}
                     placeholder="CI-1234-AB"
@@ -924,8 +924,8 @@ export default function DeliveryPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Type</label>
-                  <select
+                  <label htmlFor="type" className="block text-xs font-semibold text-gray-600 mb-1.5">Type</label>
+                  <select id="type"
                     value={vehicleForm.type}
                     onChange={e => setVehicleForm(f => ({ ...f, type: e.target.value }))}
                     className="input-field !text-sm"
@@ -938,8 +938,8 @@ export default function DeliveryPage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Marque</label>
-                  <input
+                  <label htmlFor="marque" className="block text-xs font-semibold text-gray-600 mb-1.5">Marque</label>
+                  <input id="marque"
                     value={vehicleForm.brand}
                     onChange={e => setVehicleForm(f => ({ ...f, brand: e.target.value }))}
                     placeholder="Toyota"
@@ -947,8 +947,8 @@ export default function DeliveryPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Modèle</label>
-                  <input
+                  <label htmlFor="modele" className="block text-xs font-semibold text-gray-600 mb-1.5">Modèle</label>
+                  <input id="modele"
                     value={vehicleForm.model}
                     onChange={e => setVehicleForm(f => ({ ...f, model: e.target.value }))}
                     placeholder="Hilux"
@@ -958,9 +958,9 @@ export default function DeliveryPage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Année</label>
-                  <input
-                    type="number"
+                  <label htmlFor="annee" className="block text-xs font-semibold text-gray-600 mb-1.5">Année</label>
+                  <input id="annee"
+                    type="number" inputMode="numeric"
                     value={vehicleForm.year}
                     onChange={e => setVehicleForm(f => ({ ...f, year: e.target.value }))}
                     placeholder="2022"
@@ -968,9 +968,9 @@ export default function DeliveryPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Capacité (kg)</label>
-                  <input
-                    type="number"
+                  <label htmlFor="capacite-kg" className="block text-xs font-semibold text-gray-600 mb-1.5">Capacité (kg)</label>
+                  <input id="capacite-kg"
+                    type="number" inputMode="numeric"
                     value={vehicleForm.capacity}
                     onChange={e => setVehicleForm(f => ({ ...f, capacity: e.target.value }))}
                     placeholder="0"
@@ -993,8 +993,8 @@ export default function DeliveryPage() {
                   <span className="text-xs text-gray-500">{showShipmentStatus.order?.orderNumber || ''}</span>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Statut</label>
-                  <select
+                  <label htmlFor="statut" className="block text-xs font-semibold text-gray-600 mb-1.5">Statut</label>
+                  <select id="statut"
                     value={statusForm}
                     onChange={e => setStatusForm(e.target.value)}
                     className="input-field !text-sm"
@@ -1020,8 +1020,8 @@ export default function DeliveryPage() {
                   <p className="text-xs text-gray-500 mt-0.5">{showRouteStatus.city || showRouteStatus.country} · {formatDate(showRouteStatus.date)}</p>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Statut</label>
-                  <select
+                  <label htmlFor="statut-2" className="block text-xs font-semibold text-gray-600 mb-1.5">Statut</label>
+                  <select id="statut-2"
                     value={statusForm}
                     onChange={e => setStatusForm(e.target.value)}
                     className="input-field !text-sm"

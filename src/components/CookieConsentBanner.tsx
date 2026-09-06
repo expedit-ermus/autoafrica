@@ -1,6 +1,7 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
+import { useLocalStorageValue, writeLocalStorage } from '@/lib/useLocalStorage';
 
 interface CookiePreferences {
   essential: boolean;
@@ -11,10 +12,17 @@ interface CookiePreferences {
 
 const STORAGE_KEY = 'autoafrique_cookie_consent_v1';
 
+/** Un choix a-t-il déjà été enregistré ? */
+const hasDecided = (raw: string | null) => raw !== null;
+
 export default function CookieConsentBanner() {
   const { locale } = useApp();
   const L = (fr: string, en: string) => (locale === 'en' ? en : fr);
-  const [show, setShow] = useState(false);
+  // Pendant le rendu serveur on suppose un choix déjà fait : le bandeau
+  // n'apparaît qu'une fois la vraie valeur lue côté navigateur, sans clignotement
+  // ni erreur d'hydratation.
+  const decided = useLocalStorageValue(STORAGE_KEY, hasDecided, true);
+  const show = !decided;
   const [showDetails, setShowDetails] = useState(false);
   const [preferences, setPreferences] = useState<CookiePreferences>({
     essential: true,
@@ -23,18 +31,6 @@ export default function CookieConsentBanner() {
     decidedAt: '',
   });
 
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (!saved) {
-        // First visit -> display consent banner
-        setShow(true);
-      }
-    } catch {
-      // Storage blocked or unavailable
-    }
-  }, []);
-
   const handleAcceptAll = () => {
     const prefs: CookiePreferences = {
       essential: true,
@@ -42,12 +38,7 @@ export default function CookieConsentBanner() {
       marketing: true,
       decidedAt: new Date().toISOString(),
     };
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
-    } catch (e) {
-      console.error(e);
-    }
-    setShow(false);
+    writeLocalStorage(STORAGE_KEY, prefs);
   };
 
   const handleSavePreferences = () => {
@@ -56,12 +47,7 @@ export default function CookieConsentBanner() {
       essential: true,
       decidedAt: new Date().toISOString(),
     };
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
-    } catch (e) {
-      console.error(e);
-    }
-    setShow(false);
+    writeLocalStorage(STORAGE_KEY, prefs);
   };
 
   const handleRefuseNonEssential = () => {
@@ -71,12 +57,7 @@ export default function CookieConsentBanner() {
       marketing: false,
       decidedAt: new Date().toISOString(),
     };
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
-    } catch (e) {
-      console.error(e);
-    }
-    setShow(false);
+    writeLocalStorage(STORAGE_KEY, prefs);
   };
 
   if (!show) return null;

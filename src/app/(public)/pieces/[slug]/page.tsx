@@ -17,13 +17,10 @@ async function getProductBySlugOrId(slug: string): Promise<Product | null> {
     const product = await productsService.getById(slug);
     if (product) return product as unknown as Product;
   } catch {
-    // Not found by ID, try list lookup
+    // Pas trouve par identifiant : on tente la colonne `slug`.
   }
-  const result = await productsService.list({}, { page: 1, pageSize: 100 });
-  const rawProducts = (result.data || []) as unknown as Product[];
-  return rawProducts.find(
-    (p) => p.id === slug || (p.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug
-  ) || null;
+  const bySlug = await productsService.getBySlug(slug);
+  return (bySlug as unknown as Product) || null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -86,7 +83,7 @@ export default async function PieceDetailPage({ params }: Props) {
         ]}
       />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
         {/* Fil d'ariane */}
         <nav className="flex items-center gap-2 text-xs sm:text-sm text-gray-500 mb-6" aria-label="Fil d'Ariane">
           <Link href="/" className="hover:text-emerald-600">Accueil</Link>
@@ -211,7 +208,7 @@ export default async function PieceDetailPage({ params }: Props) {
             })}
           </div>
         </div>
-      </main>
+      </div>
 
     </div>
   );

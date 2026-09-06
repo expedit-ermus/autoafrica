@@ -77,7 +77,7 @@ export class FinanceService {
     if (filters.sellerId) where.sellerId = filters.sellerId
     if (filters.buyerId) where.buyerId = filters.buyerId
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { invoiceNumber: searchFilter },
         { notes: searchFilter },
@@ -204,7 +204,7 @@ export class FinanceService {
     if (filters.type) where.type = filters.type
     if (filters.active) where.active = filters.active === 'true'
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [{ code: searchFilter }, { name: searchFilter }]
     }
 
@@ -324,7 +324,7 @@ export class FinanceService {
     if (filters.accountId) where.accountId = filters.accountId
     if (filters.type) where.type = filters.type
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { description: searchFilter },
         { reference: searchFilter },

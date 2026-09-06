@@ -18,8 +18,8 @@ export default function ChoisirPiecesOccasionPage() {
       author={{ name: 'Équipe AutoAfrique', role: 'Experts Automobile' }}
       datePublished="2026-08-10"
       mainImage={{
-        url: '/images/hero-bg.jpg',
-        alt: 'Pièces détachées automobiles d\'occasion alignées sur une étagère de garage',
+        url: '/images/pieces-occasion-controlee.jpg',
+        alt: 'Contrôle électrique d\'un moteur d\'occasion devant les rayonnages de pièces d\'un entrepôt d\'Abidjan',
         caption: 'Distinguer une pièce de réemploi fiable d\'une pièce défectueuse est essentiel.',
       }}
       tableOfContents={[
