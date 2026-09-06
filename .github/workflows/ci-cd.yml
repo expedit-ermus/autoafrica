@@ -79,7 +79,13 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx prisma generate
-      - run: npx prisma db push --skip-generate
+      # `--skip-generate` n'existe plus depuis Prisma 7 : la commande sortait en
+      # erreur et le job echouait avant meme d'installer le navigateur.
+      - run: npx prisma db push
+      # Les flux critiques se connectent avec les comptes du seed : sans cette
+      # etape, la base creee par `db push` est vide et tous ces tests echouent.
+      # Les produits, eux, sont crees par les scenarios eux-memes.
+      - run: npm run db:seed:accounts
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
 

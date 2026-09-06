@@ -1074,3 +1074,20 @@ Ces points sortent du perimetre des tests et demandent un arbitrage produit :
 **Limites assumees** : seules les routes prerendues produisent un HTML mesurable ; les routes dynamiques ne sont pas couvertes mais partagent le meme socle. La mesure porte sur gzip, alors qu'un CDN sert generalement du brotli — les tailles reelles transmises sont donc legerement inferieures.
 
 **Impact** : `scripts/check-bundle-budget.mjs`, `package.json`, `docs/21-PERFORMANCE.md`.
+
+---
+
+## D57 : Remise en etat du job E2E de la CI
+
+**Date** : 06/09/2026 — verification de la chaine d'integration avant livraison des travaux D53 a D56.
+
+**Constat** : le job `e2e` de `.github/workflows/ci-cd.yml` etait casse sur deux points, invisibles jusqu'ici parce qu'il ne se declenche que sur `main` (`if: github.ref == 'refs/heads/main'`) et que le job `deploy` ne depend pas de lui.
+
+1. `npx prisma db push --skip-generate` : l'option `--skip-generate` a disparu avec Prisma 7. La commande sortait en erreur (`unknown or unexpected option`) et le job echouait avant meme d'installer le navigateur.
+2. Aucune etape de peuplement : `db push` cree une base vide. Les scenarios de flux critiques ajoutes en D54 se connectent avec les comptes du seed ; sur une base vide, tous echouaient.
+
+**Decision** : `npx prisma db push` sans option (aucune donnee a perdre sur une base neuve, et l'option evite le garde-fou de Prisma 7 sur `--accept-data-loss`), suivi de `npm run db:seed:accounts`. Le seed de demonstration n'est pas necessaire : les scenarios creent eux-memes les pieces dont ils ont besoin.
+
+**Verification** : la sequence exacte de la CI a ete rejouee localement sur une base jetable — `prisma db push`, `db:seed:accounts`, puis `npm run test:e2e` — avec 22/22 tests au vert. Le fichier de test a ensuite ete supprime.
+
+**Impact** : `.github/workflows/ci-cd.yml`.
