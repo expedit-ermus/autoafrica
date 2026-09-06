@@ -1081,13 +1081,18 @@ Ces points sortent du perimetre des tests et demandent un arbitrage produit :
 
 **Date** : 06/09/2026 — verification de la chaine d'integration avant livraison des travaux D53 a D56.
 
-**Constat** : le job `e2e` de `.github/workflows/ci-cd.yml` etait casse sur deux points, invisibles jusqu'ici parce qu'il ne se declenche que sur `main` (`if: github.ref == 'refs/heads/main'`) et que le job `deploy` ne depend pas de lui.
+**Constat** : le job `e2e` de `.github/workflows/ci-cd.yml` etait casse sur trois points, invisibles jusqu'ici parce qu'il ne se declenche que sur `main` (`if: github.ref == 'refs/heads/main'`) et que le job `deploy` ne depend pas de lui.
 
 1. `npx prisma db push --skip-generate` : l'option `--skip-generate` a disparu avec Prisma 7. La commande sortait en erreur (`unknown or unexpected option`) et le job echouait avant meme d'installer le navigateur.
 2. Aucune etape de peuplement : `db push` cree une base vide. Les scenarios de flux critiques ajoutes en D54 se connectent avec les comptes du seed ; sur une base vide, tous echouaient.
+3. Aucune etape de build : `needs: [build]` ordonne les jobs mais ne partage pas le disque entre runners. Le serveur de test lance `next start`, qui s'arrete sur « Could not find a production build in the '.next' directory ». Le job aurait donc echoue meme apres correction des deux premiers points. Verifie en deplacant `.next` puis en lancant `next start`.
 
-**Decision** : `npx prisma db push` sans option (aucune donnee a perdre sur une base neuve, et l'option evite le garde-fou de Prisma 7 sur `--accept-data-loss`), suivi de `npm run db:seed:accounts`. Le seed de demonstration n'est pas necessaire : les scenarios creent eux-memes les pieces dont ils ont besoin.
+**Decision** : `npx prisma db push` sans option (aucune donnee a perdre sur une base neuve, et l'option evite le garde-fou de Prisma 7 sur `--accept-data-loss`), suivi de `npm run db:seed:accounts` et de `npm run build`. Le seed de demonstration n'est pas necessaire : les scenarios creent eux-memes les pieces dont ils ont besoin.
 
-**Verification** : la sequence exacte de la CI a ete rejouee localement sur une base jetable — `prisma db push`, `db:seed:accounts`, puis `npm run test:e2e` — avec 22/22 tests au vert. Le fichier de test a ensuite ete supprime.
+**Portee elargie** : les tests E2E ne tournaient que sur `main`. Une regression n'etait donc signalee qu'une fois la fusion faite — et le job `deploy` n'attend pas `e2e`. La condition `if: github.ref == 'refs/heads/main'` est retiree : le job s'execute desormais aussi sur les pull requests. Les traces Playwright sont publiees en artefact lorsqu'un test echoue.
+
+**Verification** : la sequence complete du job a ete rejouee localement sur une base jetable — `prisma db push`, `db:seed:accounts`, `npm run build`, puis `npm run test:e2e` — avec 22/22 tests au vert. Le fichier de test a ensuite ete supprime.
+
+**Point non traite** : `deploy` ne depend que de `build` et porte `continue-on-error: true`. Le deploiement en production part donc meme si les tests unitaires ou E2E echouent. Faire dependre `deploy` de `unit-tests` et `e2e` releve d'une decision de politique de livraison, laissee au proprietaire du projet.
 
 **Impact** : `.github/workflows/ci-cd.yml`.
