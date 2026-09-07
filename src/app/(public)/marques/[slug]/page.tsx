@@ -1,9 +1,8 @@
+import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import { resolveBrand } from '@/lib/marketplace-catalog';
-import { productsService } from '@/modules/products/products.service';
-import CatalogPage from '@/components/CatalogPage';
-import { Product } from '@/shared/types';
+import CatalogPageContent, { CatalogPageFallback } from '@/components/CatalogPageContent';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,36 +12,33 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const brand = resolveBrand(slug);
-  if (!brand) return {};
+  const entry = resolveBrand(slug);
+  if (!entry) return {};
   return {
-    title: `Pièces détachées auto ${brand.name} à Abidjan`,
-    description: `${brand.description} Prix transparents, garantie occasion contrôlée, livraison Abidjan et Côte d'Ivoire.`,
-    alternates: { canonical: `/marques/${brand.slug}` },
+    title: `Pièces détachées auto ${entry.name} à Abidjan`,
+    description: `${entry.description} Prix transparents, garantie occasion contrôlée, livraison Abidjan et Côte d'Ivoire.`,
+    alternates: { canonical: `/marques/${entry.slug}` },
   };
 }
 
+// `notFound()` doit s'executer avant tout envoi de reponse : le chargement des
+// pieces est donc isole sous Suspense plutot que dans un `loading.tsx`, qui
+// faisait emettre un 200 avant que le slug ne soit valide (D60).
 export default async function MarqueAliasPage({ params }: PageProps) {
   const { slug } = await params;
-  const brand = resolveBrand(slug);
-  if (!brand) notFound();
-
-  const res = await productsService.list({ brand: brand.name }, { page: 1, pageSize: 24 });
-  let productsList = (res.data || []) as unknown as Product[];
-
-  if (productsList.length === 0) {
-    const fallbackRes = await productsService.list({}, { page: 1, pageSize: 50 });
-    productsList = (fallbackRes.data || []) as unknown as Product[];
-  }
+  const entry = resolveBrand(slug);
+  if (!entry) notFound();
 
   return (
-    <CatalogPage
-      kind="marque"
-      slug={brand.slug}
-      name={brand.name}
-      description={brand.description}
-      count={productsList.length}
-      products={productsList}
-    />
+    <Suspense fallback={<CatalogPageFallback label="Chargement de la marque" />}>
+      <CatalogPageContent
+        kind="marque"
+        slug={entry.slug}
+        name={entry.name}
+        description={entry.description}
+        filter={{ brand: entry.name }}
+        fallbackToAllProducts
+      />
+    </Suspense>
   );
 }

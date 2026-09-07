@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
+import { CatalogSkeleton } from '@/components/RouteSkeleton';
 import PieceDetailCTA from '@/components/PieceDetailCTA';
 import { ProductStructuredData, BreadcrumbStructuredData } from '@/components/StructuredData';
 import { SITE_URL } from '@/lib/structured-data';
@@ -27,12 +29,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProductBySlugOrId(slug);
 
-  if (!product) return { title: 'Pièce non trouvée | AutoAfrique' };
+  if (!product) return {};
 
   const brandName = product.brand?.name || 'Toyota';
 
   return {
-    title: `${product.title} — Pièce auto ${brandName} à Abidjan | AutoAfrique`,
+    title: `${product.title} — Pièce auto ${brandName} à Abidjan`,
     description: `Achetez ${product.title} (${product.condition || 'Neuf'}) pour ${brandName} à ${product.price.toLocaleString()} FCFA à Abidjan. Livraison 24-72h et garantie.`,
     alternates: { canonical: `/pieces/${slug}` },
   };
@@ -46,20 +48,6 @@ export default async function PieceDetailPage({ params }: Props) {
 
   const brandName = product.brand?.name || 'Toyota';
   const categoryName = product.category?.name || 'Pièces Auto';
-
-  // Fetch related products from same category or brand
-  let related: Product[] = [];
-  try {
-    const relResult = await productsService.list(
-      { category: product.category?.slug || undefined },
-      { page: 1, pageSize: 6 }
-    );
-    related = ((relResult.data || []) as unknown as Product[])
-      .filter((p) => p.id !== product.id)
-      .slice(0, 4);
-  } catch {
-    related = [];
-  }
 
   const imagesArr = Array.isArray(product.images) ? product.images : [];
   const firstImg = imagesArr.length > 0 ? String(imagesArr[0]) : '';
@@ -187,29 +175,61 @@ export default async function PieceDetailPage({ params }: Props) {
           <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 mb-6">
             Pièces similaires & compatibles
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {related.map((rel) => {
-              const relImages = Array.isArray(rel.images) ? rel.images : [];
-              const relImg = relImages.length > 0 ? String(relImages[0]) : '';
-              return (
-                <ProductCard
-                  key={rel.id}
-                  id={rel.id}
-                  name={rel.title}
-                  reference={rel.reference || rel.id}
-                  price={rel.price}
-                  rating={rel.rating || 4.8}
-                  reviewCount={rel.reviewCount || 12}
-                  image={relImg}
-                  brand={rel.brand?.name || 'Toyota'}
-                  inStock={rel.stock > 0}
-                />
-              );
-            })}
-          </div>
+          <Suspense fallback={<CatalogSkeleton cards={4} />}>
+            <RelatedParts categorySlug={product.category?.slug} excludeId={product.id} />
+          </Suspense>
         </div>
       </div>
 
+    </div>
+  );
+}
+
+/**
+ * Pieces similaires. Isole sous Suspense parce que cette requete ne decide pas
+ * du 404 : la garder dans le corps de page retarderait le premier rendu, et la
+ * mettre dans un `loading.tsx` ferait emettre un 200 avant `notFound()` (D60).
+ */
+async function RelatedParts({
+  categorySlug,
+  excludeId,
+}: {
+  categorySlug?: string;
+  excludeId: string;
+}) {
+  let related: Product[] = [];
+  try {
+    const relResult = await productsService.list(
+      { category: categorySlug || undefined },
+      { page: 1, pageSize: 6 }
+    );
+    related = ((relResult.data || []) as unknown as Product[])
+      .filter((p) => p.id !== excludeId)
+      .slice(0, 4);
+  } catch {
+    related = [];
+  }
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {related.map((rel) => {
+        const relImages = Array.isArray(rel.images) ? rel.images : [];
+        const relImg = relImages.length > 0 ? String(relImages[0]) : '';
+        return (
+          <ProductCard
+            key={rel.id}
+            id={rel.id}
+            name={rel.title}
+            reference={rel.reference || rel.id}
+            price={rel.price}
+            rating={rel.rating || 4.8}
+            reviewCount={rel.reviewCount || 12}
+            image={relImg}
+            brand={rel.brand?.name || 'Toyota'}
+            inStock={rel.stock > 0}
+          />
+        );
+      })}
     </div>
   );
 }

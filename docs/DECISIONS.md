@@ -1193,3 +1193,49 @@ Consequence SEO : Google traite un soft 404 comme une page a explorer et non com
 **Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 393/393 tests unitaires, build de production reussi, budgets de bundle respectes (route la plus lourde `/dashboard/crm` a 194,0 Ko), codes HTTP et titres mesures sur `next start`.
 
 **Impact** : cinq articles de blog, `src/app/(public)/catalogue/[categorie]/page.tsx`, `src/app/admin/page.tsx`, `src/lib/internal-links.test.ts`.
+
+---
+
+## D60 : Fin des soft 404 sur les routes dynamiques
+
+**Date** : 07/09/2026 — traitement du constat etabli par D59.
+
+### Le defaut
+
+`notFound()` ne produisait pas de code 404 : les six familles de routes dynamiques renvoyaient **200** avec la page « Page introuvable ». Une URL sans route de fichier renvoyait bien 404, ce qui rendait l'anomalie invisible a un controle superficiel.
+
+Google traite un soft 404 comme une page a explorer, non comme une impasse. Tout slug errone — lien externe mal recopie, ancien slug, sondage automatise — devenait une URL indexable en doublon, sur un espace d'URL infini.
+
+### Cause, etablie par l'experience
+
+La correspondance etait exacte avec la presence d'un `loading.tsx`. Ce fichier cree une frontiere Suspense au niveau du segment : la reponse part en flux et le statut HTTP est emis **avant** que le corps de page n'appelle `notFound()`, qui ne peut alors plus le changer.
+
+Verifie en retirant le seul `loading.tsx` de `/categories/[slug]` puis en rebatissant : cette route est passee a 404, ses pages valides restant en 200, tandis que `/marques` et `/pieces` — temoins, `loading.tsx` intact — restaient a 200.
+
+### Correction : la frontiere Suspense descend dans la page
+
+Le squelette n'est pas supprime, il est **deplace sous la validation**. Chaque page valide son slug puis rend un `<Suspense>` autour de la seule partie qui interroge la base. `notFound()` s'execute donc avant tout envoi de reponse, et le squelette continue de couvrir le chargement des pieces.
+
+- **Cinq routes de catalogue** — `resolveCategory` / `resolveBrand` etant synchrones, la validation est immediate et il n'y a aucun compromis. Le corps repete a l'identique dans ces cinq pages est mutualise dans `src/components/CatalogPageContent.tsx`, ce qui retire au passage la duplication du repli et du deballage.
+- **`/pieces/[slug]`** — le 404 depend du resultat de la requete produit, qui reste donc dans le corps de page. Seules les pieces similaires, qui ne decident de rien, passent sous Suspense. D59 presentait ce cas comme un arbitrage entre squelette et vrai 404 : c'etait faux, les deux sont conciliables en deplacant la frontiere sur la requete secondaire.
+- **`/catalogue`** — un `loading.tsx` couvre aussi les **segments enfants**. Celui de `/catalogue` empechait `/catalogue/[categorie]` de renvoyer un 404, alors meme que cette route avait son propre `loading.tsx` supprime. Point non prevu, trouve parce que la mesure a ete refaite apres correction des cinq autres : `/catalogue/inexistant` restait seul a 200. La frontiere descend dans la page, sous l'en-tete — qui s'affiche desormais immediatement au lieu d'etre remplace par le squelette, donc meilleur qu'avant.
+
+Plus aucun `loading.tsx` ne subsiste dans l'application.
+
+### Titre double : une troisieme page
+
+`/pieces/[slug]` ajoutait lui aussi « | AutoAfrique » au `title` alors que le layout racine applique `template: "%s | AutoAfrique"`. D59 n'en avait corrige que deux : la base de developpement ne contenant aucun produit, la page ne pouvait pas etre rendue et la mesure des titres l'avait manquee. Corrige sur les deux titres du fichier ; celui de l'absence de produit rend desormais `{}`, comme les autres routes, laissant le titre par defaut a la page introuvable.
+
+### Non-regression
+
+`tests-e2e/http-status.spec.ts` verifie le code HTTP des six familles sur un slug inconnu et celui des sept pages de catalogue valides. Le code est ici le seul verdict : la page rendue est identique dans les deux cas, seul le statut distingue une impasse d'une page a indexer.
+
+Verifie par mutation — en remettant le `loading.tsx` de `/categories/[slug]`, le test echoue en nommant la route et son statut. Suite E2E portee de 23 a 25 scenarios.
+
+### Constat signale, non traite
+
+`ProductCard` recoit des notes et des nombres d'avis fabriques lorsque la donnee manque (`rating: 4.8`, `reviewCount: 12` ou `24`, `brand: 'Toyota'`), sur `/catalogue` et dans les pieces similaires de `/pieces/[slug]` — et ces valeurs sont **affichees**, contrairement a celles retirees de `/catalogue/[categorie]` en D59. `/pieces/[slug]` transmet en outre une marque fabriquee a `ProductStructuredData`. Contraire a la regle posee en D45/D46/D47. Corriger demande de decider ce qu'affiche une fiche sans note — masquer les etoiles plutot que d'en inventer — ce qui touche un composant partage et releve d'un arbitrage d'interface.
+
+**Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 393/393 tests unitaires, build de production reussi, budgets de bundle respectes, 25/25 tests E2E, codes HTTP mesures sur `next start` avant et apres.
+
+**Impact** : `src/components/CatalogPageContent.tsx` (nouveau), les cinq pages de catalogue, `src/app/(public)/catalogue/page.tsx`, `src/app/(public)/pieces/[slug]/page.tsx`, sept `loading.tsx` supprimes, `tests-e2e/http-status.spec.ts` (nouveau).
