@@ -1129,3 +1129,67 @@ La sonde est conservee comme test de non-regression : `tests-e2e/dashboard-smoke
 **Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 389/389 tests unitaires, build de production reussi, 23/23 tests E2E.
 
 **Impact** : `.github/workflows/ci-cd.yml`, `src/app/dashboard/cart/page.tsx`, `tests-e2e/dashboard-smoke.spec.ts`.
+
+---
+
+## D59 : Liens internes morts du blog et durcissement de `/catalogue/[categorie]`
+
+**Date** : 07/09/2026 — reprise de l'audit SEO/UX. Le document d'audit datant du 07/08, chaque constat a ete reverifie contre le code courant plutot que rejoue tel quel. Les points P0 y figurant etaient bien traites, et le P1 « pages SEO par marque » l'etait aussi depuis (`/marques/[slug]`, `/categories/[slug]`, presentes au sitemap). Trois defauts non repertories par l'audit ont en revanche ete trouves.
+
+### 1. Quatorze liens internes du blog pointaient vers des pages inexistantes
+
+Cinq articles du blog renvoyaient vers des slugs de categories absents de `CATEGORY_SLUGS` — seule source de verite designee par `15-CATALOGUE.md` : `filtration` (5 liens), `freinage` (3), `eclairage` (3), `transmission` (3). `/categories/[slug]` appelant `notFound()` sur un slug inconnu, **chacun de ces quatorze liens menait a la page « Page introuvable »**, depuis des articles indexes et listes au sitemap.
+
+Verification directe : `/categories/filtration` ne rendait aucun `h1` de categorie, la la ou `/categories/filtre` rend « Pieces detachees Filtre a Abidjan ».
+
+Les liens sont reachemines vers la taxonomie documentee, sans creer de categorie nouvelle :
+
+| Slug lie | Slug reel | Justification (`15-CATALOGUE.md`) |
+|---|---|---|
+| `filtration` | `filtre` | « Filtre a huile, a air, a carburant, habitacle » |
+| `freinage` | `frein` | « Disques, Plaquettes, Etriers, Cables » |
+| `eclairage` | `carrosserie` | « Pare-chocs, Retroviseurs, **Phares**, Calandre » |
+| `transmission` | `embrayage` | Categorie de transmission la plus proche ; la taxonomie ne comporte pas de categorie « boite de vitesses » |
+
+**Point laisse ouvert** : la taxonomie documentee n'a ni categorie eclairage ni categorie boite de vitesses, alors que le blog traite ces pieces. Les creer releve d'un arbitrage produit et modifierait R033-R044.
+
+### 2. Aucune couverture ne detectait un lien interne mort
+
+Cette classe de defaut n'etait verifiee par rien. `src/lib/internal-links.test.ts` balaie desormais les sources et verifie que tout `/categories/{slug}` et `/marques/{slug}` resout via `resolveCategory` / `resolveBrand`. Le test nomme le fichier et le slug fautifs.
+
+Il porte son propre garde-fou : sans lui, les deux assertions passeraient aussi si le collecteur ne trouvait plus aucun lien. Verifie par mutation — en reintroduisant `filtration`, le test echoue en designant le fichier. Suite unitaire portee de 389 a 393.
+
+### 3. `/catalogue/[categorie]` : route orpheline, sans validation, au titre double
+
+La route acceptait **n'importe quel segment** : `/catalogue/nimporte-quoi-inexistant-xyz` renvoyait une page complete au titre fabrique depuis l'URL, avec donnees inventees en valeurs par defaut (`brand: 'Toyota'`, `rating: 4.8`, `reviewCount: 24`) — contraire a la regle posee en D45/D46/D47. Ces valeurs n'etaient pas affichees, `CatalogPage` ne rendant pas de note, mais elles restaient fabriquees.
+
+Elle dupliquait par ailleurs `/categories/[slug]` : meme composant, meme intention, titres quasi identiques, chacune auto-canonique — alors que le fil d'Ariane JSON-LD de `CatalogPage` designait deja `/categories/{slug}`. Et son titre etait double (« ... | AutoAfrique | AutoAfrique »), le suffixe etant ajoute a la main alors que le layout racine applique `template: "%s | AutoAfrique"`.
+
+Aucun lien ni aucune navigation ne pointe vers elle (toute la recherche passe par `/catalogue?query`), et elle est absente du sitemap : le durcissement ne casse aucun parcours. Elle valide desormais son slug via `resolveCategory`, tire nom et description de la taxonomie plutot que de l'URL, ne fabrique plus aucune donnee, et se canonise vers `/categories/{slug}` comme le font deja les routes `/marketplace/*`.
+
+Meme defaut de titre double sur `/admin`, seule autre page a ajouter le suffixe au `title` lui-meme. Une premiere lecture en avait soupconne neuf ; la mesure des titres reellement servis a montre que les sept autres portaient ce suffixe dans leur bloc `openGraph.title`, ou il est legitime.
+
+### Constat majeur etabli, non corrige : toutes les routes dynamiques renvoient des soft 404
+
+`notFound()` ne produit pas de code 404 : **les six familles de routes dynamiques renvoient 200** avec la page « Page introuvable ». Une URL sans route de fichier renvoie bien 404, et `/blog/article-inexistant` aussi.
+
+| Route | Code | `loading.tsx` |
+|---|---|---|
+| `/categories/inexistant` | 200 | oui |
+| `/marques/inexistant` | 200 | oui |
+| `/marketplace/categorie/inexistant` | 200 | oui |
+| `/marketplace/marque/inexistant` | 200 | oui |
+| `/catalogue/inexistant` | 200 | oui |
+| `/pieces/inexistant` | 200 | oui |
+| `/blog/article-inexistant` | 404 | non |
+| `/route-sans-fichier` | 404 | — |
+
+**Cause etablie par l'experience, pas par deduction** : la correspondance est exacte avec la presence d'un `loading.tsx`, introduit par le chantier des squelettes de chargement. Ce fichier cree une frontiere Suspense, la reponse est diffusee en flux, et le statut 200 est emis avant que le corps de page n'appelle `notFound()`. Verifie en retirant le seul `loading.tsx` de `/categories/[slug]` puis en rebatissant : cette route est passee a **404**, ses pages valides restant en 200, tandis que `/marques` et `/pieces` — temoins, `loading.tsx` intact — restaient a 200. Le fichier a ensuite ete remis en place.
+
+Consequence SEO : Google traite un soft 404 comme une page a explorer et non comme une impasse. Tout slug errone — un lien externe mal recopie, un ancien slug — devient une URL indexable en doublon.
+
+**Correction possible, non appliquee car elle releve d'un arbitrage** : supprimer `loading.tsx` et deplacer la frontiere Suspense **dans** la page, sous la validation. Pour les cinq routes de catalogue, `resolveCategory` / `resolveBrand` etant synchrones, la validation precede le flux et le squelette est conserve pour le seul chargement des pieces : aucun compromis. Pour `/pieces/[slug]`, le 404 depend du resultat du fetch produit : le squelette immediat et le vrai code 404 s'excluent, et le choix appartient au proprietaire du projet.
+
+**Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 393/393 tests unitaires, build de production reussi, budgets de bundle respectes (route la plus lourde `/dashboard/crm` a 194,0 Ko), codes HTTP et titres mesures sur `next start`.
+
+**Impact** : cinq articles de blog, `src/app/(public)/catalogue/[categorie]/page.tsx`, `src/app/admin/page.tsx`, `src/lib/internal-links.test.ts`.

@@ -52,8 +52,8 @@ export default function LivraisonPiecesGareRoutierePage() {
           heading: 'Les règles d\'or pour emballer une pièce mécanique',
           body: [
             'Une pièce auto mal emballée risque d\'être endommagée pendant le transport. Voici les précautions indispensables :',
-            '- <a href="/categories/moteur">Moteurs complets</a> et <a href="/categories/transmission">boîtes de vitesses</a> : Vidange complète obligatoire pour éviter les fuites d\'huile, fixation sur palette et film étirable épais.',
-            '- <a href="/categories/eclairage">Optiques de phares</a>, rétroviseurs et vitrage : Double emballage à bulles et carton rigide renforcé avec mention visible FRAGILE.',
+            '- <a href="/categories/moteur">Moteurs complets</a> et <a href="/categories/embrayage">boîtes de vitesses</a> : Vidange complète obligatoire pour éviter les fuites d\'huile, fixation sur palette et film étirable épais.',
+            '- <a href="/categories/carrosserie">Optiques de phares</a>, rétroviseurs et vitrage : Double emballage à bulles et carton rigide renforcé avec mention visible FRAGILE.',
             '- Électronique (calculateurs, injecteurs, capteurs) : Protection antistatique et calage mousse hermétique à l\'humidité. Consultez nos <a href="/manuels-reparation">manuels de réparation</a> pour le repérage des connecteurs.',
           ],
         },
