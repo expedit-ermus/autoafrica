@@ -9,7 +9,8 @@ import { PaymentLogosGroup } from '@/components/PaymentLogos';
 interface PieceDetailCTAProps {
   productId: string;
   title: string;
-  brand: string;
+  /** Marque reelle ; absente, rien n'est inventé (D61). */
+  brand?: string;
   reference: string;
   price: number;
   image: string;
@@ -48,7 +49,7 @@ export default function PieceDetailCTA({
           id: `item-${Date.now()}`,
           productId: productId || 'prod-1',
           title: title || 'Pièce Auto',
-          brand: brand || 'Toyota',
+          brand: brand || '',
           reference: reference || 'REF-AUTO',
           price: price || 25000,
           quantity: 1,

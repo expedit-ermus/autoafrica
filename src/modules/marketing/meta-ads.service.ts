@@ -34,8 +34,9 @@ export interface MetaCatalogFeedItem {
   price: string
   link: string
   image_link: string
-  brand: string
-  category: string
+  /** Facultatif : omis plutot qu'invente quand la piece n'a pas de marque (D61). */
+  brand?: string
+  category?: string
   mpn_oem?: string
 }
 
@@ -179,8 +180,10 @@ export class MetaAdsService {
         price: `${p.price} XOF`,
         link: `https://autoafrique-saas.vercel.app/pieces/${p.slug}`,
         image_link: (Array.isArray(p.images) && p.images[0] ? String(p.images[0]) : 'https://autoafrique-saas.vercel.app/og-image.png'),
-        brand: p.brand?.name || 'Toyota',
-        category: p.category?.name || 'Pièces Auto',
+        // Champs facultatifs au catalogue Meta : les omettre vaut mieux que
+        // d'annoncer une marque ou une categorie que la piece n'a pas (D61).
+        brand: p.brand?.name || undefined,
+        category: p.category?.name || undefined,
         mpn_oem: p.reference || undefined,
       }
     })
@@ -200,8 +203,8 @@ export class MetaAdsService {
       <g:title><![CDATA[${item.title}]]></g:title>
       <g:description><![CDATA[${item.description}]]></g:description>
       <g:link>${item.link}</g:link>
-      <g:image_link>${item.image_link}</g:image_link>
-      <g:brand>${item.brand}</g:brand>
+      <g:image_link>${item.image_link}</g:image_link>${item.brand ? `
+      <g:brand>${item.brand}</g:brand>` : ''}
       <g:condition>${item.condition}</g:condition>
       <g:availability>${item.availability}</g:availability>
       <g:price>${item.price}</g:price>

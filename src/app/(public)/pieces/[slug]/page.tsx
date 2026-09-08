@@ -31,11 +31,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!product) return {};
 
-  const brandName = product.brand?.name || 'Toyota';
+  // La marque n'est plus substituee par « Toyota » quand elle manque : le titre
+  // et la description omettent la mention plutot que d'annoncer une marque que
+  // la piece n'a pas. Meme raison pour l'etat (D61).
+  const brandName = product.brand?.name;
+  const mentionMarque = brandName ? ` ${brandName}` : '';
+  const mentionEtat = product.condition ? ` (${product.condition})` : '';
 
   return {
-    title: `${product.title} — Pièce auto ${brandName} à Abidjan`,
-    description: `Achetez ${product.title} (${product.condition || 'Neuf'}) pour ${brandName} à ${product.price.toLocaleString()} FCFA à Abidjan. Livraison 24-72h et garantie.`,
+    title: `${product.title} — Pièce auto${mentionMarque} à Abidjan`,
+    description: `Achetez ${product.title}${mentionEtat}${brandName ? ` pour ${brandName}` : ''} à ${product.price.toLocaleString()} FCFA à Abidjan. Livraison 24-72h et garantie.`,
     alternates: { canonical: `/pieces/${slug}` },
   };
 }
@@ -46,8 +51,8 @@ export default async function PieceDetailPage({ params }: Props) {
 
   if (!product) notFound();
 
-  const brandName = product.brand?.name || 'Toyota';
-  const categoryName = product.category?.name || 'Pièces Auto';
+  const brandName = product.brand?.name;
+  const categoryName = product.category?.name;
 
   const imagesArr = Array.isArray(product.images) ? product.images : [];
   const firstImg = imagesArr.length > 0 ? String(imagesArr[0]) : '';
@@ -56,11 +61,12 @@ export default async function PieceDetailPage({ params }: Props) {
     <div className="bg-[#F8FAFC] text-slate-900 min-h-screen">
       <ProductStructuredData
         name={product.title}
-        description={`Pièce ${product.title} pour ${brandName} ${product.model || ''}.`}
+        description={`Pièce ${product.title}${brandName ? ` pour ${brandName}` : ''}${product.model ? ` ${product.model}` : ''}.`}
         brand={brandName}
         price={product.price}
         currency="XOF"
         image={firstImg}
+        inStock={product.stock > 0}
       />
 
       <BreadcrumbStructuredData
@@ -103,7 +109,7 @@ export default async function PieceDetailPage({ params }: Props) {
           <div className="lg:col-span-6 space-y-6">
             <div>
               <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-600">
-                {categoryName}
+                {categoryName || 'Catégorie non précisée'}
               </span>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">
                 {product.title}
@@ -130,7 +136,7 @@ export default async function PieceDetailPage({ params }: Props) {
                 <span>🚗</span> Compatibilité Véhicule Garantie
               </h3>
               <p className="text-sm font-bold text-gray-900">
-                {brandName} {product.model || 'Tous modèles'}
+                {brandName || 'Marque non renseignée'} {product.model || 'Tous modèles'}
               </p>
               <p className="text-xs text-gray-500 mt-1">
                 Convient pour les motorisations Diesel & Essence en Afrique de l&apos;Ouest.
@@ -222,10 +228,10 @@ async function RelatedParts({
             name={rel.title}
             reference={rel.reference || rel.id}
             price={rel.price}
-            rating={rel.rating || 4.8}
-            reviewCount={rel.reviewCount || 12}
+            rating={rel.rating}
+            reviewCount={rel.reviewCount}
             image={relImg}
-            brand={rel.brand?.name || 'Toyota'}
+            brand={rel.brand?.name}
             inStock={rel.stock > 0}
           />
         );

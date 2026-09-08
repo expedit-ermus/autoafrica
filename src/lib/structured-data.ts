@@ -26,6 +26,12 @@ export interface ProductSchemaInput {
   currency?: string
   seller?: string
   url?: string
+  /**
+   * Disponibilite reelle. `availability` etait annonce « InStock » quel que
+   * soit le stock : une piece en rupture etait declaree disponible aux moteurs
+   * de recherche (D61). Omis = InStock, pour les appelants sans stock connu.
+   */
+  inStock?: boolean
 }
 
 const FUEL_SCHEMA: Record<string, string> = {
@@ -129,7 +135,10 @@ export function buildProductSchema(input: ProductSchemaInput) {
       '@type': 'Offer',
       priceCurrency: input.currency || 'XOF',
       price: String(input.price),
-      availability: 'https://schema.org/InStock',
+      availability:
+        input.inStock === false
+          ? 'https://schema.org/OutOfStock'
+          : 'https://schema.org/InStock',
       ...(input.seller ? { seller: { '@type': 'Organization', name: input.seller } } : {}),
       ...(input.url ? { url: input.url } : {}),
     },

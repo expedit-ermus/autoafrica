@@ -69,20 +69,11 @@ export default function PublicCataloguePage() {
  */
 async function CatalogueGrid() {
   const result = await productsService.list({}, { page: 1, pageSize: 100 });
-  const rawData = (result.data || []) as unknown as Product[];
-  const products: Product[] = rawData.map((p) => ({
-    id: p.id,
-    title: p.title || 'Pièce Automobile',
-    reference: p.reference || p.id,
-    price: p.price || 0,
-    stock: p.stock ?? 1,
-    brand: p.brand || { name: 'Toyota', slug: 'toyota' },
-    category: p.category || { name: 'Pièces Auto', slug: 'pieces-auto' },
-    condition: p.condition || 'Neuf',
-    rating: p.rating || 4.8,
-    reviewCount: p.reviewCount || 24,
-    images: p.images || [],
-  }));
+  // Aucune valeur de repli inventee : `Product.rating` et `Product.reviewCount`
+  // valent 0 par defaut au schema, si bien qu'un `||` substituait une note et un
+  // nombre d'avis fabriques a *tout* produit reellement sans avis. Meme travers
+  // pour la marque, la categorie, l'etat et le stock (D61).
+  const products = (result.data || []) as unknown as Product[];
 
   return <CatalogueFilters products={products} />;
 }

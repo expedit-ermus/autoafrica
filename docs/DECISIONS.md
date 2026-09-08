@@ -1239,3 +1239,55 @@ Verifie par mutation — en remettant le `loading.tsx` de `/categories/[slug]`, 
 **Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 393/393 tests unitaires, build de production reussi, budgets de bundle respectes, 25/25 tests E2E, codes HTTP mesures sur `next start` avant et apres.
 
 **Impact** : `src/components/CatalogPageContent.tsx` (nouveau), les cinq pages de catalogue, `src/app/(public)/catalogue/page.tsx`, `src/app/(public)/pieces/[slug]/page.tsx`, sept `loading.tsx` supprimes, `tests-e2e/http-status.spec.ts` (nouveau).
+
+---
+
+## D61 : Suppression des notes, avis, marques et etats fabriques
+
+**Date** : 08/09/2026 — traitement du constat laisse ouvert par D60.
+
+### Le piege : le repli se declenchait exactement quand la donnee etait vraie
+
+`Product.rating` est un `Float @default(0)` et `Product.reviewCount` un `Int @default(0)` au schema. En JavaScript, `0 || 4.8` vaut `4.8` et `0 || 24` vaut `24`.
+
+Un `p.rating || 4.8` ne comblait donc pas une donnee manquante : il se declenchait **precisement pour les pieces reellement depourvues d'avis**, c'est-a-dire pour tout le catalogue d'une marketplace qui demarre. La table `Review` est vide. Chaque piece sans avis affichait « 4,8 etoiles, 24 avis ».
+
+C'est une infraction directe a la regle posee en D45/D46/D47, et un risque commercial propre : des avis inventes sur une place de marche relevent de la pratique commerciale trompeuse.
+
+### Ce qui etait fabrique
+
+| Emplacement | Valeur inventee | Visible par l'acheteur |
+|---|---|---|
+| `/pieces/[slug]`, pieces similaires | note 4,8 · 12 avis · marque « Toyota » | oui, etoiles affichees |
+| `/catalogue`, mapping | marque « Toyota » · categorie « Pieces Auto » · etat « Neuf » · stock 1 | oui, badge et libelle de carte |
+| `/catalogue`, tri « Meilleures notes » | `rating || 5` | tri arbitraire, note non affichee |
+| `/pieces/[slug]`, fiche | marque « Toyota » dans le titre, la meta-description et le schema `Product` | oui |
+| `PieceDetailCTA` | marque « Toyota » ecrite au panier | oui |
+| `meta-ads.service` | marque « Toyota » · categorie « Pieces Auto » au flux publicitaire Meta | oui, dans les annonces |
+| `buildProductSchema` | `availability: InStock` fige | non affiche, envoye aux moteurs |
+
+**Correction de ce qui avait ete annonce en D60** : les fausses etoiles n'etaient pas affichees sur `/catalogue`. `CatalogueFilters` ne rend ni etoile ni nombre d'avis — il n'utilise la note que pour son tri. Verifie en lisant le gabarit de carte. La marque et l'etat fabriques, eux, y etaient bien affiches.
+
+### Le motif retenu
+
+`/dashboard/marketplace` traitait deja le sujet correctement : `{(p._avgRating || 0) > 0 && <StarRating />}`, aucune etoile sans avis reel. Ce motif est generalise.
+
+`ProductCard` prend desormais `rating` et `reviewCount` en optionnels : sans avis, il affiche « Pas encore d'avis » a la place des etoiles, et « Marque non renseignee » plutot qu'une marque inventee. Les replis neutres sont conserves — `|| 0`, `|| ''` — parce qu'ils n'affirment rien.
+
+`availability` du schema `Product` suit le stock reel : une piece en rupture n'est plus declaree disponible aux moteurs de recherche. Les champs `brand` et `category` du flux Meta, facultatifs au catalogue, sont omis plutot qu'inventes.
+
+`condition` merite une mention : le defaut du schema est `USED`. Afficher « Neuf » faute de donnee etait l'affirmation la plus risquee de toutes sur une place de marche de pieces automobiles.
+
+### La regle devient verifiable
+
+D45, D46 et D47 posaient la regle depuis longtemps, sans qu'aucun controle ne l'applique — ce qui explique le retour des valeurs fabriquees. `src/lib/no-fabricated-data.test.ts` interdit desormais les substitutions par une valeur commerciale inventee et nomme fichier, ligne et nature de l'infraction. Un repli neutre reste permis.
+
+Comme pour `internal-links.test.ts`, le test porte son propre garde-fou : il verifie qu'il collecte bien plus de cent fichiers, sans quoi il passerait aussi en n'inspectant rien. Deux tests couvrent en outre la disponibilite reelle du schema `Product`.
+
+### Constat signale, non traite
+
+`buildVehicleSchema` fige lui aussi `availability: InStock` pour les annonces de vehicules. Meme classe de defaut, perimetre distinct : il releve du module vehicules, non couvert par ce chantier.
+
+**Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, suite unitaire complete, build de production reussi, budgets de bundle respectes, suite E2E complete.
+
+**Impact** : `src/components/ProductCard.tsx`, `src/components/CatalogueFilters.tsx`, `src/components/PieceDetailCTA.tsx`, `src/components/StructuredData.tsx`, `src/lib/structured-data.ts`, `src/app/(public)/catalogue/page.tsx`, `src/app/(public)/pieces/[slug]/page.tsx`, `src/modules/marketing/meta-ads.service.ts`, `src/lib/no-fabricated-data.test.ts` (nouveau), `src/lib/structured-data.test.ts`.
