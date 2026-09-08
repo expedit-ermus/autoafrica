@@ -40,8 +40,8 @@ interface VehicleFilters {
 }
 
 interface VehicleListWhere extends Prisma.VehicleWhereInput {
-  carModel?: { name?: { contains: string; mode: 'insensitive' } }
-  city?: { contains: string; mode: 'insensitive' }
+  carModel?: { name?: { contains: string } }
+  city?: { contains: string }
 }
 
 export class VehiclesService {
@@ -51,12 +51,12 @@ export class VehiclesService {
     const where: Prisma.VehicleWhereInput = { active: true }
     if (filters.brand) where.brand = { name: filters.brand }
     if (filters.model) {
-      const searchFilter = { contains: filters.model, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.model }
       ;(where as VehicleListWhere).carModel = { name: searchFilter }
     }
     if (filters.country) where.country = filters.country
     if (filters.city) {
-      const searchFilter = { contains: filters.city, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.city }
       ;(where as VehicleListWhere).city = searchFilter
     }
     if (filters.fuel) where.fuel = filters.fuel as VehicleFuel
@@ -75,7 +75,7 @@ export class VehiclesService {
       where.price = priceFilter
     }
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { name: searchFilter },
         { description: searchFilter },

@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
+import { CatalogSkeleton } from '@/components/RouteSkeleton';
 import PieceDetailCTA from '@/components/PieceDetailCTA';
 import { ProductStructuredData, BreadcrumbStructuredData } from '@/components/StructuredData';
 import { SITE_URL } from '@/lib/structured-data';
@@ -17,26 +19,28 @@ async function getProductBySlugOrId(slug: string): Promise<Product | null> {
     const product = await productsService.getById(slug);
     if (product) return product as unknown as Product;
   } catch {
-    // Not found by ID, try list lookup
+    // Pas trouve par identifiant : on tente la colonne `slug`.
   }
-  const result = await productsService.list({}, { page: 1, pageSize: 100 });
-  const rawProducts = (result.data || []) as unknown as Product[];
-  return rawProducts.find(
-    (p) => p.id === slug || (p.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-') === slug
-  ) || null;
+  const bySlug = await productsService.getBySlug(slug);
+  return (bySlug as unknown as Product) || null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProductBySlugOrId(slug);
 
-  if (!product) return { title: 'Pièce non trouvée | AutoAfrique' };
+  if (!product) return {};
 
-  const brandName = product.brand?.name || 'Toyota';
+  // La marque n'est plus substituee par « Toyota » quand elle manque : le titre
+  // et la description omettent la mention plutot que d'annoncer une marque que
+  // la piece n'a pas. Meme raison pour l'etat (D61).
+  const brandName = product.brand?.name;
+  const mentionMarque = brandName ? ` ${brandName}` : '';
+  const mentionEtat = product.condition ? ` (${product.condition})` : '';
 
   return {
-    title: `${product.title} — Pièce auto ${brandName} à Abidjan | AutoAfrique`,
-    description: `Achetez ${product.title} (${product.condition || 'Neuf'}) pour ${brandName} à ${product.price.toLocaleString()} FCFA à Abidjan. Livraison 24-72h et garantie.`,
+    title: `${product.title} — Pièce auto${mentionMarque} à Abidjan`,
+    description: `Achetez ${product.title}${mentionEtat}${brandName ? ` pour ${brandName}` : ''} à ${product.price.toLocaleString()} FCFA à Abidjan. Livraison 24-72h et garantie.`,
     alternates: { canonical: `/pieces/${slug}` },
   };
 }
@@ -47,22 +51,8 @@ export default async function PieceDetailPage({ params }: Props) {
 
   if (!product) notFound();
 
-  const brandName = product.brand?.name || 'Toyota';
-  const categoryName = product.category?.name || 'Pièces Auto';
-
-  // Fetch related products from same category or brand
-  let related: Product[] = [];
-  try {
-    const relResult = await productsService.list(
-      { category: product.category?.slug || undefined },
-      { page: 1, pageSize: 6 }
-    );
-    related = ((relResult.data || []) as unknown as Product[])
-      .filter((p) => p.id !== product.id)
-      .slice(0, 4);
-  } catch {
-    related = [];
-  }
+  const brandName = product.brand?.name;
+  const categoryName = product.category?.name;
 
   const imagesArr = Array.isArray(product.images) ? product.images : [];
   const firstImg = imagesArr.length > 0 ? String(imagesArr[0]) : '';
@@ -71,11 +61,12 @@ export default async function PieceDetailPage({ params }: Props) {
     <div className="bg-[#F8FAFC] text-slate-900 min-h-screen">
       <ProductStructuredData
         name={product.title}
-        description={`Pièce ${product.title} pour ${brandName} ${product.model || ''}.`}
+        description={`Pièce ${product.title}${brandName ? ` pour ${brandName}` : ''}${product.model ? ` ${product.model}` : ''}.`}
         brand={brandName}
         price={product.price}
         currency="XOF"
         image={firstImg}
+        inStock={product.stock > 0}
       />
 
       <BreadcrumbStructuredData
@@ -118,7 +109,7 @@ export default async function PieceDetailPage({ params }: Props) {
           <div className="lg:col-span-6 space-y-6">
             <div>
               <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-600">
-                {categoryName}
+                {categoryName || 'Catégorie non précisée'}
               </span>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 mt-1">
                 {product.title}
@@ -145,7 +136,7 @@ export default async function PieceDetailPage({ params }: Props) {
                 <span>🚗</span> Compatibilité Véhicule Garantie
               </h3>
               <p className="text-sm font-bold text-gray-900">
-                {brandName} {product.model || 'Tous modèles'}
+                {brandName || 'Marque non renseignée'} {product.model || 'Tous modèles'}
               </p>
               <p className="text-xs text-gray-500 mt-1">
                 Convient pour les motorisations Diesel & Essence en Afrique de l&apos;Ouest.
@@ -190,29 +181,61 @@ export default async function PieceDetailPage({ params }: Props) {
           <h2 className="text-xl sm:text-2xl font-extrabold text-gray-900 mb-6">
             Pièces similaires & compatibles
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {related.map((rel) => {
-              const relImages = Array.isArray(rel.images) ? rel.images : [];
-              const relImg = relImages.length > 0 ? String(relImages[0]) : '';
-              return (
-                <ProductCard
-                  key={rel.id}
-                  id={rel.id}
-                  name={rel.title}
-                  reference={rel.reference || rel.id}
-                  price={rel.price}
-                  rating={rel.rating || 4.8}
-                  reviewCount={rel.reviewCount || 12}
-                  image={relImg}
-                  brand={rel.brand?.name || 'Toyota'}
-                  inStock={rel.stock > 0}
-                />
-              );
-            })}
-          </div>
+          <Suspense fallback={<CatalogSkeleton cards={4} />}>
+            <RelatedParts categorySlug={product.category?.slug} excludeId={product.id} />
+          </Suspense>
         </div>
       </div>
 
+    </div>
+  );
+}
+
+/**
+ * Pieces similaires. Isole sous Suspense parce que cette requete ne decide pas
+ * du 404 : la garder dans le corps de page retarderait le premier rendu, et la
+ * mettre dans un `loading.tsx` ferait emettre un 200 avant `notFound()` (D60).
+ */
+async function RelatedParts({
+  categorySlug,
+  excludeId,
+}: {
+  categorySlug?: string;
+  excludeId: string;
+}) {
+  let related: Product[] = [];
+  try {
+    const relResult = await productsService.list(
+      { category: categorySlug || undefined },
+      { page: 1, pageSize: 6 }
+    );
+    related = ((relResult.data || []) as unknown as Product[])
+      .filter((p) => p.id !== excludeId)
+      .slice(0, 4);
+  } catch {
+    related = [];
+  }
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {related.map((rel) => {
+        const relImages = Array.isArray(rel.images) ? rel.images : [];
+        const relImg = relImages.length > 0 ? String(relImages[0]) : '';
+        return (
+          <ProductCard
+            key={rel.id}
+            id={rel.id}
+            name={rel.title}
+            reference={rel.reference || rel.id}
+            price={rel.price}
+            rating={rel.rating}
+            reviewCount={rel.reviewCount}
+            image={relImg}
+            brand={rel.brand?.name}
+            inStock={rel.stock > 0}
+          />
+        );
+      })}
     </div>
   );
 }

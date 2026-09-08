@@ -1,52 +1,44 @@
+import { Suspense } from 'react';
+import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import CatalogPage from '@/components/CatalogPage';
-import { productsService } from '@/modules/products/products.service';
-import { Product } from '@/shared/types';
+import { resolveCategory } from '@/lib/marketplace-catalog';
+import CatalogPageContent, { CatalogPageFallback } from '@/components/CatalogPageContent';
 
-interface Props {
+export const dynamic = 'force-dynamic';
+
+interface PageProps {
   params: Promise<{ categorie: string }>;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { categorie } = await params;
-  const readableName = categorie.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const entry = resolveCategory(categorie);
+  if (!entry) return {};
   return {
-    title: `Pièces détachées ${readableName} à Abidjan | AutoAfrique`,
-    description: `Achetez vos pièces détachées ${readableName} neuves ou d'occasion contrôlée à Abidjan et en Afrique de l'Ouest.`,
-    alternates: { canonical: `/catalogue/${categorie}` },
+    title: `Pièces détachées ${entry.name} à Abidjan`,
+    description: `${entry.description} Pièces neuves et d'occasion contrôlées. Paiement Mobile Money, livraison Abidjan.`,
+    alternates: { canonical: `/categories/${entry.slug}` },
   };
 }
 
-export default async function PublicCategoryCataloguePage({ params }: Props) {
+// `notFound()` doit s'executer avant tout envoi de reponse : le chargement des
+// pieces est donc isole sous Suspense plutot que dans un `loading.tsx`, qui
+// faisait emettre un 200 avant que le slug ne soit valide (D60).
+export default async function PublicCategoryCataloguePage({ params }: PageProps) {
   const { categorie } = await params;
-  const result = await productsService.list({ category: categorie }, { page: 1, pageSize: 20 });
-  const rawData = (result.data || []) as unknown as Product[];
-  const products: Product[] = rawData.map((p) => ({
-    id: p.id,
-    title: p.title || 'Pièce Automobile',
-    reference: p.reference || p.id,
-    price: p.price || 0,
-    stock: p.stock ?? 1,
-    brand: p.brand || { name: 'Toyota', slug: 'toyota' },
-    category: p.category || { name: 'Pièces Auto', slug: 'pieces-auto' },
-    condition: p.condition || 'Neuf',
-    rating: p.rating || 4.8,
-    reviewCount: p.reviewCount || 24,
-    images: p.images || [],
-  }));
-
-  const readableName = categorie.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+  const entry = resolveCategory(categorie);
+  if (!entry) notFound();
 
   return (
-    <div>
-      <CatalogPage
+    <Suspense fallback={<CatalogPageFallback label="Chargement de la catégorie" />}>
+      <CatalogPageContent
         kind="categorie"
-        slug={categorie}
-        name={readableName}
-        description={`Découvrez notre sélection de pièces détachées pour la catégorie ${readableName} avec garantie et livraison rapide.`}
-        count={products.length}
-        products={products}
+        slug={entry.slug}
+        name={entry.name}
+        description={entry.description}
+        filter={{ category: entry.slug }}
+        pageSize={20}
       />
-    </div>
+    </Suspense>
   );
 }

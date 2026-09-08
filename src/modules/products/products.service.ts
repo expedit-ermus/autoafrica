@@ -14,7 +14,7 @@ interface CompatInput {
 }
 
 interface ProductListWhere extends Prisma.ProductWhereInput {
-  model?: { contains: string; mode: 'insensitive' }
+  model?: { contains: string }
 }
 
 interface CreateProductInput {
@@ -52,7 +52,7 @@ export class ProductsService {
     const where: Prisma.ProductWhereInput = { active: true }
     if (filters.brand) where.brand = { name: filters.brand }
     if (filters.model) {
-      const searchFilter = { contains: filters.model, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.model }
       ;(where as ProductListWhere).model = searchFilter
     }
     if (filters.category) where.category = { slug: filters.category }
@@ -66,7 +66,7 @@ export class ProductsService {
       where.price = priceFilter
     }
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { title: searchFilter },
         { reference: searchFilter },
@@ -118,6 +118,33 @@ export class ProductsService {
     if (!product) throw new NotFoundError('Product', id)
 
     await prisma.product.update({ where: { id }, data: { views: { increment: 1 } } })
+
+    return {
+      ...product,
+      images: product.images || [],
+      compatible: product.compatible || [],
+    }
+  }
+
+  /**
+   * Resolution par la colonne `slug` generee a la creation. Elle n'etait
+   * exploitee par aucune route : la fiche piece ne savait resoudre que par
+   * identifiant, et retombait sinon sur un balayage des 100 premiers produits.
+   */
+  async getBySlug(slug: string) {
+    const product = await prisma.product.findUnique({
+      where: { slug },
+      include: {
+        seller: { select: { id: true, firstName: true, lastName: true, shopName: true, country: true, city: true } },
+        brand: true,
+        category: true,
+        compatible: true,
+        reviews: { where: { active: true }, take: 5 },
+      },
+    })
+    if (!product) return null
+
+    await prisma.product.update({ where: { id: product.id }, data: { views: { increment: 1 } } })
 
     return {
       ...product,

@@ -9,8 +9,8 @@ test.describe('Public Pages & Conversion Features', () => {
     const h1 = page.getByRole('heading', { level: 1 });
     await expect(h1).toBeVisible();
 
-    // Floating WhatsApp widget
-    const waButton = page.locator('a[aria-label*="WhatsApp"]');
+    // Floating WhatsApp widget (bouton ouvrant le formulaire de demande express)
+    const waButton = page.getByRole('button', { name: 'Demande express de pièce auto sur WhatsApp' });
     await expect(waButton).toBeAttached();
   });
 
@@ -26,12 +26,12 @@ test.describe('Public Pages & Conversion Features', () => {
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   });
 
-  test('Tarifs SaaS page renders all 3 pricing tiers', async ({ page }) => {
+  test('Tarifs SaaS page renders all 4 pricing tiers', async ({ page }) => {
     await page.goto('/tarifs');
     await expect(page).toHaveTitle(/Tarifs/i);
-    await expect(page.getByText('Starter')).toBeVisible();
-    await expect(page.getByText('Pro')).toBeVisible();
-    await expect(page.getByText('Entreprise')).toBeVisible();
+    for (const tier of ['Gratuit', 'Starter', 'Professionnel', 'Entreprise']) {
+      await expect(page.getByRole('heading', { name: tier, exact: true })).toBeVisible();
+    }
   });
 
   test('Devenir Vendeur page displays onboarding perks and CTA', async ({ page }) => {
@@ -50,6 +50,6 @@ test.describe('Public Pages & Conversion Features', () => {
     await page.goto('/blog/verifier-compatibilite-piece-auto-vehicule');
     await expect(page).toHaveTitle(/compatibilité/i);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(page.getByText('Méthode 1')).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Méthode 1/ })).toBeVisible();
   });
 });

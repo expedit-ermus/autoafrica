@@ -55,7 +55,7 @@ export default function OuTrouverPiecesPage() {
     "@type": "Article",
     "headline": "Où trouver des pièces détachées auto de qualité à Abidjan ? Guide 2026",
     "description": "Guide complet pour acheter vos pièces auto à Abidjan : comparatif casse d'Adjamé, ferraille Marcory, N'Dotré et marketplace AutoAfrique.",
-    "image": "https://autoafrique-saas.vercel.app/images/hero-bg.jpg",
+    "image": "https://autoafrique-saas.vercel.app/images/vtc-taxis-abidjan.jpg",
     "author": {
       "@type": "Organization",
       "name": "Équipe AutoAfrique"
@@ -82,8 +82,8 @@ export default function OuTrouverPiecesPage() {
         author={{ name: 'Équipe AutoAfrique', role: 'Experts Automobile' }}
         datePublished="2026-08-27"
         mainImage={{
-          url: '/images/hero-bg.jpg',
-          alt: 'Marché de pièces automobiles à Abidjan',
+          url: '/images/vtc-taxis-abidjan.jpg',
+          alt: 'Rue commerçante d\'Abidjan avec taxis-compteurs, boutiques et kiosque Mobile Money',
           caption: 'Trouver la bonne pièce auto à Abidjan nécessite de connaître les bons endroits.',
         }}
         tableOfContents={[

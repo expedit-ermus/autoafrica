@@ -8,7 +8,10 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     await requireAuth(request)
     const { id } = await params
     const body = await request.json()
-    const lead = await crmService.updateLeadStatus(id, body.status)
+    // La route ne lisait que `body.status` : les modifications de nom, telephone,
+    // e-mail, source, valeur et notes envoyees par /dashboard/crm etaient
+    // silencieusement ignorees alors que l'interface annoncait un succes.
+    const lead = await crmService.updateLead(id, body)
     return successResponse(lead)
   } catch (error) {
     return handleApiError(error)

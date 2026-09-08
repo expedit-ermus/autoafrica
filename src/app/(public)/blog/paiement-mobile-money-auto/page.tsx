@@ -18,7 +18,7 @@ export default function PaiementMobileMoneyPage() {
       author={{ name: 'Équipe AutoAfrique', role: 'Experts Automobile' }}
       datePublished="2026-08-08"
       mainImage={{
-        url: '/images/hero-bg.jpg',
+        url: '/images/sequestre-mobile-money.jpg',
         alt: 'Paiement mobile sur smartphone avec opérateurs Mobile Money à Abidjan',
         caption: 'Le paiement Mobile Money sécurisé par séquestre transforme le commerce auto à Abidjan et en Afrique de l\'Ouest.',
       }}
@@ -35,7 +35,7 @@ export default function PaiementMobileMoneyPage() {
           id: 'probleme-cash',
           heading: 'Le problème du paiement cash dans le commerce auto à Abidjan',
           body: [
-            'Jusqu\'à présent, acheter une pièce auto à Abidjan impliquait souvent de se déplacer physiquement avec de l\'argent liquide, parfois d\'une commune à l\'autre — de Yopougon à Adjamé, ou de Cocody à Marcory. Outre les risques de sécurité liés au transport d\'espèces pour des sommes importantes (<a href="/categories/moteur">moteurs complets</a>, <a href="/categories/transmission">boîtes de vitesse</a>), cette méthode limite le choix à la zone immédiate.',
+            'Jusqu\'à présent, acheter une pièce auto à Abidjan impliquait souvent de se déplacer physiquement avec de l\'argent liquide, parfois d\'une commune à l\'autre — de Yopougon à Adjamé, ou de Cocody à Marcory. Outre les risques de sécurité liés au transport d\'espèces pour des sommes importantes (<a href="/categories/moteur">moteurs complets</a>, <a href="/categories/embrayage">boîtes de vitesse</a>), cette méthode limite le choix à la zone immédiate.',
             'L\'alternative consistait à envoyer de l\'argent via transfert direct sans garantie. Malheureusement, les arnaques étaient nombreuses : vendeurs fantômes disparaissant une fois l\'argent reçu, ou envoi de pièces défectueuses.',
           ],
         },

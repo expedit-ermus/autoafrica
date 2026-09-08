@@ -13,7 +13,10 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "typecheck": "tsc --noEmit",
+    "check:budget": "node scripts/check-bundle-budget.mjs",
     "db:push": "node scripts/push-remote-db.mjs",
+    "db:seed:accounts": "tsx prisma/seed.ts",
+    "db:seed:demo": "node prisma/seed.mjs",
     "db:seed": "node prisma/seed.mjs"
   },
   "dependencies": {

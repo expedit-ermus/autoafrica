@@ -18,8 +18,8 @@ export default function VerifierCompatibilitePiecePage() {
       author={{ name: 'Équipe AutoAfrique', role: 'Experts Automobile' }}
       datePublished="2026-08-27"
       mainImage={{
-        url: '/images/hero-bg.jpg',
-        alt: 'Mécanicien vérifiant la référence d\'une pièce automobile avant montage',
+        url: '/images/pieces-neuves-oem.jpg',
+        alt: 'Vendeur vérifiant la référence d\'une pièce Toyota d\'origine sur son emballage à Abidjan',
         caption: 'Une pièce mal référencée est la première cause de retour et de perte de temps au garage.',
       }}
       tableOfContents={[

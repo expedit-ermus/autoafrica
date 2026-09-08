@@ -75,7 +75,7 @@ export class DeliveryService {
     if (filters.carrier) where.carrier = filters.carrier
     if (filters.method) where.method = filters.method
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { trackingNumber: searchFilter },
         { currentLocation: searchFilter },
@@ -200,7 +200,7 @@ export class DeliveryService {
     if (filters.status) where.status = filters.status
     if (filters.country) where.country = filters.country
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { name: searchFilter },
         { city: searchFilter },
@@ -295,7 +295,7 @@ export class DeliveryService {
     if (filters.status) where.status = filters.status
     if (filters.type) where.type = filters.type
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { plateNumber: searchFilter },
         { brand: searchFilter },

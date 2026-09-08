@@ -18,8 +18,8 @@ export default function CasseAutoVsAutoafriquePage() {
       author={{ name: 'Équipe AutoAfrique', role: 'Experts Automobile Abidjan' }}
       datePublished="2026-08-15"
       mainImage={{
-        url: '/images/hero-bg.jpg',
-        alt: 'Comparatif casse automobile Abidjan et pièces d\'occasion contrôlées AutoAfrique',
+        url: '/images/pieces-occasion-controlee.jpg',
+        alt: 'Mécanicien testant un moteur Toyota d\'occasion étiqueté Testé et garanti dans une casse auto d\'Abidjan',
         caption: 'AutoAfrique modernise le marché des pièces détachées d\'occasion en Afrique de l\'Ouest.',
       }}
       tableOfContents={[

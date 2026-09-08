@@ -124,16 +124,22 @@ export default function CartPage() {
   const processPayment = async () => {
     setChecking(true);
     try {
-      for (const item of cart) {
-        await fetch('/api/v1/orders', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify({
-            productId: item.productId,
-            quantity: item.quantity,
-          }),
-        });
+      // Une seule commande porte l'ensemble du panier : l'API attend `items`
+      // et calcule le total et la taxe sur la totalite des lignes. L'ancien
+      // envoi ligne par ligne (`{ productId, quantity }`) etait rejete en 500,
+      // et la reponse n'etant pas verifiee, l'echec passait pour un succes :
+      // le panier etait vide et aucune commande n'existait.
+      const res = await fetch('/api/v1/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          items: cart.map((item) => ({ productId: item.productId, quantity: item.quantity })),
+          shippingMethod: currentZone?.name,
+        }),
+      });
+      if (!res.ok) {
+        throw new Error('order-creation-failed');
       }
       removeLocalStorage(CART_KEY);
       window.dispatchEvent(new Event('aa-cart-updated'));
@@ -165,9 +171,11 @@ export default function CartPage() {
               <div className="w-16 h-16 bg-orange-50 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
                 🛒
               </div>
-              <h2 className="text-xl font-extrabold text-slate-900 mb-2">
+              {/* Seul titre de la page dans cet etat : il doit etre le h1,
+                  sans quoi l'ecran ne commence par aucun niveau 1. */}
+              <h1 className="text-xl font-extrabold text-slate-900 mb-2">
                 {L('Votre panier est vide', 'Your cart is empty')}
-              </h2>
+              </h1>
               <p className="text-sm text-slate-500 mb-6">
                 {L('Explorez le catalogue pour ajouter des pièces neuves ou d\'occasion contrôlée.', 'Explore the catalog to add new or certified used parts.')}
               </p>
@@ -448,7 +456,7 @@ export default function CartPage() {
                   <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
                     {L('Code PIN de démonstration', 'Demo PIN Code')} (ex: 1234)
                   </label>
-                  <input aria-label="••••"
+                  <input aria-label="Code PIN Mobile Money"
                     type="password"
                     maxLength={4}
                     value={pinCode}

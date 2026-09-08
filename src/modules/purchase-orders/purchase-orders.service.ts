@@ -47,7 +47,7 @@ export class PurchaseOrdersService {
       where.totalAmount = amountFilter
     }
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { poNumber: searchFilter },
         { trackingNumber: searchFilter },

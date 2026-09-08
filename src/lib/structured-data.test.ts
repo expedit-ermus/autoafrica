@@ -79,6 +79,16 @@ describe('buildProductSchema', () => {
     expect(schema.offers.seller).toEqual({ '@type': 'Organization', name: 'Garage Moussa' })
   })
 
+  it('declares the real availability rather than always InStock', () => {
+    // `availability` etait fige a InStock : une piece en rupture etait annoncee
+    // disponible aux moteurs de recherche (D61).
+    const enRupture = buildProductSchema({ name: 'Amortisseur', price: 42000, inStock: false })
+    expect(enRupture.offers.availability).toBe('https://schema.org/OutOfStock')
+
+    const enStock = buildProductSchema({ name: 'Amortisseur', price: 42000, inStock: true })
+    expect(enStock.offers.availability).toBe('https://schema.org/InStock')
+  })
+
   it('defaults to XOF currency and omits optional fields', () => {
     const schema = buildProductSchema({ name: 'Plaquettes', price: 18000 })
 

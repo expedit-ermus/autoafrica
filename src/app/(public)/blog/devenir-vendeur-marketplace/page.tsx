@@ -18,7 +18,7 @@ export default function DevenirVendeurMarketplacePage() {
       author={{ name: 'Équipe AutoAfrique', role: 'Pôle Partenariats Marchands' }}
       datePublished="2026-07-29"
       mainImage={{
-        url: '/images/hero-bg.jpg',
+        url: '/images/pieces-neuves-oem.jpg',
         alt: 'Commerçant et vendeur de pièces détachées automobile dans sa boutique à Abidjan',
         caption: 'AutoAfrique offre aux vendeurs un outil de gestion d\'inventaire et une visibilité auprès de milliers d\'automobilistes.',
       }}

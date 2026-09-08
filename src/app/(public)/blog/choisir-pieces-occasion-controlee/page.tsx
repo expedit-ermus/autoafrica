@@ -18,8 +18,8 @@ export default function ChoisirPiecesOccasionPage() {
       author={{ name: 'Équipe AutoAfrique', role: 'Experts Automobile' }}
       datePublished="2026-08-10"
       mainImage={{
-        url: '/images/hero-bg.jpg',
-        alt: 'Pièces détachées automobiles d\'occasion alignées sur une étagère de garage',
+        url: '/images/pieces-occasion-controlee.jpg',
+        alt: 'Contrôle électrique d\'un moteur d\'occasion devant les rayonnages de pièces d\'un entrepôt d\'Abidjan',
         caption: 'Distinguer une pièce de réemploi fiable d\'une pièce défectueuse est essentiel.',
       }}
       tableOfContents={[
@@ -53,8 +53,8 @@ export default function ChoisirPiecesOccasionPage() {
             'Toutes les pièces ne s\'achètent pas d\'occasion. Il est primordial de faire la distinction pour des raisons de sécurité.',
           ],
           subsections: [
-            { heading: 'À acheter d\'occasion les yeux fermés', body: 'Les éléments de carrosserie (portières, capots, pare-chocs), les <a href="/categories/eclairage">phares et feux</a>, les éléments d\'habitacle, les jantes, et les gros organes mécaniques (<a href="/categories/moteur">moteurs d\'occasion</a>, <a href="/categories/transmission">boîtes de vitesses</a>, ponts) s\'ils sont certifiés avec garantie.' },
-            { heading: 'À acheter NEUF impérativement', body: 'Tout ce qui touche à la sécurité active et à l\'usure courante : <a href="/categories/freinage">plaquettes et disques de frein</a>, <a href="/categories/suspension">amortisseurs</a>, courroies, <a href="/categories/filtration">filtres</a>, rotules de direction, et pneumatiques neufs.' },
+            { heading: 'À acheter d\'occasion les yeux fermés', body: 'Les éléments de carrosserie (portières, capots, pare-chocs), les <a href="/categories/carrosserie">phares et feux</a>, les éléments d\'habitacle, les jantes, et les gros organes mécaniques (<a href="/categories/moteur">moteurs d\'occasion</a>, <a href="/categories/embrayage">boîtes de vitesses</a>, ponts) s\'ils sont certifiés avec garantie.' },
+            { heading: 'À acheter NEUF impérativement', body: 'Tout ce qui touche à la sécurité active et à l\'usure courante : <a href="/categories/frein">plaquettes et disques de frein</a>, <a href="/categories/suspension">amortisseurs</a>, courroies, <a href="/categories/filtre">filtres</a>, rotules de direction, et pneumatiques neufs.' },
           ],
         },
         {

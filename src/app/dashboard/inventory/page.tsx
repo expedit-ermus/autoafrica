@@ -6,7 +6,16 @@ import { useToast } from '@/contexts/ToastContext';
 import { useApp } from '@/contexts/AppContext';
 import Modal from '@/components/Modal';
 import { Product } from '@/shared/types';
+import { BRAND_SLUGS, CATEGORY_SLUGS } from '@/lib/marketplace-catalog';
 import type { ReplenishmentPrediction, ReplenishmentSummary } from '@/modules/inventory/smart-replenishment.service';
+
+/** Etats de piece exposes par l'enum Prisma `ProductCondition`. */
+const PRODUCT_CONDITIONS = [
+  { value: 'NEW', label: 'Neuve' },
+  { value: 'OEM_AFTERMARKET', label: 'Adaptable / aftermarket' },
+  { value: 'REFURBISHED', label: 'Reconditionnee' },
+  { value: 'USED', label: "Occasion controlee" },
+];
 
 type Warehouse = {
   id: string;
@@ -91,10 +100,13 @@ export default function InventoryPage() {
   const [showAddWarehouse, setShowAddWarehouse] = useState(false);
   const [showAddStock, setShowAddStock] = useState(false);
   const [showTransfer, setShowTransfer] = useState(false);
+  const [showPublishProduct, setShowPublishProduct] = useState(false);
 
   const [whForm, setWhForm] = useState({ name: '', code: '', type: 'STANDARD', country: 'CI', city: '', address: '', capacity: '' });
   const [stockForm, setStockForm] = useState({ productId: '', warehouseId: '', quantity: '', reserved: '0', binLocation: '', lotNumber: '', costBasis: '' });
   const [transferForm, setTransferForm] = useState({ productId: '', fromWarehouseId: '', toWarehouseId: '', quantity: '', notes: '' });
+  const emptyProductForm = { title: '', reference: '', brand: '', category: '', price: '', stock: '', condition: 'USED', description: '' };
+  const [productForm, setProductForm] = useState(emptyProductForm);
 
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -119,10 +131,15 @@ export default function InventoryPage() {
           wRes.json(), sRes.json(), mRes.json(), pRes.json(), rRes.json()
         ]);
 
-        if (wData.success) setWarehouses(wData.data || []);
-        if (sData.success) setStock(sData.data || []);
-        if (mData.success) setMovements(mData.data || []);
-        if (pData.success) setProducts(pData.data || pData.products || []);
+        // Ces routes renvoient une reponse paginee : { data: { data: [...],
+        // total, page, pageSize } }. La page lisait `data` directement et
+        // stockait donc un objet la ou un tableau etait attendu : `stats`
+        // appelait `stock.reduce`, ce qui levait une TypeError et faisait
+        // tomber tout l'ecran dans le filet d'erreur global.
+        if (wData.success) setWarehouses(wData.data?.data || wData.data || []);
+        if (sData.success) setStock(sData.data?.data || sData.data || []);
+        if (mData.success) setMovements(mData.data?.data || mData.data || []);
+        if (pData.success) setProducts(pData.data?.data || pData.data || pData.products || []);
         if (rData.predictions) setReplenishmentData(rData);
       } catch (err) {
         console.error(err);
@@ -175,6 +192,46 @@ export default function InventoryPage() {
     } catch (err) {
       console.error(err);
       addToast('error', 'Erreur lors de la creation de l\'entrepôt');
+    }
+  };
+
+  /**
+   * Publication d'une piece au catalogue. `POST /api/v1/products` (R106) existait
+   * mais n'etait appele par aucun ecran : un vendeur ne pouvait pas mettre une
+   * piece en vente depuis l'application. La creation est hebergee ici plutot que
+   * sur une route dediee, `02-ROUTES.md` n'en prevoyant aucune.
+   */
+  const handlePublishProduct = async () => {
+    if (!productForm.title.trim() || !productForm.price) {
+      addToast('error', 'Titre et prix requis');
+      return;
+    }
+    try {
+      const res = await fetch('/api/v1/products', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, credentials: 'include',
+        body: JSON.stringify({
+          title: productForm.title.trim(),
+          reference: productForm.reference.trim() || undefined,
+          brand: productForm.brand || undefined,
+          category: productForm.category || undefined,
+          description: productForm.description.trim() || undefined,
+          price: Number(productForm.price),
+          stock: Number(productForm.stock) || 0,
+          condition: productForm.condition,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        addToast('success', `Piece « ${productForm.title.trim()} » publiee au catalogue`);
+        setShowPublishProduct(false);
+        setProductForm(emptyProductForm);
+        setRefreshKey(k => k + 1);
+      } else {
+        addToast('error', data.error || data.message || 'Erreur lors de la publication');
+      }
+    } catch (err) {
+      console.error(err);
+      addToast('error', 'Erreur lors de la publication de la piece');
     }
   };
 
@@ -297,6 +354,9 @@ export default function InventoryPage() {
             <div className="flex gap-2">
               <button onClick={() => setShowTransfer(true)} className="px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-all">
                 {L('Transférer', 'Transfer')}
+              </button>
+              <button onClick={() => setShowPublishProduct(true)} className="px-4 py-2.5 rounded-xl bg-white border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-all">
+                {L('Publier une pièce', 'Publish a part')}
               </button>
               <button
                 onClick={() => { if (tab === 'warehouses') setShowAddWarehouse(true); else setShowAddStock(true); }}
@@ -626,6 +686,60 @@ export default function InventoryPage() {
               </div>
               <button onClick={handleAddWarehouse} className="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold hover:opacity-95 transition-opacity">
                 Creer l&apos;entrepôt
+              </button>
+            </div>
+          </Modal>
+
+          <Modal isOpen={showPublishProduct} onClose={() => setShowPublishProduct(false)} title="Publier une pièce au catalogue">
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="piece-titre" className={labelCls}>Designation *</label>
+                <input id="piece-titre" type="text" value={productForm.title} onChange={e => setProductForm({ ...productForm, title: e.target.value })} className={inputCls} placeholder="Ex : Plaquettes de frein avant Corolla" />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="piece-reference" className={labelCls}>Reference OEM</label>
+                  <input id="piece-reference" type="text" value={productForm.reference} onChange={e => setProductForm({ ...productForm, reference: e.target.value })} className={inputCls} placeholder="Ex : 04465-0K280" />
+                </div>
+                <div>
+                  <label htmlFor="piece-etat" className={labelCls}>Etat *</label>
+                  <select id="piece-etat" value={productForm.condition} onChange={e => setProductForm({ ...productForm, condition: e.target.value })} className={inputCls}>
+                    {PRODUCT_CONDITIONS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="piece-marque" className={labelCls}>Marque</label>
+                  <select id="piece-marque" value={productForm.brand} onChange={e => setProductForm({ ...productForm, brand: e.target.value })} className={inputCls}>
+                    <option value="">— Selectionner —</option>
+                    {BRAND_SLUGS.map(b => <option key={b.slug} value={b.name}>{b.name}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="piece-categorie" className={labelCls}>Categorie</label>
+                  <select id="piece-categorie" value={productForm.category} onChange={e => setProductForm({ ...productForm, category: e.target.value })} className={inputCls}>
+                    <option value="">— Selectionner —</option>
+                    {CATEGORY_SLUGS.map(c => <option key={c.slug} value={c.slug}>{c.name}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="piece-prix" className={labelCls}>Prix (XOF) *</label>
+                  <input id="piece-prix" type="number" inputMode="numeric" value={productForm.price} onChange={e => setProductForm({ ...productForm, price: e.target.value })} className={inputCls} min="0" />
+                </div>
+                <div>
+                  <label htmlFor="piece-stock" className={labelCls}>Quantite disponible</label>
+                  <input id="piece-stock" type="number" inputMode="numeric" value={productForm.stock} onChange={e => setProductForm({ ...productForm, stock: e.target.value })} className={inputCls} min="0" />
+                </div>
+              </div>
+              <div>
+                <label htmlFor="piece-description" className={labelCls}>Description</label>
+                <textarea id="piece-description" rows={3} value={productForm.description} onChange={e => setProductForm({ ...productForm, description: e.target.value })} className={inputCls} placeholder="Etat, compatibilite, garantie…" />
+              </div>
+              <button onClick={handlePublishProduct} className="w-full px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-sm font-semibold hover:opacity-95 transition-opacity">
+                Publier au catalogue
               </button>
             </div>
           </Modal>

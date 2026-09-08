@@ -802,6 +802,7 @@ export default function CRMPage() {
                                       </svg>
                                     </button>
                                     <select
+                                      aria-label={`Statut du lead ${lead.name}`}
                                       value={lead.status}
                                       onChange={(e) => { e.stopPropagation(); handleUpdateLeadStatus(lead.id, e.target.value); }}
                                       onClick={(e) => e.stopPropagation()}

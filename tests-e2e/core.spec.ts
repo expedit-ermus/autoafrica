@@ -1,11 +1,12 @@
 import { test, expect } from '@playwright/test';
 
-test('landing page (R001) renders the brand H1 and is indexable', async ({ page }) => {
+test('landing page (R001) renders a single keyword H1 and is indexable', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle(/AutoAfrique/i);
   const h1 = page.getByRole('heading', { level: 1 });
+  await expect(h1).toHaveCount(1);
   await expect(h1).toBeVisible();
-  await expect(h1).toContainText('AutoAfrique');
+  await expect(h1).toContainText(/Abidjan/i);
 });
 
 test('marketplace page (R005) loads with its grid', async ({ page }) => {

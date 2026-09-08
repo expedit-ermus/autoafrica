@@ -1,6 +1,8 @@
+import { Suspense } from 'react';
 import type { Metadata } from 'next';
 import dynamic from 'next/dynamic';
 import LoadingSkeleton from '@/components/LoadingSkeleton';
+import { CatalogSkeleton } from '@/components/RouteSkeleton';
 
 const CatalogueFilters = dynamic(() => import('@/components/CatalogueFilters'), {
   loading: () => <LoadingSkeleton height="h-96" />
@@ -10,6 +12,14 @@ import { SITE_URL } from '@/lib/structured-data';
 import { productsService } from '@/modules/products/products.service';
 import { Product } from '@/shared/types';
 
+/**
+ * La page etait entierement prerendue au build : une piece publiee ensuite
+ * n'apparaissait jamais au catalogue public. La revalidation reprend la
+ * fraicheur deja retenue pour les reponses API dans `21-PERFORMANCE.md` (60 s),
+ * ce qui reflete le catalogue reel sans rendre la page a chaque requete.
+ */
+export const revalidate = 60;
+
 export const metadata: Metadata = {
   title: 'Catalogue pièces détachées auto Abidjan',
   description:
@@ -17,23 +27,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/catalogue' },
 };
 
-export default async function PublicCataloguePage() {
-  const result = await productsService.list({}, { page: 1, pageSize: 100 });
-  const rawData = (result.data || []) as unknown as Product[];
-  const products: Product[] = rawData.map((p) => ({
-    id: p.id,
-    title: p.title || 'Pièce Automobile',
-    reference: p.reference || p.id,
-    price: p.price || 0,
-    stock: p.stock ?? 1,
-    brand: p.brand || { name: 'Toyota', slug: 'toyota' },
-    category: p.category || { name: 'Pièces Auto', slug: 'pieces-auto' },
-    condition: p.condition || 'Neuf',
-    rating: p.rating || 4.8,
-    reviewCount: p.reviewCount || 24,
-    images: p.images || [],
-  }));
-
+export default function PublicCataloguePage() {
   return (
     <div className="bg-[#F8FAFC] text-slate-900">
       <BreadcrumbStructuredData
@@ -60,7 +54,26 @@ export default async function PublicCataloguePage() {
       </div>
 
       {/* Filtres + Grille de produits */}
-      <CatalogueFilters products={products} />
+      <Suspense fallback={<CatalogSkeleton />}>
+        <CatalogueGrid />
+      </Suspense>
     </div>
   );
+}
+
+/**
+ * Grille du catalogue. Le `loading.tsx` de ce segment couvrait aussi la route
+ * enfant `/catalogue/[categorie]` et l'empechait de renvoyer un 404 (D60) : la
+ * frontiere Suspense est donc portee par la page, sous l'en-tete, qui s'affiche
+ * desormais immediatement au lieu d'etre remplace par le squelette.
+ */
+async function CatalogueGrid() {
+  const result = await productsService.list({}, { page: 1, pageSize: 100 });
+  // Aucune valeur de repli inventee : `Product.rating` et `Product.reviewCount`
+  // valent 0 par defaut au schema, si bien qu'un `||` substituait une note et un
+  // nombre d'avis fabriques a *tout* produit reellement sans avis. Meme travers
+  // pour la marque, la categorie, l'etat et le stock (D61).
+  const products = (result.data || []) as unknown as Product[];
+
+  return <CatalogueFilters products={products} />;
 }

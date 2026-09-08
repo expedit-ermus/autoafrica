@@ -47,6 +47,8 @@ interface ProductStructuredDataProps {
   currency?: string;
   seller?: string;
   url?: string;
+  /** Disponibilite reelle ; omise, la piece est declaree en stock. */
+  inStock?: boolean;
 }
 
 export function ProductStructuredData({
@@ -58,11 +60,12 @@ export function ProductStructuredData({
   currency,
   seller,
   url,
+  inStock,
 }: ProductStructuredDataProps) {
   return (
     <JsonLdScript
       id="product-schema"
-      data={buildProductSchema({ name, description, image, brand, price, currency, seller, url })}
+      data={buildProductSchema({ name, description, image, brand, price, currency, seller, url, inStock })}
     />
   );
 }

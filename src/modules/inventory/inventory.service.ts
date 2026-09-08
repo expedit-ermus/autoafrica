@@ -61,7 +61,7 @@ export class InventoryService {
     if (filters.type) where.type = filters.type as WarehouseType
     if (filters.active) where.active = filters.active === 'true'
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { name: searchFilter },
         { code: searchFilter },
@@ -160,7 +160,7 @@ export class InventoryService {
     if (filters.stockStatus === 'out') where.available = 0
     if (filters.stockStatus === 'in') where.available = { gt: 10 }
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { binLocation: searchFilter },
         { lotNumber: searchFilter },
@@ -302,7 +302,7 @@ export class InventoryService {
       where.OR = [{ fromWarehouseId: filters.warehouseId }, { toWarehouseId: filters.warehouseId }]
     }
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.AND = [
         ...(filters.warehouseId ? [{ OR: [{ fromWarehouseId: filters.warehouseId }, { toWarehouseId: filters.warehouseId }] }] : []),
         { OR: [{ reference: searchFilter }, { notes: searchFilter }, { product: { title: searchFilter } }] },

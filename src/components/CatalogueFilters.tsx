@@ -136,7 +136,9 @@ function CatalogueFiltersContent({ products }: CatalogueFiltersProps) {
     // Sort
     if (sortBy === 'price-asc') result.sort((a, b) => (a.price || 0) - (b.price || 0));
     else if (sortBy === 'price-desc') result.sort((a, b) => (b.price || 0) - (a.price || 0));
-    else if (sortBy === 'rating') result.sort((a, b) => ((b as Product & { rating?: number }).rating || 5) - ((a as Product & { rating?: number }).rating || 5));
+    // `|| 5` donnait la meme note fictive a tout produit sans avis : le tri
+    // etait arbitraire. Les produits sans avis passent desormais en dernier.
+    else if (sortBy === 'rating') result.sort((a, b) => ((b as Product & { rating?: number }).rating ?? 0) - ((a as Product & { rating?: number }).rating ?? 0));
 
     return result;
   }, [products, search, selectedMake, selectedCategory, selectedCondition, minPrice, maxPrice, onlyInStock, sortBy]);
@@ -503,7 +505,7 @@ function CatalogueFiltersContent({ products }: CatalogueFiltersProps) {
                       </div>
                     )}
                     <span className={`absolute top-2 left-2 text-[10px] font-extrabold px-2.5 py-1 rounded-full ${conditionBadge}`}>
-                      {p.condition || 'Neuf'}
+                      {p.condition || 'État non précisé'}
                     </span>
                   </div>
                   <div className="p-3 sm:p-4 flex flex-col flex-1">

@@ -60,7 +60,9 @@ describe('SuppliersService', () => {
 
     const where = mockPrisma.supplier.findMany.mock.calls[0][0].where;
     expect(where.OR).toHaveLength(5);
-    expect(where.OR[0]).toEqual({ name: { contains: 'ahmed', mode: 'insensitive' } });
+    // Pas de `mode: 'insensitive'` : le connecteur SQLite/libSQL le rejette et
+    // `contains` y est deja insensible a la casse pour l ASCII.
+    expect(where.OR[0]).toEqual({ name: { contains: 'ahmed' } });
   });
 
   it('throws NotFoundError for a missing supplier in getById', async () => {

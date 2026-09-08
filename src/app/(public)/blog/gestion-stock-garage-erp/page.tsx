@@ -18,8 +18,8 @@ export default function GestionStockGarageErpPage() {
       author={{ name: 'Équipe AutoAfrique', role: 'Conseillers ERP Automobile' }}
       datePublished="2026-08-05"
       mainImage={{
-        url: '/images/hero-bg.jpg',
-        alt: 'Gestion informatisée d\'un stock de pièces détachées auto dans un garage à Abidjan',
+        url: '/images/pieces-neuves-oem.jpg',
+        alt: 'Gestion informatisée d\'un stock de pièces détachées auto dans une boutique d\'Abidjan',
         caption: 'L\'ERP AutoAfrique permet le suivi en temps réel des références et des seuils d\'alerte de stock.',
       }}
       tableOfContents={[
@@ -35,7 +35,7 @@ export default function GestionStockGarageErpPage() {
           heading: 'Les limites de la gestion sur cahier et tableur à Abidjan',
           body: [
             'De Marcory à Yopougon, la grande majorité des garagistes et revendeurs de pièces détachées tiennent encore leur inventaire sur des cahiers manuscrits. Cette méthode, bien que familière, expose les ateliers à des erreurs récurrentes : références mal notées, pièces introuvables et oublis de facturation.',
-            'Selon nos observations auprès de plus de 80 ateliers à Abidjan, un garage perd en moyenne 15 à 25% de chiffre d\'affaires potentiel chaque mois à cause d\'une rupture de stock imprévue sur des pièces d\'usure courantes (<a href="/categories/freinage">plaquettes de frein</a>, <a href="/categories/filtration">filtres</a>, <a href="/categories/suspension">amortisseurs</a>) ou de l\'immobilisation de pièces à faible rotation.',
+            'Selon nos observations auprès de plus de 80 ateliers à Abidjan, un garage perd en moyenne 15 à 25% de chiffre d\'affaires potentiel chaque mois à cause d\'une rupture de stock imprévue sur des pièces d\'usure courantes (<a href="/categories/frein">plaquettes de frein</a>, <a href="/categories/filtre">filtres</a>, <a href="/categories/suspension">amortisseurs</a>) ou de l\'immobilisation de pièces à faible rotation.',
           ],
         },
         {

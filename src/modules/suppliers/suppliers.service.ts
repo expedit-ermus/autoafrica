@@ -40,7 +40,7 @@ export class SuppliersService {
       if (!Number.isNaN(min)) where.rating = { gte: min }
     }
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { name: searchFilter },
         { companyName: searchFilter },

@@ -29,7 +29,7 @@ export class NotificationService {
     if (filters.read !== undefined && filters.read !== '') where.read = filters.read === 'true'
     if (filters.type) where.type = filters.type
     if (filters.search) {
-      const searchFilter = { contains: filters.search, mode: 'insensitive' as const }
+      const searchFilter = { contains: filters.search }
       where.OR = [
         { title: searchFilter },
         { message: searchFilter },

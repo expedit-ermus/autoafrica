@@ -6,6 +6,21 @@ import RemoteImage from '@/components/RemoteImage';
 import { useApp } from '@/contexts/AppContext';
 import { useToast } from '@/contexts/ToastContext';
 import { useWishlist } from '@/contexts/WishlistContext';
+import { track } from '@/lib/tracking';
+
+/** Cle et forme de ligne partagees avec /dashboard/cart et PieceDetailCTA. */
+const CART_KEY = 'cart';
+
+interface CartLine {
+  id: string;
+  productId: string;
+  title: string;
+  brand: string;
+  reference: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
 
 interface ProductCardProps {
   id?: string;
@@ -14,10 +29,13 @@ interface ProductCardProps {
   price: number;
   oldPrice?: number;
   discount?: number;
-  rating: number;
-  reviewCount: number;
+  /** Note moyenne reelle. 0 ou absente = aucun avis : rien n'est affiche. */
+  rating?: number;
+  /** Nombre d'avis reels. 0 ou absent = aucun avis. */
+  reviewCount?: number;
   image: string;
-  brand: string;
+  /** Marque reelle. Absente = marque non renseignee, aucune n'est inventee. */
+  brand?: string;
   inStock: boolean;
   location?: string;
   priority?: boolean;
@@ -31,8 +49,8 @@ export default function ProductCard({
   price,
   oldPrice,
   discount,
-  rating,
-  reviewCount,
+  rating = 0,
+  reviewCount = 0,
   image,
   brand,
   inStock,
@@ -79,6 +97,36 @@ export default function ProductCard({
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    // Le bouton se contentait auparavant d'afficher « ajoutée au panier »
+    // sans rien ecrire : le panier restait vide. On utilise ici le meme
+    // contrat de stockage que /dashboard/marketplace et PieceDetailCTA.
+    try {
+      const saved = localStorage.getItem(CART_KEY);
+      const cart: CartLine[] = saved ? JSON.parse(saved) : [];
+      const existing = cart.find((item) => item.productId === productId);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({
+          id: crypto.randomUUID(),
+          productId,
+          title: name,
+          brand: brand || '',
+          reference,
+          price,
+          quantity: 1,
+          image,
+        });
+      }
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+      window.dispatchEvent(new Event('aa-cart-updated'));
+    } catch {
+      addToast('error', L('Impossible d\'ajouter la pièce au panier', 'Could not add the part to the cart'));
+      return;
+    }
+
+    track('add_to_cart', { entity: 'product', entityId: productId, product_id: productId, price, quantity: 1 });
     setAddedToCart(true);
     addToast(
       'success',
@@ -139,20 +187,28 @@ export default function ProductCard({
         
         {/* Étoiles Avis & Marque */}
         <div className="flex items-center justify-between gap-2 mb-2">
-          <div className="text-xs font-extrabold uppercase tracking-wider text-orange-600 bg-orange-50/80 px-2.5 py-0.5 rounded-md border border-orange-200/60">{brand}</div>
-          <div className="flex items-center gap-1">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <svg
-                key={i}
-                className={`w-3.5 h-3.5 ${i < rating ? 'text-amber-400' : 'text-slate-200'}`}
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
-            ))}
-            <span className="text-[11px] text-slate-400 font-medium">({reviewCount})</span>
-          </div>
+          {brand ? (
+            <div className="text-xs font-extrabold uppercase tracking-wider text-orange-600 bg-orange-50/80 px-2.5 py-0.5 rounded-md border border-orange-200/60">{brand}</div>
+          ) : (
+            <div className="text-xs font-semibold text-slate-400">Marque non renseignée</div>
+          )}
+          {reviewCount > 0 ? (
+            <div className="flex items-center gap-1">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <svg
+                  key={i}
+                  className={`w-3.5 h-3.5 ${i < rating ? 'text-amber-400' : 'text-slate-200'}`}
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+              <span className="text-[11px] text-slate-400 font-medium">({reviewCount})</span>
+            </div>
+          ) : (
+            <span className="text-[11px] text-slate-400 font-medium">Pas encore d&apos;avis</span>
+          )}
         </div>
 
         {/* État de la Pièce */}
