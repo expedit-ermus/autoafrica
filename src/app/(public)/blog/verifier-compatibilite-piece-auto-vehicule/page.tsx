@@ -51,7 +51,7 @@ export default function VerifierCompatibilitePiecePage() {
           id: 'recherche-modele-motorisation',
           heading: 'Méthode 2 : marque, modèle et motorisation',
           body: [
-            'Si votre véhicule n\'a pas de plaque locale ou vient d\'être importé, utilisez le <a href="/catalogue">sélecteur par marque et modèle</a> : constructeur (Toyota, Hyundai, Peugeot, Kia...), modèle précis (Hilux, Corolla, 308...), puis motorisation exacte (par exemple 2.4L D-4D Diesel 150ch). Cette troisième étape est cruciale : deux Hilux du même millésime peuvent avoir des moteurs différents, donc des <a href="/categories/filtre">filtres</a>, <a href="/categories/courroies-chaines">courroies de distribution</a> ou <a href="/categories/frein">disques de frein</a> incompatibles.',
+            'Si votre véhicule n\'a pas de plaque locale ou vient d\'être importé, utilisez le <a href="/catalogue">sélecteur par marque et modèle</a> : constructeur (Toyota, Hyundai, Peugeot, Kia...), modèle précis (Hilux, Corolla, 308...), puis motorisation exacte (par exemple 2.4L D-4D Diesel 150ch). Cette troisième étape est cruciale : deux Hilux du même millésime peuvent avoir des moteurs différents, donc des <a href="/categories/moteur">filtres</a>, <a href="/categories/moteur">courroies de distribution</a> ou <a href="/categories/frein">disques de frein</a> incompatibles.',
           ],
         },
         {

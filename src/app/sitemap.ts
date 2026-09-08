@@ -162,19 +162,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
 }
 
 function categoryUrls(): MetadataRoute.Sitemap {
+  // Alignees sur `CATEGORY_SLUGS`, elles-memes alignees sur les categories
+  // reelles en base : le sitemap annoncait huit categories sans aucun produit,
+  // qui servaient toutes le meme contenu de repli (D62).
   const slugs = [
-    "pneus-jantes",
-    "frein",
     "moteur",
-    "courroies-chaines",
-    "embrayage",
-    "amortissement",
+    "frein",
+    "electrique",
     "suspension",
-    "filtre",
+    "refroidissement",
+    "transmission",
     "carrosserie",
-    "huiles-fluides",
-    "electricite",
-    "autres",
   ];
   return slugs.map((slug) => ({
     url: `${BASE_URL}/categories/${slug}`,

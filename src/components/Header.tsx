@@ -11,13 +11,16 @@ const categoryNav = [
   { name: { fr: 'Catalogue complet', en: 'Full catalogue' }, icon: '🔍', href: '/catalogue', highlight: true },
   { name: { fr: 'Recherche par véhicule', en: 'Search by vehicle' }, icon: '🚗', href: '/recherche-pieces' },
   { name: { fr: 'Tarifs & Abonnements', en: 'Pricing' }, icon: '🏷️', href: '/tarifs' },
-  { name: { fr: 'Pneus & Jantes', en: 'Tyres & Rims' }, icon: '🛞', href: '/categories/pneus-jantes' },
-  { name: { fr: 'Freinage', en: 'Brakes' }, icon: '🔴', href: '/categories/frein' },
+  // Les sept categories reelles du catalogue (cf. `CATEGORY_SLUGS`). La nav
+  // annoncait « Pneus & Jantes », « Filtres » et « Huiles & Fluides », absentes
+  // de la base : elles ne menaient qu'a des pages sans produit (D62).
   { name: { fr: 'Moteur', en: 'Engine' }, icon: '⚙️', href: '/categories/moteur' },
-  { name: { fr: 'Filtres', en: 'Filters' }, icon: '🔧', href: '/categories/filtre' },
+  { name: { fr: 'Freinage', en: 'Brakes' }, icon: '🔴', href: '/categories/frein' },
+  { name: { fr: 'Électrique', en: 'Electrical' }, icon: '⚡', href: '/categories/electrique' },
   { name: { fr: 'Suspension', en: 'Suspension' }, icon: '🚙', href: '/categories/suspension' },
-  { name: { fr: 'Huiles & Fluides', en: 'Engine oil' }, icon: '🛢️', href: '/categories/huiles-fluides' },
-  { name: { fr: 'Électricité', en: 'Electricity' }, icon: '⚡', href: '/categories/electricite' },
+  { name: { fr: 'Refroidissement', en: 'Cooling' }, icon: '🌡️', href: '/categories/refroidissement' },
+  { name: { fr: 'Transmission', en: 'Transmission' }, icon: '🔩', href: '/categories/transmission' },
+  { name: { fr: 'Carrosserie', en: 'Body parts' }, icon: '🚘', href: '/categories/carrosserie' },
 ];
 
 export default function Header() {

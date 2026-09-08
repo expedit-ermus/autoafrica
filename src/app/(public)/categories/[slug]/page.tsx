@@ -37,7 +37,6 @@ export default async function CategorieAliasPage({ params }: PageProps) {
         name={entry.name}
         description={entry.description}
         filter={{ category: entry.slug }}
-        fallbackToAllProducts
       />
     </Suspense>
   );

@@ -1291,3 +1291,51 @@ Comme pour `internal-links.test.ts`, le test porte son propre garde-fou : il ver
 **Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, suite unitaire complete, build de production reussi, budgets de bundle respectes, suite E2E complete.
 
 **Impact** : `src/components/ProductCard.tsx`, `src/components/CatalogueFilters.tsx`, `src/components/PieceDetailCTA.tsx`, `src/components/StructuredData.tsx`, `src/lib/structured-data.ts`, `src/app/(public)/catalogue/page.tsx`, `src/app/(public)/pieces/[slug]/page.tsx`, `src/modules/marketing/meta-ads.service.ts`, `src/lib/no-fabricated-data.test.ts` (nouveau), `src/lib/structured-data.test.ts`.
+
+---
+
+## D62 : Taxonomie du catalogue realignee sur la base
+
+**Date** : 09/09/2026 — verification de l'etat reel de la production apres la mise en ligne de D59 a D61.
+
+### Le code et la base ne parlaient pas la meme taxonomie
+
+`CATEGORY_SLUGS` exposait douze categories concues pour le SEO. La base en porte dix, creees par `prisma/seed.mjs`. Le recouvrement etait partiel :
+
+| Cote code | Cote base | Consequence |
+|---|---|---|
+| `electricite` | `electrique` — 8 produits | 8 produits inatteignables |
+| absente | `refroidissement` — 5 produits | 5 inatteignables |
+| absente | `transmission` — 2 produits | 2 inatteignables |
+| absente | `pneumatique`, `direction`, `echappement` | trois categories jamais exposees |
+| `pneus-jantes`, `filtre`, `huiles-fluides`, `embrayage`, `courroies-chaines`, `amortissement`, `autres` | aucune | sept pages sans produit |
+
+Meme defaut cote marques : le filtre s'applique par nom exact, le code portait `Mercedes-Benz`, la base porte `Mercedes` — six pieces inatteignables.
+
+**Vingt et un produits sur cinquante et un — 41 % du catalogue — n'etaient accessibles par aucune page de categorie ni de marque.**
+
+### Le repli masquait tout
+
+Rien de cela ne se voyait, parce que `CatalogPageContent` remplacait un resultat vide par un echantillon de tout le catalogue. `/categories/embrayage` affichait douze pieces sous le titre « Pieces detachees Embrayage a Abidjan » — des pieces d'autres categories. Huit categories et six marques servaient ainsi le meme contenu, toutes annoncees au sitemap comme des URL distinctes.
+
+Le repli est supprime. `CatalogueFilters` porte deja un etat vide honnete (« Aucune piece ne correspond a vos criteres »), qui dit la verite : la categorie est vide.
+
+### Arbitrage retenu
+
+Le proprietaire du projet a tranche : **le code s'aligne sur la base**. `CATEGORY_SLUGS` reprend les dix categories reelles, `BRAND_SLUGS` corrige `Mercedes`, et le sitemap, le Header, le Footer, `PartsCatalog`, les liens du blog, `15-CATALOGUE.md` et `02-ROUTES.md` (R033-R042) suivent.
+
+`pneumatique`, `direction` et `echappement` n'ont pas encore de produit. Elles sont conservees : elles existent en base, se rempliront sans changement de code, et affichent desormais un etat vide exact plutot qu'un contenu trompeur.
+
+### Deux corrections a des travaux precedents
+
+**D59 s'etait trompe sur `transmission`.** Le blog liait `/categories/transmission` ; jugeant la categorie inexistante, D59 avait redirige ces liens vers `embrayage`. C'est l'inverse : `transmission` existe en base avec deux produits, et `embrayage` n'existe pas. Les liens sont retablis.
+
+**La grille de `PartsCatalog` echappait au test de liens morts.** Elle construit ses URL par template — `/categories/${cat.slug}` — que la regex de `internal-links.test.ts` ne peut pas voir. Ses douze slugs pointaient tous vers l'ancienne taxonomie sans qu'aucun test ne s'en apercoive. Le test verifie desormais les slugs declares a la source, en plus des liens litteraux. La grille est reconstruite a dix tuiles, une par categorie reelle : « Courroies », « Filtres » et « Amortisseurs » sont fondues dans les categories qui les portent, faute de quoi trois tuiles distinctes auraient mene a la meme page.
+
+### Methode
+
+Le diagnostic vient de la production, pas du code. Une premiere lecture du HTML de `/catalogue` donnait zero produit et laissait croire a un catalogue vide : la grille est rendue cote client, le HTML brut ne pouvait pas la montrer. Charge dans un vrai navigateur, `/catalogue` affiche bien ses pieces. La liste des categories reelles a ensuite ete tiree de l'API de production, puis corrigee — les sept premieres avaient ete deduites des produits existants, ce qui masquait les trois categories encore vides ; `prisma/seed.mjs` donne la liste complete.
+
+**Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 398/398 tests unitaires, build de production reussi, budgets de bundle respectes, 25/25 tests E2E.
+
+**Impact** : `src/lib/marketplace-catalog.ts`, `src/app/sitemap.ts`, `src/components/CatalogPageContent.tsx`, `src/components/Header.tsx`, `src/components/Footer.tsx`, `src/components/PartsCatalog.tsx`, les quatre pages de catalogue, six articles de blog, `src/lib/internal-links.test.ts`, `tests-e2e/http-status.spec.ts`, `docs/15-CATALOGUE.md`, `docs/02-ROUTES.md`.

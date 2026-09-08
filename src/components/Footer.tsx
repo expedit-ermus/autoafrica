@@ -94,11 +94,11 @@ export default function Footer() {
               <ul className="space-y-3 text-sm text-slate-400">
                 <li><Link href="/categories/moteur" className="hover:text-orange-400 transition-colors font-medium">{L('Moteur', 'Engine')}</Link></li>
                 <li><Link href="/categories/frein" className="hover:text-orange-400 transition-colors font-medium">{L('Freinage', 'Brakes')}</Link></li>
-                <li><Link href="/categories/filtre" className="hover:text-orange-400 transition-colors font-medium">{L('Filtres', 'Filters')}</Link></li>
+                <li><Link href="/categories/electrique" className="hover:text-orange-400 transition-colors font-medium">{L('Électrique', 'Electrical')}</Link></li>
                 <li><Link href="/categories/suspension" className="hover:text-orange-400 transition-colors font-medium">{L('Suspension & Direction', 'Suspension & Steering')}</Link></li>
-                <li><Link href="/categories/pneus-jantes" className="hover:text-orange-400 transition-colors font-medium">{L('Pneus & Jantes', 'Tyres & Rims')}</Link></li>
-                <li><Link href="/categories/huiles-fluides" className="hover:text-orange-400 transition-colors font-medium">{L('Huiles & Fluides', 'Oils & Fluids')}</Link></li>
-                <li><Link href="/categories/electricite" className="hover:text-orange-400 transition-colors font-medium">{L('Électricité', 'Electricity')}</Link></li>
+                <li><Link href="/categories/refroidissement" className="hover:text-orange-400 transition-colors font-medium">{L('Refroidissement', 'Cooling')}</Link></li>
+                <li><Link href="/categories/transmission" className="hover:text-orange-400 transition-colors font-medium">{L('Transmission', 'Transmission')}</Link></li>
+                <li><Link href="/categories/carrosserie" className="hover:text-orange-400 transition-colors font-medium">{L('Carrosserie', 'Body parts')}</Link></li>
               </ul>
             </div>
             <div>

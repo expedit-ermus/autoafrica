@@ -13,12 +13,6 @@ interface CatalogPageContentProps {
    * pour une marque (cf. `15-CATALOGUE.md`).
    */
   filter: { category: string } | { brand: string };
-  /**
-   * Repli des routes catalogue historiques : afficher un echantillon large
-   * quand le filtre ne remonte rien. Conserve tel quel par ce chantier, mais
-   * il affiche des pieces hors categorie sous un titre de categorie (cf. D60).
-   */
-  fallbackToAllProducts?: boolean;
   pageSize?: number;
 }
 
@@ -33,16 +27,14 @@ export default async function CatalogPageContent({
   name,
   description,
   filter,
-  fallbackToAllProducts = false,
   pageSize = 24,
 }: CatalogPageContentProps) {
+  // Un filtre qui ne remonte rien affichait auparavant un echantillon de tout
+  // le catalogue : la page annoncait « Pieces detachees Embrayage » et listait
+  // des pieces d'autres categories. `CatalogueFilters` porte deja un etat vide
+  // honnete, qui remplace ce repli (D62).
   const res = await productsService.list(filter, { page: 1, pageSize });
-  let products = (res.data || []) as unknown as Product[];
-
-  if (products.length === 0 && fallbackToAllProducts) {
-    const fallbackRes = await productsService.list({}, { page: 1, pageSize: 50 });
-    products = (fallbackRes.data || []) as unknown as Product[];
-  }
+  const products = (res.data || []) as unknown as Product[];
 
   return (
     <CatalogPage

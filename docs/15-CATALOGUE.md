@@ -8,24 +8,26 @@ Le catalogue AutoAfrique couvre les pièces détachées (12 catégories) et les 
 
 Liste fermée et gouvernée par l'administration.
 
+Dix catégories, alignées sur `Category.slug` en base (créées par `prisma/seed.mjs`) et sur `CATEGORY_SLUGS`.
+
 | Catégorie | Sous-catégories |
 |-----------|-----------------|
-| Pneus & Jantes | Pneus été, Pneus hiver, Jantes aluminium, Jantes acier |
-| Frein | Disques, Plaquettes, Étriers, Câbles |
-| Moteur | Pièces moteur, Joint de culasse, Piston, Vilebrequin |
-| Courroies & Chaînes | Courroie distribution, Galet tendeur |
-| Embrayage | Kit d'embrayage, Disque, Récepteur |
-| Amortissement | Amortisseurs, Supports, Biellettes |
-| Suspension | Ressorts, Baladeurs, Barres antiroulis |
-| Filtre | Filtre à huile, à air, à carburant, habitacle |
-| Carrosserie | Pare-chocs, Rétroviseurs, Phares, Calandre |
-| Huiles & Fluides | Huile moteur, Liquide refroidissement, de frein |
-| Électricité | Alternateur, Démarreur, Batterie, Bougies |
-| Accessoires | Divers |
+| Moteur | Pièces moteur, joint de culasse, piston, vilebrequin, filtres, courroies |
+| Frein | Disques, plaquettes, étriers, câbles |
+| Électrique | Alternateur, démarreur, batterie, bougies, phares, faisceaux |
+| Suspension | Amortisseurs, ressorts, bras, rotules, barres antiroulis |
+| Refroidissement | Radiateurs, pompes à eau, thermostats, durites, liquides |
+| Transmission | Boîtes de vitesses, kits d'embrayage, disques, butées, cardans |
+| Carrosserie | Pare-chocs, rétroviseurs, phares, calandre, tôlerie |
+| Pneumatique | Pneus neufs et d'occasion, jantes aluminium et acier |
+| Direction | Crémaillères, rotules, biellettes, pompes d'assistance |
+| Échappement | Silencieux, catalyseurs, collecteurs, lignes complètes |
+
+> Cette liste comptait auparavant douze catégories définies pour le SEO, dont huit sans aucun produit en base (`pneus-jantes`, `filtre`, `huiles-fluides`, `embrayage`, `courroies-chaines`, `amortissement`, `autres`, plus `electricite` mal orthographié). Trois catégories réelles — `electrique`, `refroidissement`, `transmission` — n'étaient exposées par aucune page. Vingt et un produits sur cinquante et un étaient inatteignables par la navigation (cf. D62).
 
 ## Marques
 
-Marques populaires : Toyota, Hyundai, Kia, Peugeot, Mercedes, Renault (modèles Brand / CarModel pour la compatibilité véhicule).
+Marques populaires : Toyota, Hyundai, Kia, Peugeot, Mercedes, Renault, Nissan, Volkswagen (modèles Brand / CarModel pour la compatibilité véhicule).
 
 ## Filtres de recherche
 
@@ -69,24 +71,26 @@ Le marché CI (Abidjan, Bouaké, Yamoussoukro, Korhogo, San-Pedro) est prioritai
 
 ## Routes SEO catalogue (groupe 2)
 
-### Catégories (slugs R033-R044)
+### Catégories (slugs R033-R042)
 
-Les 12 slugs demandés et leur libellé affiché sur les pages SEO :
+Les 10 slugs exposés et leur libellé affiché sur les pages SEO :
 
 | Slug | Libellé |
 |------|---------|
-| `pneus-jantes` | Pneus & Jantes |
-| `frein` | Frein |
 | `moteur` | Moteur |
-| `courroies-chaines` | Courroies & Chaînes |
-| `embrayage` | Embrayage |
-| `amortissement` | Amortissement |
+| `frein` | Frein |
+| `electrique` | Électrique |
 | `suspension` | Suspension |
-| `filtre` | Filtre |
+| `refroidissement` | Refroidissement |
+| `transmission` | Transmission |
 | `carrosserie` | Carrosserie |
-| `huiles-fluides` | Huiles & Fluides |
-| `electricite` | Électricité |
-| `autres` | Autres catégories |
+| `pneumatique` | Pneumatique |
+| `direction` | Direction |
+| `echappement` | Échappement |
+
+`pneumatique`, `direction` et `echappement` existent en base mais n'ont pas encore de produit : elles affichent l'état vide, ce qui est exact, et se rempliront sans changement de code.
+
+Un slug inconnu appelle `notFound()` et renvoie un vrai 404 (cf. D60). Une catégorie sans produit affiche l'état vide de `CatalogueFilters` : elle ne montre plus un échantillon d'autres catégories sous son propre titre (cf. D62).
 
 Le filtre API produits s'applique par `category = slug` : la route `/marketplace/categorie/{slug}` appelle le service avec `{ category: slug }`, exactement le champ `Category.slug` (cf. `products.service.ts`).
 
@@ -98,7 +102,7 @@ Le filtre API produits s'applique par `category = slug` : la route `/marketplace
 | `hyundai` | Hyundai |
 | `kia` | Kia |
 | `peugeot` | Peugeot |
-| `mercedes-benz` | Mercedes-Benz |
+| `mercedes-benz` | Mercedes |
 | `renault` | Renault |
 | `suzuki` | Suzuki |
 | `nissan` | Nissan |
@@ -108,7 +112,7 @@ Le filtre API produits s'applique par `category = slug` : la route `/marketplace
 | `citroen` | Citroën |
 | `opel` | Opel |
 
-> **Note** : le filtre API produits s'applique par `brand = nom exact` (pas par slug) : `productsService.list({ brand: "<nom>" })`. Les routes `/marketplace/marque/{slug}` mappent donc chaque slug vers le nom de marque (ex. `mercedes-benz` → `Mercedes-Benz`, `citroen` → `Citroën`). Le tableau est centralisé dans `src/lib/marketplace-catalog.ts` (seule source de vérité du mapping slugs ↔ libellés ↔ filtre).
+> **Note** : le filtre API produits s'applique par `brand = nom exact` (pas par slug) : `productsService.list({ brand: "<nom>" })`. Les routes `/marketplace/marque/{slug}` mappent donc chaque slug vers le nom de marque (ex. `mercedes-benz` → `Mercedes`, `citroen` → `Citroën`). Le nom doit correspondre exactement a `Brand.name` en base : il valait `Mercedes-Benz`, la base porte `Mercedes`, et les six pieces de la marque etaient inatteignables (cf. D62). Le tableau est centralisé dans `src/lib/marketplace-catalog.ts` (seule source de vérité du mapping slugs ↔ libellés ↔ filtre).
 
 ### Contenu
 

@@ -35,7 +35,7 @@ export default function EntretienVehiculeAfriquePage() {
           heading: 'Pourquoi l\'entretien est crucial dans la sous-région',
           body: [
             'Le climat d\'Afrique de l\'Ouest (chaleur extrême en saison sèche, humidité en saison des pluies) accélère l\'usure de certaines pièces. Les embouteillages denses dans les grandes villes comme Abidjan, Dakar ou Bamako fatiguent prématurément le moteur et le système de refroidissement. Un entretien rigoureux n\'est pas un luxe, c\'est une nécessité absolue pour éviter les pannes coûteuses. Profitez de notre service de <a href="/livraison">livraison rapide de pièces d\'entretien à Abidjan</a>.',
-            'De plus, la poussière latéritique s\'infiltre partout, nécessitant des remplacements de <a href="/categories/filtre">filtres auto</a> plus fréquents. Les routes dégradées soumettent la <a href="/categories/suspension">suspension et les amortisseurs</a> à des contraintes intenses.',
+            'De plus, la poussière latéritique s\'infiltre partout, nécessitant des remplacements de <a href="/categories/moteur">filtres auto</a> plus fréquents. Les routes dégradées soumettent la <a href="/categories/suspension">suspension et les amortisseurs</a> à des contraintes intenses.',
           ],
         },
         {
@@ -45,9 +45,9 @@ export default function EntretienVehiculeAfriquePage() {
             'Votre véhicule mérite un suivi régulier sur chacun de ces éléments clés pour prolonger sa durée de vie et garantir la sécurité de tous les passagers. Vous pouvez consulter nos <a href="/manuels-reparation">manuels de réparation automobile</a> pour des guides techniques pas à pas.',
           ],
           subsections: [
-            { heading: '1. L\'huile moteur', body: 'Le sang de votre moteur. En raison des fortes chaleurs, optez pour une huile adaptée (10W40 ou 15W40 selon les préconisations). Vidangez tous les 5 000 à 7 500 km avec un <a href="/categories/filtre">filtre à huile neuf</a>.' },
+            { heading: '1. L\'huile moteur', body: 'Le sang de votre moteur. En raison des fortes chaleurs, optez pour une huile adaptée (10W40 ou 15W40 selon les préconisations). Vidangez tous les 5 000 à 7 500 km avec un <a href="/categories/moteur">filtre à huile neuf</a>.' },
             { heading: '2. Le système de refroidissement', body: 'Le liquide de refroidissement doit être vérifié mensuellement. Ne complétez jamais avec de l\'eau du robinet qui entartre le circuit. Un radiateur en bon état est vital pour éviter la surchauffe dans les embouteillages d\'Abidjan.' },
-            { heading: '3. Les filtres (air, huile, carburant, habitacle)', body: 'Le <a href="/categories/filtre">filtre à air</a> souffre particulièrement de la poussière. Remplacez-le à chaque vidange. Le filtre à carburant protège vos injecteurs d\'éventuelles impuretés de carburant.' },
+            { heading: '3. Les filtres (air, huile, carburant, habitacle)', body: 'Le <a href="/categories/moteur">filtre à air</a> souffre particulièrement de la poussière. Remplacez-le à chaque vidange. Le filtre à carburant protège vos injecteurs d\'éventuelles impuretés de carburant.' },
             { heading: '4. Les pneus', body: 'Vérifiez la pression à froid toutes les deux semaines. Un pneu sous-gonflé chauffe davantage et risque l\'éclatement.' },
             { heading: '5. Le système de freinage', body: 'Les <a href="/categories/frein">plaquettes et disques de frein</a> s\'usent vite en circulation urbaine. Un bruit strident au freinage est le signe qu\'il est temps de les changer.' },
             { heading: '6. La batterie', body: 'Les fortes chaleurs réduisent la durée de vie des batteries (18 à 24 mois en Afrique). Vérifiez la tension avant de longs trajets.' },
@@ -85,10 +85,10 @@ export default function EntretienVehiculeAfriquePage() {
         },
       ]}
       resources={[
-        { title: 'Catalogue Filtres', description: 'Filtres à air, huile, carburant et habitacle pour toutes marques.', href: '/categories/filtre' },
+        { title: 'Catalogue Filtres', description: 'Filtres à air, huile, carburant et habitacle pour toutes marques.', href: '/categories/moteur' },
         { title: 'Catalogue Freinage', description: 'Plaquettes, disques et kits de frein inspectés.', href: '/categories/frein' },
-        { title: 'Huiles & Fluides', description: 'Huiles moteur, liquides de refroidissement et de frein.', href: '/categories/huiles-fluides' },
-        { title: 'Pneus & Jantes', description: 'Pneus neufs et d\'occasion contrôlée pour toutes marques.', href: '/categories/pneus-jantes' },
+        { title: 'Huiles & Fluides', description: 'Huiles moteur, liquides de refroidissement et de frein.', href: '/categories/refroidissement' },
+        { title: 'Pneus & Jantes', description: 'Pneus neufs et d\'occasion contrôlée pour toutes marques.', href: '/catalogue' },
       ]}
       cta={{
         title: 'Trouvez vos pièces d\'entretien sur AutoAfrique',

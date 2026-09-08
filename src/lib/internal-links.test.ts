@@ -54,8 +54,26 @@ describe('liens internes vers les pages SEO du catalogue', () => {
     expect(dead).toEqual([])
   })
 
+  it('ne declare aucun slug de categorie inconnu dans les grilles de navigation', () => {
+    // `PartsCatalog` construit ses liens par template — `/categories/${cat.slug}` —
+    // que la regex ci-dessus ne peut pas voir : ses douze slugs pointaient vers
+    // l'ancienne taxonomie sans qu'aucun test ne s'en apercoive (D62). Les
+    // composants qui declarent des slugs sont donc verifies a la source.
+    const declares = collectSourceFiles(SRC_ROOT)
+      .filter((f) => /PartsCatalog\.tsx$/.test(f))
+      .flatMap((f) => {
+        const matches = readFileSync(f, 'utf8').matchAll(/slug: '([a-z0-9-]+)'/g)
+        return [...matches].map((m) => ({ slug: m[1], file: path.relative(process.cwd(), f) }))
+      })
+
+    expect(declares.length).toBeGreaterThan(5)
+    expect(declares.filter(({ slug }) => !resolveCategory(slug))).toEqual([])
+  })
+
   it('detecte reellement un slug absent du catalogue', () => {
-    expect(resolveCategory('filtration')).toBeUndefined()
-    expect(resolveCategory('filtre')).toBeDefined()
+    // `filtre` etait une categorie inventee pour le SEO, sans produit en base ;
+    // elle a ete retiree quand la taxonomie a ete alignee sur la base (D62).
+    expect(resolveCategory('filtre')).toBeUndefined()
+    expect(resolveCategory('moteur')).toBeDefined()
   })
 })

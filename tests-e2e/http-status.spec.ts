@@ -25,7 +25,7 @@ const SLUGS_INCONNUS = [
 const PAGES_VALIDES = [
   '/catalogue',
   '/catalogue/frein',
-  '/categories/filtre',
+  '/categories/moteur',
   '/categories/carrosserie',
   '/marques/toyota',
   '/marketplace/categorie/frein',

@@ -10,78 +10,82 @@ export interface BrandSlugEntry {
   description: string;
 }
 
+/**
+ * Categories reelles du catalogue, alignees sur `Category.slug` en base.
+ *
+ * Elles divergeaient : le code exposait douze categories inventees pour le SEO
+ * (`pneus-jantes`, `filtre`, `huiles-fluides`...) dont huit n'existaient pas en
+ * base, tandis que des categories reelles — `electrique`, `refroidissement`,
+ * `transmission` — n'etaient exposees par aucune page. Vingt et un produits sur
+ * cinquante et un etaient inatteignables par la navigation (D62).
+ *
+ * La liste suit la taxonomie creee par `prisma/seed.mjs`, y compris les trois
+ * categories encore sans produit (`pneumatique`, `direction`, `echappement`) :
+ * elles existent en base et se rempliront, et une categorie vide affiche
+ * desormais un etat vide honnete plutot que des pieces d'autres categories.
+ *
+ * Le filtre API s'applique par `category = slug`, exactement ce champ.
+ */
 export const CATEGORY_SLUGS: CategorySlugEntry[] = [
   {
-    slug: 'pneus-jantes',
-    name: 'Pneus & Jantes',
+    slug: 'moteur',
+    name: 'Moteur',
     description:
-      "Pneus neufs et occasion, jantes aluminium et acier pour toutes les marques, disponibles à Abidjan. Paiement Mobile Money, livraison 24-72h.",
+      "Pieces moteur, joints de culasse, pistons, vilebrequins, filtres a huile et courroies de distribution, neufs et d'occasion controlee a Abidjan.",
   },
   {
     slug: 'frein',
     name: 'Frein',
     description:
-      'Disques de frein, plaquettes, étriers et câbles de frein pour voitures en Afrique de l\'Ouest. Prix transparents, garantie incluse.',
+      "Disques de frein, plaquettes, etriers et cables pour voitures en Afrique de l'Ouest. Prix transparents, garantie incluse.",
   },
   {
-    slug: 'moteur',
-    name: 'Moteur',
+    slug: 'electrique',
+    name: 'Électrique',
     description:
-      "Pièces moteur, joint de culasse, pistons et vilebrequins neufs et d'occasion contrôlée à Abidjan, Côte d'Ivoire.",
-  },
-  {
-    slug: 'courroies-chaines',
-    name: 'Courroies & Chaînes',
-    description:
-      'Courroies de distribution et accessoires, galets tendeurs et chaînes de distribution pour toutes les marques.',
-  },
-  {
-    slug: 'embrayage',
-    name: 'Embrayage',
-    description:
-      "Kits d'embrayage, disques, butées et récepteurs pour voitures, livraison 24-72h à Abidjan.",
-  },
-  {
-    slug: 'amortissement',
-    name: 'Amortissement',
-    description:
-      'Amortisseurs, supports, biellettes et rotules pour un confort de conduite sûr en Afrique de l\'Ouest.',
+      "Alternateurs, demarreurs, batteries, bougies d'allumage, phares et faisceaux electriques pour votre vehicule.",
   },
   {
     slug: 'suspension',
     name: 'Suspension',
     description:
-      'Ressorts, bras de suspension, barres antiroulis et baladeurs pour toutes les marques.',
+      "Amortisseurs, ressorts, bras de suspension, rotules et barres antiroulis, pour tenir les routes degradees d'Afrique de l'Ouest.",
   },
   {
-    slug: 'filtre',
-    name: 'Filtre',
+    slug: 'refroidissement',
+    name: 'Refroidissement',
     description:
-      "Filtres à huile, à air, à carburant et habitacle pour l'entretien de votre voiture à Abidjan.",
+      "Radiateurs, pompes a eau, thermostats, durites et liquides de refroidissement, indispensables sous les fortes chaleurs.",
+  },
+  {
+    slug: 'transmission',
+    name: 'Transmission',
+    description:
+      "Boites de vitesses, kits d'embrayage, disques, butees et cardans, neufs et d'occasion controlee, livres a Abidjan.",
   },
   {
     slug: 'carrosserie',
     name: 'Carrosserie',
     description:
-      "Pare-chocs, rétroviseurs, phares et calandres neufs et d'occasion contrôlée en Afrique de l'Ouest.",
+      "Pare-chocs, retroviseurs, phares, calandres et elements de tolerie neufs et d'occasion controlee en Afrique de l'Ouest.",
   },
   {
-    slug: 'huiles-fluides',
-    name: 'Huiles & Fluides',
+    slug: 'pneumatique',
+    name: 'Pneumatique',
     description:
-      'Huile moteur, liquide de refroidissement, liquide de frein et huile de transmission.',
+      "Pneus neufs et d'occasion controlee, jantes aluminium et acier pour toutes les marques, disponibles a Abidjan.",
   },
   {
-    slug: 'electricite',
-    name: 'Électricité',
+    slug: 'direction',
+    name: 'Direction',
     description:
-      "Alternateurs, démarreurs, batteries et bougies d'allumage pour votre véhicule.",
+      "Cremailleres, rotules, biellettes et pompes de direction assistee, pour une conduite sure sur routes degradees.",
   },
   {
-    slug: 'autres',
-    name: 'Autres catégories',
+    slug: 'echappement',
+    name: 'Échappement',
     description:
-      'Échappement, climatisation, direction et systèmes de refroidissement en Afrique de l\'Ouest.',
+      "Silencieux, catalyseurs, collecteurs et lignes d'echappement completes, neufs et d'occasion controlee.",
   },
 ];
 
@@ -112,7 +116,7 @@ export const BRAND_SLUGS: BrandSlugEntry[] = [
   },
   {
     slug: 'mercedes-benz',
-    name: 'Mercedes-Benz',
+    name: 'Mercedes',
     description:
       "Pièces détachées Mercedes-Benz neuves et d'occasion contrôlée à Abidjan, Côte d'Ivoire. Paiement Mobile Money, livraison 24-72h.",
   },

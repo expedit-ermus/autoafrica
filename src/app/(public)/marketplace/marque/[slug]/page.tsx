@@ -37,7 +37,6 @@ export default async function MarqueCataloguePage({ params }: PageProps) {
         name={entry.name}
         description={entry.description}
         filter={{ brand: entry.name }}
-        fallbackToAllProducts
       />
     </Suspense>
   );
