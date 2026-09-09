@@ -69,5 +69,56 @@ describe('aucune donnee commerciale inventee (D45/D46/D47)', () => {
 
     const ligneNeutre = "    rating: p.rating ?? 0,"
     expect(REPLIS_INTERDITS.some(({ motif }) => motif.test(ligneNeutre))).toBe(false)
+
+  })
+})
+
+/**
+ * Disponibilite affirmee en dur.
+ *
+ * `availability` valait « InStock » sans condition dans le schema Produit
+ * (corrige en D61) puis dans le schema Vehicule, ou un vehicule vendu restait
+ * declare disponible aux moteurs de recherche.
+ *
+ * Toutes les valeurs en dur ne sont pas fautives : un plan d'abonnement SaaS
+ * n'a pas de stock, il est reellement toujours disponible. La regle n'est donc
+ * pas « jamais en dur » mais « jamais en dur sans raison ecrite ». Une ligne
+ * portant le marqueur ci-dessous est acceptee, et la raison est lisible a
+ * l'endroit exact ou la valeur est affirmee.
+ */
+const MARQUEUR_DISPONIBILITE_CONSTANTE = 'disponibilite-constante:'
+const DISPONIBILITE_EN_DUR = /availability:\s*'https:\/\/schema\.org\/(InStock|LimitedAvailability)'/
+
+describe('aucune disponibilite affirmee sans donnee', () => {
+  const fichiers = fichiersSource(SRC_ROOT)
+
+  it('ne declare une disponibilite constante qu avec une justification ecrite', () => {
+    const infractions: string[] = []
+
+    for (const fichier of fichiers) {
+      const lignes = readFileSync(fichier, 'utf8').split('\n')
+      lignes.forEach((ligne, index) => {
+        if (!DISPONIBILITE_EN_DUR.test(ligne)) return
+        // Fenetre volontairement courte : le marqueur doit se trouver sur la
+        // ligne elle-meme ou juste au-dessus. Une justification unique en tete
+        // de fichier couvrirait des affirmations qu'elle n'a pas examinees.
+        const contexte = lignes.slice(Math.max(0, index - 1), index + 1).join('\n')
+        if (contexte.includes(MARQUEUR_DISPONIBILITE_CONSTANTE)) return
+        infractions.push(
+          `${path.relative(process.cwd(), fichier)}:${index + 1} — disponibilite affirmee en dur sans justification`
+        )
+      })
+    }
+
+    expect(infractions).toEqual([])
+  })
+
+  it('detecte reellement une disponibilite non justifiee', () => {
+    expect(DISPONIBILITE_EN_DUR.test("      availability: 'https://schema.org/InStock',")).toBe(true)
+    expect(DISPONIBILITE_EN_DUR.test('      availability: LISTING_AVAILABILITY[input.listingStatus],')).toBe(false)
+  })
+
+  it('inspecte reellement le code source', () => {
+    expect(fichiers.length).toBeGreaterThan(100)
   })
 })

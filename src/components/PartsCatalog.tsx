@@ -9,10 +9,21 @@ import { track } from '@/lib/tracking';
 // batties sur l'ancienne taxonomie SEO : huit menaient a des pages sans produit,
 // et les tuiles « Courroies », « Filtres » et « Amortisseurs » ont ete fondues
 // dans les categories qui les portent reellement (D62).
+// `image` n'est renseigne que la ou une photographie du catalogue represente
+// reellement la categorie : `transmission` reprend la photo d'embrayage, qui en
+// est un organe, `pneumatique` celle des pneus et jantes. Refroidissement,
+// direction et echappement n'ont pas encore de photo et s'affichent avec leur
+// emoji plutot qu'avec une image d'un autre sujet.
+//
+// Le rendu se faisait sur `/images/categories/{slug}.jpg`. Le realignement de
+// la taxonomie (D62) a renomme les slugs sans renommer les fichiers : six
+// categories sur dix pointaient vers une image inexistante, sur la grille
+// d'accueil (D66).
 const categories = [
   {
     id: 1,
     slug: 'moteur',
+    image: '/images/categories/moteur.jpg',
     name: { fr: 'Moteur, courroies & filtres', en: 'Engine, belts & filters' },
     emoji: '⚙️',
     zoneBadge: { fr: 'Venants Contrôlés', en: 'Tested Reused Engines' },
@@ -21,6 +32,7 @@ const categories = [
   {
     id: 2,
     slug: 'frein',
+    image: '/images/categories/frein.jpg',
     name: { fr: 'Freinage', en: 'Brakes' },
     emoji: '🔴',
     zoneBadge: { fr: 'Anti-Chauffe Tropicale', en: 'Tropical Heatproof' },
@@ -29,6 +41,7 @@ const categories = [
   {
     id: 3,
     slug: 'suspension',
+    image: '/images/categories/suspension.jpg',
     name: { fr: 'Suspension & Amortisseurs', en: 'Suspension & Shocks' },
     emoji: '〰️',
     zoneBadge: { fr: "Spécial Dos-d'âne", en: 'Heavy Duty Bumps' },
@@ -37,6 +50,7 @@ const categories = [
   {
     id: 4,
     slug: 'transmission',
+    image: '/images/categories/embrayage.jpg',
     name: { fr: 'Embrayage & Boîte', en: 'Clutch & Gearbox' },
     emoji: '🔄',
     zoneBadge: { fr: 'Spécial Taxis & VTC', en: 'Taxi & VTC Fleets' },
@@ -45,6 +59,7 @@ const categories = [
   {
     id: 5,
     slug: 'electrique',
+    image: '/images/categories/electrique.jpg',
     name: { fr: 'Électricité & Allumage', en: 'Electrics & Ignition' },
     emoji: '⚡',
     zoneBadge: { fr: 'Tropicalisé Anti-Chaleur', en: 'Tropical Heatproof' },
@@ -61,6 +76,7 @@ const categories = [
   {
     id: 7,
     slug: 'carrosserie',
+    image: '/images/categories/carrosserie.jpg',
     name: { fr: 'Carrosserie & Éclairage', en: 'Body Parts & Lighting' },
     emoji: '🚘',
     zoneBadge: { fr: 'Optiques & Pare-chocs', en: 'Lights & Bumpers' },
@@ -69,6 +85,7 @@ const categories = [
   {
     id: 8,
     slug: 'pneumatique',
+    image: '/images/categories/pneus-jantes.jpg',
     name: { fr: 'Pneus & Jantes', en: 'Tyres & Rims' },
     emoji: '🛞',
     zoneBadge: { fr: 'Piste & Bitume', en: 'Dirt & Tarmac' },
@@ -132,13 +149,22 @@ export default function PartsCatalog() {
               className="group relative bg-white rounded-3xl border border-slate-200/80 hover:border-orange-500/40 hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 overflow-hidden flex flex-col hover:-translate-y-1"
             >
               <div className="relative aspect-square overflow-hidden bg-slate-900">
-                <Image
-                  src={`/images/categories/${cat.slug}.jpg`}
-                  alt={cat.name[locale as 'fr' | 'en']}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
-                />
+                {cat.image ? (
+                  <Image
+                    src={cat.image}
+                    alt={cat.name[locale as 'fr' | 'en']}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 16vw"
+                  />
+                ) : (
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-slate-800 to-slate-900 text-4xl sm:text-5xl group-hover:scale-110 transition-transform duration-500"
+                  >
+                    {cat.emoji}
+                  </div>
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/15 to-transparent" />
                 <span className="absolute bottom-2 left-2 right-2 text-center text-[10px] font-black uppercase tracking-wider text-white bg-slate-950/85 px-2 py-0.5 rounded-lg backdrop-blur-xs border border-white/15 shadow-sm truncate">
                   {cat.zoneBadge[locale as 'fr' | 'en']}

@@ -197,6 +197,36 @@ describe('buildVehicleSchema', () => {
 
     expect(schema.offers.itemCondition).toBe('https://schema.org/UsedCondition')
   })
+
+  // `availability` valait « InStock » en dur, quel que soit l'etat de l'annonce :
+  // un vehicule vendu etait declare disponible aux moteurs de recherche.
+  it('derive la disponibilite du statut de l annonce', () => {
+    const cas: [string, string][] = [
+      ['ACTIVE', 'https://schema.org/InStock'],
+      ['RESERVED', 'https://schema.org/LimitedAvailability'],
+      ['SOLD', 'https://schema.org/SoldOut'],
+      ['DRAFT', 'https://schema.org/OutOfStock'],
+      ['CANCELLED', 'https://schema.org/OutOfStock'],
+    ]
+
+    for (const [statut, attendu] of cas) {
+      const schema = buildVehicleSchema({ name: 'Hilux', price: 24000000, listingStatus: statut })
+      expect(schema.offers.availability, `statut ${statut}`).toBe(attendu)
+    }
+  })
+
+  it('n affirme aucune disponibilite quand le statut est inconnu', () => {
+    for (const statut of [undefined, null, '', 'PAS_UN_STATUT']) {
+      const schema = buildVehicleSchema({ name: 'Hilux', price: 24000000, listingStatus: statut })
+      expect(schema.offers.availability, `statut ${String(statut)}`).toBeUndefined()
+    }
+  })
+
+  it('ne declare jamais disponible un vehicule vendu', () => {
+    const schema = buildVehicleSchema({ name: 'Corolla', price: 9000000, listingStatus: 'SOLD' })
+
+    expect(schema.offers.availability).not.toBe('https://schema.org/InStock')
+  })
 })
 
 describe('buildAutoRepairSchema', () => {

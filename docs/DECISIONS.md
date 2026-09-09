@@ -1457,3 +1457,90 @@ Brancher CinetPay a l'initiation, avec les identifiants marchands du projet. Le 
 **Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 402/402 tests unitaires, build de production reussi, budgets de bundle respectes, 25/25 tests E2E.
 
 **Impact** : `src/app/dashboard/cart/page.tsx`, `src/modules/payments/providers/base.adapter.ts`, `src/modules/payments/providers/providers.test.ts`, `tests-e2e/critical-flows.spec.ts`, `vitest.setup.ts`, `playwright.config.ts`.
+
+## D66 : Le sitemap n'annonce plus de pages vides, et la disponibilite cesse d'etre affirmee
+
+**Contexte.** Verification en production du deploiement de D65. Le SHA deploye
+est bien `7bbf201`, etat READY, zero erreur runtime sur 24 h. D64 est confirme :
+aucune occurrence de « sequestre », « escrow » ni « cantonnement » sur les pages
+publiques. D62 est confirme de bout en bout : 51 produits, 7 categories, la
+totalite du catalogue est atteignable.
+
+Trois defauts sont apparus au cours de cette verification.
+
+**Le sitemap annonçait cinq pages vides.** Il publiait treize marques quand huit
+seulement ont du stock : Suzuki, Ford, BMW, Citroen et Opel etaient soumises a
+l'indexation sans rien contenir. La cause est structurelle : le sitemap portait
+sa propre liste de slugs, troisieme copie de la taxonomie apres la base et
+`marketplace-catalog.ts`. D62 avait realigne les categories dans cette copie, en
+laissant les marques deriver. Une correction ponctuelle aurait prepare la
+troisieme derive.
+
+Le sitemap deduit desormais ses entrees du catalogue, avec exactement le filtre
+que les pages appliquent : `active: true`, categorie par slug, marque par nom
+— `mercedes-benz` porte le nom `Mercedes`, un rapprochement par slug ferait
+disparaitre cette marque en silence, ce qu'un test verifie. L'intersection avec
+`CATEGORY_SLUGS` / `BRAND_SLUGS` reste necessaire, les routes repondant 404 sur
+un slug non declare. Revalidation horaire : une page entre au sitemap quand elle
+se remplit et en sort quand elle se vide, sans intervention ni redeploiement.
+
+**La disponibilite des vehicules etait affirmee sans donnee.** `buildVehicleSchema`
+ecrivait `availability: InStock` pour tout vehicule, vendu ou reserve compris —
+meme defaut que celui corrige sur les pieces en D61, sur un autre module. La
+valeur est desormais derivee de `VehicleListing.status` : ACTIVE donne InStock,
+RESERVED LimitedAvailability, SOLD SoldOut, DRAFT et CANCELLED OutOfStock. Un
+statut inconnu ne produit aucune valeur : le champ est omis plutot que devine.
+
+L'impact reel est faible et il faut le dire : ce schema n'est emis que depuis
+`/dashboard/vehicles`, derriere authentification, donc non indexe. C'est un
+defaut latent, corrige avant qu'une page publique de vehicules ne l'expose.
+
+Un garde-fou structurel a ete ajoute pour empecher une troisieme occurrence.
+Ecrit d'abord comme une interdiction generale, il a signale trois lignes de
+`/tarifs` — et c'etait un faux positif : un plan d'abonnement SaaS n'a pas de
+stock, il est reellement toujours disponible. Le code n'a pas ete modifie pour
+faire taire le test ; c'est la regle qui a ete resserree. Elle exige desormais
+une justification ecrite sur la ligne meme ou la valeur est affirmee, avec une
+fenetre d'une ligne pour qu'une justification unique ne couvre pas des
+affirmations qu'elle n'a pas examinees.
+
+**Six categories sur dix affichaient une image inexistante.** Regression
+introduite par D62 : les vignettes sont rendues sur `/images/categories/{slug}.jpg`
+et le realignement de la taxonomie a renomme les slugs sans renommer les
+fichiers. Sur la grille d'accueil, `electrique`, `refroidissement`,
+`transmission`, `pneumatique`, `direction` et `echappement` pointaient dans le
+vide. Les tests E2E passaient : ils ne verifiaient pas le chargement des images.
+
+Le chemin est desormais declare explicitement, et seulement la ou une
+photographie du catalogue represente reellement la categorie : `electricite.jpg`
+renomme en `electrique.jpg` (meme photo, meme sujet), `transmission` reprend la
+photo d'embrayage qui en est un organe, `pneumatique` celle des pneus et jantes.
+Refroidissement, direction et echappement n'ont pas de photo et s'affichent avec
+leur emoji sur un fond neutre. Aucune image d'un autre sujet n'a ete detournee
+pour combler un trou.
+
+**Verifications.** Neuf mutations, neuf detections : republication de toutes les
+marques, rapprochement des marques par slug, republication de toutes les
+categories, retour au `InStock` en dur pour les vehicules, SOLD traite comme
+disponible, retrait d'une justification, disponibilite en dur ailleurs, image
+pointant vers un fichier absent, retrait de toutes les images.
+
+Une dixieme tentative n'a rien prouve — le remplacement produisait du code
+invalide et vitest rapportait « no tests » plutot qu'un echec. Elle a ete refaite
+proprement. Un test qui ne compile pas ne demontre rien.
+
+Le collecteur de liens de `internal-links.test.ts` a du etre corrige au passage :
+il prenait `/images/categories/embrayage.jpg` pour un lien vers une categorie
+inexistante. Un `(?<!images)` l'ecarte.
+
+Rendu verifie dans un vrai navigateur sur un serveur de production local :
+sept photos chargees, trois emojis affiches, aucune image en erreur reseau.
+
+eslint 0, `tsc --noEmit` 0, 415/415 tests unitaires (48 fichiers), build reussi,
+budgets respectes, 25/25 E2E.
+
+**Reste ouvert.** Refroidissement, direction et echappement attendent une
+photographie authentique. Pneumatique, direction et echappement n'ont pas encore
+de stock, et cinq marques non plus : ce n'est pas un defaut, c'est un catalogue
+jeune. Le sitemap les integrera de lui-meme.
+

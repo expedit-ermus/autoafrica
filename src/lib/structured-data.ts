@@ -34,6 +34,17 @@ export interface ProductSchemaInput {
   inStock?: boolean
 }
 
+// Un vehicule reserve reste visible mais n'est plus librement achetable ;
+// DRAFT et CANCELLED ne sont pas en vente. Un statut inconnu ne produit aucune
+// valeur : mieux vaut ne rien affirmer que d'affirmer faux.
+const LISTING_AVAILABILITY: Record<string, string> = {
+  ACTIVE: 'https://schema.org/InStock',
+  RESERVED: 'https://schema.org/LimitedAvailability',
+  SOLD: 'https://schema.org/SoldOut',
+  DRAFT: 'https://schema.org/OutOfStock',
+  CANCELLED: 'https://schema.org/OutOfStock',
+}
+
 const FUEL_SCHEMA: Record<string, string> = {
   DIESEL: 'https://schema.org/DieselFuel',
   GASOLINE: 'https://schema.org/Gasoline',
@@ -69,6 +80,13 @@ export interface VehicleSchemaInput {
   price: number
   currency?: string
   seller?: string
+  /**
+   * Statut de l'annonce (`VehicleListingStatus`). `availability` etait annonce
+   * « InStock » pour tout vehicule, y compris vendu ou reserve : meme defaut
+   * que celui corrige sur les pieces en D61, sur des annonces automobiles.
+   * Absent = aucune revendication de disponibilite (le champ est omis).
+   */
+  listingStatus?: string | null
 }
 
 export function buildOrganizationSchema() {
@@ -176,7 +194,9 @@ export function buildVehicleSchema(input: VehicleSchemaInput) {
       '@type': 'Offer',
       priceCurrency: input.currency || 'XOF',
       price: String(input.price),
-      availability: 'https://schema.org/InStock',
+      ...(input.listingStatus && LISTING_AVAILABILITY[input.listingStatus]
+        ? { availability: LISTING_AVAILABILITY[input.listingStatus] }
+        : {}),
       ...(input.condition && CONDITION_SCHEMA[input.condition] ? { itemCondition: CONDITION_SCHEMA[input.condition] } : {}),
       ...(input.seller ? { seller: { '@type': 'Organization', name: input.seller } } : {}),
     },

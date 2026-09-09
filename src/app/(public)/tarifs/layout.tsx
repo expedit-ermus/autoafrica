@@ -25,6 +25,10 @@ const pricingSchema = {
     '@type': 'Brand',
     name: 'AutoAfrique',
   },
+  // Un plan d'abonnement SaaS n'a pas de stock : il est reellement disponible
+  // en permanence, « InStock » n'affirme donc rien de faux ici — contrairement
+  // a une piece ou a un vehicule, dont la disponibilite doit etre derivee de
+  // l'etat reel (D61 et D66).
   offers: [
     {
       '@type': 'Offer',
@@ -32,6 +36,7 @@ const pricingSchema = {
       price: '15000',
       priceCurrency: 'XOF',
       priceValidUntil: '2027-12-31',
+      // disponibilite-constante: abonnement, sans stock (voir en tete du schema)
       availability: 'https://schema.org/InStock',
       url: `${SITE_URL}/tarifs`,
     },
@@ -41,6 +46,7 @@ const pricingSchema = {
       price: '45000',
       priceCurrency: 'XOF',
       priceValidUntil: '2027-12-31',
+      // disponibilite-constante: abonnement, sans stock (voir en tete du schema)
       availability: 'https://schema.org/InStock',
       url: `${SITE_URL}/tarifs`,
     },
@@ -50,6 +56,7 @@ const pricingSchema = {
       price: '120000',
       priceCurrency: 'XOF',
       priceValidUntil: '2027-12-31',
+      // disponibilite-constante: abonnement, sans stock (voir en tete du schema)
       availability: 'https://schema.org/InStock',
       url: `${SITE_URL}/tarifs`,
     },

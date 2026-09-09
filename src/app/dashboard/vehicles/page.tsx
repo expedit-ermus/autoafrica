@@ -337,6 +337,7 @@ export default function VehiclesPage() {
               price={detail.price}
               currency={detail.currency || 'XOF'}
               seller={detail.listings?.[0]?.seller?.shopName || detail.listings?.[0]?.seller?.firstName || undefined}
+              listingStatus={detail.listings?.[0]?.status}
             />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-gray-100">

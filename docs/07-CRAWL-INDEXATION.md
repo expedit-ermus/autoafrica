@@ -164,8 +164,21 @@
 - `/manuels-reparation` (R032, priority 0.5)
 - `/conditions-generales` (R024, priority 0.4)
 - `/politique-de-confidentialite` (R025, priority 0.4)
-- `/marketplace/categorie/*` (R033-R044, priority 0.7, URL fixes : `{R033..pneus-jantes, R034..frein, R035..moteur, R036..courroies-chaines, R037..embrayage, R038..amortissement, R039..suspension, R040..filtre, R041..carrosserie, R042..huiles-fluides, R043..electricite, R044..autres}`)
-- `/marketplace/marque/*` (R045-R057, priority 0.6, URL fixes : `{R045..toyota, R046..hyundai, R047..kia, R048..peugeot, R049..mercedes-benz, R050..renault, R051..suzuki, R052..nissan, R053..ford, R054..volkswagen, R055..bmw, R056..citroen, R057..opel}`)
+- `/categories/*` et `/marques/*` (priority 0.8) — **liste non figee**. Le sitemap
+  les deduit du catalogue a chaque revalidation (horaire) : n'y figure qu'une
+  categorie ou une marque portant au moins un produit actif, et declaree dans
+  `src/lib/marketplace-catalog.ts`. Les routes repondant 404 sur un slug non
+  declare, l'intersection evite d'annoncer une URL introuvable.
+
+  Au 09/09/2026 : 7 categories (`moteur`, `frein`, `electrique`, `suspension`,
+  `refroidissement`, `transmission`, `carrosserie`) et 8 marques (`toyota`,
+  `hyundai`, `kia`, `peugeot`, `mercedes-benz`, `renault`, `nissan`,
+  `volkswagen`). Les 3 categories et 5 marques restantes existent mais n'ont pas
+  encore de stock ; elles entreront d'elles-memes.
+
+  Ne pas retablir de liste ecrite en dur ici ni dans `src/app/sitemap.ts` : c'est
+  cette duplication qui a produit douze categories inventees (D62) puis cinq
+  marques vides (D66).
 
 ### Exclure
 - `/auth/*` (R002, R003 — noindex)

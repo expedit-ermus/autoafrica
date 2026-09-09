@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { resolveBrand, resolveCategory } from './marketplace-catalog'
@@ -20,6 +20,9 @@ function collectSourceFiles(dir: string): string[] {
   })
 }
 
+// `(?<!images)` ecarte les chemins de vignettes `/images/categories/x.jpg`, qui
+// ne sont pas des liens : sans cette exclusion, une image nommee d'apres une
+// ancienne categorie serait signalee comme un lien mort.
 function collectLinks(pattern: RegExp): { slug: string; file: string }[] {
   return collectSourceFiles(SRC_ROOT).flatMap((file) => {
     const matches = readFileSync(file, 'utf8').matchAll(pattern)
@@ -34,12 +37,12 @@ describe('liens internes vers les pages SEO du catalogue', () => {
   it('inspecte reellement les liens du code source', () => {
     // Sans ce garde-fou, les deux tests suivants passeraient aussi si le
     // collecteur ne trouvait plus aucun lien (regex ou arborescence modifiee).
-    expect(collectLinks(/\/categories\/([a-z0-9-]+)/g).length).toBeGreaterThan(20)
+    expect(collectLinks(/(?<!images)\/categories\/([a-z0-9-]+)/g).length).toBeGreaterThan(20)
     expect(collectLinks(/\/marques\/([a-z0-9-]+)/g).length).toBeGreaterThan(20)
   })
 
   it('ne pointe vers aucune categorie inexistante', () => {
-    const dead = collectLinks(/\/categories\/([a-z0-9-]+)/g).filter(
+    const dead = collectLinks(/(?<!images)\/categories\/([a-z0-9-]+)/g).filter(
       ({ slug }) => !resolveCategory(slug)
     )
 
@@ -68,6 +71,28 @@ describe('liens internes vers les pages SEO du catalogue', () => {
 
     expect(declares.length).toBeGreaterThan(5)
     expect(declares.filter(({ slug }) => !resolveCategory(slug))).toEqual([])
+  })
+
+  // Les vignettes de categorie etaient rendues sur `/images/categories/{slug}.jpg`.
+  // Le realignement de la taxonomie (D62) a renomme les slugs sans renommer les
+  // fichiers : six categories sur dix affichaient une image inexistante sur la
+  // page d'accueil. Les chemins declares sont desormais verifies sur le disque.
+  it('ne declare aucune image de categorie inexistante', () => {
+    const source = readFileSync(path.join(SRC_ROOT, 'components', 'PartsCatalog.tsx'), 'utf8')
+    const chemins = [...source.matchAll(/image: '(\/images\/[a-z0-9\/-]+\.jpg)'/g)].map((m) => m[1])
+
+    expect(chemins.length).toBeGreaterThan(3)
+
+    const manquantes = chemins.filter(
+      (chemin) => !existsSync(path.join(process.cwd(), 'public', chemin))
+    )
+
+    expect(manquantes).toEqual([])
+  })
+
+  it('detecte reellement une image manquante', () => {
+    expect(existsSync(path.join(process.cwd(), 'public', '/images/categories/moteur.jpg'))).toBe(true)
+    expect(existsSync(path.join(process.cwd(), 'public', '/images/categories/electricite.jpg'))).toBe(false)
   })
 
   it('detecte reellement un slug absent du catalogue', () => {
