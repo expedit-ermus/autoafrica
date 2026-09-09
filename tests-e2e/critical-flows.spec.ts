@@ -134,6 +134,20 @@ test.describe('Flux critique : achat et paiement Mobile Money', () => {
       (o: { items?: Array<{ productId: string }> }) => (o.items ?? []).map((i) => i.productId),
     );
     expect(orderedProductIds).toContain(pieceId);
+
+    // Le titre de ce scenario dit « paie » : il faut donc verifier le paiement,
+    // pas seulement la commande. Le tunnel annoncait « Paiement valide avec
+    // succes » sans jamais appeler l API de paiement, et la commande restait a
+    // `paymentStatus: UNPAID` (D65).
+    const commandePayee = rows.find((o: { items?: Array<{ productId: string }> }) =>
+      (o.items ?? []).some((i) => i.productId === pieceId),
+    ) as { paymentStatus?: string; status?: string } | undefined;
+    expect(commandePayee?.paymentStatus, 'la commande doit etre reglee').toBe('PAID');
+
+    const paiements = await page.request.get('/api/v1/payments');
+    expect(paiements.ok()).toBeTruthy();
+    const listePaiements = (await paiements.json()).data?.data ?? (await paiements.json()).data ?? [];
+    expect(listePaiements.length, 'un paiement doit avoir ete enregistre').toBeGreaterThan(0);
   });
 
   test('le panier vide n expose pas de bouton de paiement', async ({ page }) => {

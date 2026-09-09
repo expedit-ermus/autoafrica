@@ -23,6 +23,9 @@ export default defineConfig({
     env: {
       DATABASE_URL: process.env.E2E_DATABASE_URL ?? 'file:./dev.db',
       JWT_SECRET: process.env.E2E_JWT_SECRET ?? 'e2e-signing-key-local-tests-only-do-not-reuse',
+      // Active la simulation Mobile Money pour la suite E2E ; absente en
+      // production, ou l'adaptateur refuse plutot que de fabriquer un succes (D65).
+      PAYMENTS_SIMULATOR: '1',
     },
   },
 });

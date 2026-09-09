@@ -88,7 +88,9 @@ export default function CartPage() {
   // Opérateur déduit du numéro saisi (null tant que le numéro est incomplet).
   const detectedOperator = detectOperator(phone, 'CI');
   const [pinCode, setPinCode] = useState('');
-  const [paymentStep, setPaymentStep] = useState<'operator' | 'pin' | 'success'>('operator');
+  const [paymentStep, setPaymentStep] = useState<'operator' | 'pin' | 'success' | 'order-placed'>('operator');
+  // Message renvoye par le fournisseur quand le paiement n aboutit pas.
+  const [paymentMessage, setPaymentMessage] = useState<string | null>(null);
 
   const updateCart = (newCart: CartItem[]) => {
     writeLocalStorage(CART_KEY, newCart);
@@ -121,6 +123,19 @@ export default function CartPage() {
     setPaymentStep('operator');
   };
 
+  /**
+   * Correspondance entre les identifiants d'operateur de l'interface et les
+   * valeurs de `PaymentMethod` attendues par l'API. Djamo est une carte Visa :
+   * elle passe par `CARD`, non par un adaptateur Mobile Money.
+   */
+  const METHODE_API: Record<string, string> = {
+    wave: 'WAVE',
+    orange: 'ORANGE_MONEY',
+    mtn: 'MTN_MOMO',
+    moov: 'MOOV_MONEY',
+    djamo: 'CARD',
+  };
+
   const processPayment = async () => {
     setChecking(true);
     try {
@@ -141,18 +156,50 @@ export default function CartPage() {
       if (!res.ok) {
         throw new Error('order-creation-failed');
       }
+      const commande = await res.json();
+      const orderId: string | undefined = commande?.data?.id ?? commande?.id;
+
+      // La commande existe : le panier peut etre vide quoi qu il advienne du
+      // paiement, sans quoi l acheteur repasserait commande une seconde fois.
       removeLocalStorage(CART_KEY);
       window.dispatchEvent(new Event('aa-cart-updated'));
-      setPaymentStep('success');
-      track('payment_success', { amount: total, provider: selectedOperator });
-      addToast('success', L(`Paiement ${selectedOperator.toUpperCase()} validé avec succès !`, `${selectedOperator.toUpperCase()} payment successfully validated!`));
+
+      // Le paiement n etait jamais demande : l interface annoncait
+      // « Paiement valide avec succes » alors que seule la commande avait ete
+      // creee, et celle-ci restait a `paymentStatus: UNPAID` (D65).
+      const paiement = await fetch('/api/v1/payments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          orderId,
+          method: METHODE_API[selectedOperator] ?? 'WAVE',
+          phone: phone.startsWith('+') ? phone : `+225${phone}`,
+        }),
+      });
+
+      if (paiement.ok) {
+        setPaymentStep('success');
+        track('payment_success', { amount: total, provider: selectedOperator });
+        addToast('success', L(
+          `Paiement ${selectedOperator.toUpperCase()} confirme !`,
+          `${selectedOperator.toUpperCase()} payment confirmed!`,
+        ));
+      } else {
+        // Le paiement a echoue, la commande subsiste. On dit ce qui s est
+        // reellement passe plutot que d annoncer un reglement inexistant.
+        const detail = await paiement.json().catch(() => null);
+        setPaymentStep('order-placed');
+        setPaymentMessage(detail?.error?.message ?? detail?.message ?? null);
+        track('payment_fail', { provider: selectedOperator });
+      }
 
       setTimeout(() => {
         setShowPaymentModal(false);
         window.location.href = '/dashboard/orders';
-      }, 1800);
+      }, 2600);
     } catch {
-      addToast('error', L('Erreur lors du paiement', 'Error during payment'));
+      addToast('error', L('Erreur lors de la creation de la commande', 'Error while creating the order'));
       track('payment_fail', { provider: selectedOperator });
     } finally {
       setChecking(false);
@@ -495,6 +542,22 @@ export default function CartPage() {
                 <p className="text-xs text-slate-500">
                   {L('Votre commande a été transmise au vendeur. Redirection vers le suivi de commande...', 'Your order has been sent to the seller. Redirecting to order tracking...')}
                 </p>
+              </div>
+            )}
+
+            {paymentStep === 'order-placed' && (
+              <div className="py-6 text-center space-y-3">
+                <div className="w-16 h-16 bg-amber-500 text-white rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg shadow-amber-500/30">
+                  !
+                </div>
+                <h4 className="font-extrabold text-slate-900 text-lg">{L('Commande enregistrée', 'Order placed')}</h4>
+                <p className="text-xs text-slate-600 max-w-sm mx-auto">
+                  {paymentMessage ?? L(
+                    'Le règlement en ligne n a pas pu être finalisé. Votre commande est bien enregistrée : le vendeur vous contactera pour convenir du paiement.',
+                    'Online payment could not be completed. Your order is recorded: the seller will contact you to arrange payment.',
+                  )}
+                </p>
+                <p className="text-[11px] text-slate-400">{L('Redirection vers le suivi de commande...', 'Redirecting to order tracking...')}</p>
               </div>
             )}
 

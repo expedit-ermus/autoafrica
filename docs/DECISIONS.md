@@ -1416,3 +1416,44 @@ L'article `/blog/paiement-mobile-money-auto`, dont la section centrale expliquai
 Retirer le sequestre supprime une promesse qui n'existait pas ; cela ne rend pas le paiement reel. Ce point reste ouvert et demande un arbitrage distinct : couper l'acces au tunnel tant que le paiement n'encaisse pas, cabler l'API de paiement existante, ou integrer reellement CinetPay a l'initiation.
 
 **Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 398/398 tests unitaires, build de production reussi, budgets de bundle respectes, 25/25 tests E2E.
+
+---
+
+## D65 : Le tunnel de paiement demande reellement un paiement
+
+**Date** : 09/09/2026 — traitement du constat central de l'audit du parcours d'achat, laisse ouvert par D64.
+
+### Le defaut
+
+`processPayment`, dans `/dashboard/cart`, appelait `POST /api/v1/orders` et **rien d'autre**. Aucune requete vers l'API de paiement, aucun enregistrement `Payment` cree. La commande restait a `paymentStatus: UNPAID` pendant que l'interface annoncait « Paiement valide avec succes » et emettait l'evenement de suivi `payment_success`.
+
+Le choix de l'operateur, la saisie du numero, le code PIN : toute cette sequence etait sans effet. Cote vendeur, la commande apparaissait impayee.
+
+Second defaut, en dessous : les adaptateurs Mobile Money sont des simulateurs. `BaseMobileMoneyAdapter.initiate()` attendait une seconde, tirait `Math.random()` contre un taux d'echec de 5 %, puis renvoyait un identifiant de transaction fabrique et `status: 'completed'` — sans le moindre appel reseau. Branche tel quel, le tunnel aurait fait passer des commandes a `PAID` sans qu'aucun argent ne bouge : un mensonge inscrit en base, pire que le precedent.
+
+### Correction
+
+**Le paiement est demande.** Apres creation de la commande, le panier appelle `POST /api/v1/payments` avec l'identifiant de commande, la methode et le telephone. Le service existant — deja robuste : verification du proprietaire, montant faisant autorite cote serveur, unicite du paiement par commande — n'avait jamais ete appele depuis l'interface.
+
+**Le succes n'est plus annonce a l'aveugle.** L'interface distingue desormais deux issues :
+
+- paiement confirme par le fournisseur → « Paiement confirme », commande a `PAID` ;
+- paiement refuse → nouvelle etape « Commande enregistree », qui affiche le message reel du fournisseur. La commande existe, le panier est vide, et l'acheteur sait que le reglement reste a convenir.
+
+**Le simulateur ne peut plus fabriquer de succes.** `initiate()` n'entre en simulation que si `PAYMENTS_SIMULATOR=1` est explicitement pose. Le drapeau est defini dans `vitest.setup.ts` et dans le `webServer` de `playwright.config.ts` : les suites de tests exercent donc le tunnel complet. En production il est absent, et l'adaptateur refuse avec `PROVIDER_NOT_CONFIGURED` et un message clair plutot que d'inventer une transaction.
+
+Consequence assumee : **en production, le reglement en ligne n'aboutit pas tant qu'un fournisseur reel n'est pas branche.** L'acheteur voit « Commande enregistree » et le vendeur le contacte. C'est le comportement honnete, et il correspond a l'usage reel du marche abidjanais, ou la mise en relation passe deja par WhatsApp et telephone — liens presents partout sur le site.
+
+### Non-regression
+
+Le scenario E2E s'intitulait « un acheteur commande une piece et paie par sequestre Mobile Money » mais ne verifiait que l'existence de la **commande** — le mot « paie » n'etait couvert par rien, ce qui explique que le defaut ait survecu a D54. Il verifie desormais que `paymentStatus` vaut `PAID` et qu'un paiement a bien ete enregistre.
+
+Verifie par mutation : en neutralisant l'appel a l'API de paiement, le test echoue sur « la commande doit etre reglee ». Un test unitaire complete le dispositif cote adaptateur, en verifiant qu'hors simulation aucun succes n'est fabrique. Suite unitaire portee de 398 a 402.
+
+### Ce qui reste a faire pour encaisser vraiment
+
+Brancher CinetPay a l'initiation, avec les identifiants marchands du projet. Le webhook de confirmation existe deja (`/api/v1/payments/webhook`, verifie en D-securite) ; c'est l'appel d'initiation qui manque. Le jour ou cet adaptateur existe, le tunnel fonctionne sans autre changement : toute la chaine — creation du paiement, passage de la commande a `PAID`, journal de commande, SMS de confirmation — est en place et desormais reellement empruntee.
+
+**Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 402/402 tests unitaires, build de production reussi, budgets de bundle respectes, 25/25 tests E2E.
+
+**Impact** : `src/app/dashboard/cart/page.tsx`, `src/modules/payments/providers/base.adapter.ts`, `src/modules/payments/providers/providers.test.ts`, `tests-e2e/critical-flows.spec.ts`, `vitest.setup.ts`, `playwright.config.ts`.

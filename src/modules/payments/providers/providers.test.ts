@@ -56,6 +56,34 @@ describe('Mobile Money adapters', () => {
     expect(result.status).toBe('completed')
   })
 
+  /**
+   * Sans simulation explicite, l'adaptateur ne doit jamais annoncer un succes :
+   * il renvoyait « Paiement effectue avec succes » apres un simple tirage
+   * aleatoire, sans aucun appel a un operateur, et la commande passait a PAID
+   * sans qu'aucun argent ne bouge (D65). La production n'active pas ce drapeau.
+   */
+  it.each(adapters.map(a => [a.name, a]))(
+    'refuse de fabriquer un succes hors simulation (%s)',
+    async (_name, adapter) => {
+      const precedent = process.env.PAYMENTS_SIMULATOR
+      delete process.env.PAYMENTS_SIMULATOR
+      try {
+        const result = await adapter.initiate({
+          phone: '+22507080910',
+          amount: 150000,
+          currency: 'XOF',
+          reference: 'test-ref',
+          description: 'Order TEST-001',
+        })
+        expect(result.success).toBe(false)
+        expect(result.error).toBe('PROVIDER_NOT_CONFIGURED')
+        expect(result.transactionId).toBeUndefined()
+      } finally {
+        if (precedent !== undefined) process.env.PAYMENTS_SIMULATOR = precedent
+      }
+    },
+  )
+
   it.each(adapters.map(a => [a.name, a]))('rejects an amount below the minimum (%s)', async (_name, adapter) => {
     await expect(
       adapter.initiate({
