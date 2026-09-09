@@ -1339,3 +1339,45 @@ Le diagnostic vient de la production, pas du code. Une premiere lecture du HTML 
 **Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 398/398 tests unitaires, build de production reussi, budgets de bundle respectes, 25/25 tests E2E.
 
 **Impact** : `src/lib/marketplace-catalog.ts`, `src/app/sitemap.ts`, `src/components/CatalogPageContent.tsx`, `src/components/Header.tsx`, `src/components/Footer.tsx`, `src/components/PartsCatalog.tsx`, les quatre pages de catalogue, six articles de blog, `src/lib/internal-links.test.ts`, `tests-e2e/http-status.spec.ts`, `docs/15-CATALOGUE.md`, `docs/02-ROUTES.md`.
+
+---
+
+## D63 : Retrait du job de deploiement, qui n'avait jamais deploye
+
+**Date** : 09/09/2026 — le job `deploy` echouait a chaque execution depuis que D58 avait remis la chaine au vert.
+
+### Diagnostic
+
+Trois hypotheses ont ete ecartees avant de trouver la bonne, chacune par une verification et non par raisonnement.
+
+**Token expire ?** Non : l'historique montre que le job n'a **jamais** reussi une seule fois. Sur les runs #153 a #164 il etait `skipped`, `build` echouant avant lui ; sa premiere execution reelle est le run #168, apres D58. Rien n'a jamais fonctionne pour expirer.
+
+**Action abandonnee ou API Vercel obsolete ?** Non plus. `amondnet/vercel-action` est toujours maintenue, mais le workflow epinglait `v25`, publiee en juin 2022, quand la version courante est `v42.3.0`. Une alerte du job signalait par ailleurs que cette action cible Node 20 et est desormais forcee sur Node 24. Piste plausible, mais fausse.
+
+**Cause reelle** : l'etape echouait en **0 seconde**, avant tout appel reseau :
+
+```
+Error: Input required and not supplied: vercel-token
+```
+
+Les secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID` et `VERCEL_PROJECT_ID` n'ont jamais ete renseignes dans le depot. Le workflow avait ete ecrit en supposant qu'ils existaient.
+
+### Consequence sur D58
+
+D58 avait fait dependre `deploy` de `build`, `unit-tests` et `e2e` pour que la production ne parte pas sur du code casse. **Ce couplage n'a jamais rien protege** : le job ne deployait pas, et c'est l'integration GitHub native de Vercel qui livre — a chaque push sur `main`, sans consulter GitHub Actions.
+
+Verifie cote Vercel : les vingt derniers deploiements sont `READY`, tous portant `githubDeployment: "1"`, et D62 a ete mis en ligne par ce canal alors meme que le job `deploy` echouait.
+
+### Decision
+
+Le job est retire. Trois raisons :
+
+1. Vercel deploie deja, de maniere prouvee ;
+2. un job rouge en permanence entraine a ignorer l'onglet Actions — c'est precisement ce qui avait laisse la CI casser pendant quinze runs avant D58 ;
+3. `continue-on-error: true` le rendait invisible dans le statut global, donc il ne protegeait rien tout en salissant chaque execution.
+
+Un commentaire en fin de workflow conserve la trace de ce qui existait et de ce qu'il faudrait pour retablir un vrai couplage : renseigner les trois secrets, remettre un job de deploiement a jour, et desactiver l'auto-deploiement Vercel sur `main`.
+
+**Point de vigilance assume** : la CI signale desormais, elle ne bloque pas. Un code dont les tests echouent partira quand meme en production. C'est l'etat de fait depuis toujours ; il est simplement documente au lieu d'etre masque par un job en echec.
+
+**Impact** : `.github/workflows/ci-cd.yml`, `docs/23-DEPLOIEMENT.md`.

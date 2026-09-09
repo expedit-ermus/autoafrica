@@ -22,48 +22,30 @@
 
 ## Pipeline CI/CD
 
-### GitHub Actions
+### GitHub Actions — verification uniquement
 
-```yaml
-name: CI/CD
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+`.github/workflows/ci-cd.yml` s'execute sur les push vers `main` et sur les pull requests. Cinq jobs, tous bloquants :
 
-jobs:
-  lint-typecheck:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run typecheck
+| Job | Ce qu'il verifie |
+|-----|------------------|
+| `lint` | `npx eslint` |
+| `typecheck` | `npx tsc --noEmit` |
+| `build` | `prisma db push` puis `npm run build` |
+| `unit-tests` | `prisma db push` puis `npx vitest run` |
+| `e2e` | `prisma db push`, `db:seed:accounts`, `npm run build`, `npx playwright test` |
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-      - run: npm ci
-      - run: npm run test:run
+`build` et `unit-tests` creent le schema de base parce que `/catalogue` interroge le catalogue au prerendu et que `audit.service.test.ts` s'execute contre une vraie base (cf. D58). Les traces Playwright sont publiees en artefact quand un test echoue.
 
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-      - run: npm ci
-      - run: npx prisma generate
-      - run: npm run build
-```
+**Cette chaine ne deploie pas.** Un job `deploy` a existe, appelant `amondnet/vercel-action@v25` avec les secrets `VERCEL_TOKEN`, `VERCEL_ORG_ID` et `VERCEL_PROJECT_ID` — jamais renseignes dans le depot. Il echouait en 0 s sur « Input required and not supplied: vercel-token », masque par `continue-on-error`, et n'a jamais rien deploye. Retire en D63.
 
 ### Deploiement Vercel
 
+Le deploiement est assure par **l'integration GitHub native de Vercel** : chaque push sur `main` produit un deploiement de production, chaque push sur une branche de pull request un deploiement preview.
+
+Elle ne consulte pas GitHub Actions. Un code dont les tests echouent partira donc quand meme en production : la CI signale, elle ne bloque pas. Retablir un couplage tests-avant-deploiement demanderait de renseigner les trois secrets, de remettre un job de deploiement, et de desactiver l'auto-deploiement Vercel sur `main`.
+
 ```bash
-# Deploiement manuel
+# Deploiement manuel, si besoin
 npx vercel --prod --yes
 
 # Deploiement preview

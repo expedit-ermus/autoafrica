@@ -108,21 +108,16 @@ jobs:
           path: test-results/
           retention-days: 7
 
-  # Le deploiement en production attend les tests : il ne dependait que de
-  # `build`, et partait donc meme si les tests unitaires ou les flux critiques
-  # echouaient. `continue-on-error` est conserve pour que l'indisponibilite de
-  # Vercel ne fasse pas echouer toute la chaine, mais il ne masque plus un
-  # deploiement lance sur du code casse : les tests sont passes avant.
-  deploy:
-    runs-on: ubuntu-latest
-    needs: [build, unit-tests, e2e]
-    if: github.ref == 'refs/heads/main'
-    continue-on-error: true
-    steps:
-      - uses: actions/checkout@v4
-      - uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
+  # Le deploiement n'est pas fait ici. Un job `deploy` appelait
+  # `amondnet/vercel-action@v25` avec les secrets VERCEL_TOKEN, VERCEL_ORG_ID et
+  # VERCEL_PROJECT_ID, jamais renseignes dans le depot : il echouait en 0 s sur
+  # « Input required and not supplied: vercel-token », sans jamais joindre
+  # Vercel. Masque par `continue-on-error`, il n'a jamais rien deploye — sa
+  # premiere execution reelle date du run #168, les precedentes etant sautees
+  # parce que `build` echouait (D63).
+  #
+  # C'est l'integration GitHub native de Vercel qui deploie, a chaque push sur
+  # `main`. Elle ne consulte pas cette chaine : le couplage
+  # « ne deployer que si les tests passent » pose en D58 n'a donc jamais
+  # protege quoi que ce soit. Le retablir demanderait de renseigner les trois
+  # secrets et de desactiver l'auto-deploiement Vercel sur `main`.
