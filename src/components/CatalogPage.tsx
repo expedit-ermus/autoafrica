@@ -31,8 +31,8 @@ export default function CatalogPage({ kind, slug, name, description, products }:
       answer: `Oui, toutes les pièces neuves bénéficient de la garantie constructeur, et les pièces d'occasion contrôlée (pièces de réemploi) sont certifiées avec une garantie de 48 heures minimum pour vous permettre de vérifier la conformité avec votre mécanicien.`,
     },
     {
-      question: `Comment fonctionne le paiement sécurisé par séquestre pour les pièces ${name} ?`,
-      answer: `Lors de votre commande de pièces ${name}, votre argent est bloqué sur un compte de séquestre sécurisé. Le vendeur n'est payé que lorsque vous avez reçu la pièce et confirmé sa conformité. En cas de problème ou de pièce incompatible, vous êtes remboursé intégralement.`,
+      question: `Comment se passe le paiement Mobile Money pour les pièces ${name} ?`,
+      answer: `Vous réglez vos pièces ${name} par Mobile Money — Wave, Orange Money, MTN MoMo, Moov Money ou Djamo Visa — depuis votre téléphone, sur une connexion chiffrée. Un reçu électronique vous est remis à chaque transaction, et les pièces d'occasion contrôlée sont garanties 48 heures pour vous permettre de vérifier la conformité avec votre mécanicien.`,
     },
     {
       question: `Quels sont les délais et tarifs de livraison pour ${name} à Abidjan et en Côte d'Ivoire ?`,
@@ -94,7 +94,7 @@ export default function CatalogPage({ kind, slug, name, description, products }:
           <div className="flex items-center gap-3 p-3.5 bg-white rounded-2xl border border-gray-200 shadow-sm">
             <span className="text-2xl">📱</span>
             <div>
-              <p className="text-xs font-bold text-gray-900">Séquestre Mobile Money</p>
+              <p className="text-xs font-bold text-gray-900">Paiement Mobile Money</p>
               <p className="text-[11px] text-gray-500">Wave, Orange Money, MTN MoMo</p>
             </div>
           </div>

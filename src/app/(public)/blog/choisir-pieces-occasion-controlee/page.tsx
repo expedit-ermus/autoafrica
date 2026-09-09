@@ -70,7 +70,7 @@ export default function ChoisirPiecesOccasionPage() {
           heading: 'La garantie AutoAfrique sur les pièces d\'occasion',
           body: [
             'Pour lever les derniers doutes, la marketplace AutoAfrique a mis en place un système de confiance inédit. Nos vendeurs partenaires s\'engagent sur une charte qualité stricte.',
-            'Lorsqu\'une pièce est affichée comme "Occasion Contrôlée" sur notre plateforme, elle bénéficie d\'une <a href="/retours">garantie de montage 48h</a>. Si la pièce ne fonctionne pas, vous êtes protégé par notre <a href="/paiement">séquestre de paiement Mobile Money</a> : vous retournez la pièce et vous êtes remboursé intégralement.',
+            "Lorsqu'une pièce est affichée comme Occasion Contrôlée sur notre plateforme, elle bénéficie d'une <a href='/retours'>garantie de montage 48h</a>. Si la pièce ne fonctionne pas, vous la retournez et vous êtes remboursé intégralement, selon <a href='/retours'>notre procédure de retour</a>.",
             'Acheter d\'occasion avec <a href="/livraison">livraison rapide à Abidjan</a> devient enfin sûr, transparent et professionnel.',
           ],
         },
@@ -95,7 +95,7 @@ export default function ChoisirPiecesOccasionPage() {
         {
           slug: 'paiement-mobile-money-auto',
           title: 'Mobile Money et pièces auto : payer en toute sécurité',
-          excerpt: 'Wave, Orange Money, MTN MoMo : comment le séquestre Mobile Money protège vendeurs et acheteurs.',
+          excerpt: 'Wave, Orange Money, MTN MoMo : payer ses pièces détachées depuis son téléphone.',
           category: 'Paiement',
         },
       ]}

@@ -30,12 +30,12 @@ const banners = [
   {
     id: 3,
     tag: { fr: '🔒 SÉCURITÉ GARANTIE', en: '🔒 GUARANTEED SECURITY' },
-    title: { fr: 'Paiement sous séquestre Mobile Money', en: 'Secure Mobile Money payment' },
+    title: { fr: 'Paiement Mobile Money', en: 'Mobile Money payment' },
     subtitle: { fr: 'Wave, Djamo, Orange Money, MTN MoMo. Votre argent est libéré après réception de la bonne pièce.', en: 'Wave, Djamo, Orange Money, MTN MoMo. Your funds are released after part inspection.' },
     cta: { fr: 'Comment ça marche ?', en: 'How it works' },
     bg: 'from-slate-950 via-slate-900/85 to-indigo-950/70',
     accentColor: 'from-blue-500 to-cyan-400',
-    image: '/images/sequestre-mobile-money.jpg',
+    image: '/images/paiement-mobile-money.jpg',
     link: '/paiement',
   },
   {

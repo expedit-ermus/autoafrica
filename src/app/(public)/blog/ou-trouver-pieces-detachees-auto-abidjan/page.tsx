@@ -20,7 +20,7 @@ export default function OuTrouverPiecesPage() {
         "name": "Où acheter des pièces auto fiables à Abidjan ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "À Abidjan, vous pouvez acheter vos pièces dans les pôles traditionnels (Adjamé, Marcory, N'Dotré) ou opter pour la sécurité avec AutoAfrique qui propose des pièces garanties, un séquestre Mobile Money et la livraison en 24h."
+          "text": "À Abidjan, vous pouvez acheter vos pièces dans les pôles traditionnels (Adjamé, Marcory, N'Dotré) ou opter pour la sécurité avec AutoAfrique qui propose des pièces garanties, le paiement Mobile Money et la livraison en 24h."
         }
       },
       {
@@ -90,7 +90,7 @@ export default function OuTrouverPiecesPage() {
           { id: 'poles-traditionnels', title: 'Les grands pôles traditionnels de pièces à Abidjan' },
           { id: 'neuve-vs-occasion', title: 'Pièce Neuve OEM vs Pièce d\'Occasion Venante : Comment choisir ?' },
           { id: 'pieges-arnaques', title: 'Les pièges et arnaques à éviter' },
-          { id: 'revolution-autoafrique', title: 'La révolution AutoAfrique : Séquestre, garantie et livraison' },
+          { id: 'revolution-autoafrique', title: 'La révolution AutoAfrique : paiement, garantie et livraison' },
           { id: 'tableau-comparatif', title: 'Tableau comparatif des solutions' },
         ]}
         contentSections={[
@@ -120,10 +120,10 @@ export default function OuTrouverPiecesPage() {
           },
           {
             id: 'revolution-autoafrique',
-            heading: 'La révolution AutoAfrique : Séquestre Mobile Money, compatibilité garantie et livraison 24h',
+            heading: 'La révolution AutoAfrique : paiement Mobile Money, compatibilité garantie et livraison 24h',
             body: [
               'Avec AutoAfrique, fini les déplacements inutiles et les risques de mauvaise pièce. Notre <a href="/catalogue">catalogue</a> en ligne permet de trouver la pièce exacte grâce à la recherche par immatriculation ou numéro de châssis.',
-              'Nous sécurisons votre achat : votre paiement Mobile Money est gardé sous séquestre jusqu\'à la réception et validation de la pièce. De plus, nous offrons une <a href="/livraison">livraison</a> rapide en 24h à Abidjan.'
+              "Nous sécurisons votre achat : le paiement Mobile Money laisse un reçu électronique, et les pièces d'occasion contrôlée sont garanties 48 heures après réception. De plus, nous offrons une <a href='/livraison'>livraison</a> rapide en 24h à Abidjan."
             ],
           },
           {

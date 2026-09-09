@@ -110,7 +110,7 @@ export default function Header() {
             <span className="text-slate-700">|</span>
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-              {L('Séquestre Mobile Money Garanti', 'Guaranteed Mobile Money Escrow')}
+              {L('Paiement Mobile Money', 'Mobile Money payment')}
             </span>
           </div>
         </div>

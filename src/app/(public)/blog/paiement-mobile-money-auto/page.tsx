@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Acheter ses pièces auto par Mobile Money à Abidjan',
-  description: 'Wave, Orange Money, MTN MoMo, Moov Money, Djamo : découvrez comment le système de paiement séquestre protège acheteurs et vendeurs de pièces détachées à Abidjan.',
+  description: 'Wave, Orange Money, MTN MoMo, Moov Money, Djamo : comment payer ses pièces détachées depuis son téléphone à Abidjan, avec reçu électronique.',
   alternates: {
     canonical: 'https://autoafrique-saas.vercel.app/blog/paiement-mobile-money-auto',
   },
@@ -14,18 +14,18 @@ export default function PaiementMobileMoneyPage() {
     <ArticlePageTemplate
       slug="paiement-mobile-money-auto"
       title="Acheter ses pièces auto par Mobile Money à Abidjan : payer en toute sécurité"
-      excerpt="Le marché de la pièce détachée automobile à Abidjan a longtemps souffert du manque de confiance lié aux transactions à distance. La solution passe par le paiement séquestre couplé au Mobile Money : Wave, Orange Money, MTN MoMo, Moov Money et Djamo."
+      excerpt="Le marché de la pièce détachée automobile à Abidjan a longtemps souffert du manque de confiance lié aux transactions à distance. La solution passe par le paiement Mobile Money : Wave, Orange Money, MTN MoMo, Moov Money et Djamo."
       author={{ name: 'Équipe AutoAfrique', role: 'Experts Automobile' }}
       datePublished="2026-08-08"
       mainImage={{
-        url: '/images/sequestre-mobile-money.jpg',
+        url: '/images/paiement-mobile-money.jpg',
         alt: 'Paiement mobile sur smartphone avec opérateurs Mobile Money à Abidjan',
-        caption: 'Le paiement Mobile Money sécurisé par séquestre transforme le commerce auto à Abidjan et en Afrique de l\'Ouest.',
+        caption: 'Le paiement Mobile Money transforme le commerce auto à Abidjan et en Afrique de l\'Ouest.',
       }}
       tableOfContents={[
         { id: 'probleme-cash', title: 'Le problème du paiement cash dans le commerce auto' },
         { id: 'mobile-money-vs-cash', title: 'Mobile Money vs cash au marché informel' },
-        { id: 'sequestre-mobile-money', title: 'Comment fonctionne le séquestre Mobile Money' },
+        { id: 'paiement-mobile-money', title: 'Comment se déroule un paiement Mobile Money' },
         { id: 'operateurs', title: 'Les opérateurs supportés : Wave, Orange Money, MTN MoMo, Moov, Djamo' },
         { id: 'avantages', title: 'Avantages pour les vendeurs et les acheteurs' },
         { id: 'securite', title: 'Sécurité et traçabilité des transactions' },
@@ -44,15 +44,15 @@ export default function PaiementMobileMoneyPage() {
           heading: 'Mobile Money vs cash au marché informel : la comparaison',
           body: [
             'Au <a href="/blog/casse-auto-vs-autoafrique">marché informel d\'Adjamé ou de Yopougon</a>, le paiement se fait exclusivement en espèces : aucun reçu, aucun recours en cas de pièce défectueuse. Si la pièce ne convient pas, il est quasiment impossible d\'obtenir un remboursement.',
-            'Avec le <a href="/paiement">Mobile Money sur AutoAfrique</a>, tout change. Vous payez depuis votre téléphone via Wave, Orange Money, MTN MoMo, Moov Money ou Djamo. Chaque transaction est tracée, un reçu électronique est généré, et le système de séquestre garantit que votre argent est protégé tant que vous n\'avez pas validé la réception de la pièce.',
+            "Avec le <a href='/paiement'>Mobile Money sur AutoAfrique</a>, tout change. Vous payez depuis votre téléphone via Wave, Orange Money, MTN MoMo, Moov Money ou Djamo. Chaque transaction est tracée et un reçu électronique est généré, ce qui vous laisse une preuve d'achat opposable en cas de litige.",
           ],
         },
         {
-          id: 'sequestre-mobile-money',
-          heading: 'Comment fonctionne le séquestre (escrow) Mobile Money',
+          id: 'paiement-mobile-money',
+          heading: 'Comment se déroule un paiement Mobile Money',
           body: [
-            'Pour résoudre ce problème de confiance, AutoAfrique intègre un système de paiement par séquestre lié aux comptes Mobile Money. L\'acheteur commande sa pièce sur le <a href="/catalogue">catalogue en ligne</a> et la paie via son application. Les fonds sont conservés en toute sécurité sur un compte de cantonnement AutoAfrique.',
-            'Le vendeur est notifié et procède à l\'expédition. À la réception, l\'acheteur dispose d\'une <a href="/retours">garantie de 48h pour vérifier la conformité</a>. Une fois validée, les fonds sont instantanément transférés sur le compte Mobile Money du vendeur.',
+            "L'acheteur commande sa pièce sur le <a href='/catalogue'>catalogue en ligne</a> et la règle depuis son application Mobile Money habituelle. Un reçu électronique est émis, et la commande apparaît immédiatement dans son espace client comme chez le vendeur.",
+            "Le vendeur est notifié et procède à l'expédition. À la réception, l'acheteur dispose d'une <a href='/retours'>garantie de 48h pour vérifier la conformité</a> de la pièce avec son mécanicien, et peut ouvrir un litige depuis sa commande si elle ne convient pas.",
           ],
         },
         {
@@ -86,7 +86,7 @@ export default function PaiementMobileMoneyPage() {
       ]}
       cta={{
         title: 'Achetez et vendez en toute confiance à Abidjan',
-        description: 'Le séquestre Mobile Money AutoAfrique protège chaque transaction. Payez par Wave, Orange Money, MTN MoMo, Moov Money ou Djamo.',
+        description: 'Le paiement Mobile Money AutoAfrique trace chaque transaction. Payez par Wave, Orange Money, MTN MoMo, Moov Money ou Djamo.',
         buttonText: 'Découvrir nos moyens de paiement',
         buttonHref: '/paiement',
       }}

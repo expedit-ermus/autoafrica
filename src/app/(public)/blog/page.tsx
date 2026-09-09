@@ -59,7 +59,7 @@ export default function BlogIndexPage() {
       title: L('Acheter ses pièces auto par Mobile Money à Abidjan', 'Buy auto parts via Mobile Money in Abidjan'),
       category: L('Paiement', 'Payment'),
       categoryColor: 'bg-purple-100 text-purple-800 border-purple-200',
-      excerpt: L('Wave, Orange Money, MTN MoMo : comment le séquestre Mobile Money protège vendeurs et acheteurs à Abidjan.', 'Wave, Orange Money, MTN MoMo: how mobile money escrow protects sellers and buyers in Abidjan.'),
+      excerpt: L('Wave, Orange Money, MTN MoMo : payer ses pièces détachées depuis son téléphone à Abidjan.', 'Wave, Orange Money, MTN MoMo: paying for car parts from your phone in Abidjan.'),
       date: L('8 Août 2026', 'Aug 8, 2026'),
       readTime: L('5 min', '5 min'),
     },

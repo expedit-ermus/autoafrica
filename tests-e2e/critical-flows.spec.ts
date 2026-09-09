@@ -72,7 +72,7 @@ test.describe('Flux critique : inscription', () => {
 // ---------------------------------------------------------------------------
 
 test.describe('Flux critique : achat et paiement Mobile Money', () => {
-  test('un acheteur commande une piece et paie par sequestre Mobile Money', async ({ page }) => {
+  test('un acheteur commande une piece et va au bout du tunnel Mobile Money', async ({ page }) => {
     // Le scenario fournit sa propre piece : la base de developpement ne garantit
     // aucun catalogue pre-existant, et un test d achat ne doit pas dependre de
     // l etat laisse par une autre execution.
@@ -99,7 +99,7 @@ test.describe('Flux critique : achat et paiement Mobile Money', () => {
     await expect(page.getByRole('heading', { level: 1 })).toContainText(pieceTitle);
 
     // Le CTA de la fiche ajoute au panier puis redirige vers le panier.
-    await page.getByRole('button', { name: /Commander avec Séquestre Mobile Money/i }).click();
+    await page.getByRole('button', { name: /Commander avec Mobile Money/i }).click();
     await page.waitForURL(/\/dashboard\/cart/, { timeout: 20000 });
 
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Mon Panier');
@@ -107,7 +107,7 @@ test.describe('Flux critique : achat et paiement Mobile Money', () => {
 
     // Paiement : operateur, numero, prompt USSD puis code PIN de demonstration.
     await page.getByRole('button', { name: /Payer en toute sécurité/i }).click();
-    await expect(page.getByText('Paiement Séquestre Mobile Money')).toBeVisible();
+    await expect(page.getByText('Paiement Mobile Money')).toBeVisible();
 
     await page.getByRole('button', { name: 'Orange Money' }).click();
     await page.getByLabel('Numéro de téléphone Mobile Money').fill('0712345678');
@@ -117,7 +117,7 @@ test.describe('Flux critique : achat et paiement Mobile Money', () => {
     await page.getByLabel('Code PIN Mobile Money').fill('1234');
     await page.getByRole('button', { name: /Confirmer le paiement/i }).click();
 
-    await expect(page.getByText(/Paiement Séquestre Confirmé/i)).toBeVisible({ timeout: 30000 });
+    await expect(page.getByText(/Paiement Confirmé/i)).toBeVisible({ timeout: 30000 });
 
     // La confirmation renvoie vers le suivi de commande : on attend cette
     // navigation avant d interroger l API, sinon la requete court contre elle.

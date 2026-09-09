@@ -55,7 +55,6 @@ export default function DashboardPage() {
   const pendingOrders = orders.filter(o => o.status === 'PENDING').length;
   const deliveredOrders = orders.filter(o => o.status === 'DELIVERED' || o.status === 'COMPLETED').length;
   const totalRevenue = payments.filter(p => p.status === 'COMPLETED').reduce((s, p) => s + (p.amount || 0), 0);
-  const escrowAmount = payments.filter(p => p.status === 'HELD').reduce((s, p) => s + (p.amount || 0), 0);
   const lowStockProducts = products.filter(p => p.stock <= 3 && p.stock > 0);
   const outOfStock = products.filter(p => p.stock === 0);
   const recentOrders = orders.slice(0, 5);
@@ -165,7 +164,7 @@ export default function DashboardPage() {
       iconBg: 'bg-orange-500/10',
       iconColor: 'text-orange-600',
       spark: revenueSparkline,
-      sub: `${formatCFA(escrowAmount)} ${L('séquestre', 'in escrow')}`,
+      sub: `${L('encaissés', 'collected')}`,
       subColor: 'text-blue-600',
       isCurrency: true,
     },

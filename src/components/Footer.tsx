@@ -159,7 +159,7 @@ export default function Footer() {
 
             <div>
               <h4 className="text-white font-black mb-3 text-xs uppercase tracking-wider text-slate-400">
-                {L('Paiements 100% sécurisés sous séquestre', '100% Secure Escrow Payments')}
+                {L('Paiements Mobile Money sécurisés', 'Secure Mobile Money payments')}
               </h4>
               <div className="flex flex-wrap gap-2.5 mb-5">
                 {[

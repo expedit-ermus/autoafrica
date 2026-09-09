@@ -33,7 +33,7 @@ export default function PaiementPage() {
     setTimeout(() => {
       setLoading(false);
       setStep('success');
-      addToast('success', `Paiement Séquestre ${selectedOperator} validé avec succès !`);
+      addToast('success', `Paiement ${selectedOperator} validé avec succès !`);
     }, 1200);
   };
 
@@ -44,22 +44,22 @@ export default function PaiementPage() {
         {/* Header */}
         <div className="text-center space-y-3">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
-            🔒 Séquestre Mobile Money Garanti
+            🔒 Paiement Mobile Money Sécurisé
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
             Moyens de Paiement Sécurisés sur AutoAfrique
           </h1>
           <p className="text-slate-600 text-base max-w-2xl mx-auto">
-            Payez vos pièces détachées en toute sécurité via votre opérateur Mobile Money habituel. Vos fonds restent en compte séquestre jusqu&apos;à réception conforme de la pièce.
+            Payez vos pièces détachées via votre opérateur Mobile Money habituel — Wave, Orange Money, MTN MoMo, Moov Money ou Djamo Visa. Reçu électronique remis à chaque transaction.
           </p>
         </div>
 
-        {/* Simulateur de Paiement Séquestre Interactif */}
+        {/* Simulateur de Paiement Mobile Money Interactif */}
         <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-lg space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
               <h2 className="text-xl font-extrabold text-slate-900">
-                ⚡ Démonstration Interactive du Paiement Séquestre
+                ⚡ Démonstration Interactive du Paiement Mobile Money
               </h2>
               <p className="text-xs text-slate-500 mt-0.5">
                 Testez en direct le flux d&apos;encaissement Mobile Money ouest-africain.
@@ -145,7 +145,7 @@ export default function PaiementPage() {
 
               <div className="p-4 bg-slate-900 text-emerald-400 font-mono text-xs rounded-2xl max-w-sm mx-auto text-left space-y-1 shadow-inner">
                 <p className="text-slate-400"># USSD Mobile Money Simulation</p>
-                <p>&gt; Merchant: AutoAfrique SaaS Escrow</p>
+                <p>&gt; Merchant: AutoAfrique SaaS</p>
                 <p>&gt; Amount: 25,000 XOF</p>
                 <p>&gt; Provider: {selectedOperator}</p>
                 <p className="text-amber-400 animate-pulse">&gt; Waiting for PIN confirmation...</p>
@@ -178,10 +178,10 @@ export default function PaiementPage() {
               </div>
               <div>
                 <h3 className="text-xl font-extrabold text-slate-900">
-                  Paiement Séquestre Validé avec Succès !
+                  Paiement Validé avec Succès !
                 </h3>
                 <p className="text-sm text-slate-600 mt-1 max-w-md mx-auto">
-                  Vos 25 000 FCFA sont placés sous séquestre sécurisé. Le vendeur est informé et prépare l&apos;expédition de votre commande.
+                  Votre paiement de 25 000 FCFA est enregistré. Le vendeur est informé et prépare l&apos;expédition de votre commande.
                 </p>
               </div>
 
@@ -214,7 +214,7 @@ export default function PaiementPage() {
             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-1.5">
               <h3 className="font-bold text-slate-900">Est-ce que le paiement est sécurisé ?</h3>
               <p className="text-slate-600 text-xs">
-                Oui. AutoAfrique utilise le paiement sous séquestre. L&apos;argent ne parvient au vendeur qu&apos;une fois que la pièce est livrée et vérifiée.
+                Oui. Le paiement passe par votre opérateur Mobile Money habituel, sur une connexion chiffrée, et un reçu électronique vous est remis pour chaque transaction.
               </p>
             </div>
 

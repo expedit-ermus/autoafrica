@@ -134,7 +134,7 @@ export default function RoleServicesHub() {
               </div>
               <div className="text-xs text-gray-500 font-medium">{L('Double Garantie SAV', 'Dual Warranty')}</div>
               <div className="text-sm font-extrabold text-gray-900 mt-1">{L('Pièce ET Main d\'œuvre', 'Part AND Labor')}</div>
-              <div className="text-[11px] text-purple-700 font-semibold mt-2">{L('Paiement séquestre Wave sécurisé', 'Secure Wave Escrow Payment')}</div>
+              <div className="text-[11px] text-purple-700 font-semibold mt-2">{L('Paiement Wave sécurisé', 'Secure Wave payment')}</div>
             </li>
 
           </ul>
@@ -149,7 +149,7 @@ export default function RoleServicesHub() {
                   <span>📅</span> {L('Dernière demande de service / Montage', 'Latest Service & Installation Request')}
                 </h3>
                 <span className="text-xs font-bold text-emerald-600 bg-emerald-100 px-2.5 py-1 rounded-full">
-                  Séquestre Mobile Money Actif
+                  Paiement Mobile Money Actif
                 </span>
               </div>
 
@@ -193,7 +193,7 @@ export default function RoleServicesHub() {
                     href="/dashboard/orders"
                     className="py-1.5 px-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs rounded-lg transition-colors"
                   >
-                    {L('Voir le reçu & Séquestre', 'View Receipt & Escrow')}
+                    {L('Voir le reçu', 'View receipt')}
                   </Link>
                 </div>
               </div>
@@ -252,7 +252,7 @@ export default function RoleServicesHub() {
                   {L('Ce mois', 'This month')}
                 </span>
               </div>
-              <div className="text-xs text-gray-500 font-medium">{L('Revenus Séquestre Débloqués', 'Unlocked Escrow Revenue')}</div>
+              <div className="text-xs text-gray-500 font-medium">{L('Revenus encaissés', 'Collected revenue')}</div>
               <div className="text-lg font-extrabold text-emerald-900 mt-1">485 000 FCFA</div>
               <div className="text-[11px] text-emerald-700 font-semibold mt-1">{L('12 montages & ventes validés', '12 installations & sales validated')}</div>
             </li>
@@ -264,7 +264,7 @@ export default function RoleServicesHub() {
                   {L('En attente', 'Pending')}
                 </span>
               </div>
-              <div className="text-xs text-gray-500 font-medium">{L('En Séquestre Client', 'In Customer Escrow')}</div>
+              <div className="text-xs text-gray-500 font-medium">{L('En attente de règlement', 'Awaiting settlement')}</div>
               <div className="text-lg font-extrabold text-amber-900 mt-1">140 000 FCFA</div>
               <div className="text-[11px] text-amber-700 font-semibold mt-1">{L('Déblocage après test 24h', 'Release after 24h test')}</div>
             </li>

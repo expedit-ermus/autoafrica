@@ -104,7 +104,7 @@ export default async function Image() {
             marginTop: "36px",
           }}
         >
-          {["⚡ Livraison 24h Abidjan", "🛡️ Garantie 48h", "📱 Séquestre Mobile Money", "🔧 Occasion Contrôlée"].map((tag) => (
+          {["⚡ Livraison 24h Abidjan", "🛡️ Garantie 48h", "📱 Paiement Mobile Money", "🔧 Occasion Contrôlée"].map((tag) => (
             <div
               key={tag}
               style={{

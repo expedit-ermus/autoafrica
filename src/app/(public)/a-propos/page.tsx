@@ -84,7 +84,7 @@ export default function AboutPage() {
                   {L('Paiement Mobile Money', 'Mobile Money Payments')}
                 </h3>
                 <p className="flex-auto text-sm leading-relaxed text-slate-600">
-                  {L('Transactions sécurisées avec système de séquestre via Wave, Djamo, Orange Money, MTN MoMo et Moov Money.', 'Secure transactions with escrow system via Wave, Djamo, Orange Money, MTN MoMo and Moov Money.')}
+                  {L('Transactions sécurisées par Mobile Money via Wave, Djamo, Orange Money, MTN MoMo et Moov Money.', 'Secure Mobile Money transactions via Wave, Djamo, Orange Money, MTN MoMo and Moov Money.')}
                 </p>
               </div>
             </div>
@@ -149,7 +149,7 @@ export default function AboutPage() {
             </div>
             <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200/80 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-4 opacity-10 text-9xl font-black text-orange-500 -mt-8 -mr-4">3</div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3 relative z-10">{L('Séquestre sécurisé', 'Secure Escrow')}</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-3 relative z-10">{L('Paiement sécurisé', 'Secure payment')}</h3>
               <p className="text-slate-600 text-sm relative z-10">{L('Les fonds sont conservés en toute sécurité jusqu\'à la réception de la pièce.', 'Funds are securely held until the part is received.')}</p>
             </div>
             <div className="bg-white rounded-3xl p-8 shadow-sm border border-slate-200/80 relative overflow-hidden">

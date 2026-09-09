@@ -27,7 +27,7 @@ export default function CasseAutoVsAutoafriquePage() {
         { id: 'limites-casse', title: 'Les pièges de la casse traditionnelle' },
         { id: 'alternative-autoafrique', title: 'AutoAfrique : l\'occasion contrôlée avec garantie' },
         { id: 'comparatif-detaille', title: 'Tableau comparatif : Casse vs AutoAfrique' },
-        { id: 'paiement-sequestre', title: 'La sécurité du paiement Mobile Money en séquestre' },
+        { id: 'paiement-mobile-money', title: 'La sécurité du paiement Mobile Money' },
       ]}
       contentSections={[
         {
@@ -62,14 +62,14 @@ export default function CasseAutoVsAutoafriquePage() {
             'Transparence des prix : Prix fixe affiché en Francs CFA (XOF) sur AutoAfrique, négociations opaques en casse.',
             'Garantie : Garantie de conformité et droit de retour sous 48h avec diagnostiqueur en ligne.',
             'Traçabilité : Pièces d\'origine contrôlées avec historique et kilométrage d\'origine.',
-            'Paiement sécurisé : Paiement par <a href="/blog/paiement-mobile-money-auto">Mobile Money (Orange Money, MTN MoMo, Wave, Moov, Djamo)</a> conservé en séquestre jusqu\'à la livraison.',
+            'Paiement sécurisé : Paiement par <a href="/blog/paiement-mobile-money-auto">Mobile Money (Orange Money, MTN MoMo, Wave, Moov, Djamo)</a> avec reçu électronique, et garantie 48h jusqu\'à la livraison.',
           ],
         },
         {
-          id: 'paiement-sequestre',
-          heading: 'La sécurité du paiement Mobile Money en séquestre',
+          id: 'paiement-mobile-money',
+          heading: 'La sécurité du paiement Mobile Money',
           body: [
-            'Avec le système de séquestre (escrow) d\'AutoAfrique via <a href="/paiement">nos partenaires Mobile Money</a>, votre argent reste protégé. Le vendeur n\'est payé que lorsque vous avez reçu la pièce et confirmé sa conformité.',
+            "Avec le paiement Mobile Money d'AutoAfrique via <a href='/paiement'>nos partenaires</a>, chaque transaction laisse une trace : un reçu électronique vous est remis, et les pièces d'occasion contrôlée sont garanties 48 heures pour vérifier leur conformité.",
             'Cette garantie élimine tout risque d\'arnaque et assure une confiance totale pour l\'achat de pièces détachées auto avec <a href="/livraison">livraison rapide à Abidjan</a> et dans toute la Côte d\'Ivoire.',
           ],
         },

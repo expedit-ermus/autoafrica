@@ -113,7 +113,7 @@ export default async function Image() {
             marginTop: "40px",
           }}
         >
-          {["📖 Guides d'achat", "🔧 Entretien Véhicules", "📱 Paiement Séquestre", "🚚 Livraison 24h"].map((tag) => (
+          {["📖 Guides d'achat", "🔧 Entretien Véhicules", "📱 Paiement Mobile Money", "🚚 Livraison 24h"].map((tag) => (
             <div
               key={tag}
               style={{

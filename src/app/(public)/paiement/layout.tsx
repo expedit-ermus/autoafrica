@@ -5,14 +5,14 @@ import { BreadcrumbStructuredData } from '@/components/StructuredData';
 export const metadata: Metadata = {
   title: 'Paiement Mobile Money — Pièces auto Abidjan',
   description:
-    'Payez vos pièces auto en toute sécurité par Wave, Orange Money, MTN MoMo, Moov Money ou Djamo Visa à Abidjan. Système de séquestre et reçu électronique inclus.',
+    'Payez vos pièces auto en toute sécurité par Wave, Orange Money, MTN MoMo, Moov Money ou Djamo Visa à Abidjan. Reçu électronique inclus.',
   alternates: {
     canonical: `${SITE_URL}/paiement`,
   },
   openGraph: {
     title: 'Paiement Mobile Money sécurisé — AutoAfrique Abidjan',
     description:
-      'Wave, Orange Money, MTN MoMo, Moov Money, Djamo : payez vos pièces détachées auto à Abidjan avec séquestre sécurisé.',
+      'Wave, Orange Money, MTN MoMo, Moov Money, Djamo : payez vos pièces détachées auto à Abidjan en quelques minutes.',
     url: `${SITE_URL}/paiement`,
     type: 'website',
   },

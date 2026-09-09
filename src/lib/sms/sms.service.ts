@@ -15,7 +15,7 @@ export class SmsService {
    */
   async sendOrderConfirmation(phone: string, orderNumber: string, amount: number): Promise<boolean> {
     const formattedAmount = new Intl.NumberFormat('fr-FR').format(amount);
-    const message = `AutoAfrique : Votre commande #${orderNumber} d'un montant de ${formattedAmount} FCFA a été reçue et placée sous séquestre sécurisé. Suivez votre colis sur https://autoafrique.ci/dashboard/orders`;
+    const message = `AutoAfrique : Votre commande #${orderNumber} d'un montant de ${formattedAmount} FCFA a été reçue. Suivez votre colis sur https://autoafrique.ci/dashboard/orders`;
     
     return this.sendSms({ to: phone, message, type: 'ORDER_CONFIRMED' });
   }

@@ -59,10 +59,10 @@ export default function LivraisonPiecesGareRoutierePage() {
         },
         {
           id: 'suivi-securite',
-          heading: 'Traçabilité et déblocage sécurisé par séquestre',
+          heading: 'Traçabilité et garantie à la réception',
           body: [
             'Pour éviter les litiges de non-réception, le vendeur prend en photo le reçu de dépôt en gare avec le numéro de colis et le télécharge sur AutoAfrique. L\'acheteur est automatiquement prévenu par SMS et notification WhatsApp.',
-            'À la réception en gare, l\'acheteur dispose de la <a href="/retours">garantie conformité 48h</a> pour tester la pièce. Dès validation, le paiement par <a href="/blog/paiement-mobile-money-auto">séquestre Mobile Money</a> est immédiatement débloqué au vendeur via <a href="/paiement">nos partenaires Wave, Orange Money et MTN</a>.',
+            "À la réception en gare, l'acheteur dispose de la <a href='/retours'>garantie conformité 48h</a> pour tester la pièce. Le règlement s'effectue par <a href='/blog/paiement-mobile-money-auto'>Mobile Money</a> via <a href='/paiement'>Wave, Orange Money et MTN</a>.",
           ],
         },
         {
@@ -90,7 +90,7 @@ export default function LivraisonPiecesGareRoutierePage() {
         {
           slug: 'paiement-mobile-money-auto',
           title: 'Acheter ses pièces auto par Mobile Money à Abidjan',
-          excerpt: 'Le paiement séquestre protège votre argent jusqu\'à réception de la pièce.',
+          excerpt: 'Le reçu électronique trace votre achat jusqu\'à réception de la pièce.',
           category: 'Paiement',
         },
         {

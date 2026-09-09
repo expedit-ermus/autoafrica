@@ -21,7 +21,7 @@ const faqSeller = [
   },
   {
     question: 'Comment suis-je payé lors d\'une vente ?',
-    answer: 'Les paiements sont sécurisés par séquestre Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money). Les fonds sont débloqués sur votre compte dès réception et validation de la pièce.',
+    answer: 'Les paiements se font par Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money). Les fonds sont débloqués sur votre compte dès réception et validation de la pièce.',
   },
 ];
 
@@ -85,9 +85,9 @@ export default function DevenirVendeurPage() {
               <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-800 font-extrabold flex items-center justify-center text-2xl mb-4">
                 🛡️
               </div>
-              <h3 className="font-extrabold text-gray-900 text-lg mb-2">Séquestre Mobile Money Garanti</h3>
+              <h3 className="font-extrabold text-gray-900 text-lg mb-2">Paiement Mobile Money</h3>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Fini les impayés et les fausses promesses. L&apos;argent est bloqué par séquestre Wave / Djamo / Orange Money avant le départ de la pièce.
+                Encaissez directement par Wave, Djamo, Orange Money, MTN MoMo ou Moov Money, avec un reçu électronique à chaque vente.
               </p>
             </div>
 
@@ -113,7 +113,7 @@ export default function DevenirVendeurPage() {
               Extension Chrome AutoAfrique
             </h2>
             <p className="text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Scannez les demandes de pièces directement sur WhatsApp Web, consultez les stocks OEM en temps réel et générez des devis avec lien de paiement séquestre Mobile Money en 1 clic.
+              Scannez les demandes de pièces directement sur WhatsApp Web, consultez les stocks OEM en temps réel et générez des devis avec lien de paiement Mobile Money en 1 clic.
             </p>
           </div>
           <div className="shrink-0 flex flex-col sm:flex-row items-center gap-3">

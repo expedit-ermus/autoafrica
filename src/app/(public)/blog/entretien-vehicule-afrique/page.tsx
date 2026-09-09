@@ -72,7 +72,7 @@ export default function EntretienVehiculeAfriquePage() {
           heading: 'Où trouver ses pièces de rechange de qualité ?',
           body: [
             'Le marché regorge de contrefaçons qui endommagent votre véhicule. Sur le <a href="/catalogue">catalogue AutoAfrique</a>, nous couvrons les marques les plus populaires en Côte d\'Ivoire : <a href="/marques/toyota">Toyota</a>, <a href="/marques/suzuki">Suzuki</a>, <a href="/marques/peugeot">Peugeot</a>, <a href="/marques/renault">Renault</a>, <a href="/marques/hyundai">Hyundai</a> et <a href="/marques/nissan">Nissan</a>.',
-            'Chaque pièce d\'occasion mise en ligne est inspectée et bénéficie de notre <a href="/retours">garantie de conformité 48h</a>, avec paiement sécurisé par <a href="/blog/paiement-mobile-money-auto">Mobile Money en séquestre</a>.',
+            'Chaque pièce d\'occasion mise en ligne est inspectée et bénéficie de notre <a href="/retours">garantie de conformité 48h</a>, avec paiement sécurisé par <a href="/blog/paiement-mobile-money-auto">Mobile Money</a>.',
           ],
         },
         {
@@ -106,7 +106,7 @@ export default function EntretienVehiculeAfriquePage() {
         {
           slug: 'paiement-mobile-money-auto',
           title: 'Mobile Money et pièces auto : payer en toute sécurité',
-          excerpt: 'Wave, Orange Money, MTN MoMo : comment le séquestre Mobile Money protège vendeurs et acheteurs.',
+          excerpt: 'Wave, Orange Money, MTN MoMo : payer ses pièces détachées depuis son téléphone.',
           category: 'Paiement',
         },
       ]}

@@ -1381,3 +1381,38 @@ Un commentaire en fin de workflow conserve la trace de ce qui existait et de ce 
 **Point de vigilance assume** : la CI signale desormais, elle ne bloque pas. Un code dont les tests echouent partira quand meme en production. C'est l'etat de fait depuis toujours ; il est simplement documente au lieu d'etre masque par un job en echec.
 
 **Impact** : `.github/workflows/ci-cd.yml`, `docs/23-DEPLOIEMENT.md`.
+
+---
+
+## D64 : Retrait du sequestre, le paiement se fait par Mobile Money
+
+**Date** : 09/09/2026 — decision du proprietaire du projet, prise apres l'audit du parcours d'achat.
+
+### Ce que l'audit avait etabli
+
+Le site promettait partout un paiement sous sequestre : fonds bloques sur un compte de cantonnement, vendeur paye seulement apres validation de la piece, remboursement integral en cas de probleme. **Cette fonctionnalite n'a jamais existe.**
+
+- `PaymentTransactionStatus` ne comporte aucune valeur `HELD`. Le tableau de bord calculait pourtant `escrowAmount` en filtrant les paiements sur ce statut, et la page paiements exposait un onglet « Sequestre » filtrant dessus : deux affichages qui valaient toujours zero, sur un statut que la base ne peut pas produire.
+- Aucun code ne bloque, ne conserve ni ne libere de fonds.
+
+Le sequestre etait donc une promesse d'interface sans implementation — meme classe de defaut que les notes fabriquees de D61, mais portant sur l'argent et sur un site publiquement indexe.
+
+### Decision
+
+Le sequestre est retire de toute l'application. Le paiement annonce est le paiement Mobile Money, ce qui correspond aux moyens reellement proposes : Wave, Orange Money, MTN MoMo, Moov Money, Djamo.
+
+Ce qui remplace la promesse de sequestre, quand une garantie devait etre mentionnee, est ce qui existe reellement : le **recu electronique** emis a chaque transaction et la **garantie 48h** sur les pieces d'occasion controlee, deja documentee dans `/retours`.
+
+**Portee** : 34 fichiers, une centaine d'occurrences. Pages publiques (`/paiement`, `/a-propos`, `/devenir-vendeur`, `/tarifs`, fiches pieces), composants (`LandingPage`, `Header`, `Footer`, `PromoBanner`, `RoleServicesHub`, `CatalogPage`, `PieceDetailCTA`, `UssdPaymentFlow`, `VtcCircuitCourtSection`), tableau de bord (panier, accueil, paiements, aide), huit articles de blog dont un entierement consacre au sujet, `i18n.ts`, le SMS de confirmation de commande, les images Open Graph, et les libelles des tests E2E.
+
+**Code mort supprime au passage** : l'onglet « Sequestre » de `/dashboard/payments` et ses calculs (`held`, `escrowVolume`), ainsi que `escrowAmount` sur `/dashboard`. Tous portaient sur le statut `HELD` inexistant.
+
+L'article `/blog/paiement-mobile-money-auto`, dont la section centrale expliquait le fonctionnement du sequestre, est reecrit autour du paiement Mobile Money reel. Son URL est conservee : elle porte deja sur le Mobile Money, pas sur le sequestre. L'image `sequestre-mobile-money.jpg` est renommee `paiement-mobile-money.jpg`.
+
+### Ce que cela ne corrige pas
+
+**Le tunnel de paiement continue d'annoncer un succes sans rien encaisser.** `processPayment` dans `/dashboard/cart` appelle `POST /api/v1/orders` et rien d'autre : aucune requete vers l'API de paiement, aucun enregistrement `Payment` cree, et la commande reste a `paymentStatus: UNPAID` pendant que l'acheteur lit « Paiement valide avec succes ». Les adaptateurs Mobile Money restent par ailleurs des simulateurs (`Math.random()`, aucun appel reseau).
+
+Retirer le sequestre supprime une promesse qui n'existait pas ; cela ne rend pas le paiement reel. Ce point reste ouvert et demande un arbitrage distinct : couper l'acces au tunnel tant que le paiement n'encaisse pas, cabler l'API de paiement existante, ou integrer reellement CinetPay a l'initiation.
+
+**Verifications** : eslint 0 erreur, `tsc --noEmit` 0 erreur, 398/398 tests unitaires, build de production reussi, budgets de bundle respectes, 25/25 tests E2E.

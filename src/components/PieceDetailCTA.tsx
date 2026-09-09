@@ -105,7 +105,7 @@ export default function PieceDetailCTA({
         <span>💬</span> Contacter le Vendeur sur WhatsApp
       </a>
 
-      {/* Action 2 : Commander avec Séquestre Mobile Money */}
+      {/* Action 2 : Commander avec paiement Mobile Money */}
       <button
         type="button"
         onClick={handleAddToCartAndCheckout}
@@ -113,7 +113,7 @@ export default function PieceDetailCTA({
         className="w-full py-3.5 px-6 bg-gray-900 hover:bg-gray-800 text-white font-extrabold text-sm rounded-2xl flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer disabled:opacity-50"
       >
         <span>🛒</span>
-        {loading ? 'Préparation de la commande...' : 'Commander avec Séquestre Mobile Money'}
+        {loading ? 'Préparation de la commande...' : 'Commander avec Mobile Money'}
       </button>
 
       {/* Action 3 : Alerte Réassort */}
@@ -134,7 +134,7 @@ export default function PieceDetailCTA({
 
       {/* Payment Logos Bar */}
       <div className="pt-2 flex flex-col items-center gap-1.5 border-t border-gray-100">
-        <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Paiements par Séquestre Sécurisé :</span>
+        <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wide">Paiements Mobile Money :</span>
         <PaymentLogosGroup className="flex flex-wrap items-center justify-center gap-2" />
       </div>
     </div>

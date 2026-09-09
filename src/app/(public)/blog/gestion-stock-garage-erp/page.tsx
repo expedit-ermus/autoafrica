@@ -62,7 +62,7 @@ export default function GestionStockGarageErpPage() {
           heading: 'Liaison directe avec devis, factures et encaissement Mobile Money',
           body: [
             'Dans un flux de travail moderne, la pièce sortie du stock est automatiquement ajoutée à l\'ordre de réparation ou à notre <a href="/estimation-devis">estimateur de devis en ligne</a>. Dès que le devis est validé, la pièce est décomptée de l\'inventaire.',
-            'La facture finale générée inclut un QR code de paiement <a href="/blog/paiement-mobile-money-auto">Mobile Money (Wave, Orange Money, MTN MoMo)</a> avec <a href="/paiement">séquestre sécurisé</a> pour un encaissement direct et garanti.',
+            'La facture finale générée inclut un QR code de paiement <a href="/blog/paiement-mobile-money-auto">Mobile Money (Wave, Orange Money, MTN MoMo)</a> pour un encaissement direct sur votre compte marchand.',
           ],
         },
         {
@@ -88,7 +88,7 @@ export default function GestionStockGarageErpPage() {
         {
           slug: 'paiement-mobile-money-auto',
           title: 'Acheter ses pièces auto par Mobile Money à Abidjan',
-          excerpt: 'Wave, Orange Money, MTN MoMo : comment le séquestre protège les transactions.',
+          excerpt: 'Wave, Orange Money, MTN MoMo : payer ses pièces détachées depuis son téléphone.',
           category: 'Paiement',
         },
         {

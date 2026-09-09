@@ -81,7 +81,7 @@ export default function CartPage() {
   const [checking, setChecking] = useState(false);
   const [selectedZone, setSelectedZone] = useState('cocody');
 
-  // Modal de paiement Mobile Money Séquestre
+  // Modal de paiement Mobile Money
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedOperator, setSelectedOperator] = useState('wave');
   const [phone, setPhone] = useState('');
@@ -145,7 +145,7 @@ export default function CartPage() {
       window.dispatchEvent(new Event('aa-cart-updated'));
       setPaymentStep('success');
       track('payment_success', { amount: total, provider: selectedOperator });
-      addToast('success', L(`Paiement Séquestre ${selectedOperator.toUpperCase()} validé avec succès !`, `Escrow Payment ${selectedOperator.toUpperCase()} successfully validated!`));
+      addToast('success', L(`Paiement ${selectedOperator.toUpperCase()} validé avec succès !`, `${selectedOperator.toUpperCase()} payment successfully validated!`));
 
       setTimeout(() => {
         setShowPaymentModal(false);
@@ -259,7 +259,7 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {/* Résumé de Commande & CTA Séquestre */}
+              {/* Résumé de Commande & CTA paiement */}
               <div className="lg:col-span-4 space-y-4">
                 <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
                   <h3 className="text-base font-extrabold text-slate-900 pb-3 border-b border-slate-100">
@@ -303,7 +303,7 @@ export default function CartPage() {
                   <div className="p-3 bg-orange-50 border border-orange-100 rounded-xl flex items-start gap-2">
                     <span className="text-orange-500 mt-0.5">🔒</span>
                     <p className="text-xs text-orange-900 font-medium">
-                      {L('Fonds bloqués en séquestre jusqu\'à vérification de conformité par votre mécanicien.', 'Funds held in escrow until compliance check by your mechanic.')}
+                      {L("Pièces d'occasion contrôlée garanties 48 heures, le temps de vérifier la conformité avec votre mécanicien.", "Certified used parts carry a 48-hour warranty, so your mechanic can check the fit.")}
                     </p>
                   </div>
 
@@ -346,7 +346,7 @@ export default function CartPage() {
                 <span className="text-2xl">🔒</span>
                 <div>
                   <h3 className="font-extrabold text-slate-900 text-base">
-                    {L('Paiement Séquestre Mobile Money', 'Mobile Money Escrow Payment')}
+                    {L('Paiement Mobile Money', 'Mobile Money Payment')}
                   </h3>
                   <p className="text-xs text-slate-500">{L('Montant total :', 'Total amount:')} {total.toLocaleString()} FCFA</p>
                 </div>
@@ -448,7 +448,7 @@ export default function CartPage() {
                 <div>
                   <h4 className="font-extrabold text-slate-900 text-base">{L('Validation USSD Mobile Money', 'Mobile Money USSD Validation')}</h4>
                   <p className="text-xs text-slate-500 mt-1">
-                    {L('Un prompt USSD va être envoyé au', 'A USSD prompt will be sent to')} <span className="font-bold text-slate-900">+225 {phone}</span> {L('pour bloquer', 'to block')} {total.toLocaleString()} FCFA {L('en séquestre.', 'in escrow.')}
+                    {L('Un prompt USSD va être envoyé au', 'A USSD prompt will be sent to')} <span className="font-bold text-slate-900">+225 {phone}</span> {L('pour régler', 'to pay')} {total.toLocaleString()} FCFA.
                   </p>
                 </div>
 
@@ -480,7 +480,7 @@ export default function CartPage() {
                     onClick={processPayment}
                     className="flex-2 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-slate-900/20 cursor-pointer disabled:opacity-70"
                   >
-                    {checking ? L('Validation Séquestre...', 'Validating Escrow...') : L('Confirmer le paiement', 'Confirm Payment')}
+                    {checking ? L('Validation en cours...', 'Validating...') : L('Confirmer le paiement', 'Confirm Payment')}
                   </button>
                 </div>
               </div>
@@ -491,7 +491,7 @@ export default function CartPage() {
                 <div className="w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg shadow-green-500/30 animate-bounce">
                   ✓
                 </div>
-                <h4 className="font-extrabold text-slate-900 text-lg">{L('Paiement Séquestre Confirmé !', 'Escrow Payment Confirmed!')}</h4>
+                <h4 className="font-extrabold text-slate-900 text-lg">{L('Paiement Confirmé !', 'Payment Confirmed!')}</h4>
                 <p className="text-xs text-slate-500">
                   {L('Votre commande a été transmise au vendeur. Redirection vers le suivi de commande...', 'Your order has been sent to the seller. Redirecting to order tracking...')}
                 </p>

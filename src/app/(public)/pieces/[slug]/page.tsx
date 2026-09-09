@@ -143,7 +143,7 @@ export default async function PieceDetailPage({ params }: Props) {
               </p>
             </div>
 
-            {/* CTA Contact Vendeur & Paiement Séquestre Interactif */}
+            {/* CTA Contact Vendeur & Paiement Mobile Money */}
             <PieceDetailCTA
               productId={product.id}
               title={product.title}

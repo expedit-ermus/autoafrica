@@ -62,7 +62,7 @@ const ussdMenus = [
     title: 'Aide',
     options: [
       { label: 'Comment payer ?', action: 'how_to_pay' },
-      { label: 'Séquestre', action: 'escrow_info' },
+      { label: 'Sécurité', action: 'payment_info' },
       { label: 'Contacter support', action: 'support' },
       { label: '0. Retour', action: 'home' },
     ],
@@ -102,7 +102,7 @@ export default function UssdPaymentFlow() {
     } else if (action === 'balance') {
       setTxComplete(true);
       setTxRef(`BAL-${timestamp}`);
-    } else if (action === 'how_to_pay' || action === 'escrow_info' || action === 'support') {
+    } else if (action === 'how_to_pay' || action === 'payment_info' || action === 'support') {
       setTxComplete(true);
     }
   }, []);

@@ -7,11 +7,11 @@ import { useToast } from '@/contexts/ToastContext';
 
 const faq = [
   { q: 'Comment ajouter une pièce à mon inventaire ?', a: 'Allez dans l\'onglet Inventaire, cliquez sur "+ Ajouter", remplissez les informations (titre, marque, catégorie, prix, stock) et enregistrez. Votre pièce apparaîtra immédiatement sur le marketplace.', category: 'Inventaire' },
-  { q: 'Comment fonctionne le paiement Mobile Money ?', a: 'Lorsqu\'un client passe commande, il choisit Orange Money, MTN MoMo, Wave ou Moov Money. Le paiement est sécurisé en séquestre et libéré après confirmation de livraison.', category: 'Paiement' },
+  { q: "Comment fonctionne le paiement Mobile Money ?", a: "Lorsqu'un client passe commande, il choisit Orange Money, MTN MoMo, Wave ou Moov Money. Le paiement se fait depuis son téléphone et un reçu électronique est généré.", category: 'Paiement' },
   { q: 'Comment gérer mes commandes ?', a: 'Dans l\'onglet Commandes, vous pouvez confirmer, marquer comme payée, expédier ou livrer chaque commande. Un suivi visuel montre l\'avancement de chaque commande.', category: 'Commandes' },
   { q: 'Quels pays sont supportés ?', a: 'AutoAfrique couvre 10 pays : Côte d\'Ivoire, Sénégal, Mali, Burkina Faso, Niger, Bénin, Togo, Guinée-Bissau, Nigeria et Ghana. Les paiements Mobile Money sont disponibles selon les opérateurs locaux.', category: 'Général' },
   { q: 'Comment contacter un vendeur ?', a: 'Sur chaque fiche produit, vous trouverez les boutons WhatsApp et Appel pour contacter directement le vendeur. Vous pouvez aussi utiliser le chat intégré.', category: 'Marketplace' },
-  { q: 'Comment fonctionne le séquestre (escrow) ?', a: 'Le paiement est sécurisé par un système de séquestre. Les fonds du client sont gelés jusqu\'à ce que la livraison soit confirmée. En cas de problème, un litige peut être ouvert.', category: 'Paiement' },
+  { q: "Que se passe-t-il si la pièce ne convient pas ?", a: "Les pièces d'occasion contrôlée sont garanties 48 heures : le client peut les vérifier avec son mécanicien. En cas de problème, un litige peut être ouvert depuis la commande.", category: 'Paiement' },
   { q: 'Puis-je annuler une commande ?', a: 'Oui, tant que la commande n\'est pas expédiée. Les commandes en attente peuvent être annulées directement. Pour les commandes expédiées, contactez le support.', category: 'Commandes' },
   { q: 'Comment mettre à jour mon stock en masse ?', a: 'Dans l\'onglet Inventaire, cochez les produits concernés, puis cliquez sur "Ajuster stock" dans la barre d\'actions. Définissez la nouvelle quantité et appliquez.', category: 'Inventaire' },
 ];

@@ -48,7 +48,7 @@ export const translations = {
       },
       payments: {
         title: 'Paiements Mobile Money',
-        desc: 'Acceptez Wave, Djamo, Orange Money, MTN et Moov Money. Paiements sécurisés avec système escrow intégré.',
+        desc: 'Acceptez Wave, Djamo, Orange Money, MTN et Moov Money. Paiements Mobile Money sécurisés, reçu électronique à chaque transaction.',
       },
       crm: {
         title: 'CRM Intégré',
@@ -106,7 +106,7 @@ export const translations = {
           'Commission marketplace 3%',
           'Suivi approvisionnement & Conteneurs',
           'Comptabilité & Rapports financiers',
-          'Escrow & Versements Mobile Money instantanés',
+          'Versements Mobile Money instantanés',
           'Manager dédié 7j/7',
         ],
         cta: 'Passer à la version Pro',
@@ -168,7 +168,7 @@ export const translations = {
       negotiate: 'Négocier',
       contact: 'Contacter le vendeur',
       verified: 'Vendeur vérifié',
-      escrow: 'Paiement sécurisé',
+      mobileMoney: 'Paiement Mobile Money',
       inspection: 'Contrôle qualité OK',
     },
     auth: {
@@ -272,7 +272,7 @@ export const translations = {
       },
       payments: {
         title: 'Mobile Money Payments',
-        desc: 'Accept Orange Money, MTN, Wave, and Moov Money. Secure payments with built-in escrow system.',
+        desc: 'Accept Orange Money, MTN, Wave, and Moov Money. Secure Mobile Money payments, with an electronic receipt for every transaction.',
       },
       crm: {
         title: 'Integrated CRM',
@@ -330,7 +330,7 @@ export const translations = {
           '3% marketplace commission',
           'Supply chain & Container tracking',
           'Accounting & Financial reporting',
-          'Escrow & Instant Mobile Money payouts',
+          'Instant Mobile Money payouts',
           'Dedicated Manager (7 days/week)',
         ],
         cta: 'Upgrade to Pro',
@@ -392,7 +392,7 @@ export const translations = {
       negotiate: 'Negotiate',
       contact: 'Contact Seller',
       verified: 'Verified Seller',
-      escrow: 'Secure Payment',
+      mobileMoney: 'Mobile Money payment',
       inspection: 'Quality Check OK',
     },
     auth: {

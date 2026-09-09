@@ -175,7 +175,7 @@ export default function VtcCircuitCourtSection() {
             </div>
             <div>
               <h4 className="text-base md:text-lg font-black text-white">
-                {L('Garantie Totale SAV : Pièce ET Main d\'Œuvre Couvertes (Séquestre Mobile Money)', 'Full Warranty: Parts AND Labor Covered (Mobile Money Escrow)')}
+                {L('Garantie Totale SAV : Pièce ET Main d\'Œuvre Couvertes', 'Full Warranty: Parts AND Labor Covered')}
               </h4>
               <p className="text-xs md:text-sm text-slate-300 mt-1 max-w-xl">
                 {L(

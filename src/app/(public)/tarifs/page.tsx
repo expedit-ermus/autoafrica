@@ -192,7 +192,7 @@ export default function TarifsPage() {
             <div className="w-10 h-10 rounded-lg bg-orange-100 text-orange-700 flex items-center justify-center font-bold text-xl mb-3">
               📱
             </div>
-            <h3 className="font-bold text-slate-900 text-base">Mobile Money & Escrow</h3>
+            <h3 className="font-bold text-slate-900 text-base">Mobile Money</h3>
             <p className="text-xs text-slate-600 mt-1">
               Encaissez par Orange Money, MTN MoMo et Wave avec déblocage sécurisé des fonds à la livraison.
             </p>

@@ -24,7 +24,7 @@ const trustFeatures = [
   {
     icon: '📱',
     gradient: 'from-blue-600 to-cyan-500',
-    title: { fr: 'Séquestre Mobile Money', en: 'Mobile Money Escrow' },
+    title: { fr: 'Paiement Mobile Money', en: 'Mobile Money payment' },
     desc: { fr: 'Wave, Orange Money, MTN MoMo, Moov, Djamo & CB', en: 'Wave, Orange Money, MTN MoMo, Moov, Djamo & Cards' },
     href: '/paiement',
   },
@@ -247,8 +247,8 @@ export default function LandingPage() {
               </p>
               <p>
                 {L(
-                  'AutoAfrique standardise le marché : chaque pièce d\'occasion contrôlée dispose d\'un prix fixe affiché, d\'une facture conforme et d\'un séquestre Mobile Money. Votre argent reste bloqué tant que vous n\'avez pas reçu et validé la pièce avec votre mécanicien.',
-                  'AutoAfrique standardizes the market: every certified part features a transparent fixed price, an official invoice, and Mobile Money escrow.'
+                  "AutoAfrique standardise le marché : chaque pièce d'occasion contrôlée dispose d'un prix fixe affiché, d'une facture conforme et d'un paiement Mobile Money. Les pièces d'occasion contrôlée sont garanties 48 heures, le temps de les vérifier avec votre mécanicien.",
+                  'AutoAfrique standardizes the market: every certified part features a transparent fixed price, an official invoice, and Mobile Money payment.'
                 )}
               </p>
             </div>
@@ -324,8 +324,8 @@ export default function LandingPage() {
                 </dt>
                 <dd className="text-sm md:text-base text-slate-600 leading-relaxed">
                   {L(
-                    'Le paiement se fait par Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money), directement et en toute sécurité grâce au compte séquestre qui protège vos fonds jusqu\'à la validation du montage.',
-                    'Payment is made by Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money), directly and securely through an escrow account that protects your funds until parts are tested.'
+                    'Le paiement se fait par Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money), directement depuis votre téléphone, avec un reçu électronique à chaque transaction et une garantie de 48 heures après réception de la pièce.',
+                    'Payment is made by Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money), directly from your phone, with an electronic receipt for every transaction and a 48-hour warranty once parts are tested.'
                   )}
                 </dd>
               </div>
@@ -362,8 +362,8 @@ export default function LandingPage() {
               </p>
               <p>
                 {L(
-                  'Que vous soyez garagiste, gestionnaire de flotte VTC ou particulier, trouvez les pièces neuves ou d\'occasion dont vous avez besoin à prix transparents avec séquestre Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov). Livraison express moto en 1h-4h à Abidjan et expédition en 24h-48h par gare routière vers l\'intérieur.',
-                  'Whether you are a mechanic, fleet manager, or individual, find genuine or tested used parts at transparent prices with Mobile Money escrow. Express motorcycle delivery in 1h-4h across Abidjan.'
+                  'Que vous soyez garagiste, gestionnaire de flotte VTC ou particulier, trouvez les pièces neuves ou d\'occasion dont vous avez besoin à prix transparents avec paiement Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov). Livraison express moto en 1h-4h à Abidjan et expédition en 24h-48h par gare routière vers l\'intérieur.',
+                  'Whether you are a mechanic, fleet manager, or individual, find genuine or tested used parts at transparent prices with Mobile Money payment. Express motorcycle delivery in 1h-4h across Abidjan.'
                 )}
               </p>
               <Link href="/a-propos" className="inline-flex items-center gap-1.5 text-orange-600 font-extrabold text-sm sm:text-base hover:underline transition-colors">
@@ -385,8 +385,8 @@ export default function LandingPage() {
           </h2>
           <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto mb-8 leading-relaxed">
             {L(
-              'Digitalisez votre magasin de pièces neuves ou d\'occasion contrôlée à Abidjan et en Afrique de l\'Ouest. Recevez vos commandes avec séquestre Mobile Money garanti.',
-              'Digitize your new or certified used parts shop in Abidjan and West Africa. Receive orders with guaranteed Mobile Money escrow.'
+              'Digitalisez votre magasin de pièces neuves ou d\'occasion contrôlée à Abidjan et en Afrique de l\'Ouest. Recevez vos commandes avec paiement Mobile Money.',
+              'Digitize your new or certified used parts shop in Abidjan and West Africa. Receive orders with Mobile Money payment.'
             )}
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
