@@ -105,7 +105,11 @@ test.describe('Flux critique : achat et paiement Mobile Money', () => {
     await expect(page.getByRole('heading', { level: 1 })).toContainText('Mon Panier');
     await expect(page.getByText(pieceTitle, { exact: false }).first()).toBeVisible();
 
-    // Paiement : operateur, numero, prompt USSD puis code PIN de demonstration.
+    // Paiement : operateur, numero, puis confirmation.
+    //
+    // Plus aucun code PIN n'est demande ici : le panier en reclamait un qu'il
+    // n'envoyait nulle part, ce qui habituait l'acheteur a saisir son code
+    // Mobile Money sur un site tiers. La saisie appartient a l'operateur (D67).
     await page.getByRole('button', { name: /Payer en toute sécurité/i }).click();
     await expect(page.getByText('Paiement Mobile Money')).toBeVisible();
 
@@ -113,9 +117,12 @@ test.describe('Flux critique : achat et paiement Mobile Money', () => {
     await page.getByLabel('Numéro de téléphone Mobile Money').fill('0712345678');
     await page.getByRole('button', { name: /Continuer vers la validation/i }).click();
 
-    await expect(page.getByText(/Validation USSD Mobile Money/i)).toBeVisible();
-    await page.getByLabel('Code PIN Mobile Money').fill('1234');
-    await page.getByRole('button', { name: /Confirmer le paiement/i }).click();
+    await expect(page.getByText(/Confirmer le règlement/i)).toBeVisible();
+    await expect(
+      page.getByLabel('Code PIN Mobile Money'),
+      'aucun code secret ne doit etre demande sur AutoAfrique',
+    ).toHaveCount(0);
+    await page.getByRole('button', { name: /Payer maintenant/i }).click();
 
     await expect(page.getByText(/Paiement Confirmé/i)).toBeVisible({ timeout: 30000 });
 

@@ -87,7 +87,6 @@ export default function CartPage() {
   const [phone, setPhone] = useState('');
   // Opérateur déduit du numéro saisi (null tant que le numéro est incomplet).
   const detectedOperator = detectOperator(phone, 'CI');
-  const [pinCode, setPinCode] = useState('');
   const [paymentStep, setPaymentStep] = useState<'operator' | 'pin' | 'success' | 'order-placed'>('operator');
   // Message renvoye par le fournisseur quand le paiement n aboutit pas.
   const [paymentMessage, setPaymentMessage] = useState<string | null>(null);
@@ -179,6 +178,18 @@ export default function CartPage() {
       });
 
       if (paiement.ok) {
+        const reglement = await paiement.json().catch(() => null);
+        const donnees = reglement?.data ?? reglement;
+
+        // Redirection vers la page de l operateur : l acheteur y saisit son
+        // code chez lui, jamais ici. Rien n est encaisse a ce stade, la
+        // commande ne passera a PAID que sur notification verifiee.
+        if (donnees?.redirectUrl) {
+          track('payment_redirect', { amount: total, provider: selectedOperator });
+          window.location.assign(donnees.redirectUrl);
+          return;
+        }
+
         setPaymentStep('success');
         track('payment_success', { amount: total, provider: selectedOperator });
         addToast('success', L(
@@ -493,25 +504,25 @@ export default function CartPage() {
                   📲
                 </div>
                 <div>
-                  <h4 className="font-extrabold text-slate-900 text-base">{L('Validation USSD Mobile Money', 'Mobile Money USSD Validation')}</h4>
+                  <h4 className="font-extrabold text-slate-900 text-base">{L('Confirmer le règlement', 'Confirm payment')}</h4>
                   <p className="text-xs text-slate-500 mt-1">
-                    {L('Un prompt USSD va être envoyé au', 'A USSD prompt will be sent to')} <span className="font-bold text-slate-900">+225 {phone}</span> {L('pour régler', 'to pay')} {total.toLocaleString()} FCFA.
+                    {L('Vous allez être redirigé vers', 'You will be redirected to')}{' '}
+                    <span className="font-bold text-slate-900">{selectedOperator.toUpperCase()}</span>{' '}
+                    {L('pour régler', 'to pay')} <span className="font-bold text-slate-900">{total.toLocaleString()} FCFA</span>{' '}
+                    {L('depuis le', 'from')} <span className="font-bold text-slate-900">+225 {phone}</span>.
                   </p>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1">
-                    {L('Code PIN de démonstration', 'Demo PIN Code')} (ex: 1234)
-                  </label>
-                  <input aria-label="Code PIN Mobile Money"
-                    type="password"
-                    maxLength={4}
-                    value={pinCode}
-                    onChange={(e) => setPinCode(e.target.value)}
-                    placeholder="••••"
-                    className="w-32 mx-auto text-center text-xl font-bold tracking-widest py-2 border border-slate-300 rounded-xl bg-slate-50 outline-none focus:border-orange-600"
-                  />
-                </div>
+                {/* La saisie du code se fait chez l operateur. Le panier
+                    demandait auparavant un code PIN qu il n envoyait nulle
+                    part : une habitude dangereuse a prendre, et le schema
+                    exact de l hameconnage. */}
+                <p className="text-[11px] text-slate-500 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2">
+                  {L(
+                    'Votre code secret est saisi sur la page de votre opérateur. AutoAfrique ne le voit jamais et ne le conserve pas.',
+                    'Your secret code is entered on your operator page. AutoAfrique never sees or stores it.',
+                  )}
+                </p>
 
                 <div className="flex gap-2">
                   <button
@@ -527,7 +538,7 @@ export default function CartPage() {
                     onClick={processPayment}
                     className="flex-2 py-3 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs rounded-xl shadow-lg shadow-slate-900/20 cursor-pointer disabled:opacity-70"
                   >
-                    {checking ? L('Validation en cours...', 'Validating...') : L('Confirmer le paiement', 'Confirm Payment')}
+                    {checking ? L('Ouverture en cours...', 'Opening...') : L('Payer maintenant', 'Pay now')}
                   </button>
                 </div>
               </div>

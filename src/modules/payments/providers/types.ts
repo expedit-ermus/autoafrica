@@ -26,6 +26,14 @@ export interface InitiatePaymentResult {
   ussdCode?: string
   pinRequired: boolean
   error?: string
+  /**
+   * Page de paiement de l'operateur, ou l'acheteur doit etre redirige.
+   *
+   * Presente quand `status` vaut `pending` : la transaction est ouverte mais
+   * rien n'est encaisse. Seule la notification verifiee vaut encaissement, et
+   * la commande ne doit surtout pas passer a PAID a ce moment.
+   */
+  redirectUrl?: string
 }
 
 export interface PaymentProviderAdapter {

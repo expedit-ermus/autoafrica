@@ -1544,3 +1544,84 @@ photographie authentique. Pneumatique, direction et echappement n'ont pas encore
 de stock, et cinq marques non plus : ce n'est pas un defaut, c'est un catalogue
 jeune. Le sitemap les integrera de lui-meme.
 
+## D67 : Le paiement en ligne est branche sur CinetPay
+
+**Contexte.** D65 avait rendu le tunnel honnete : la commande est enregistree,
+le paiement demande, et l'adaptateur refuse plutot que de fabriquer un succes.
+Restait a encaisser reellement.
+
+**Ce qui existait deja.** Le webhook `/api/v1/payments/webhook` etait solide :
+verification du HMAC `x-token`, rappel de l'API CinetPay qui fait autorite,
+controle du montant et de la devise contre la commande, idempotence, et des
+codes de reponse choisis pour la semantique de rejeu. `lib/cinetpay.ts` portait
+la verification et le controle de statut. Il ne manquait que l'initiation.
+
+**Trois choses ont du etre faites, pas une.**
+
+*L'initiation.* `initiateCinetPayPayment()` ouvre une transaction sur
+`/v2/payment` et renvoie l'URL de la page hebergee. L'identifiant transmis en
+`transaction_id` est celui de notre `Payment` : c'est lui qui revient en
+`cpm_trans_id` et permet au webhook de retrouver la transaction. `notify_url`
+pointe sur notre webhook, `return_url` sur la page de retour.
+
+*La distinction entre ouvrir et encaisser.* C'est le point central, et il ne
+sautait pas aux yeux. `process()` marquait la commande `PAID` des que
+`initiate()` renvoyait un succes — correct pour le simulateur, qui renvoie
+`completed`, faux pour un vrai operateur. Brancher CinetPay sans y toucher
+aurait reproduit le defaut de D65 un cran plus bas : commande payee avant que
+l'acheteur ait seulement saisi son code.
+
+L'adaptateur renvoie donc `status: 'pending'`, jamais `completed`, et
+`process()` s'arrete la : paiement en `PROCESSING`, commande intacte, aucune
+ligne de journal, aucun SMS. Seule la notification verifiee encaisse.
+
+*La suppression de la saisie du code PIN.* Le panier reclamait un code PIN
+Mobile Money — presente comme « de demonstration » — et ne l'envoyait nulle
+part. Collecter un code secret dont on n'a pas l'usage habitue l'acheteur a le
+saisir sur un site tiers : c'est le schema exact de l'hameconnage, sur un site
+publiquement indexe. L'ecran est remplace par un recapitulatif qui dit
+explicitement que le code se saisit chez l'operateur.
+
+**Deux garde-fous refuses en chemin.** Le montant doit etre un multiple de 5 XOF
+chez CinetPay. Arrondir aurait ete commode et aurait change la somme reellement
+debitee a l'acheteur sans qu'il en soit informe : la demande est refusee, aucun
+appel ne part. De meme, sans `NEXT_PUBLIC_APP_URL`, l'initiation est refusee :
+une URL de notification fausse ferait encaisser sans que la commande passe
+jamais a `PAID` — un encaissement muet, pire qu'un echec.
+
+**La page de retour.** `/paiement/retour` lit l'etat reel en base. L'acheteur
+peut revenir avant que la notification n'ait ete traitee : le retour navigateur
+ne prouve rien. Tant que le paiement n'est pas `COMPLETED`, la page dit qu'il est
+en cours de confirmation, jamais qu'il a reussi. `noindex` : page de transaction
+personnelle. L'actualisation est manuelle plutot qu'automatique, pour qu'un
+reseau instable ne declenche pas une rafale de requetes.
+
+**Verifications.** Sept mutations, sept detections : le `pending` retombant dans
+le chemin d'encaissement, l'arrondi silencieux du montant, un `notify_url`
+errone, un code de retour non verifie, l'identifiant de `Payment` non transmis,
+l'adaptateur annoncant `completed`, et le contournement de CinetPay vers le
+simulateur.
+
+Une huitieme mutation a d'abord survecu : mon test de refus utilisait une
+reponse sans URL de paiement, si bien qu'il echouait sur l'URL manquante et non
+sur le code de retour. Il ne prouvait donc pas ce que je croyais. Un test avec
+un code de refus **accompagne** d'une URL a ete ajoute pour isoler ce controle.
+
+eslint 0, `tsc --noEmit` 0, 434/434 tests unitaires, build reussi, budgets
+respectes, 25/25 E2E.
+
+**Ce que cela ne prouve pas, et il faut le dire.** Aucune transaction reelle n'a
+ete passee : je n'ai pas d'identifiants marchands. Les appels a CinetPay sont
+verifies contre des reponses simulees, conformes a la documentation de l'API.
+Le premier paiement reel reste a faire, et c'est lui qui validera le bout de la
+chaine — en particulier le format exact de la notification, deja couvert par les
+tests de D-anterieures mais jamais observe en vrai.
+
+**Pour activer.** Poser `CINETPAY_API_KEY`, `CINETPAY_SITE_ID` et
+`CINETPAY_SECRET_KEY` dans les variables d'environnement Vercel, verifier que
+`NEXT_PUBLIC_APP_URL` porte l'URL publique reelle, et declarer l'URL de
+notification `<NEXT_PUBLIC_APP_URL>/api/v1/payments/webhook` sur le tableau de
+bord CinetPay. Aucun changement de code n'est necessaire : le tunnel s'allume
+des que les variables sont presentes, et retombe sur « commande enregistree »
+si elles disparaissent.
+

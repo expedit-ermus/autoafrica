@@ -106,6 +106,36 @@ export class PaymentsService {
       throw new PaymentError(result.error || 'Payment failed. Please try again.')
     }
 
+    // Une initiation reussie n'est pas un encaissement.
+    //
+    // Chez un vrai operateur, `initiate()` ouvre une transaction et renvoie une
+    // page de paiement : l'argent n'a pas bouge, l'acheteur n'a meme pas encore
+    // saisi son code. Marquer la commande PAID ici reproduirait, un cran plus
+    // bas, le defaut corrige en D65 — annoncer un paiement qui n'a pas eu lieu.
+    //
+    // Seule la notification verifiee par `/api/v1/payments/webhook`, qui rappelle
+    // l'API CinetPay faisant autorite, fait passer le paiement a COMPLETED et la
+    // commande a PAID. C'est aussi elle qui envoie la confirmation.
+    if (result.status === 'pending' || result.status === 'processing') {
+      const enAttente = await prisma.payment.update({
+        where: { id: payment.id },
+        data: {
+          status: PaymentTransactionStatus.PROCESSING,
+          transactionId: result.transactionId,
+          metadata: { provider: provider.name, status: result.status },
+        },
+      })
+
+      return {
+        success: true,
+        pending: true,
+        payment: enAttente,
+        transactionId: result.transactionId,
+        redirectUrl: result.redirectUrl,
+        message: result.message,
+      }
+    }
+
     await prisma.payment.update({
       where: { id: payment.id },
       data: {
@@ -138,7 +168,7 @@ export class PaymentsService {
       method: provider.name,
     })
 
-    return { success: true, payment, transactionId: result.transactionId }
+    return { success: true, pending: false, payment, transactionId: result.transactionId }
   }
 
   async cancel(paymentId: string, userId: string, reason?: string) {

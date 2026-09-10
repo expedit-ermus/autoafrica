@@ -15,6 +15,62 @@ Le paiement Mobile Money est au cœur de la proposition de valeur d'AutoAfrique 
 | Carte | `CARD` | Visa, Mastercard |
 | Espèces | `CASH` | Sur place / paiement à la livraison |
 
+## Le tunnel réel (D67)
+
+L'encaissement passe par la **page de paiement hébergée de CinetPay**. Les quatre
+opérateurs y sont proposés ; l'acheteur choisit le sien et saisit son code
+**chez son opérateur**. AutoAfrique ne voit ni ne conserve aucun code secret.
+
+Enchaînement :
+
+1. `POST /api/v1/orders` crée la commande.
+2. `POST /api/v1/payments` crée un `Payment` en base, puis `initiate()` ouvre une
+   transaction CinetPay et renvoie une `redirectUrl`.
+3. Le panier redirige l'acheteur vers cette page.
+4. CinetPay notifie `POST /api/v1/payments/webhook`. Le HMAC `x-token` est
+   vérifié, puis l'API CinetPay est **rappelée** : c'est elle qui fait autorité,
+   jamais le corps reçu. Montant et devise sont comparés à la commande.
+5. C'est **seulement là** que le paiement passe à `COMPLETED`, la commande à
+   `PAID`, et que partent la notification et le SMS.
+6. L'acheteur revient sur `/paiement/retour?paiement=<id>`, qui lit l'état réel
+   en base.
+
+### Ce qu'une initiation réussie ne veut pas dire
+
+`initiate()` renvoie `status: 'pending'`, **jamais** `completed`. Une initiation
+ouvre une transaction : l'argent n'a pas bougé, l'acheteur n'a pas encore saisi
+son code. `payments.service` ne touche donc ni au statut de la commande ni au
+journal à ce moment.
+
+C'est le point le plus facile à casser du module : `process()` marque la commande
+`PAID` sur un `completed`, et un adaptateur qui renverrait `completed` à
+l'initiation encaisserait dans le vide — le défaut de D65, un cran plus bas. Deux
+tests le verrouillent, l'un sur l'adaptateur, l'autre sur le service.
+
+### Sans identifiants marchands
+
+Si `CINETPAY_API_KEY` ou `CINETPAY_SITE_ID` manquent, le paiement en ligne est
+désactivé : la commande est enregistrée et l'acheteur lit « Commande enregistrée,
+le vendeur vous contactera ». Rien n'est jamais annoncé comme payé.
+
+`NEXT_PUBLIC_APP_URL` construit `notify_url` : une valeur fausse ferait encaisser
+sans que la commande passe jamais à `PAID`. L'URL à déclarer côté CinetPay est
+`<NEXT_PUBLIC_APP_URL>/api/v1/payments/webhook`.
+
+### Contrainte de montant
+
+CinetPay n'accepte que des montants **multiples de 5 XOF**. Un total non conforme
+est refusé, jamais arrondi : arrondir changerait la somme réellement débitée à
+l'acheteur sans qu'il en soit informé.
+
+### Aucun code PIN sur AutoAfrique
+
+Le panier demandait autrefois un code PIN Mobile Money — présenté comme « de
+démonstration » — qu'il n'envoyait nulle part. Habituer un acheteur à saisir son
+code secret sur un site tiers est le schéma exact de l'hameçonnage. La saisie
+appartient à l'opérateur ; un test E2E vérifie qu'aucun champ de ce type ne
+réapparaît.
+
 ## Architecture
 
 Le module `src/modules/payments` implémente un pattern adapter : chaque fournisseur est un `PaymentProviderAdapter` enregistré dans un registre.
@@ -38,6 +94,8 @@ export interface InitiatePaymentResult {
   ussdCode?: string
   pinRequired: boolean
   error?: string
+  /** Page de paiement de l'opérateur. Présente quand `status` vaut `pending`. */
+  redirectUrl?: string
 }
 
 export interface PaymentProviderAdapter {

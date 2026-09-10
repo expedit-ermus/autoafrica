@@ -112,6 +112,59 @@ describe('PaymentsService', () => {
       expect(result.transactionId).toBe('txn-1');
     });
 
+    /**
+     * Une initiation reussie n'est pas un encaissement.
+     *
+     * Chez un vrai operateur, `initiate()` ouvre une transaction et renvoie une
+     * page de paiement : l'acheteur n'a meme pas encore saisi son code. Marquer
+     * la commande PAID a ce moment reproduirait, un cran plus bas, le defaut
+     * corrige en D65.
+     */
+    it('ne marque pas la commande payee sur une simple ouverture de transaction', async () => {
+      mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'user-1', status: 'PENDING', currency: 'XOF', orderNumber: 'AAF-1', totalAmount: 15000 });
+      mockProviders.isSupported.mockReturnValue(true);
+      mockProviders.get.mockReturnValue(
+        makeProvider({
+          status: 'pending',
+          transactionId: 'tok-1',
+          redirectUrl: 'https://checkout.cinetpay.com/tok-1',
+        } as never),
+      );
+      mockPrisma.payment.create.mockResolvedValue({ id: 'pay-1', amount: 15000 });
+
+      const result = await paymentsService.process({ orderId: 'o1', method: 'orange_money', phone: '+225', amount: 15000 }, 'user-1');
+
+      // Le point qui compte : aucune commande passee a PAID.
+      const misesAJourCommande = mockPrisma.order.update.mock.calls;
+      expect(misesAJourCommande, 'la commande ne doit pas etre touchee').toHaveLength(0);
+
+      // Le paiement reste en cours, jamais COMPLETED.
+      const statuts = mockPrisma.payment.update.mock.calls.map(
+        (appel: unknown[]) => (appel[0] as { data?: { status?: string } })?.data?.status,
+      );
+      expect(statuts).not.toContain('COMPLETED');
+      expect(statuts).toContain('PROCESSING');
+
+      expect(result.pending).toBe(true);
+      expect(result.redirectUrl).toBe('https://checkout.cinetpay.com/tok-1');
+    });
+
+    it('ne confirme rien par SMS tant que le paiement n est qu ouvert', async () => {
+      mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'user-1', status: 'PENDING', currency: 'XOF', orderNumber: 'AAF-1', totalAmount: 15000 });
+      mockProviders.isSupported.mockReturnValue(true);
+      mockProviders.get.mockReturnValue(
+        makeProvider({ status: 'pending', redirectUrl: 'https://checkout.cinetpay.com/tok-1' } as never),
+      );
+      mockPrisma.payment.create.mockResolvedValue({ id: 'pay-1', amount: 15000 });
+
+      await paymentsService.process({ orderId: 'o1', method: 'orange_money', phone: '+225', amount: 15000 }, 'user-1');
+
+      const lignes = mockPrisma.orderTimeline.create.mock.calls.map(
+        (appel: unknown[]) => (appel[0] as { data?: { status?: string } })?.data?.status,
+      );
+      expect(lignes, 'aucune ligne PAID dans le journal').not.toContain('PAID');
+    });
+
     it('refuse un montant client inférieur au total de la commande', async () => {
       mockPrisma.order.findUnique.mockResolvedValue({ id: 'o1', buyerId: 'user-1', status: 'PENDING', currency: 'XOF', totalAmount: 500000 });
       mockProviders.isSupported.mockReturnValue(true);

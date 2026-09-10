@@ -184,3 +184,121 @@ export async function checkCinetPayTransaction(transactionId: string): Promise<C
     },
   }
 }
+
+const PAYMENT_ENDPOINT = 'https://api-checkout.cinetpay.com/v2/payment'
+
+/**
+ * XOF n'a pas de sous-unite et CinetPay impose des montants multiples de 5.
+ * Un total non conforme est refuse plutot qu'arrondi : arrondir changerait la
+ * somme reellement debitee a l'acheteur, sans qu'il en soit informe.
+ */
+const XOF_MULTIPLE = 5
+
+export interface InitiateCinetPayInput {
+  /** Identifiant de notre Payment : c'est lui qui revient en `cpm_trans_id`. */
+  transactionId: string
+  amount: number
+  currency: string
+  description: string
+  customerName?: string
+  customerPhone?: string
+  /** Canal a presenter en premier sur la page CinetPay. */
+  channels?: string
+}
+
+export type CinetPayInitiation =
+  | { ok: true; paymentUrl: string; paymentToken: string }
+  | { ok: false; reason: string; code?: string }
+
+/**
+ * Cree une transaction CinetPay et renvoie l'URL de paiement hebergee.
+ *
+ * L'acheteur choisit son operateur et saisit son code sur la page de CinetPay,
+ * jamais sur AutoAfrique : nous ne voyons ni ne stockons de code secret.
+ *
+ * Cet appel n'encaisse rien. Il ouvre une transaction ; seule la notification
+ * verifiee par `/api/v1/payments/webhook` vaut encaissement.
+ */
+export async function initiateCinetPayPayment(
+  input: InitiateCinetPayInput,
+): Promise<CinetPayInitiation> {
+  const apikey = process.env.CINETPAY_API_KEY
+  const siteId = process.env.CINETPAY_SITE_ID
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL
+
+  if (!apikey || !siteId) {
+    return { ok: false, reason: 'CINETPAY_API_KEY ou CINETPAY_SITE_ID non configures' }
+  }
+  if (!baseUrl) {
+    // Sans URL publique, CinetPay ne saurait ou notifier l'encaissement : la
+    // transaction serait payee sans que la commande passe jamais a PAID.
+    return { ok: false, reason: 'NEXT_PUBLIC_APP_URL non configuree' }
+  }
+  if (input.currency === 'XOF' && input.amount % XOF_MULTIPLE !== 0) {
+    return {
+      ok: false,
+      reason:
+        `Montant non conforme : CinetPay n'accepte que des multiples de ${XOF_MULTIPLE} ${input.currency} ` +
+        `(recu ${input.amount}).`,
+    }
+  }
+
+  let response: Response
+  try {
+    response = await fetch(PAYMENT_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        apikey,
+        site_id: siteId,
+        transaction_id: input.transactionId,
+        amount: input.amount,
+        currency: input.currency,
+        description: input.description,
+        notify_url: `${baseUrl}/api/v1/payments/webhook`,
+        return_url: `${baseUrl}/paiement/retour?paiement=${encodeURIComponent(input.transactionId)}`,
+        channels: input.channels || 'MOBILE_MONEY',
+        lang: 'fr',
+        ...(input.customerName ? { customer_name: input.customerName } : {}),
+        ...(input.customerPhone ? { customer_phone_number: input.customerPhone } : {}),
+      }),
+      signal: AbortSignal.timeout(15_000),
+    })
+  } catch (error) {
+    return { ok: false, reason: `Appel d'initiation impossible : ${String(error)}` }
+  }
+
+  if (!response.ok) {
+    return { ok: false, reason: `Initiation CinetPay : HTTP ${response.status}` }
+  }
+
+  const body = (await response.json()) as {
+    code?: string
+    message?: string
+    description?: string
+    data?: { payment_token?: string; payment_url?: string }
+  }
+
+  // `201` est le code de creation. Toute autre valeur signale un refus, des
+  // identifiants invalides ou un parametre non conforme.
+  if (body.code !== '201' || !body.data?.payment_url) {
+    return {
+      ok: false,
+      code: body.code,
+      reason: `Initiation CinetPay refusee : ${body.code ?? '?'} ${body.description ?? body.message ?? ''}`.trim(),
+    }
+  }
+
+  return {
+    ok: true,
+    paymentUrl: body.data.payment_url,
+    paymentToken: String(body.data.payment_token ?? ''),
+  }
+}
+
+/** Vrai quand les identifiants marchands necessaires a l'initiation sont poses. */
+export function cinetPayConfigured(): boolean {
+  return Boolean(
+    process.env.CINETPAY_API_KEY && process.env.CINETPAY_SITE_ID && process.env.NEXT_PUBLIC_APP_URL,
+  )
+}

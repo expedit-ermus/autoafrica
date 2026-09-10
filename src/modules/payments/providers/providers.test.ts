@@ -84,6 +84,90 @@ describe('Mobile Money adapters', () => {
     },
   )
 
+  /**
+   * Chemin reel : quand les identifiants marchands sont poses, l'adaptateur
+   * ouvre une transaction chez CinetPay et renvoie une page de paiement.
+   *
+   * Le statut doit valoir `pending`, jamais `completed` : `payments.service`
+   * marque la commande PAID sur un `completed`, et l'acheteur n'a a ce stade
+   * meme pas saisi son code. Un `completed` ici encaisserait dans le vide.
+   */
+  it.each(adapters.map(a => [a.name, a]))(
+    'ouvre une transaction sans jamais annoncer un encaissement (%s)',
+    async (_name, adapter) => {
+      const precedent = { ...process.env }
+      process.env.CINETPAY_API_KEY = 'cle-api'
+      process.env.CINETPAY_SITE_ID = '445566'
+      process.env.NEXT_PUBLIC_APP_URL = 'https://autoafrique-saas.vercel.app'
+
+      const fetchMock = vi.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        json: async () => ({
+          code: '201',
+          data: { payment_token: 'tok-1', payment_url: 'https://checkout.cinetpay.com/tok-1' },
+        }),
+      } as Response)
+      vi.stubGlobal('fetch', fetchMock)
+
+      try {
+        const result = await adapter.initiate({
+          phone: '+22507080910',
+          amount: 150000,
+          currency: 'XOF',
+          reference: 'pay-ref-1',
+          description: 'Order TEST-001',
+        })
+
+        expect(result.success).toBe(true)
+        expect(result.status, 'une ouverture n est pas un encaissement').toBe('pending')
+        expect(result.status).not.toBe('completed')
+        expect(result.redirectUrl).toBe('https://checkout.cinetpay.com/tok-1')
+        // Le code secret se saisit chez l operateur, jamais sur AutoAfrique.
+        expect(result.pinRequired).toBe(false)
+      } finally {
+        process.env = precedent
+        vi.unstubAllGlobals()
+      }
+    },
+  )
+
+  it.each(adapters.map(a => [a.name, a]))(
+    'n annonce pas de reglement quand CinetPay refuse l ouverture (%s)',
+    async (_name, adapter) => {
+      const precedent = { ...process.env }
+      process.env.CINETPAY_API_KEY = 'cle-api'
+      process.env.CINETPAY_SITE_ID = '445566'
+      process.env.NEXT_PUBLIC_APP_URL = 'https://autoafrique-saas.vercel.app'
+
+      vi.stubGlobal(
+        'fetch',
+        vi.fn().mockResolvedValue({
+          ok: true,
+          status: 200,
+          json: async () => ({ code: '609', description: 'Cle invalide' }),
+        } as Response),
+      )
+
+      try {
+        const result = await adapter.initiate({
+          phone: '+22507080910',
+          amount: 150000,
+          currency: 'XOF',
+          reference: 'pay-ref-1',
+          description: 'Order TEST-001',
+        })
+
+        expect(result.success).toBe(false)
+        expect(result.status).toBe('failed')
+        expect(result.error).toBe('PROVIDER_INITIATION_FAILED')
+      } finally {
+        process.env = precedent
+        vi.unstubAllGlobals()
+      }
+    },
+  )
+
   it.each(adapters.map(a => [a.name, a]))('rejects an amount below the minimum (%s)', async (_name, adapter) => {
     await expect(
       adapter.initiate({

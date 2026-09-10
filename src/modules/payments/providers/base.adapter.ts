@@ -1,5 +1,6 @@
 import { PaymentMethod } from '@/generated/prisma/client'
 import { InitiatePaymentInput, InitiatePaymentResult, PaymentProviderAdapter, ProviderFee, ProviderLimits } from './types'
+import { cinetPayConfigured, initiateCinetPayPayment } from '@/lib/cinetpay'
 
 export abstract class BaseMobileMoneyAdapter implements PaymentProviderAdapter {
   abstract readonly id: PaymentMethod
@@ -40,8 +41,52 @@ export abstract class BaseMobileMoneyAdapter implements PaymentProviderAdapter {
     return process.env.PAYMENTS_SIMULATOR === '1'
   }
 
+  /**
+   * Canal a mettre en avant sur la page CinetPay. `MOBILE_MONEY` par defaut :
+   * l'acheteur choisit alors lui-meme son operateur.
+   */
+  protected getCinetPayChannel(): string {
+    return 'MOBILE_MONEY'
+  }
+
   async initiate(input: InitiatePaymentInput): Promise<InitiatePaymentResult> {
     this.validate(input)
+
+    // Chemin reel : les quatre operateurs passent par la page hebergee de
+    // CinetPay. L'acheteur y saisit son code aupres de son operateur, jamais
+    // sur AutoAfrique.
+    if (cinetPayConfigured()) {
+      const initiation = await initiateCinetPayPayment({
+        transactionId: input.reference,
+        amount: input.amount,
+        currency: input.currency,
+        description: input.description || `Commande AutoAfrique`,
+        customerPhone: input.phone,
+        channels: this.getCinetPayChannel(),
+      })
+
+      if (!initiation.ok) {
+        return {
+          success: false,
+          status: 'failed',
+          message:
+            `Le paiement ${this.name} n'a pas pu etre ouvert. Votre commande est enregistree : ` +
+            `le vendeur vous contactera pour convenir du reglement.`,
+          pinRequired: false,
+          error: 'PROVIDER_INITIATION_FAILED',
+        }
+      }
+
+      // `pending`, jamais `completed` : rien n'est encaisse a ce stade.
+      return {
+        success: true,
+        transactionId: initiation.paymentToken || input.reference,
+        status: 'pending',
+        message: `Vous allez etre redirige vers ${this.name} pour regler votre commande.`,
+        pinRequired: false,
+        redirectUrl: initiation.paymentUrl,
+      }
+    }
 
     if (!BaseMobileMoneyAdapter.simulationActive()) {
       return {
