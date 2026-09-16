@@ -24,7 +24,7 @@ export default function CatalogPage({ kind, slug, name, description, products }:
   const faqs = [
     {
       question: `Comment commander des pièces détachées ${name} à Abidjan sur AutoAfrique ?`,
-      answer: `Vous pouvez commander vos pièces ${name} directement en ligne sur AutoAfrique en sélectionnant la référence souhaitée, puis en réglant en toute sécurité via Mobile Money (Wave, Orange Money, MTN MoMo, Moov Money, Djamo) ou carte bancaire. La livraison s'effectue en 24h à Abidjan et en 48h à l'intérieur du pays.`,
+      answer: `Vous pouvez commander vos pièces ${name} directement en ligne sur AutoAfrique en sélectionnant la référence souhaitée, puis en réglant en toute sécurité via Mobile Money (Wave, Orange Money, MTN MoMo, Moov Money). La livraison s'effectue en 24h à Abidjan et en 48h à l'intérieur du pays.`,
     },
     {
       question: `Les pièces auto ${name} vendues sur AutoAfrique sont-elles garanties ?`,
@@ -32,7 +32,7 @@ export default function CatalogPage({ kind, slug, name, description, products }:
     },
     {
       question: `Comment se passe le paiement Mobile Money pour les pièces ${name} ?`,
-      answer: `Vous réglez vos pièces ${name} par Mobile Money — Wave, Orange Money, MTN MoMo, Moov Money ou Djamo Visa — depuis votre téléphone, sur une connexion chiffrée. Un reçu électronique vous est remis à chaque transaction, et les pièces d'occasion contrôlée sont garanties 48 heures pour vous permettre de vérifier la conformité avec votre mécanicien.`,
+      answer: `Vous réglez vos pièces ${name} par Mobile Money — Wave, Orange Money, MTN MoMo ou Moov Money — depuis votre téléphone, sur une connexion chiffrée. Un reçu électronique vous est remis à chaque transaction, et les pièces d'occasion contrôlée sont garanties 48 heures pour vous permettre de vérifier la conformité avec votre mécanicien.`,
     },
     {
       question: `Quels sont les délais et tarifs de livraison pour ${name} à Abidjan et en Côte d'Ivoire ?`,

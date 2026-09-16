@@ -3,7 +3,10 @@
 import React from 'react';
 
 interface PaymentLogoProps {
-  name: 'orange' | 'orange_money' | 'ORANGE_MONEY' | 'mtn' | 'mtn_momo' | 'MTN_MOMO' | 'wave' | 'WAVE' | 'moov' | 'moov_money' | 'MOOV_MONEY' | 'djamo' | 'DJAMO' | 'visa' | 'mastercard' | 'card' | 'CARD' | 'cash' | 'CASH' | string;
+  // Les quatre moyens que `payments/providers/registry.ts` sert reellement.
+  // Djamo, Visa, Mastercard, CARD et CASH ont ete retires : le composant
+  // dessinait leur logo sans qu'aucun adaptateur ne les honore.
+  name: 'orange' | 'orange_money' | 'ORANGE_MONEY' | 'mtn' | 'mtn_momo' | 'MTN_MOMO' | 'wave' | 'WAVE' | 'moov' | 'moov_money' | 'MOOV_MONEY' | string;
   size?: number | string; // height/width in px or tailwind class
   className?: string;
   showName?: boolean;
@@ -55,38 +58,16 @@ export function PaymentLogo({ name, size = 32, className = '', showName = false 
         <text x="75" y="55" fill="#FFFFFF" fontFamily="sans-serif" fontWeight="900" fontSize="14" textAnchor="middle">M</text>
       </svg>
     );
-  } else if (norm.includes('djamo')) {
-    displayName = 'Djamo';
-    logoSvg = (
-      <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100" height="100" rx="20" fill="#4F46E5" />
-        <path d="M30 28H50C65 28 72 36 72 50C72 64 65 72 50 72H30V28ZM44 40V60H50C58 60 60 56 60 50C60 44 58 40 50 40H44Z" fill="#06B6D4" />
-      </svg>
-    );
-  } else if (norm.includes('visa')) {
-    displayName = 'Visa';
-    logoSvg = (
-      <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100" height="100" rx="20" fill="#1A1F71" />
-        <text x="50" y="62" fill="#F7B600" fontFamily="serif" fontWeight="900" fontStyle="italic" fontSize="32" textAnchor="middle" letterSpacing="1">VISA</text>
-      </svg>
-    );
-  } else if (norm.includes('mastercard') || norm.includes('card')) {
-    displayName = 'Mastercard';
-    logoSvg = (
-      <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100" height="100" rx="20" fill="#111827" />
-        <circle cx="38" cy="50" r="24" fill="#EB001B" />
-        <circle cx="62" cy="50" r="24" fill="#F79E1B" fillOpacity="0.9" />
-      </svg>
-    );
   } else {
-    displayName = 'Espèces / Cash';
+    // Repli neutre. Il dessinait auparavant un billet legende « Especes /
+    // Cash » : un moyen de paiement inconnu se presentait donc comme un
+    // paiement en especes, que la plateforme n'encaisse pas. Le nom recu est
+    // affiche tel quel, sans etre traduit en une methode inventee (D61).
+    displayName = name;
     logoSvg = (
       <svg viewBox="0 0 100 100" className="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100" height="100" rx="20" fill="#10B981" />
-        <rect x="20" y="32" width="60" height="36" rx="6" stroke="#FFFFFF" strokeWidth="5" fill="none" />
-        <circle cx="50" cy="50" r="10" fill="#FFFFFF" />
+        <rect width="100" height="100" rx="20" fill="#64748B" />
+        <rect x="22" y="34" width="56" height="32" rx="6" stroke="#FFFFFF" strokeWidth="5" fill="none" />
       </svg>
     );
   }
@@ -105,7 +86,10 @@ export function PaymentLogo({ name, size = 32, className = '', showName = false 
 }
 
 export function PaymentLogosGroup({ className = 'flex flex-wrap items-center gap-3' }: { className?: string }) {
-  const providers = ['orange', 'mtn', 'wave', 'moov', 'djamo', 'visa', 'mastercard'];
+  // Les quatre moyens de paiement reellement servis par
+  // `payments/providers/registry.ts`. Djamo, Visa et Mastercard etaient
+  // affiches sans qu'aucun adaptateur ne les honore.
+  const providers = ['orange', 'mtn', 'wave', 'moov'];
 
   return (
     <div className={className}>

@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Acheter ses pièces auto par Mobile Money à Abidjan',
-  description: 'Wave, Orange Money, MTN MoMo, Moov Money, Djamo : comment payer ses pièces détachées depuis son téléphone à Abidjan, avec reçu électronique.',
+  description: 'Wave, Orange Money, MTN MoMo, Moov Money : comment payer ses pièces détachées depuis son téléphone à Abidjan, avec reçu électronique.',
   alternates: {
     canonical: 'https://autoafrique-saas.vercel.app/blog/paiement-mobile-money-auto',
   },
@@ -14,7 +14,7 @@ export default function PaiementMobileMoneyPage() {
     <ArticlePageTemplate
       slug="paiement-mobile-money-auto"
       title="Acheter ses pièces auto par Mobile Money à Abidjan : payer en toute sécurité"
-      excerpt="Le marché de la pièce détachée automobile à Abidjan a longtemps souffert du manque de confiance lié aux transactions à distance. La solution passe par le paiement Mobile Money : Wave, Orange Money, MTN MoMo, Moov Money et Djamo."
+      excerpt="Le marché de la pièce détachée automobile à Abidjan a longtemps souffert du manque de confiance lié aux transactions à distance. La solution passe par le paiement Mobile Money : Wave, Orange Money, MTN MoMo et Moov Money."
       author={{ name: 'Équipe AutoAfrique', role: 'Experts Automobile' }}
       datePublished="2026-08-08"
       mainImage={{
@@ -26,7 +26,7 @@ export default function PaiementMobileMoneyPage() {
         { id: 'probleme-cash', title: 'Le problème du paiement cash dans le commerce auto' },
         { id: 'mobile-money-vs-cash', title: 'Mobile Money vs cash au marché informel' },
         { id: 'paiement-mobile-money', title: 'Comment se déroule un paiement Mobile Money' },
-        { id: 'operateurs', title: 'Les opérateurs supportés : Wave, Orange Money, MTN MoMo, Moov, Djamo' },
+        { id: 'operateurs', title: 'Les opérateurs supportés : Wave, Orange Money, MTN MoMo et Moov Money' },
         { id: 'avantages', title: 'Avantages pour les vendeurs et les acheteurs' },
         { id: 'securite', title: 'Sécurité et traçabilité des transactions' },
       ]}
@@ -44,7 +44,7 @@ export default function PaiementMobileMoneyPage() {
           heading: 'Mobile Money vs cash au marché informel : la comparaison',
           body: [
             'Au <a href="/blog/casse-auto-vs-autoafrique">marché informel d\'Adjamé ou de Yopougon</a>, le paiement se fait exclusivement en espèces : aucun reçu, aucun recours en cas de pièce défectueuse. Si la pièce ne convient pas, il est quasiment impossible d\'obtenir un remboursement.',
-            "Avec le <a href='/paiement'>Mobile Money sur AutoAfrique</a>, tout change. Vous payez depuis votre téléphone via Wave, Orange Money, MTN MoMo, Moov Money ou Djamo. Chaque transaction est tracée et un reçu électronique est généré, ce qui vous laisse une preuve d'achat opposable en cas de litige.",
+            "Avec le <a href='/paiement'>Mobile Money sur AutoAfrique</a>, tout change. Vous payez depuis votre téléphone via Wave, Orange Money, MTN MoMo ou Moov Money. Chaque transaction est tracée et un reçu électronique est généré, ce qui vous laisse une preuve d'achat opposable en cas de litige.",
           ],
         },
         {
@@ -57,9 +57,9 @@ export default function PaiementMobileMoneyPage() {
         },
         {
           id: 'operateurs',
-          heading: 'Les opérateurs supportés : Wave, Orange Money, MTN MoMo, Moov Money et Djamo',
+          heading: 'Les opérateurs supportés : Wave, Orange Money, MTN MoMo et Moov Money',
           body: [
-            'Pour rendre ce système accessible à tous à Abidjan et dans la sous-région, nous avons intégré les principaux opérateurs : Wave, Orange Money, MTN MoMo, Moov Money et Djamo. Les cartes bancaires (Visa, Mastercard) sont également acceptées.',
+            'Pour rendre ce système accessible à tous à Abidjan et dans la sous-région, nous avons intégré les principaux opérateurs : Wave, Orange Money, MTN MoMo et Moov Money.',
             'Aucun compte bancaire n\'est requis — un simple numéro de téléphone suffit pour acheter ou vendre des pièces pour vos <a href="/marques/toyota">Toyota</a>, <a href="/marques/peugeot">Peugeot</a>, <a href="/marques/hyundai">Hyundai</a> ou <a href="/marques/suzuki">Suzuki</a>.',
           ],
         },
@@ -86,7 +86,7 @@ export default function PaiementMobileMoneyPage() {
       ]}
       cta={{
         title: 'Achetez et vendez en toute confiance à Abidjan',
-        description: 'Le paiement Mobile Money AutoAfrique trace chaque transaction. Payez par Wave, Orange Money, MTN MoMo, Moov Money ou Djamo.',
+        description: 'Le paiement Mobile Money AutoAfrique trace chaque transaction. Payez par Wave, Orange Money, MTN MoMo ou Moov Money.',
         buttonText: 'Découvrir nos moyens de paiement',
         buttonHref: '/paiement',
       }}

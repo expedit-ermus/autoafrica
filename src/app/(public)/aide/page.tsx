@@ -73,8 +73,8 @@ export default function AidePage() {
       category: 'Paiement Mobile Money',
       question: L('Quels sont les modes de paiement acceptés ?', 'What payment methods are accepted?'),
       answer: L(
-        'Nous acceptons les paiements par Mobile Money (Wave, Orange Money, MTN MoMo, Djamo) très populaires en Afrique de l\'Ouest, ainsi que les cartes bancaires (Visa, Mastercard) et le paiement à la livraison sous certaines conditions.',
-        'We accept Mobile Money payments (Wave, Orange Money, MTN MoMo, Djamo) which are very popular in West Africa, as well as bank cards (Visa, Mastercard) and cash on delivery under certain conditions.'
+        'Nous acceptons les paiements par Mobile Money : Wave, Orange Money, MTN MoMo et Moov Money, très populaires en Afrique de l\'Ouest.',
+        'We accept Mobile Money payments: Wave, Orange Money, MTN MoMo and Moov Money, which are very popular in West Africa.'
       )
     },
     {
@@ -82,8 +82,8 @@ export default function AidePage() {
       category: 'Paiement Mobile Money',
       question: L('Puis-je payer à la livraison ?', 'Can I pay on delivery?'),
       answer: L(
-        'Oui, le paiement à la livraison est disponible pour certaines zones sécurisées à Abidjan et Dakar. Un acompte via Mobile Money peut être demandé pour les pièces volumineuses ou de grande valeur.',
-        'Yes, cash on delivery is available for certain secure areas in Abidjan and Dakar. A deposit via Mobile Money may be required for bulky or high-value parts.'
+        'Non. Le règlement se fait par Mobile Money au moment de la commande — Wave, Orange Money, MTN MoMo ou Moov Money. Vous recevez un reçu électronique, et les pièces d\'occasion contrôlée restent garanties 48 heures après réception.',
+        'No. Payment is made by Mobile Money when you order — Wave, Orange Money, MTN MoMo or Moov Money. You receive an electronic receipt, and inspected second-hand parts remain covered for 48 hours after delivery.'
       )
     },
     {

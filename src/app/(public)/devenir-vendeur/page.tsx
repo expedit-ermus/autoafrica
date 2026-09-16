@@ -21,7 +21,7 @@ const faqSeller = [
   },
   {
     question: 'Comment suis-je payé lors d\'une vente ?',
-    answer: 'Les paiements se font par Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money). Les fonds sont débloqués sur votre compte dès réception et validation de la pièce.',
+    answer: 'Les paiements se font par Mobile Money (Wave, Orange Money, MTN MoMo, Moov Money). Les fonds sont débloqués sur votre compte dès réception et validation de la pièce.',
   },
 ];
 
@@ -87,7 +87,7 @@ export default function DevenirVendeurPage() {
               </div>
               <h3 className="font-extrabold text-gray-900 text-lg mb-2">Paiement Mobile Money</h3>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Encaissez directement par Wave, Djamo, Orange Money, MTN MoMo ou Moov Money, avec un reçu électronique à chaque vente.
+                Encaissez directement par Wave, Orange Money, MTN MoMo ou Moov Money, avec un reçu électronique à chaque vente.
               </p>
             </div>
 
@@ -159,7 +159,7 @@ export default function DevenirVendeurPage() {
                 4
               </div>
               <h3 className="font-extrabold text-gray-900 mb-2">Encaissement direct Mobile Money</h3>
-              <p className="text-sm text-gray-600">Recevez vos paiements via Wave, Orange, MTN ou Djamo.</p>
+              <p className="text-sm text-gray-600">Recevez vos paiements via Wave, Orange Money, MTN MoMo ou Moov Money.</p>
             </div>
             
             {/* Ligne de connexion pour la timeline (visible sur grand écran) */}

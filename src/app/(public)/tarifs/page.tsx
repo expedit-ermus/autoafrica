@@ -59,7 +59,7 @@ export default function TarifsPage() {
   const faqs = [
     {
       q: "Comment s'effectue le paiement des abonnements en Afrique de l'Ouest ?",
-      a: "Vous pouvez régler votre abonnement mensuel ou annuel directement via Mobile Money (Orange Money, MTN MoMo, Wave, Moov Money) ou par Carte Bancaire (Visa, Mastercard). Aucun compte bancaire requis."
+      a: "Vous pouvez régler votre abonnement mensuel ou annuel directement via Mobile Money : Orange Money, MTN MoMo, Wave ou Moov Money. Aucun compte bancaire requis."
     },
     {
       q: "Comment fonctionne la commission sur la Marketplace AutoAfrique ?",

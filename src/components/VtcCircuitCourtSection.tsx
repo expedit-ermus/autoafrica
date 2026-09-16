@@ -179,8 +179,8 @@ export default function VtcCircuitCourtSection() {
               </h4>
               <p className="text-xs md:text-sm text-slate-300 mt-1 max-w-xl">
                 {L(
-                  'Fini la peur des mauvaises pièces ou du mauvais montage. Nous garantissons la pièce et la main d\'œuvre du garagiste. L\'argent reste bloqué sur Wave, Djamo ou Orange Money jusqu\'au test final.',
-                  'No more fear of bad parts or bad installation. We guarantee both the part and the mechanic labor. Money stays locked on Wave, Djamo or Orange Money until final validation.'
+                  'Fini la peur des mauvaises pièces ou du mauvais montage. Nous garantissons la pièce et la main d\'œuvre du garagiste. L\'argent reste bloqué sur Wave, Orange Money ou MTN MoMo jusqu\'au test final.',
+                  'No more fear of bad parts or bad installation. We guarantee both the part and the mechanic labor. Money stays locked on Wave, Orange Money or MTN MoMo until final validation.'
                 )}
               </p>
             </div>

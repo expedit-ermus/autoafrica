@@ -121,8 +121,8 @@ export default function ChatBot() {
     if (q.includes('wave') || q.includes('orange') || q.includes('mtn') || q.includes('moov') || q.includes('pay') || q.includes('argent') || q.includes('fcfa') || q.includes('factur')) {
       return {
         reply: L(
-          '💳 **Paiements Sécurisés en Afrique de l\'Ouest**\n\nAutoAfrique accepte les règlements par **Wave**, **Orange Money**, **MTN MoMo**, **Moov Money** ainsi que par **Carte Visa/Mastercard**.\n\n• Aucun compte bancaire requis.\n• Confirmation instantanée par code USSD.\n• Facture FCFA téléchargable dans votre espace membre.',
-          '💳 **Secure West African Payments**\n\nAutoAfrique accepts **Wave**, **Orange Money**, **MTN MoMo**, **Moov Money** and **Visa/Mastercard**.\n\n• No bank account required.\n• Instant USSD confirmation.'
+          '💳 **Paiements Sécurisés en Afrique de l\'Ouest**\n\nAutoAfrique accepte les règlements par **Wave**, **Orange Money**, **MTN MoMo** et **Moov Money**.\n\n• Aucun compte bancaire requis.\n• Confirmation instantanée par code USSD.\n• Facture FCFA téléchargable dans votre espace membre.',
+          '💳 **Secure West African Payments**\n\nAutoAfrique accepts **Wave**, **Orange Money**, **MTN MoMo** and **Moov Money**.\n\n• No bank account required.\n• Instant USSD confirmation.'
         ),
         options: [
           { label: L('💳 Voir la page Paiement', '💳 View Payment page'), action: 'open_payments', icon: '💳' },

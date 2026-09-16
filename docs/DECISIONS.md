@@ -1625,3 +1625,89 @@ bord CinetPay. Aucun changement de code n'est necessaire : le tunnel s'allume
 des que les variables sont presentes, et retombe sur « commande enregistree »
 si elles disparaissent.
 
+
+## D69 : Le site n'annonce plus que les moyens de paiement qu'il encaisse
+
+**Contexte.** D67 a branche l'encaissement sur CinetPay, avec
+`channels: 'MOBILE_MONEY'` en dur : la page hebergee n'offre pas la carte, et
+aucun adaptateur ne la redefinit. Le code est donc conforme. Le site, lui, ne
+l'etait pas.
+
+**L'ecart.** `payments/providers/registry.ts` enregistre quatre adaptateurs :
+Wave, Orange Money, MTN MoMo, Moov Money. Le site en promettait davantage.
+
+Six endroits affirmaient que la carte bancaire etait acceptee : `/aide`,
+`/tarifs`, l'article de blog sur le Mobile Money, la FAQ generee sur chaque page
+marque (`CatalogPage`), le ChatBot et le pied de page, qui affichait un logo
+« Visa / MC ». `/aide` promettait en outre le paiement a la livraison, avec une
+entree de FAQ entiere : « Oui, le paiement a la livraison est disponible pour
+certaines zones securisees a Abidjan et Dakar ». `CASH_ON_DELIVERY` existe dans
+l'enum Prisma et n'a pas davantage d'adaptateur.
+
+`structured-data.ts` declarait `paymentAccepted: 'Cash, Wave, Orange Money, MTN
+Mobile Money, Moov Money, Djamo, Carte Bancaire'` — les especes et la carte
+annoncees directement aux moteurs de recherche.
+
+**Le panier ne promettait pas, il echouait.** Il proposait « Djamo Visa » et le
+mappait sur `CARD` dans `METHODE_API`. `paymentProviders.get('CARD')` leve
+« Moyen de paiement non supporte : CARD ». Un acheteur qui choisissait Djamo ne
+payait pas : il tombait sur une erreur. Le defaut etait masque par le fait que
+l'option se presentait au milieu de quatre operateurs qui, eux, fonctionnent.
+
+**Decision.** Le site n'annonce plus que les quatre Mobile Money reellement
+servis. Quarante-sept remplacements dans vingt-deux fichiers : les mentions de
+carte bancaire, de Visa, de Mastercard, de « CB », de Djamo et du paiement a la
+livraison. L'option Djamo et son mappage vers `CARD` sont retires du panier.
+
+L'alternative — implementer un adaptateur carte — a ete ecartee : c'est un choix
+de produit, pris par l'utilisateur, et non une lacune technique a combler.
+
+**Deux details qui ne sautaient pas aux yeux.**
+
+*La question « Puis-je payer a la livraison ? » n'a pas ete supprimee, sa
+reponse a ete corrigee.* C'est une question que les acheteurs posent ; la
+retirer la laisse sans reponse et l'acheteur repart avec son doute. La reponse
+dit desormais non, et par quoi le reglement passe.
+
+*Le repli de `PaymentLogos` dessinait un billet legende « Especes / Cash ».*
+Tout nom de moyen de paiement inconnu se presentait donc comme un paiement en
+especes — que la plateforme n'encaisse pas. Le branchement `norm.includes('card')`
+faisait de meme rendre un logo Mastercard pour n'importe quelle chaine contenant
+« card ». Le repli est neutre et affiche le nom recu tel quel (D61).
+
+**Garde-fou.** `moyens-annonces.test.ts` adosse les textes au registre : il
+verifie que le registre sert exactement les quatre methodes, qu'aucun adaptateur
+ne repond pour `CARD`, `BANK_TRANSFER`, `CASH_ON_DELIVERY` ni `CASH`, qu'aucun
+fichier source n'annonce la carte, Visa, Mastercard, Djamo ou le paiement a la
+livraison, que chaque valeur de `METHODE_API` du panier est servie par le
+registre, et que `paymentAccepted` ne declare que ces quatre methodes.
+
+Les commentaires sont ecartes de l'inspection : ceux qui expliquent le retrait
+nomment necessairement ce qui a ete retire, et le test signalerait sa propre
+documentation.
+
+**Verifications.** Sept mutations, sept detections : `/aide` reannoncant les
+cartes, `/aide` repromettant le paiement a la livraison, le panier remappant
+Djamo sur `CARD`, les donnees structurees redeclarant la carte, le blog
+reannoncant Djamo, le pied de page raffichant un logo Visa, et le ChatBot
+repromettant Visa/Mastercard. Reference rejouee verte apres restauration.
+
+eslint 0, `tsc --noEmit` 0, 445/445 tests unitaires (49 fichiers, 434 avant ce
+chantier), build reussi, budgets respectes, 25/25 E2E — dont le tunnel Mobile
+Money complet, que le retrait de Djamo ne casse pas.
+
+**Reste ouvert.**
+
+*L'enum Prisma garde des valeurs sans adaptateur.* `PaymentMethod` porte
+toujours `CARD`, `BANK_TRANSFER`, `CASH_ON_DELIVERY` et `CASH`. Les retirer
+demande une migration et toucherait les paiements historiques ; le test
+documente et verifie qu'aucune ne trouve d'adaptateur, ce qui suffit a empecher
+qu'une interface les propose de nouveau.
+
+*Deux textes decrivent encore un sequestre sans le nommer.* `PromoBanner` dit
+« Votre argent est libere apres reception de la bonne piece » et
+`VtcCircuitCourtSection` « L'argent reste bloque sur Wave, Orange Money ou MTN
+MoMo jusqu'au test final ». D64 a retire le sequestre et D66 a confirme
+l'absence des mots « sequestre », « escrow » et « cantonnement » — mais ces deux
+phrases decrivent le mecanisme sans employer ces mots. Seules leurs mentions de
+Djamo ont ete corrigees ici ; la promesse de fond releve d'un arbitrage distinct.

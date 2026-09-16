@@ -14,7 +14,6 @@ export default function PaiementPage() {
 
   const operators = [
     { name: 'Wave', key: 'wave', code: '*144#' },
-    { name: 'Djamo Visa', key: 'djamo', code: 'App Djamo' },
     { name: 'Orange Money', key: 'orange', code: '#144#' },
     { name: 'MTN MoMo', key: 'mtn', code: '*133#' },
     { name: 'Moov Money', key: 'moov', code: '*155#' },
@@ -50,7 +49,7 @@ export default function PaiementPage() {
             Moyens de Paiement Sécurisés sur AutoAfrique
           </h1>
           <p className="text-slate-600 text-base max-w-2xl mx-auto">
-            Payez vos pièces détachées via votre opérateur Mobile Money habituel — Wave, Orange Money, MTN MoMo, Moov Money ou Djamo Visa. Reçu électronique remis à chaque transaction.
+            Payez vos pièces détachées via votre opérateur Mobile Money habituel — Wave, Orange Money, MTN MoMo ou Moov Money. Reçu électronique remis à chaque transaction.
           </p>
         </div>
 
@@ -221,7 +220,7 @@ export default function PaiementPage() {
             <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-1.5">
               <h3 className="font-bold text-slate-900">Quels pays sont supportés ?</h3>
               <p className="text-slate-600 text-xs">
-                Côte d&apos;Ivoire (Wave, Orange, MTN, Moov, Djamo), Sénégal (Wave, Orange), Mali, Burkina Faso, Togo, Bénin, Niger.
+                Côte d&apos;Ivoire (Wave, Orange, MTN, Moov), Sénégal (Wave, Orange), Mali, Burkina Faso, Togo, Bénin, Niger.
               </p>
             </div>
 

@@ -48,7 +48,7 @@ export const translations = {
       },
       payments: {
         title: 'Paiements Mobile Money',
-        desc: 'Acceptez Wave, Djamo, Orange Money, MTN et Moov Money. Paiements Mobile Money sécurisés, reçu électronique à chaque transaction.',
+        desc: 'Acceptez Wave, Orange Money, MTN MoMo et Moov Money. Paiements Mobile Money sécurisés, reçu électronique à chaque transaction.',
       },
       crm: {
         title: 'CRM Intégré',

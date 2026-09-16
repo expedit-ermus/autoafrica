@@ -335,7 +335,7 @@ export function RepairEstimator() {
 
       {/* Footer Security Note */}
       <div className="text-center text-xs text-slate-400 border-t border-slate-800 pt-4">
-        🔒 Paiement sécurisé sur place / Mobile Money (Wave, Djamo, OM) après intervention du Maître Garagiste.
+        🔒 Paiement sécurisé sur place / Mobile Money (Wave, Orange Money, MTN MoMo, Moov Money) après intervention du Maître Garagiste.
       </div>
 
       {/* Modal for Data Capture & Lead Generation */}
@@ -474,7 +474,7 @@ export function RepairEstimator() {
                     className="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-amber-500"
                   >
                     <option value="Paiement sur place (Garagiste)">Paiement sur place au Garage (Espèces)</option>
-                    <option value="Mobile Money (Wave, Orange, MTN)">Mobile Money (Wave, Orange, MTN, Djamo)</option>
+                    <option value="Mobile Money (Wave, Orange, MTN)">Mobile Money (Wave, Orange Money, MTN MoMo, Moov Money)</option>
                   </select>
                 </div>
 

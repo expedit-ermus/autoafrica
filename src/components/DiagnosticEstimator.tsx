@@ -343,7 +343,7 @@ export default function DiagnosticEstimator() {
               )}
 
               <p className="text-[11px] text-slate-400 text-center mt-3">
-                🔒 {L('Paiement sécurisé sur place / Mobile Money (Wave, Djamo, OM) après test.', 'Payment on site / Mobile Money (Wave, Djamo, OM) after test.')}
+                🔒 {L('Paiement sécurisé sur place / Mobile Money (Wave, Orange Money, MTN MoMo, Moov Money) après test.', 'Payment on site / Mobile Money (Wave, Orange Money, MTN MoMo, Moov Money) after test.')}
               </p>
 
             </div>

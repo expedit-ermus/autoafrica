@@ -49,7 +49,6 @@ const OPERATOR_TO_UI_ID: Record<string, string> = {
 
 const MOBILE_MONEY_OPERATORS = [
   { id: 'wave', name: 'Wave' },
-  { id: 'djamo', name: 'Djamo Visa' },
   { id: 'orange', name: 'Orange Money' },
   { id: 'mtn', name: 'MTN MoMo' },
   { id: 'moov', name: 'Moov Money' },
@@ -124,15 +123,18 @@ export default function CartPage() {
 
   /**
    * Correspondance entre les identifiants d'operateur de l'interface et les
-   * valeurs de `PaymentMethod` attendues par l'API. Djamo est une carte Visa :
-   * elle passe par `CARD`, non par un adaptateur Mobile Money.
+   * valeurs de `PaymentMethod` attendues par l'API.
+   *
+   * Djamo a ete retire : l'interface le mappait sur `CARD`, qui n'a aucun
+   * adaptateur dans `payments/providers/registry.ts`. Choisir Djamo menait
+   * donc a `Moyen de paiement non supporte : CARD` au lieu d'un paiement.
+   * Les quatre cles restantes sont exactement celles que le registre sert.
    */
   const METHODE_API: Record<string, string> = {
     wave: 'WAVE',
     orange: 'ORANGE_MONEY',
     mtn: 'MTN_MOMO',
     moov: 'MOOV_MONEY',
-    djamo: 'CARD',
   };
 
   const processPayment = async () => {

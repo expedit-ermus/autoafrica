@@ -62,7 +62,7 @@ export default function CasseAutoVsAutoafriquePage() {
             'Transparence des prix : Prix fixe affiché en Francs CFA (XOF) sur AutoAfrique, négociations opaques en casse.',
             'Garantie : Garantie de conformité et droit de retour sous 48h avec diagnostiqueur en ligne.',
             'Traçabilité : Pièces d\'origine contrôlées avec historique et kilométrage d\'origine.',
-            'Paiement sécurisé : Paiement par <a href="/blog/paiement-mobile-money-auto">Mobile Money (Orange Money, MTN MoMo, Wave, Moov, Djamo)</a> avec reçu électronique, et garantie 48h jusqu\'à la livraison.',
+            'Paiement sécurisé : Paiement par <a href="/blog/paiement-mobile-money-auto">Mobile Money (Orange Money, MTN MoMo, Wave, Moov Money)</a> avec reçu électronique, et garantie 48h jusqu\'à la livraison.',
           ],
         },
         {

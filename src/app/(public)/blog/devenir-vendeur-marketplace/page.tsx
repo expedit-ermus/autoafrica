@@ -62,7 +62,7 @@ export default function DevenirVendeurMarketplacePage() {
           id: 'gestion-commandes',
           heading: 'Paiements garantis et encaissement Mobile Money',
           body: [
-            "Vous encaissez directement par Mobile Money — Wave, Orange Money, MTN MoMo, Moov Money ou Djamo — sur votre compte marchand, avec un reçu électronique à chaque vente et un suivi des commandes dans votre tableau de bord.",
+            "Vous encaissez directement par Mobile Money — Wave, Orange Money, MTN MoMo ou Moov Money — sur votre compte marchand, avec un reçu électronique à chaque vente et un suivi des commandes dans votre tableau de bord.",
             'Dès la livraison confirmée, les fonds sont virés directement sur votre compte <a href="/blog/paiement-mobile-money-auto">Wave, Orange Money ou MTN Mobile Money</a> sans délai via nos <a href="/paiement">passerelles de paiement sécurisées</a>.',
           ],
         },

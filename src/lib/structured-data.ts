@@ -111,7 +111,10 @@ export function buildOrganizationSchema() {
     },
     telephone: '+2250700000000',
     priceRange: '5000 - 500000 XOF',
-    paymentAccepted: 'Cash, Wave, Orange Money, MTN Mobile Money, Moov Money, Djamo, Carte Bancaire',
+    // Les quatre adaptateurs reellement enregistres (`payments/providers/registry.ts`).
+    // Y declarer la carte, Djamo ou les especes annoncait a Google des moyens de
+    // paiement qu'aucun code n'honore.
+    paymentAccepted: 'Wave, Orange Money, MTN Mobile Money, Moov Money',
     currenciesAccepted: 'XOF',
     areaServed: ['CI', 'SN', 'ML', 'BF', 'NE', 'BJ', 'TG', 'GW', 'NG', 'GH'],
     openingHoursSpecification: [

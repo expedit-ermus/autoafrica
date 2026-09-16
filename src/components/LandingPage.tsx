@@ -25,7 +25,7 @@ const trustFeatures = [
     icon: '📱',
     gradient: 'from-blue-600 to-cyan-500',
     title: { fr: 'Paiement Mobile Money', en: 'Mobile Money payment' },
-    desc: { fr: 'Wave, Orange Money, MTN MoMo, Moov, Djamo & CB', en: 'Wave, Orange Money, MTN MoMo, Moov, Djamo & Cards' },
+    desc: { fr: 'Wave, Orange Money, MTN MoMo, Moov Money', en: 'Wave, Orange Money, MTN MoMo, Moov Money' },
     href: '/paiement',
   },
   {
@@ -324,8 +324,8 @@ export default function LandingPage() {
                 </dt>
                 <dd className="text-sm md:text-base text-slate-600 leading-relaxed">
                   {L(
-                    'Le paiement se fait par Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money), directement depuis votre téléphone, avec un reçu électronique à chaque transaction et une garantie de 48 heures après réception de la pièce.',
-                    'Payment is made by Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov Money), directly from your phone, with an electronic receipt for every transaction and a 48-hour warranty once parts are tested.'
+                    'Le paiement se fait par Mobile Money (Wave, Orange Money, MTN MoMo, Moov Money), directement depuis votre téléphone, avec un reçu électronique à chaque transaction et une garantie de 48 heures après réception de la pièce.',
+                    'Payment is made by Mobile Money (Wave, Orange Money, MTN MoMo, Moov Money), directly from your phone, with an electronic receipt for every transaction and a 48-hour warranty once parts are tested.'
                   )}
                 </dd>
               </div>
@@ -362,7 +362,7 @@ export default function LandingPage() {
               </p>
               <p>
                 {L(
-                  'Que vous soyez garagiste, gestionnaire de flotte VTC ou particulier, trouvez les pièces neuves ou d\'occasion dont vous avez besoin à prix transparents avec paiement Mobile Money (Wave, Djamo, Orange Money, MTN MoMo, Moov). Livraison express moto en 1h-4h à Abidjan et expédition en 24h-48h par gare routière vers l\'intérieur.',
+                  'Que vous soyez garagiste, gestionnaire de flotte VTC ou particulier, trouvez les pièces neuves ou d\'occasion dont vous avez besoin à prix transparents avec paiement Mobile Money (Wave, Orange Money, MTN MoMo, Moov Money). Livraison express moto en 1h-4h à Abidjan et expédition en 24h-48h par gare routière vers l\'intérieur.',
                   'Whether you are a mechanic, fleet manager, or individual, find genuine or tested used parts at transparent prices with Mobile Money payment. Express motorcycle delivery in 1h-4h across Abidjan.'
                 )}
               </p>

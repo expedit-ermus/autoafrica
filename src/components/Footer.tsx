@@ -164,11 +164,9 @@ export default function Footer() {
               <div className="flex flex-wrap gap-2.5 mb-5">
                 {[
                   { name: 'Wave', key: 'wave' },
-                  { name: 'Djamo', key: 'djamo' },
                   { name: 'Orange Money', key: 'orange' },
                   { name: 'MTN MoMo', key: 'mtn' },
                   { name: 'Moov Money', key: 'moov' },
-                  { name: 'Visa / MC', key: 'visa' },
                 ].map((p) => (
                   <Link
                     key={p.name}

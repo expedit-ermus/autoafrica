@@ -84,7 +84,7 @@ export default function AboutPage() {
                   {L('Paiement Mobile Money', 'Mobile Money Payments')}
                 </h3>
                 <p className="flex-auto text-sm leading-relaxed text-slate-600">
-                  {L('Transactions sécurisées par Mobile Money via Wave, Djamo, Orange Money, MTN MoMo et Moov Money.', 'Secure Mobile Money transactions via Wave, Djamo, Orange Money, MTN MoMo and Moov Money.')}
+                  {L('Transactions sécurisées par Mobile Money via Wave, Orange Money, MTN MoMo et Moov Money.', 'Secure Mobile Money transactions via Wave, Orange Money, MTN MoMo and Moov Money.')}
                 </p>
               </div>
             </div>
