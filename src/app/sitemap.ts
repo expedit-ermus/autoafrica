@@ -163,6 +163,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     ...(await categoryUrls()),
     ...(await brandUrls()),
+    ...(await vehicleUrls()),
   ];
 
   return indexablePages;
@@ -216,4 +217,48 @@ async function brandUrls(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
+}
+
+/**
+ * Vitrine vehicules et fiches d'annonce.
+ *
+ * Meme regle qu'au-dessus, appliquee des l'ouverture de la rubrique plutot
+ * qu'apres une derive : une page n'est annoncee que si elle porte quelque
+ * chose. `/vehicules` elle-meme n'entre au sitemap que lorsqu'au moins une
+ * annonce est publiable — une vitrine vide soumise a l'indexation est un soft
+ * 404, exactement ce que D66 a corrige sur les marques.
+ *
+ * Le filtre reproduit celui de `vehiclesService.listPublic` : `active: true`
+ * *et* une annonce ACTIVE ou RESERVED. Un vehicule actif dont toutes les
+ * annonces sont DRAFT ou CANCELLED n'a pas de page a annoncer, puisque la
+ * fiche publique repond 404.
+ */
+async function vehicleUrls(): Promise<MetadataRoute.Sitemap> {
+  const publiables = await prisma.vehicle.findMany({
+    where: {
+      active: true,
+      listings: { some: { status: { in: ["ACTIVE", "RESERVED"] } } },
+    },
+    select: { slug: true, updatedAt: true },
+  });
+
+  if (publiables.length === 0) return [];
+
+  return [
+    {
+      url: `${BASE_URL}/vehicules`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+    },
+    ...publiables.map((vehicule) => ({
+      url: `${BASE_URL}/vehicules/${vehicule.slug}`,
+      // La date de modification du vehicule, pas celle du build : une annonce
+      // inchangee depuis des mois ne doit pas se declarer fraiche a chaque
+      // revalidation.
+      lastModified: vehicule.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })),
+  ];
 }

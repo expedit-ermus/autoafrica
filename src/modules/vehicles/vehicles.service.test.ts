@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { vehiclesService } from '@/modules/vehicles/vehicles.service';
+import { vehiclesService, parseVehicleImages } from '@/modules/vehicles/vehicles.service';
 import { NotFoundError, ForbiddenError, ValidationError } from '@/shared/errors';
 
 const mockPrisma = vi.hoisted(() => ({
@@ -7,6 +7,7 @@ const mockPrisma = vi.hoisted(() => ({
     findMany: vi.fn(),
     count: vi.fn(),
     findUnique: vi.fn(),
+    findFirst: vi.fn(),
     create: vi.fn(),
     update: vi.fn(),
   },
@@ -269,5 +270,245 @@ describe('VehiclesService', () => {
     mockPrisma.vehicleListing.findFirst.mockResolvedValue(null);
 
     await expect(vehiclesService.setStatus('v1', 'ACTIVE', 'seller-1')).rejects.toBeInstanceOf(NotFoundError);
+  });
+});
+
+/**
+ * Vitrine publique.
+ *
+ * La rubrique ouvre sur un catalogue volontairement vide : les dix vehicules
+ * presents en base etaient les fixtures de `prisma/seed.mjs` — memes noms,
+ * memes prix, aucune image, un seul vendeur `@example.com` — et ont ete
+ * desactives avant publication. Ces tests fixent ce qu'une page publique a le
+ * droit de montrer.
+ */
+describe('VehiclesService — vitrine publique', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const ligne = (surcharge: Record<string, unknown> = {}) => ({
+    id: 'v1',
+    slug: 'toyota-corolla-2021-abc',
+    name: 'Toyota Corolla 2021',
+    year: 2021,
+    price: 11500000,
+    currency: 'XOF',
+    mileage: null,
+    fuel: null,
+    gearbox: null,
+    condition: 'USED',
+    bodyType: null,
+    color: null,
+    city: 'Abidjan',
+    country: 'CI',
+    description: null,
+    images: null,
+    updatedAt: new Date('2026-02-01T00:00:00.000Z'),
+    brand: { name: 'Toyota', slug: 'toyota' },
+    carModel: null,
+    listings: [
+      {
+        id: 'l1',
+        status: 'ACTIVE',
+        price: 11000000,
+        currency: 'XOF',
+        seller: { shopName: 'Garage Moussa', city: 'Abidjan' },
+      },
+    ],
+    ...surcharge,
+  });
+
+  const FILTRE_PUBLIC = {
+    active: true,
+    listings: { some: { status: { in: ['ACTIVE', 'RESERVED'] } } },
+  };
+
+  it('n expose que les vehicules actifs portant une annonce vivante', async () => {
+    mockPrisma.vehicle.findMany.mockResolvedValue([ligne()]);
+    mockPrisma.vehicle.count.mockResolvedValue(1);
+
+    await vehiclesService.listPublic({}, { page: 1, pageSize: 20 });
+
+    expect(mockPrisma.vehicle.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({ where: expect.objectContaining(FILTRE_PUBLIC) }),
+    );
+  });
+
+  // Si le comptage voyait un filtre plus large que la requete, la pagination
+  // annoncerait des vehicules que la liste ne contient pas.
+  it('compte avec exactement le meme filtre que la liste', async () => {
+    mockPrisma.vehicle.findMany.mockResolvedValue([]);
+    mockPrisma.vehicle.count.mockResolvedValue(0);
+
+    await vehiclesService.listPublic({ brand: 'Toyota' }, { page: 1, pageSize: 20 });
+
+    const whereListe = mockPrisma.vehicle.findMany.mock.calls[0][0].where;
+    const whereCompte = mockPrisma.vehicle.count.mock.calls[0][0].where;
+    expect(whereCompte).toEqual(whereListe);
+  });
+
+  it('exige active et une annonce vivante sur la fiche, pas seulement sur la liste', async () => {
+    mockPrisma.vehicle.findFirst.mockResolvedValue(null);
+
+    await vehiclesService.getPublicBySlug('un-slug');
+
+    expect(mockPrisma.vehicle.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ ...FILTRE_PUBLIC, slug: 'un-slug' }),
+      }),
+    );
+  });
+
+  // Un vehicule desactive doit disparaitre du web, pas seulement des listes :
+  // sans ce `null`, la page resterait servie a son URL directe et indexee.
+  it('renvoie null sur un vehicule introuvable ou retire', async () => {
+    mockPrisma.vehicle.findFirst.mockResolvedValue(null);
+
+    expect(await vehiclesService.getPublicBySlug('retire')).toBeNull();
+  });
+
+  // `getById` incremente `views`. Sur une page publique, `generateMetadata` et
+  // le composant chargent tous deux la fiche : le compteur doublerait, et une
+  // ecriture pendant le rendu n'a rien a faire dans un segment revalide.
+  it('ne compte aucune vue et n ecrit rien lors d une lecture publique', async () => {
+    mockPrisma.vehicle.findFirst.mockResolvedValue(ligne());
+
+    await vehiclesService.getPublicBySlug('toyota-corolla-2021-abc');
+
+    expect(mockPrisma.vehicle.update).not.toHaveBeenCalled();
+  });
+
+  // Le prix qui fait foi est celui de l'annonce : c'est ce que le vendeur
+  // offre reellement, `Vehicle.price` pouvant avoir diverge.
+  it('retient le prix de l annonce et non celui du vehicule', async () => {
+    mockPrisma.vehicle.findFirst.mockResolvedValue(ligne());
+
+    const v = await vehiclesService.getPublicBySlug('toyota-corolla-2021-abc');
+
+    expect(v?.price).toBe(11000000);
+  });
+
+  it('n invente aucune valeur pour les champs absents', async () => {
+    mockPrisma.vehicle.findFirst.mockResolvedValue(ligne());
+
+    const v = await vehiclesService.getPublicBySlug('toyota-corolla-2021-abc');
+
+    // Un kilometrage absent n'est pas 0 km, une couleur absente n'est pas
+    // « Non precisee » : le champ reste vide et la vue omet la ligne (D61).
+    expect(v?.mileage).toBeUndefined();
+    expect(v?.color).toBeUndefined();
+    expect(v?.fuel).toBeUndefined();
+    expect(v?.gearbox).toBeUndefined();
+    expect(v?.images).toEqual([]);
+  });
+
+  // Les fiches pieces font passer la prise de contact par le numero de la
+  // plateforme. Publier le telephone personnel d'un vendeur sur une page
+  // indexee serait un autre choix, qui n'a pas ete fait.
+  it('ne publie ni telephone ni nom personnel du vendeur', async () => {
+    mockPrisma.vehicle.findFirst.mockResolvedValue(ligne());
+
+    const v = await vehiclesService.getPublicBySlug('toyota-corolla-2021-abc');
+    const champs = Object.keys(v ?? {});
+
+    expect(champs.some((c) => /phone|firstName|lastName|email/i.test(c))).toBe(false);
+    expect(JSON.stringify(v)).not.toMatch(/example\.com/);
+
+    const select =
+      mockPrisma.vehicle.findFirst.mock.calls[0][0].include.listings.select.seller.select;
+    expect(select.phone).toBeUndefined();
+    expect(select).toEqual({ shopName: true, city: true });
+  });
+
+  it('remonte le statut RESERVED pour que la fiche puisse le dire', async () => {
+    mockPrisma.vehicle.findFirst.mockResolvedValue(
+      ligne({ listings: [{ id: 'l1', status: 'RESERVED', price: 9, currency: 'XOF', seller: null }] }),
+    );
+
+    const v = await vehiclesService.getPublicBySlug('x');
+
+    expect(v?.listingStatus).toBe('RESERVED');
+  });
+
+  describe('facettes', () => {
+    it('deduit les valeurs proposees des annonces reellement publiables', async () => {
+      mockPrisma.vehicle.findMany.mockResolvedValue([
+        {
+          year: 2021,
+          price: 11500000,
+          city: 'Abidjan',
+          fuel: 'DIESEL',
+          gearbox: 'MANUAL',
+          condition: 'USED',
+          bodyType: 'SUV',
+          brand: { name: 'Toyota' },
+        },
+        {
+          year: 2019,
+          price: 8000000,
+          city: 'Bouake',
+          fuel: 'DIESEL',
+          gearbox: null,
+          condition: 'USED',
+          bodyType: null,
+          brand: { name: 'Kia' },
+        },
+      ]);
+
+      const f = await vehiclesService.publicFacets();
+
+      expect(f.brands).toEqual(['Kia', 'Toyota']);
+      expect(f.cities).toEqual(['Abidjan', 'Bouake']);
+      expect(f.fuels).toEqual(['DIESEL']);
+      // Une boite ou une carrosserie absente ne devient pas une option vide,
+      // qui ne filtrerait rien.
+      expect(f.gearboxes).toEqual(['MANUAL']);
+      expect(f.bodyTypes).toEqual(['SUV']);
+      expect(f.minPrice).toBe(8000000);
+      expect(f.maxYear).toBe(2021);
+    });
+
+    // Sur une vitrine vide, un plancher de prix a 0 et une annee a 0 sont des
+    // bornes fausses : `Math.min()` d'un tableau vide vaut Infinity, et un
+    // repli a 0 afficherait « a partir de 0 FCFA ».
+    it('ne fabrique aucune borne quand rien n est publiable', async () => {
+      mockPrisma.vehicle.findMany.mockResolvedValue([]);
+
+      const f = await vehiclesService.publicFacets();
+
+      expect(f.total).toBe(0);
+      expect(f.minPrice).toBeUndefined();
+      expect(f.maxPrice).toBeUndefined();
+      expect(f.minYear).toBeUndefined();
+      expect(f.maxYear).toBeUndefined();
+      expect(f.brands).toEqual([]);
+    });
+  });
+});
+
+/**
+ * `Vehicle.images` est une colonne JSON ecrite par `JSON.stringify` : selon le
+ * chemin d'ecriture elle arrive comme chaine, comme tableau deja decode, ou
+ * NULL. Un contenu illisible ne doit jamais produire une image empruntee.
+ */
+describe('parseVehicleImages', () => {
+  it('decode une chaine JSON', () => {
+    expect(parseVehicleImages('["/a.jpg","/b.jpg"]')).toEqual(['/a.jpg', '/b.jpg']);
+  });
+
+  it('accepte un tableau deja decode', () => {
+    expect(parseVehicleImages(['/a.jpg'])).toEqual(['/a.jpg']);
+  });
+
+  it('renvoie une liste vide sur NULL, vide ou JSON invalide', () => {
+    expect(parseVehicleImages(null)).toEqual([]);
+    expect(parseVehicleImages('')).toEqual([]);
+    expect(parseVehicleImages('{pas du json')).toEqual([]);
+    expect(parseVehicleImages(42)).toEqual([]);
+  });
+
+  it('ecarte les entrees qui ne sont pas des chemins exploitables', () => {
+    expect(parseVehicleImages('["/a.jpg", null, 7, ""]')).toEqual(['/a.jpg']);
   });
 });

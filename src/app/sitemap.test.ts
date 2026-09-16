@@ -4,6 +4,7 @@ import { BRAND_SLUGS, CATEGORY_SLUGS } from '@/lib/marketplace-catalog';
 const mockPrisma = vi.hoisted(() => ({
   category: { findMany: vi.fn() },
   brand: { findMany: vi.fn() },
+  vehicle: { findMany: vi.fn() },
 }));
 
 vi.mock('@/lib/prisma', () => ({ prisma: mockPrisma }));
@@ -20,9 +21,16 @@ describe('sitemap', () => {
     vi.clearAllMocks();
   });
 
-  async function urls(categories: string[], marques: string[]) {
+  async function urls(
+    categories: string[],
+    marques: string[],
+    vehicules: { slug: string; updatedAt?: Date }[] = [],
+  ) {
     mockPrisma.category.findMany.mockResolvedValue(categories.map((slug) => ({ slug })));
     mockPrisma.brand.findMany.mockResolvedValue(marques.map((name) => ({ name })));
+    mockPrisma.vehicle.findMany.mockResolvedValue(
+      vehicules.map((v) => ({ slug: v.slug, updatedAt: v.updatedAt ?? new Date() })),
+    );
     const entrees = await sitemap();
     return entrees.map((e) => e.url);
   }
@@ -84,5 +92,58 @@ describe('sitemap', () => {
     expect(liens.filter((u) => u.includes('/categories/'))).toHaveLength(CATEGORY_SLUGS.length);
     expect(liens.filter((u) => u.includes('/marques/'))).toHaveLength(BRAND_SLUGS.length);
     expect(new Set(liens).size, 'aucune URL en double').toBe(liens.length);
+  });
+  /**
+   * La vitrine vehicules ouvre sur un catalogue vide : les dix annonces
+   * presentes en base etaient les fixtures du seed, desactivees avant
+   * publication. Soumettre `/vehicules` a l'indexation dans cet etat
+   * produirait un soft 404, le defaut exact que D66 a corrige sur les marques.
+   */
+  it('n annonce pas la vitrine vehicules quand aucune annonce n est publiable', async () => {
+    const liens = await urls(['moteur'], ['Toyota'], []);
+
+    expect(liens).not.toContain('https://autoafrique-saas.vercel.app/vehicules');
+    expect(liens.filter((u) => u.includes('/vehicules'))).toHaveLength(0);
+  });
+
+  it('annonce la vitrine et chaque fiche des qu une annonce est publiable', async () => {
+    const liens = await urls(['moteur'], ['Toyota'], [
+      { slug: 'toyota-corolla-2021-abc123' },
+      { slug: 'peugeot-3008-2022-def456' },
+    ]);
+
+    expect(liens).toContain('https://autoafrique-saas.vercel.app/vehicules');
+    expect(liens).toContain('https://autoafrique-saas.vercel.app/vehicules/toyota-corolla-2021-abc123');
+    expect(liens).toContain('https://autoafrique-saas.vercel.app/vehicules/peugeot-3008-2022-def456');
+  });
+
+  // Le filtre doit etre pose en base, pas applique apres coup : un vehicule
+  // actif sans annonce vivante ne doit jamais atteindre le sitemap, et c'est
+  // la requete qui doit l'ecarter.
+  it('interroge la base avec le filtre des annonces vivantes', async () => {
+    await urls(['moteur'], ['Toyota'], [{ slug: 'x-1' }]);
+
+    expect(mockPrisma.vehicle.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          active: true,
+          listings: { some: { status: { in: ['ACTIVE', 'RESERVED'] } } },
+        },
+      }),
+    );
+  });
+
+  // Une annonce inchangee ne doit pas se declarer fraiche a chaque
+  // revalidation horaire du sitemap.
+  it('date chaque fiche de la modification du vehicule, pas du build', async () => {
+    const vieille = new Date('2026-01-15T10:00:00.000Z');
+    mockPrisma.category.findMany.mockResolvedValue([]);
+    mockPrisma.brand.findMany.mockResolvedValue([]);
+    mockPrisma.vehicle.findMany.mockResolvedValue([{ slug: 'x-1', updatedAt: vieille }]);
+
+    const entrees = await sitemap();
+    const fiche = entrees.find((e) => e.url.endsWith('/vehicules/x-1'));
+
+    expect(fiche?.lastModified).toEqual(vieille);
   });
 });

@@ -20,6 +20,12 @@ const SLUGS_INCONNUS = [
   '/marketplace/marque/slug-inexistant-pour-test',
   '/catalogue/slug-inexistant-pour-test',
   '/pieces/slug-inexistant-pour-test',
+  // La fiche vehicule rejoint la regle des son ouverture. Elle repond 404 sur
+  // un slug inconnu, mais aussi sur un vehicule desactive ou dont l'annonce
+  // n'est plus vivante : `getPublicBySlug` exige `active: true` et un statut
+  // ACTIVE ou RESERVED. Sans quoi les dix annonces de demonstration retirees
+  // resteraient joignables et indexables a leur URL directe.
+  '/vehicules/slug-inexistant-pour-test',
 ];
 
 const PAGES_VALIDES = [
@@ -30,6 +36,10 @@ const PAGES_VALIDES = [
   '/marques/toyota',
   '/marketplace/categorie/frein',
   '/marketplace/marque/peugeot',
+  // La vitrine reste en 200 meme sans annonce : c'est une page de rubrique
+  // qui dit honnetement qu'elle est vide, pas une impasse. C'est le sitemap
+  // qui s'abstient de l'annoncer tant qu'elle ne porte rien.
+  '/vehicules',
 ];
 
 test('un slug inconnu renvoie 404 sur toutes les routes dynamiques', async ({ request }) => {

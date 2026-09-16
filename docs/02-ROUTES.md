@@ -65,6 +65,22 @@
 | R057 | `/marketplace/marque/opel` | Public | Page catalogue | Trouver des pièces Opel | Vente | Commerciale | Pièces détachées auto Opel à Abidjan | index | oui | aucun | publique |
 | R058 | `/dashboard/notifications` | App | Notifications | Voir les notifications | Rétention | Navigationnelle | Notifications | noindex | non | aucun | privée |
 | R059 | `/dashboard/parts-search` | App | PartsSearch | Trouver les pièces compatibles de mon véhicule | Vente | Navigationnelle | Trouvez les pièces pour votre véhicule | noindex | non | aucun | privée |
+| R214 | `/vehicules` | Public | Vitrine véhicules | Parcourir les véhicules à vendre | Vente | Commerciale | Véhicules d'occasion en Côte d'Ivoire | index | conditionnel | BreadcrumbList | publique |
+| R215 | `/vehicules/[slug]` | Public | Fiche véhicule | Consulter une annonce | Vente | Transactionnelle | Nom du véhicule | index | conditionnel | Vehicle, BreadcrumbList | publique |
+
+### Vitrine véhicules : indexation conditionnelle
+
+`/vehicules` et `/vehicules/[slug]` portent `sitemap: conditionnel`, une valeur
+que les autres routes n'ont pas. Le sitemap n'annonce la vitrine que lorsqu'au
+moins une annonce est publiable, et chaque fiche seulement tant que son annonce
+l'est — `active: true` et un statut `ACTIVE` ou `RESERVED`. Une annonce retirée
+sort du sitemap et sa fiche répond 404, au lieu de rester joignable à son URL.
+
+R017 `/dashboard/vehicles` reste la vue vendeur, derrière authentification : le
+tableau y sert à gérer ses propres annonces. La colonne « Indexation » de R017
+annonce `index | oui`, ce qui n'a jamais été exact — la page est privée et son
+schéma `Vehicle` n'a jamais été indexé (constat déjà porté en D66). C'est R214
+et R215 qui exposent réellement les véhicules au public.
 
 ## Routes API
 

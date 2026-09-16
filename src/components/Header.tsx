@@ -98,7 +98,10 @@ export default function Header() {
               {L('CLUB', 'CLUB')}
             </Link>
             <span className="text-slate-700 hidden sm:inline">|</span>
-            <Link href="/dashboard/vehicles" className="hover:text-orange-400 transition-colors font-medium whitespace-nowrap hidden sm:inline text-slate-300">
+            {/* Pointait vers `/dashboard/vehicles`, derriere authentification :
+                un visiteur non connecte tombait sur l'ecran de connexion depuis
+                un lien de navigation publique. */}
+            <Link href="/vehicules" className="hover:text-orange-400 transition-colors font-medium whitespace-nowrap hidden sm:inline text-slate-300">
               {L('VÉHICULES', 'VEHICLES')}
             </Link>
           </nav>

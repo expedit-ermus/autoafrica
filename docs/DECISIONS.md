@@ -1625,3 +1625,142 @@ bord CinetPay. Aucun changement de code n'est necessaire : le tunnel s'allume
 des que les variables sont presentes, et retombe sur « commande enregistree »
 si elles disparaissent.
 
+
+## D68 : La vitrine vehicules s'ouvre au public, sans les annonces de demonstration
+
+**Contexte.** D67 a clos le chantier paiement. Le module `vehicles` etait le
+plus avance de ceux qui n'etaient pas exposes : service, validateur de plaque,
+decodeur de VIN et `buildVehicleSchema` ecrits et testes, mais joignables
+seulement depuis `/dashboard/vehicles`, derriere authentification.
+
+**Ce que la base de production contenait.** Dix `Vehicle` et dix
+`VehicleListing`, tous `active = 1`. Ce sont exactement les fixtures de
+`prisma/seed.mjs` : memes noms, memes prix, memes villes, memes descriptions,
+crees le 03/08 a la meme seconde. Aucune image sur les dix. Un seul vendeur,
+`moussa@example.com`.
+
+Les descriptions sont inventees de bout en bout — « carnet Mercedes, toit
+ouvrant », « non accidente », « vehicule de particulier », « entretien en
+concession ». Ouvrir la vitrine sans y toucher publiait dix pages indexables
+d'offres de vente fabriquees, avec des prix de 8,8 a 24 millions XOF et un
+vendeur qui n'existe pas. C'est la classe de defaut de D61, d'un cran plus
+grave : un avis decoratif invente trompe sur la reputation, une annonce de
+vehicule inventee fait deplacer un acheteur.
+
+Le garde-fou de D66 se serait declenche sans corriger le fond : la
+disponibilite derivee de `VehicleListing.status` aurait publie dix `InStock`
+parfaitement conformes au schema, et parfaitement faux.
+
+**Decision.** Les dix annonces sont desactivees, non supprimees :
+`scripts/deactivate-demo-vehicles.mjs` pose `active = 0` sur les vehicules dont
+le nom figure dans la liste du seed *et* dont le vendeur porte une adresse
+`@example.com` — une vraie annonce homonyme appartiendrait a un vendeur reel et
+ne serait pas touchee. Sans `--apply` le script n'ecrit rien et affiche sa
+selection ; `--revert` annule le geste. L'ecriture en production reste la main
+de l'utilisateur.
+
+La vitrine ouvre donc sur un catalogue vide, et le dit. Elle se remplira d'elle-
+meme, comme le sitemap de D66 integre une page quand elle se remplit.
+
+**Trois garanties que `list()` et `getById()` ne donnaient pas.**
+
+*Une annonce vivante est exigee en base.* `list()` filtre `active: true` mais
+n'exige pas qu'une annonce porte le vehicule : un vehicule dont toutes les
+`listings` sont DRAFT ou CANCELLED en ressortait avec un tableau vide, et la
+vitrine aurait affiche une offre que personne ne porte. `listPublic` pose
+`listings: { some: { status: { in: ['ACTIVE', 'RESERVED'] } } }` dans la
+requete — pas apres coup, sans quoi le comptage de la pagination mentirait.
+
+*La fiche filtre `active`.* `getById` ne le fait pas. Desactiver les dix
+annonces ne les aurait sorties que des listes : leurs URL directes seraient
+restees servies et indexees. `getPublicBySlug` renvoie `null`, la page repond
+404. C'est ce qui rend la desactivation reellement suffisante.
+
+*La lecture publique ne compte aucune vue.* `getById` incremente `views` a
+chaque appel. Sur une page serveur, `generateMetadata` et le composant chargent
+tous deux la fiche : le compteur aurait double, et une ecriture pendant le rendu
+n'a rien a faire dans un segment revalide.
+
+**Les facettes sortent des annonces, pas d'une liste ecrite.** Marques, villes,
+carburants, boites, etats et carrosseries proposes au filtrage sont deduits de
+ce qui est publiable. Une liste en dur proposerait « Electrique » ou « Bouake »
+sans une annonce derriere, et le filtre ne renverrait rien. Sur une vitrine
+vide, les bornes de prix et d'annee valent `undefined` et non zero : `Math.min`
+d'un tableau vide vaut Infinity, et un repli a zero afficherait « a partir de
+0 FCFA ».
+
+**Ce que la fiche ne publie pas.** Le vendeur est reduit a son enseigne et sa
+ville. Les fiches pieces font deja passer la prise de contact par le numero de
+la plateforme ; publier le numero personnel d'un vendeur sur une page indexee
+serait un autre choix, qui n'a pas ete fait ici. Un test verifie que le `select`
+Prisma ne demande que `shopName` et `city`.
+
+**Le lien de navigation etait casse.** L'en-tete portait deja « VEHICULES »,
+pointant sur `/dashboard/vehicles` : un visiteur non connecte tombait sur
+l'ecran de connexion depuis un lien de navigation publique. Il pointe desormais
+sur la vitrine.
+
+**Sitemap.** `/vehicules` n'entre au sitemap que lorsqu'une annonce au moins est
+publiable, et chaque fiche est datee de `updatedAt` du vehicule, non du build :
+une annonce inchangee ne doit pas se declarer fraiche a chaque revalidation
+horaire. Cette fois la regle est posee a l'ouverture de la rubrique, et non
+apres une derive.
+
+**Un defaut que seul le rendu reel a trouve.** Les deux fiches valides
+repondaient 500 : `Attempted to call formatPrix() from the server but formatPrix
+is on the client`. La fiche est un composant serveur et importait `formatPrix`
+et `libelle` de `VehiculesFilters.tsx`, marque `'use client'`. Ni les tests
+unitaires ni les E2E ne l'ont vu — la vitrine etant vide, aucune fiche n'etait
+visitee, et le seul slug teste etait un slug inconnu, qui sort en 404 avant
+d'atteindre la mise en forme.
+
+Les fonctions pures sont sorties dans `src/lib/vehicle-presentation.ts`, module
+neutre appelable des deux cotes, et la reexportation depuis le composant client
+a ete retiree pour ne pas rouvrir le chemin. Trois tests tiennent la frontiere.
+L'un d'eux, ecrit d'abord comme une recherche du texte `use client`, tombait en
+echec sur les commentaires qui *parlent* de la directive : il verifie desormais
+la directive en tete de fichier, seule chose qui compte.
+
+**Verifications.** Treize mutations, treize detections : la fiche cessant de
+filtrer `active`, la fiche cessant d'exiger une annonce vivante, la lecture
+publique incrementant les vues, le prix repris du vehicule au lieu de l'annonce,
+un kilometrage absent presente comme 0 km, le telephone du vendeur ajoute au
+`select`, une vitrine vide annoncant un plancher a 0, les facettes gardant les
+valeurs nulles, le comptage de pagination ignorant les filtres, un JSON d'images
+illisible produisant une image de repli, le sitemap annoncant une vitrine vide,
+chaque fiche se declarant fraiche a chaque revalidation, et le sitemap cessant
+d'exiger une annonce vivante. La reference a ete rejouee verte apres
+restauration, pour qu'aucune detection ne repose sur un fichier reste mute.
+
+eslint 0, `tsc --noEmit` 0, 462/462 tests unitaires (49 fichiers), build reussi,
+budgets respectes (`/vehicules` a 181,6 Ko de JS gzip, loin du plafond),
+26/26 E2E.
+
+Rendu verifie dans un vrai navigateur sur un serveur de production local, avec
+deux annonces temporaires posees en base locale — une complete, une reduite au
+strict minimum. La fiche minimale n'affiche ni kilometrage, ni carburant, ni
+boite, ni couleur, ni ville, et son JSON-LD omet ces champs au lieu de les
+deviner ; son `availability` vaut `LimitedAvailability`, derive du statut
+RESERVED. Deux cartes rendues en 1280 px et en 390 px, sept filtres, aucun
+debordement horizontal, aucune image en erreur. Les annonces de verification
+ont ensuite ete retirees de la base locale.
+
+**Reste ouvert.**
+
+*La grille n'est pas rendue cote serveur.* `VehiculesFilters` appelle
+`useSearchParams`, ce qui impose une frontiere Suspense : le HTML statique ne
+contient aucune carte, elles apparaissent a l'hydratation. Ce n'est pas propre a
+la vitrine — `/catalogue` se comporte exactement pareil, son HTML ne contient
+aucun lien `/pieces/`. L'impact est attenue par le sitemap, qui adresse chaque
+fiche directement, et les fiches, elles, sont bien rendues par le serveur.
+Corriger cela demande de reprendre le motif sur les deux rubriques a la fois :
+c'est un chantier distinct, pas un correctif ponctuel.
+
+*Aucune annonce reelle n'existe.* La vitrine est vide tant qu'un vendeur n'a pas
+publie. Le parcours de publication passe aujourd'hui par `/dashboard/vehicles` ;
+rien ne mene un vendeur de la vitrine vers ce formulaire, hors le lien
+« Publier une annonce » de l'etat vide, qui renvoie vers `/devenir-vendeur`.
+
+*Les photos.* `Vehicle.images` est prevu et lu, mais aucune annonce n'en porte.
+Une annonce sans photo s'affiche sur fond neutre avec un pictogramme, jamais
+avec l'image d'un autre vehicule (regle de D66).

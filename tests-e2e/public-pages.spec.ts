@@ -46,6 +46,28 @@ test.describe('Public Pages & Conversion Features', () => {
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   });
 
+  /**
+   * La vitrine ouvre sur un catalogue vide : les dix vehicules presents en
+   * base etaient les fixtures du seed et ont ete desactives avant publication.
+   * Une vitrine vide doit le dire, et surtout ne rien montrer — un exemple
+   * affiche « pour illustrer » serait une offre commerciale fabriquee.
+   */
+  test('la vitrine vehicules annonce honnetement un catalogue vide', async ({ page }) => {
+    await page.goto('/vehicules');
+    await expect(page).toHaveTitle(/Véhicules/i);
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+
+    const cartes = page.locator('a[href^="/vehicules/"]');
+    if ((await cartes.count()) === 0) {
+      await expect(page.getByRole('heading', { name: /Aucun véhicule/i })).toBeVisible();
+      // La page vide reste utile : elle renvoie vers ce qui existe vraiment.
+      // Nom exact : le pied de page porte deja un lien « Catalogue de pièces ».
+      await expect(
+        page.getByRole('link', { name: 'Voir le catalogue de pièces', exact: true }),
+      ).toBeVisible();
+    }
+  });
+
   test('Blog article on part compatibility is readable with TOC and CTA', async ({ page }) => {
     await page.goto('/blog/verifier-compatibilite-piece-auto-vehicule');
     await expect(page).toHaveTitle(/compatibilité/i);
