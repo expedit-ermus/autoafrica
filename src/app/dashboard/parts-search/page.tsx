@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
 import LoadingSkeleton from '@/components/LoadingSkeleton';
+import { marquesPourvues } from '@/modules/products/marques-pourvues';
 
 const VehiclePartsSearch = dynamic(() => import('@/components/VehiclePartsSearch'), {
   loading: () => <LoadingSkeleton height="h-64" />
@@ -14,7 +15,9 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function PartsSearchPage() {
+export default async function PartsSearchPage() {
+  const marques = await marquesPourvues();
+
   return (
     <div className="min-h-screen bg-gray-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -29,7 +32,7 @@ export default function PartsSearchPage() {
         </div>
 
         <main>
-          <VehiclePartsSearch />
+          <VehiclePartsSearch marques={marques} />
         </main>
       </div>
     </div>

@@ -29,6 +29,28 @@ Dix catégories, alignées sur `Category.slug` en base (créées par `prisma/see
 
 Marques populaires : Toyota, Hyundai, Kia, Peugeot, Mercedes, Renault, Nissan, Volkswagen (modèles Brand / CarModel pour la compatibilité véhicule).
 
+> Cette liste est la bonne, mais le code en portait une autre. `VehiclePartsSearch`
+> proposait Suzuki, Dacia et Mitsubishi — zero piece en stock, et les deux
+> dernieres absentes de la table `Brand` — en omettant Kia, Mercedes et
+> Volkswagen, qui portent seize des cinquante et une pieces. Les marques
+> proposees au choix sont desormais deduites de la base par
+> `marquesPourvues()`, avec le filtre exact des pages marque et du sitemap
+> (cf. D70).
+
+## Compatibilite vehicule
+
+`CarModel` et `ProductCompat` portent le modele de compatibilite : plage
+d'annees, motorisation, finition. **Les deux tables sont vides en production, et
+aucune piece n'est rattachee a un modele.** Tant que c'est le cas, aucune page ne
+peut annoncer des « pieces compatibles avec votre vehicule » : elle ne peut
+promettre que des pieces referencees pour une marque.
+
+La recherche par plaque ne leve pas cette limite. Une plaque ne designe un
+vehicule que par un acces au registre national (Quipux/DIGIMMAT en Cote
+d'Ivoire), qui n'existe pas dans le projet : `/api/v1/vehicles/lookup` valide un
+format, il n'identifie pas un vehicule. Le VIN ne porte, lui, que le
+constructeur, le pays et l'annee-modele — pas le modele commercial.
+
 ## Filtres de recherche
 
 - Marque, Modèle, Année (2000-2025)

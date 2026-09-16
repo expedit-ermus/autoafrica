@@ -4,26 +4,35 @@ import dynamic from 'next/dynamic';
 import LoadingSkeleton from '@/components/LoadingSkeleton';
 import { SITE_URL, PARTS_SEARCH_URL } from '@/lib/structured-data';
 import { BreadcrumbStructuredData } from '@/components/StructuredData';
+import { marquesPourvues } from '@/modules/products/marques-pourvues';
 
 const VehiclePartsSearch = dynamic(() => import('@/components/VehiclePartsSearch'), {
   loading: () => <LoadingSkeleton height="h-64" />,
 });
 
 export const metadata: Metadata = {
-  title: 'Trouvez les pièces compatibles avec votre véhicule',
+  title: 'Pièces détachées par marque de véhicule',
   description:
-    "Recherchez les pièces détachées compatibles par numéro d'immatriculation ou en sélectionnant marque et modèle. Neuf et occasion contrôlée, livraison rapide en Afrique de l'Ouest.",
+    "Choisissez la marque de votre voiture pour ne voir que les pièces référencées pour elle. Neuf et occasion contrôlée, livraison rapide en Afrique de l'Ouest.",
   alternates: { canonical: PARTS_SEARCH_URL },
   openGraph: {
-    title: 'Trouvez les pièces compatibles avec votre véhicule | AutoAfrique',
+    title: 'Pièces détachées par marque de véhicule | AutoAfrique',
     description:
-      "Recherchez les pièces détachées compatibles par numéro d'immatriculation ou en sélectionnant marque et modèle.",
+      "Choisissez la marque de votre voiture pour ne voir que les pièces référencées pour elle.",
     url: PARTS_SEARCH_URL,
     type: 'website',
   },
 };
 
-export default function RecherchePiecesPage() {
+/**
+ * Meme fraicheur que le catalogue : une marque qui se pourvoit apparait sans
+ * redeploiement.
+ */
+export const revalidate = 60;
+
+export default async function RecherchePiecesPage() {
+  const marques = await marquesPourvues();
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <BreadcrumbStructuredData
@@ -42,15 +51,15 @@ export default function RecherchePiecesPage() {
       </nav>
 
       <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-        Trouvez les pièces compatibles avec votre véhicule
+        Trouvez les pièces pour votre véhicule
       </h1>
       <p className="mt-2 max-w-2xl text-sm text-slate-600">
-        Saisissez votre plaque d&apos;immatriculation ou choisissez la marque et le modèle :
-        seules les pièces référencées pour votre voiture vous sont proposées.
+        Choisissez la marque de votre voiture : seules les pièces référencées pour cette
+        marque vous sont proposées.
       </p>
 
       <div className="mt-8">
-        <VehiclePartsSearch />
+        <VehiclePartsSearch marques={marques} />
       </div>
     </div>
   );

@@ -2,13 +2,10 @@ export interface DecodedVin {
   vin: string
   valid: boolean
   wmi: string
-  brand: string
-  countryOfOrigin: string
-  modelYear: number
-  bodyType: string
-  engine: string
-  fuel: string
-  gearbox: string
+  /** Renseignes seulement quand le VIN les porte reellement. */
+  brand?: string
+  countryOfOrigin?: string
+  modelYear?: number
 }
 
 // ISO 3779 WMI Mapping
@@ -43,45 +40,69 @@ const WMI_MAP: Record<string, { brand: string; country: string }> = {
   '1FT': { brand: 'Ford', country: 'États-Unis' },
 }
 
-// ISO 3779 10th Character (Model Year Code)
-const YEAR_CODES: Record<string, number> = {
-  A: 2010, B: 2011, C: 2012, D: 2013, E: 2014, F: 2015, G: 2016, H: 2017, J: 2018, K: 2019,
-  L: 2020, M: 2021, N: 2022, P: 2023, R: 2024, S: 2025, T: 2026,
+/**
+ * Codes d'annee-modele ISO 3779, 10e caractere.
+ *
+ * Le cycle compte trente codes et se repete : `A` vaut 1980 comme 2010, `1`
+ * vaut 2001 comme 2031. Le code seul ne leve donc pas l'ambiguite. La regle
+ * retenue est explicite : on prend l'annee du cycle courant, et si elle est
+ * dans le futur on retire trente ans. `V` donne ainsi 1997 et non 2027, et un
+ * vehicule de 2027 ne peut pas apparaitre dans un catalogue d'occasion.
+ *
+ * I, O et Q sont absents du VIN par la norme ; U, Z et 0 ne servent pas de
+ * code d'annee. Un caractere hors de cette table ne produit aucune annee.
+ */
+const ORDRE_CODES_ANNEE = 'ABCDEFGHJKLMNPRSTVWXY123456789'
+const PREMIERE_ANNEE_DU_CYCLE = 2010
+const LONGUEUR_DU_CYCLE = 30
+
+export function decodeModelYear(code: string, anneeCourante = new Date().getFullYear()): number | undefined {
+  // `indexOf('')` vaut 0, pas -1 : sans ce controle de longueur, une chaine
+  // vide tombait sur le premier code de la table et donnait 2010.
+  if (code.length !== 1) return undefined
+
+  const index = ORDRE_CODES_ANNEE.indexOf(code.toUpperCase())
+  if (index === -1) return undefined
+
+  const annee = PREMIERE_ANNEE_DU_CYCLE + index
+  return annee > anneeCourante ? annee - LONGUEUR_DU_CYCLE : annee
 }
 
+/**
+ * Decode ce qu'un VIN porte reellement : le constructeur et le pays par le WMI
+ * (ISO 3779, trois premiers caracteres), et l'annee-modele par le dixieme.
+ *
+ * Il ne renvoie plus ni carrosserie, ni motorisation, ni carburant, ni boite de
+ * vitesses. Ces valeurs etaient deduites des caracteres 5 a 7 — le VDS, dont la
+ * signification est propre a chaque constructeur et n'est normalisee par
+ * personne. Un `charAt(5) === 'D'` annoncait « 2.0L Turbo Diesel » sur
+ * n'importe quel vehicule dont le VIN portait un D a cette place.
+ *
+ * Un WMI inconnu ne donne plus `Toyota` : le champ reste vide. Le repli
+ * `WMI_MAP[wmi] || { brand: 'Toyota' }` attribuait cette marque a tout
+ * vehicule non reference, et c'est sur cette marque que la recherche de pieces
+ * compatibles se serait appuyee (D61).
+ *
+ * Un VIN invalide ne renvoie aucune caracteristique : il en renvoyait
+ * auparavant — « 1.6L 4-Cyl, Essence, Manuelle » — pour une saisie que le code
+ * venait pourtant de declarer invalide.
+ */
 export function decodeVin(vin: string): DecodedVin {
   const cleanVin = vin.toUpperCase().replace(/[^A-Z0-9]/g, '').trim()
 
   if (cleanVin.length !== 17) {
-    return {
-      vin: cleanVin,
-      valid: false,
-      wmi: '',
-      brand: 'Inconnue',
-      countryOfOrigin: 'Inconnu',
-      modelYear: new Date().getFullYear(),
-      bodyType: 'Berline',
-      engine: '1.6L 4-Cyl',
-      fuel: 'Essence',
-      gearbox: 'Manuelle',
-    }
+    return { vin: cleanVin, valid: false, wmi: '' }
   }
 
   const wmi = cleanVin.substring(0, 3)
-  const manufacturer = WMI_MAP[wmi] || { brand: 'Toyota', country: 'Japon' }
-  const yearCode = cleanVin.charAt(9)
-  const modelYear = YEAR_CODES[yearCode] || 2022
+  const manufacturer = WMI_MAP[wmi]
 
   return {
     vin: cleanVin,
     valid: true,
     wmi,
-    brand: manufacturer.brand,
-    countryOfOrigin: manufacturer.country,
-    modelYear,
-    bodyType: cleanVin.charAt(4) === 'B' ? 'SUV' : 'Berline',
-    engine: cleanVin.charAt(5) === 'D' ? '2.0L Turbo Diesel' : '1.8L 16V Essence',
-    fuel: cleanVin.charAt(5) === 'D' ? 'Diesel' : 'Essence',
-    gearbox: cleanVin.charAt(6) === 'A' ? 'Automatique' : 'Manuelle',
+    brand: manufacturer?.brand,
+    countryOfOrigin: manufacturer?.country,
+    modelYear: decodeModelYear(cleanVin.charAt(9)),
   }
 }

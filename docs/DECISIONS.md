@@ -1625,3 +1625,130 @@ bord CinetPay. Aucun changement de code n'est necessaire : le tunnel s'allume
 des que les variables sont presentes, et retombe sur « commande enregistree »
 si elles disparaissent.
 
+
+## D70 : La recherche par vehicule s'adosse au catalogue et cesse de deviner
+
+**Contexte.** Demande d'adapter la recherche par plaque au modele de voiture.
+L'examen du parcours a montre qu'il n'y avait pas un reglage a faire mais
+quatre affirmations sans fondement a retirer.
+
+**La plaque ivoirienne reelle etait refusee.** Le format existait en trois
+copies : `COUNTRY_PLATE_SPECS` dans le module validateur, `PLATE_PATTERNS` dans
+`/api/v1/vehicles/lookup`, et `COUNTRIES` dans `VehiclePartsSearch`. Les deux
+dernieres attendaient `AB-123-CD`, un format francais. C'est elles qui
+repondaient au formulaire : un Ivoirien saisissant `1234 AB 01`, le format
+national reel — celui que le module validateur decrivait correctement, systeme
+Quipux/DIGIMMAT a l'appui — obtenait « Format d'immatriculation invalide ».
+
+Le module validateur devient la source unique, et il couvre dix pays quand le
+formulaire n'en proposait que huit.
+
+**Le registre national n'existe pas.** La route servait `MOCK_VEHICLES`, six
+plaques ecrites en dur qui renvoyaient une immatriculation complete : marque,
+modele, motorisation, couleur, date de premiere mise en circulation, prochaine
+visite technique. Toute autre plaque repondait 404 « Cette immatriculation n'est
+pas enregistree » — une phrase qui laisse croire a un registre consulte ou le
+vehicule manquerait, alors qu'aucun acces n'existe.
+
+Une plaque ne peut pas designer un modele sans registre. La route valide le
+format, ce qui est reel et utile, repond 200 avec `identified: false`, et le
+dit. L'onglet s'intitule desormais « Verifier une immatriculation ».
+
+**Le VIN fabriquait une fiche technique.** `WMI_MAP[wmi] || { brand: 'Toyota' }`
+attribuait Toyota a tout vehicule non reference — et c'est cette marque qui
+aurait servi a chercher des pieces : un proprietaire de Kia se serait vu
+proposer des pieces Toyota. Le repli avait echappe au garde-fou de D61, qui
+interdit `|| 'Toyota'` et `|| { name: 'Toyota' }` mais pas
+`|| { brand: 'Toyota' }`.
+
+La carrosserie, la motorisation, le carburant et la boite etaient deduits des
+caracteres 5 a 7 : le VDS, dont la signification est propre a chaque
+constructeur et n'est normalisee par personne. Un `charAt(5) === 'D'` annoncait
+« 2.0L Turbo Diesel » sur n'importe quel vehicule dont le VIN portait un D a
+cette place. L'API completait par `model: \`${brand} Series\`` — « Toyota
+Series » n'a jamais designe un vehicule — et par cinq categories de pieces
+« recommandees », identiques pour tous.
+
+Un VIN invalide ressortait quand meme avec « Berline, 1.6L 4-Cyl, Essence,
+Manuelle », pour une saisie que le code venait de declarer invalide.
+
+Le decodeur ne renvoie plus que ce que le VIN porte : constructeur et pays par
+le WMI, annee-modele par le dixieme caractere. Le reste est absent.
+
+*L'annee-modele est ambigue, et c'est assume.* Le cycle ISO 3779 compte trente
+codes et se repete : `A` vaut 1980 comme 2010. La table precedente s'arretait a
+`T` et retombait sur `|| 2022`. La regle est desormais explicite — annee du
+cycle courant, moins trente ans si elle est dans le futur — donc `V` donne 1997
+et non 2027. Un caractere hors norme (I, O, Q, U, Z, 0) ne produit aucune annee.
+
+**Le selecteur de marques avait derive de la base.** Troisieme occurrence apres
+les categories en D62 et les marques du sitemap en D66. `VEHICLE_DB` proposait
+Suzuki, Dacia et Mitsubishi — zero piece en stock, et les deux dernieres
+absentes de la table `Brand` — tout en omettant Kia, Mercedes et Volkswagen,
+qui portent seize des cinquante et une pieces du catalogue. Un acheteur avec une
+Kia ne pouvait pas selectionner sa voiture ; un acheteur avec une Dacia
+parcourait tout le tunnel pour arriver sur du vide.
+
+`marquesPourvues()` deduit la liste de la base avec le filtre exact des pages
+marque et du sitemap, les mieux pourvues d'abord. Les deux pages qui portent ce
+formulaire — `/recherche-pieces` et `/dashboard/parts-search` — la partagent.
+
+**Le tunnel jetait ce qu'il collectait.** Apres marque, modele, annee et
+motorisation, `handleModelSearch` poussait vers `/marques/{slug}`, qui ne filtre
+que sur la marque : le modele, l'annee et le moteur etaient perdus. Les vingt
+boutons de pieces populaires poussaient tous vers `/catalogue` sans aucun
+parametre — le libelle affiche ne filtrait rien.
+
+La cascade modele / annee / motorisation est retiree. Rien ne pouvait
+l'honorer : `CarModel` et `ProductCompat` sont vides en production, aucune piece
+n'est rattachee a un modele. A sa place, un champ libre qui alimente la
+recherche texte du catalogue, laquelle cherche reellement dans l'intitule, la
+reference, la marque et la categorie. Les boutons de pieces envoient desormais
+leur libelle. Verifie au navigateur : `?marque=Kia&q=Sportage`,
+`?marque=Toyota`, `?q=Filtre+a+huile`.
+
+**La promesse de la page.** Elle annoncait « seules les pieces referencees pour
+votre voiture vous sont proposees ». Sans `ProductCompat`, c'etait faux. Elle
+annonce ce qu'elle fait : un filtre par marque.
+
+**Ce qui n'a pas ete fait, et pourquoi.** Peupler `CarModel` etait possible —
+les noms de modeles sont des faits verifiables. Rattacher les pieces aux modeles
+ne l'est pas : c'est une donnee metier que personne n'a saisie, et l'inventer
+ferait acheter la mauvaise piece. Le perimetre retenu s'arrete donc a ce que la
+base sait.
+
+**Verifications.** Onze mutations, onze detections : un WMI inconnu redevenant
+Toyota, un VIN invalide renvoyant une fiche technique, l'annee hors table
+retombant sur une valeur inventee, le code d'annee cessant de reculer d'un
+cycle, l'API refabriquant un modele, l'API revenant au format francais, l'API
+se declarant `identified`, l'API rerecommandant une liste fixe de categories,
+les marques cessant d'etre filtrees sur le stock, les marques cessant d'etre
+classees par stock, et le formulaire reprenant une liste en dur. Reference
+rejouee verte apres restauration.
+
+Un test ecrit d'abord comme `decodeModelYear('')` a revele un defaut de mon
+propre code : `indexOf('')` vaut 0 et non -1, si bien qu'une chaine vide
+tombait sur le premier code de la table et donnait 2010. Un controle de
+longueur a ete ajoute.
+
+eslint 0, `tsc --noEmit` 0, 464/464 tests unitaires (50 fichiers, 434 avant),
+build reussi, budgets respectes (`/recherche-pieces` passe de 174,0 a 173,3 Ko),
+27/27 E2E.
+
+Rendu verifie au navigateur en 1280 px et 390 px, avec deux marques posees en
+base locale : la liste affiche Toyota puis Kia, dans l'ordre du stock, aucun
+debordement horizontal, aucune erreur console. La plaque `1234 AB 01` est
+acceptee et `AB-123-CD` refusee — l'inverse exact de l'etat precedent.
+
+**Reste ouvert.**
+
+*Le parametre `modele` du catalogue ne filtre rien.* `CatalogueFilters` le lit
+de l'URL et l'y reecrit, mais il n'entre dans aucun filtre — il est absent des
+dependances du `useMemo` qui calcule les resultats. Le composant porte en outre
+`MODELS_BY_MAKE`, une quatrieme taxonomie ecrite en dur. C'est le meme defaut
+que celui corrige ici, sur une autre page : il demande son propre chantier.
+
+*La compatibilite piece-modele reste a construire.* `CarModel` et
+`ProductCompat` sont vides. Tant qu'ils le sont, aucune page ne peut
+honnetement parler de « pieces compatibles » — seulement de pieces referencees
+pour une marque.

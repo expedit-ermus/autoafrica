@@ -98,6 +98,34 @@ export const COUNTRY_PLATE_SPECS: Record<
 }
 
 /**
+ * Pays couverts, dans l'ordre d'affichage. Le drapeau est la seule donnee
+ * d'interface portee ici : il evite une troisieme liste de pays cote client.
+ *
+ * `COUNTRY_PLATE_SPECS` est la source unique du format. Il en existait trois
+ * copies : ce module, `PLATE_PATTERNS` dans `/api/v1/vehicles/lookup`, et
+ * `COUNTRIES` dans `VehiclePartsSearch`. Les deux dernieres attendaient
+ * `AB-123-CD` pour la Cote d'Ivoire — un format francais. Une plaque
+ * ivoirienne reelle, `1234 AB 01`, etait donc refusee par le formulaire comme
+ * par l'API, alors que ce module la validait correctement.
+ */
+export const SUPPORTED_COUNTRIES: { code: SupportedCountryCode; flag: string }[] = [
+  { code: 'CI', flag: '🇨🇮' },
+  { code: 'SN', flag: '🇸🇳' },
+  { code: 'ML', flag: '🇲🇱' },
+  { code: 'BF', flag: '🇧🇫' },
+  { code: 'NE', flag: '🇳🇪' },
+  { code: 'BJ', flag: '🇧🇯' },
+  { code: 'TG', flag: '🇹🇬' },
+  { code: 'GW', flag: '🇬🇼' },
+  { code: 'NG', flag: '🇳🇬' },
+  { code: 'GH', flag: '🇬🇭' },
+]
+
+export function isSupportedCountry(code: string): code is SupportedCountryCode {
+  return code in COUNTRY_PLATE_SPECS
+}
+
+/**
  * Validates vehicle license plate against official 10 West African countries formats
  */
 export function validateLicensePlate(
