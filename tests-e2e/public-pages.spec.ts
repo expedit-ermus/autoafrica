@@ -74,24 +74,32 @@ test.describe('Public Pages & Conversion Features', () => {
   });
 
   /**
-   * L'onglet immatriculation attendait `AB-123-CD`, un format francais : une
-   * plaque ivoirienne reelle etait refusee par le formulaire.
+   * La Cote d'Ivoire a change de norme le 1er juin 2023. Les anciennes plaques
+   * restent valides et circulent : le formulaire doit accepter les deux, alors
+   * qu'il n'en connaissait qu'une seule a la fois.
    */
-  test('le formulaire accepte le format de plaque ivoirien reel', async ({ page }) => {
+  test('le formulaire accepte les deux normes de plaque ivoiriennes', async ({ page }) => {
     await page.goto('/recherche-pieces');
     await page.getByRole('tab', { name: /immatriculation/i }).click();
 
     const champ = page.locator('#vps-plaque');
-    await expect(champ).toHaveAttribute('placeholder', '1234 AB 01');
+    // Le placeholder montre la norme en vigueur.
+    await expect(champ).toHaveAttribute('placeholder', 'AB-123-CD');
+    // L'ancienne norme est annoncee comme toujours acceptee.
+    await expect(page.getByText(/ancienne norme, toujours acceptée/i)).toBeVisible();
 
-    await champ.fill('1234 AB 01');
     const bouton = page.getByRole('button', { name: /Vérifier le format/i });
-    await expect(bouton).toBeEnabled();
 
-    await bouton.click();
-    await expect(page.getByRole('heading', { name: /1234 AB 01 — format valide/i })).toBeVisible();
-    // La page ne pretend pas avoir identifie un vehicule.
-    await expect(page.getByText(/identification automatique/i).first()).toBeVisible();
+    for (const plaque of ['AB-123-CD', '4550 EG 01']) {
+      await champ.fill(plaque);
+      await expect(bouton, plaque).toBeEnabled();
+      await bouton.click();
+      await expect(
+        page.getByRole('heading', { name: new RegExp(`${plaque} — format valide`, 'i') }),
+      ).toBeVisible();
+      // La page ne pretend pas avoir identifie un vehicule.
+      await expect(page.getByText(/identification automatique/i).first()).toBeVisible();
+    }
   });
 
   test('Blog article on part compatibility is readable with TOC and CTA', async ({ page }) => {

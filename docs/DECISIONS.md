@@ -1632,16 +1632,24 @@ si elles disparaissent.
 L'examen du parcours a montre qu'il n'y avait pas un reglage a faire mais
 quatre affirmations sans fondement a retirer.
 
-**La plaque ivoirienne reelle etait refusee.** Le format existait en trois
-copies : `COUNTRY_PLATE_SPECS` dans le module validateur, `PLATE_PATTERNS` dans
+**Le format de plaque etait disperse en trois copies.**
+`COUNTRY_PLATE_SPECS` dans le module validateur, `PLATE_PATTERNS` dans
 `/api/v1/vehicles/lookup`, et `COUNTRIES` dans `VehiclePartsSearch`. Les deux
-dernieres attendaient `AB-123-CD`, un format francais. C'est elles qui
-repondaient au formulaire : un Ivoirien saisissant `1234 AB 01`, le format
-national reel — celui que le module validateur decrivait correctement, systeme
-Quipux/DIGIMMAT a l'appui — obtenait « Format d'immatriculation invalide ».
+dernieres attendaient `AB-123-CD`, la premiere `1234 AB 01` : selon le chemin
+emprunte, une plaque legale etait acceptee ou refusee.
 
 Le module validateur devient la source unique, et il couvre dix pays quand le
 formulaire n'en proposait que huit.
+
+> **Correction apportee en D71.** Ce paragraphe affirmait initialement que
+> `AB-123-CD` etait « un format francais » invente et que `1234 AB 01` etait
+> « le format national reel ». C'etait faux, et l'erreur etait la mienne :
+> `AB-123-CD` est la norme ivoirienne entree en vigueur le 1er juin 2023, et
+> `1234 AB 01` la norme de 1997 qu'elle remplace. Les deux sont reelles et les
+> anciennes plaques restent valides. La correction, et l'acceptation des deux
+> normes, sont traitees en D71. Le constat de fond de ce paragraphe — trois
+> copies divergentes du meme format — tient ; c'est son attribution du tort
+> qui etait erronee.
 
 **Le registre national n'existe pas.** La route servait `MOCK_VEHICLES`, six
 plaques ecrites en dur qui renvoyaient une immatriculation complete : marque,
@@ -1720,7 +1728,8 @@ base sait.
 **Verifications.** Onze mutations, onze detections : un WMI inconnu redevenant
 Toyota, un VIN invalide renvoyant une fiche technique, l'annee hors table
 retombant sur une valeur inventee, le code d'annee cessant de reculer d'un
-cycle, l'API refabriquant un modele, l'API revenant au format francais, l'API
+cycle, l'API refabriquant un modele, l'API repartant sur une copie divergente
+du format de plaque, l'API
 se declarant `identified`, l'API rerecommandant une liste fixe de categories,
 les marques cessant d'etre filtrees sur le stock, les marques cessant d'etre
 classees par stock, et le formulaire reprenant une liste en dur. Reference
@@ -1737,8 +1746,9 @@ build reussi, budgets respectes (`/recherche-pieces` passe de 174,0 a 173,3 Ko),
 
 Rendu verifie au navigateur en 1280 px et 390 px, avec deux marques posees en
 base locale : la liste affiche Toyota puis Kia, dans l'ordre du stock, aucun
-debordement horizontal, aucune erreur console. La plaque `1234 AB 01` est
-acceptee et `AB-123-CD` refusee — l'inverse exact de l'etat precedent.
+debordement horizontal, aucune erreur console. La plaque `1234 AB 01`, que le
+formulaire refusait, est acceptee. (D71 fait accepter les deux normes : a ce
+stade, `AB-123-CD` etait refusee a tort.)
 
 **Reste ouvert.**
 
@@ -1752,3 +1762,73 @@ que celui corrige ici, sur une autre page : il demande son propre chantier.
 `ProductCompat` sont vides. Tant qu'ils le sont, aucune page ne peut
 honnetement parler de « pieces compatibles » — seulement de pieces referencees
 pour une marque.
+
+## D71 : Les deux normes de plaque ivoiriennes sont acceptees, et D70 est corrigee
+
+**La correction d'abord.** D70 affirmait que `AB-123-CD` etait « un format
+francais » invente, et que `1234 AB 01` etait « le format national reel ».
+C'est faux.
+
+La Cote d'Ivoire a change de norme le **1er juin 2023** : `AA-123-AA`, deux
+lettres, trois chiffres, deux lettres, sur le modele francais, en plexiglas
+plutot qu'en metal. Elle remplace le `4 chiffres + 2 lettres + 2 chiffres de
+region` en usage depuis 1997 — `4550 EG 01`. **Les anciennes plaques restent
+valides**, la transition n'ayant pas impose de reimmatriculation.
+
+Les trois copies du format n'avaient donc aucune entierement tort :
+`PLATE_PATTERNS` et `COUNTRIES` decrivaient la norme en vigueur, le module
+validateur la norme precedente. Chacune refusait les plaques de l'autre. Le
+defaut etait la dispersion, pas une valeur fausse — et D70, en unifiant sur le
+module validateur, a fige la mauvaise des deux : depuis D70 et jusqu'ici, une
+plaque emise apres juin 2023 etait refusee.
+
+Le constat de fond de D70 tient. Son attribution du tort etait erronee, et la
+verification qui l'accompagnait — « la plaque `1234 AB 01` est acceptee et
+`AB-123-CD` refusee, l'inverse exact de l'etat precedent » — decrivait une
+regression comme un progres. D70 porte desormais un encadre qui le dit.
+
+**Ce qui a ete fait.** Un pays ne porte plus un format mais une liste, rangee
+norme en vigueur d'abord :
+
+```
+CI: formats: [
+  { norm: 'Norme en vigueur depuis le 1er juin 2023', sample: 'AB-123-CD' },
+  { norm: 'Ancienne norme 1997-2023, toujours valide', sample: '4550 EG 01', legacy: true },
+]
+```
+
+`validateLicensePlate` retient le premier format qui reconnait la saisie et
+renvoie `matchedNorm` et `isLegacy`. Une plaque valide sous les deux normes
+serait rattachee a la plus recente, l'ordre de la liste faisant foi.
+
+Le placeholder et le message d'erreur montrent la norme en vigueur ; les normes
+remplacees sont listees sous le champ, avec la mention « ancienne norme,
+toujours acceptee ». Un automobiliste dont la plaque date de 2019 ne doit pas
+croire qu'elle n'est plus reconnue. L'API renvoie de meme `acceptedFormats`
+complet dans ses erreurs de format, et non le seul format courant.
+
+La nouvelle norme est acceptee avec ou sans separateurs : `AB-123-CD`,
+`AB 123 CD` et `ab123cd` passent, un automobiliste ne recopiant pas les tirets
+d'une plaque a l'identique.
+
+**Les neuf autres pays n'ont pas ete revus.** Leurs formats viennent du code
+existant et n'ont pas ete verifies contre une source officielle. Ils sont
+desormais ranges dans la meme structure, ce qui rend l'ajout d'une norme
+possible sans toucher au reste, mais leur exactitude reste a etablir. Le dire
+vaut mieux que de laisser croire que les dix ont ete controles.
+
+**Le garde-fou de source unique a ete resserre.** Il citait en dur les deux
+ecritures connues du motif ivoirien : une troisieme ecriture de la meme regle
+lui aurait echappe. Il detecte desormais la signature d'une expression
+reguliere de plaque — une classe de lettres et un quantificateur de chiffres
+dans le meme fichier — et verifie que le module validateur est le seul fichier
+de `src/` a en porter une.
+
+**Verifications.** eslint 0, `tsc --noEmit` 0, 470/470 tests unitaires
+(464 avant), build reussi, budgets respectes, 27/27 E2E dont le parcours des
+deux normes dans un vrai navigateur.
+
+**Reste ouvert.** L'identification du vehicule par sa plaque reste impossible :
+elle suppose un acces au registre national, concede a un operateur prive, dont
+le projet n'a ni contrat ni identifiants. Valider un format n'identifie pas un
+vehicule, et la page continue de le dire.

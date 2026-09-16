@@ -48,7 +48,11 @@ promettre que des pieces referencees pour une marque.
 La recherche par plaque ne leve pas cette limite. Une plaque ne designe un
 vehicule que par un acces au registre national (Quipux/DIGIMMAT en Cote
 d'Ivoire), qui n'existe pas dans le projet : `/api/v1/vehicles/lookup` valide un
-format, il n'identifie pas un vehicule. Le VIN ne porte, lui, que le
+format, il n'identifie pas un vehicule.
+
+Deux normes ivoiriennes coexistent et sont toutes deux acceptees : `AB-123-CD`
+en vigueur depuis le 1er juin 2023, et `4550 EG 01` de 1997, dont les plaques
+restent valides (cf. D71). Le VIN ne porte, lui, que le
 constructeur, le pays et l'annee-modele — pas le modele commercial.
 
 ## Filtres de recherche

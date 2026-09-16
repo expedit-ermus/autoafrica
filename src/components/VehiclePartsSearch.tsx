@@ -71,6 +71,9 @@ export default function VehiclePartsSearch({ marques }: Props) {
   const [modelText, setModelText] = useState('');
 
   const spec = COUNTRY_PLATE_SPECS[selectedCountry];
+  // Le format en vigueur sert de placeholder ; les normes remplacees restent
+  // acceptees et sont listees sous le champ.
+  const formatEnVigueur = spec.formats[0];
   // La validation cote client utilise exactement le module que l'API utilise :
   // le formulaire ne peut plus refuser une plaque que l'API accepterait, ni
   // l'inverse.
@@ -78,7 +81,7 @@ export default function VehiclePartsSearch({ marques }: Props) {
 
   const handlePlateSearch = async () => {
     if (!isPlateValid) {
-      setPlateError(`Format attendu : ${spec.formatDescription}`);
+      setPlateError(`Format attendu : ${formatEnVigueur.formatDescription}`);
       return;
     }
     setSearching(true);
@@ -293,7 +296,7 @@ export default function VehiclePartsSearch({ marques }: Props) {
                       setPlateNumber(e.target.value.toUpperCase().replace(/[^A-Z0-9\s-]/g, ''));
                       if (plateError) setPlateError('');
                     }}
-                    placeholder={spec.sample}
+                    placeholder={formatEnVigueur.sample}
                     className={`${champClasses} pr-12 ${plateError ? 'border-red-400' : ''}`}
                     maxLength={15}
                   />
@@ -320,12 +323,20 @@ export default function VehiclePartsSearch({ marques }: Props) {
                 </p>
               )}
 
-              <p className="text-xs text-[var(--color-warm-muted)] flex items-start gap-2">
+              <div className="text-xs text-[var(--color-warm-muted)] flex items-start gap-2">
                 <span>💡</span>
-                <span>
-                  {spec.countryName} — {spec.formatDescription}
-                </span>
-              </p>
+                <div>
+                  <p className="font-semibold">{spec.countryName}</p>
+                  <ul className="mt-1 space-y-0.5">
+                    {spec.formats.map((f) => (
+                      <li key={f.sample}>
+                        {f.formatDescription}
+                        {f.legacy ? ' — ancienne norme, toujours acceptée' : ''}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
 
               <button
                 type="submit"

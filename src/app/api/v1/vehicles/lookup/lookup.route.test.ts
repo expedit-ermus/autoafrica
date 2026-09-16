@@ -22,31 +22,45 @@ function requete(params: string) {
  * n'existe.
  */
 describe('GET /api/v1/vehicles/lookup — plaque', () => {
-  it('accepte une plaque ivoirienne au format national reel', async () => {
-    const res = await GET(requete('plate=1234%20AB%2001&country=CI'))
+  /**
+   * La Cote d'Ivoire a change de norme le 1er juin 2023 : `AA-123-AA` remplace
+   * le `4 chiffres + 2 lettres + 2 chiffres` de 1997. Les anciennes plaques
+   * restent valides et circulent : refuser l'une ou l'autre norme ecarte une
+   * partie du parc.
+   */
+  it('accepte la norme ivoirienne en vigueur depuis juin 2023', async () => {
+    const res = await GET(requete('plate=AB-123-CD&country=CI'))
     const data = await res.json()
 
     expect(res.status).toBe(200)
-    expect(data.plate).toBe('1234 AB 01')
-    expect(data.countryName).toBe("Côte d'Ivoire")
+    expect(data.plate).toBe('AB-123-CD')
+    expect(data.isLegacy).toBe(false)
+    expect(data.matchedNorm).toMatch(/2023/)
   })
 
-  /**
-   * La route attendait `AB-123-CD`, un format francais. Une plaque ivoirienne
-   * reelle etait donc rejetee comme invalide, et le format invente accepte.
-   */
-  it('rejette le format francais qui etait attendu auparavant', async () => {
-    const res = await GET(requete('plate=AB-123-CD&country=CI'))
+  it('accepte aussi l ancienne norme, qui reste valide', async () => {
+    const res = await GET(requete('plate=4550%20EG%2001&country=CI'))
+    const data = await res.json()
 
-    expect(res.status).toBe(400)
-    expect((await res.json()).error).toMatch(/format/i)
+    expect(res.status).toBe(200)
+    expect(data.plate).toBe('4550 EG 01')
+    expect(data.isLegacy).toBe(true)
+    expect(data.matchedNorm).toMatch(/1997/)
   })
 
-  it('indique le format attendu et un exemple quand la saisie est invalide', async () => {
+  it('accepte la nouvelle norme saisie sans tirets', async () => {
+    expect((await GET(requete('plate=AB%20123%20CD&country=CI'))).status).toBe(200)
+  })
+
+  it('indique toutes les normes acceptees quand la saisie est invalide', async () => {
     const data = await (await GET(requete('plate=NIMPORTEQUOI&country=CI'))).json()
 
-    expect(data.details).toContain(COUNTRY_PLATE_SPECS.CI.formatDescription)
-    expect(data.sample).toBe(COUNTRY_PLATE_SPECS.CI.sample)
+    expect(data.details).toContain(COUNTRY_PLATE_SPECS.CI.formats[0].formatDescription)
+    expect(data.sample).toBe(COUNTRY_PLATE_SPECS.CI.formats[0].sample)
+    // L'ancienne norme doit apparaitre aussi : son porteur ne doit pas croire
+    // que sa plaque n'est plus reconnue.
+    expect(data.acceptedFormats).toHaveLength(2)
+    expect(JSON.stringify(data.acceptedFormats)).toMatch(/1997/)
   })
 
   // Le format est bon et la demande a abouti : un 404 signifierait que le
@@ -64,10 +78,12 @@ describe('GET /api/v1/vehicles/lookup — plaque', () => {
     }
   })
 
-  it('valide chaque pays sur son propre format officiel', async () => {
+  it('valide chaque pays sur chacun de ses formats officiels', async () => {
     for (const [code, spec] of Object.entries(COUNTRY_PLATE_SPECS)) {
-      const res = await GET(requete(`plate=${encodeURIComponent(spec.sample)}&country=${code}`))
-      expect(res.status, `${code} — ${spec.sample}`).toBe(200)
+      for (const format of spec.formats) {
+        const res = await GET(requete(`plate=${encodeURIComponent(format.sample)}&country=${code}`))
+        expect(res.status, `${code} — ${format.norm} — ${format.sample}`).toBe(200)
+      }
     }
   })
 
@@ -126,8 +142,12 @@ describe('GET /api/v1/vehicles/lookup — VIN', () => {
 /**
  * Le format de plaque existait en trois copies : le module validateur,
  * `PLATE_PATTERNS` dans cette route, et `COUNTRIES` dans `VehiclePartsSearch`.
- * Les deux dernieres attendaient `AB-123-CD` pour la Cote d'Ivoire. Une
- * quatrieme copie ferait revenir la divergence.
+ *
+ * Les deux dernieres portaient `AB-123-CD` — la norme entree en vigueur le
+ * 1er juin 2023 — et le module validateur le format de 1997. Aucune des trois
+ * n'avait entierement tort : chacune decrivait une norme reelle, et chacune
+ * refusait les plaques de l'autre. C'est la dispersion qui faisait le defaut,
+ * pas une valeur fausse. Une quatrieme copie la ferait revenir.
  */
 describe('source unique du format de plaque', () => {
   function fichiersSource(dir: string): string[] {
@@ -142,12 +162,21 @@ describe('source unique du format de plaque', () => {
     expect(fichiersSource(SRC_ROOT).length).toBeGreaterThan(100)
   })
 
+  /**
+   * Signature d'une expression reguliere de plaque : une classe de lettres et
+   * un quantificateur de chiffres dans le meme fichier. Le motif precedent
+   * citait les deux ecritures connues en dur ; il aurait laissse passer une
+   * troisieme ecriture de la meme regle.
+   */
   it('seul le module validateur decrit un format de plaque', () => {
-    // Le motif ivoirien reel, sous ses deux ecritures possibles.
-    const motifPlaque = /\\d\{4\}\s*\\s\?\[A-Z\]\{2\}|\[A-Z\]\{2\}-\\d\{3\}-\[A-Z\]\{2\}/
+    const classeLettres = /\[A-Z\]\{\d/
+    const quantificateurChiffres = /\\d\{\d/
 
     const porteurs = fichiersSource(SRC_ROOT)
-      .filter((f) => motifPlaque.test(readFileSync(f, 'utf8')))
+      .filter((f) => {
+        const source = readFileSync(f, 'utf8')
+        return classeLettres.test(source) && quantificateurChiffres.test(source)
+      })
       .map((f) => path.relative(SRC_ROOT, f).replace(/\\/g, '/'))
 
     expect(porteurs).toEqual(['modules/vehicles/license-plate.validator.ts'])

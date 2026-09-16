@@ -80,7 +80,14 @@ function reponsePlaque(plate: string, country: string) {
       {
         error: "Format d'immatriculation invalide",
         details: `Format attendu pour ${validation.countryName} : ${validation.formatDescription}`,
-        sample: COUNTRY_PLATE_SPECS[country].sample,
+        // Toutes les normes acceptees, pas seulement celle en vigueur : une
+        // plaque d'avant juin 2023 reste valide et son porteur doit le voir.
+        acceptedFormats: validation.acceptedFormats.map((f) => ({
+          norm: f.norm,
+          description: f.formatDescription,
+          sample: f.sample,
+        })),
+        sample: COUNTRY_PLATE_SPECS[country].formats[0].sample,
       },
       { status: 400 },
     )
@@ -96,6 +103,8 @@ function reponsePlaque(plate: string, country: string) {
     country: validation.countryCode,
     countryName: validation.countryName,
     identified: false,
+    matchedNorm: validation.matchedNorm,
+    isLegacy: validation.isLegacy,
     message:
       "Le format est valide. L'identification automatique du véhicule par plaque n'est pas disponible : " +
       'elle suppose un accès au registre national des immatriculations. ' +
