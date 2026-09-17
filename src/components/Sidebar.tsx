@@ -35,6 +35,10 @@ const sellerMenuItems: NavItem[] = [
 
 const buyerMenuItems: NavItem[] = [
   { key: 'marketplace', icon: 'store', href: '/catalogue', badge: 0 },
+  // Le garage n'a d'interet que pour l'acheteur : c'est lui qui cherche des
+  // pieces pour sa propre voiture. Un vendeur gere ses annonces via
+  // `/dashboard/vehicles`, qui est un autre objet.
+  { key: 'garage', icon: 'car', href: '/dashboard/garage', badge: 0 },
   { key: 'orders', icon: 'file-text', href: '/dashboard/orders', badge: 0 },
   { key: 'cart', icon: 'shopping-cart', href: '/dashboard/cart', badge: 0 },
   { key: 'payments', icon: 'credit-card', href: '/dashboard/payments', badge: 0 },

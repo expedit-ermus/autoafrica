@@ -52,7 +52,14 @@ format, il n'identifie pas un vehicule.
 
 Deux normes ivoiriennes coexistent et sont toutes deux acceptees : `AB-123-CD`
 en vigueur depuis le 1er juin 2023, et `4550 EG 01` de 1997, dont les plaques
-restent valides (cf. D71). Le VIN ne porte, lui, que le
+restent valides (cf. D71).
+
+**Le garage de l'acheteur** (`UserVehicle`, `/dashboard/garage`) fournit
+l'identification que le registre ne permet pas : l'acheteur declare sa voiture
+une fois, et la retrouve ensuite par sa plaque. La recherche est cloisonnee par
+compte — une plaque saisie par un tiers ne revele jamais le vehicule d'autrui
+(cf. D72). Le filtrage des pieces reste par marque tant que `ProductCompat`
+n'est pas peuple. Le VIN ne porte, lui, que le
 constructeur, le pays et l'annee-modele — pas le modele commercial.
 
 ## Filtres de recherche

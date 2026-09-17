@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   COUNTRY_PLATE_SPECS,
   SUPPORTED_COUNTRIES,
@@ -30,6 +31,29 @@ import {
  * catalogue, qui, elle, cherche reellement dans les intitules.
  */
 
+const FUEL_LABELS: Record<string, string> = {
+  DIESEL: 'Diesel',
+  GASOLINE: 'Essence',
+  HYBRID: 'Hybride',
+  ELECTRIC: 'Électrique',
+  LPG: 'GPL',
+};
+
+const GEARBOX_LABELS: Record<string, string> = {
+  MANUAL: 'Manuelle',
+  AUTOMATIC: 'Automatique',
+};
+
+// Une valeur inconnue est rendue telle quelle plutot que rangee dans un
+// fourre-tout : un ajout au schema doit se voir.
+const libelle = (table: Record<string, string>, v?: string) => (v ? table[v] ?? v : undefined);
+
+/** Caracteristiques reellement renseignees, dans l'ordre d'affichage. */
+const caracteristiques = (v: VehiculeIdentifie): string[] =>
+  [v.engine, libelle(FUEL_LABELS, v.fuel), libelle(GEARBOX_LABELS, v.gearbox)].filter(
+    (c): c is string => Boolean(c),
+  );
+
 interface Props {
   /** Marques ayant au moins une piece active, dans l'ordre du stock. */
   marques: string[];
@@ -50,11 +74,24 @@ const POPULAR_PARTS = [
   { id: 'headlight', label: 'Phares', icon: '💡' },
 ];
 
+interface VehiculeIdentifie {
+  brand: string;
+  model?: string;
+  year?: number;
+  fuel?: string;
+  gearbox?: string;
+  engine?: string;
+  nickname?: string;
+}
+
 interface ResultatPlaque {
   plate: string;
   countryName: string;
-  message: string;
   officialSystem: string;
+  identified: boolean;
+  /** Present seulement quand la plaque n'a identifie aucun vehicule. */
+  message?: string;
+  vehicle?: VehiculeIdentifie;
 }
 
 export default function VehiclePartsSearch({ marques }: Props) {
@@ -97,9 +134,14 @@ export default function VehiclePartsSearch({ marques }: Props) {
       setResultatPlaque({
         plate: data.plate,
         countryName: data.countryName,
-        message: data.message,
         officialSystem: data.officialSystem,
+        identified: Boolean(data.identified),
+        message: data.message,
+        vehicle: data.vehicle,
       });
+      // La marque du vehicule identifie arme la recherche : l'acheteur n'a
+      // pas a la resaisir apres avoir donne sa plaque.
+      if (data.vehicle?.brand) setSelectedBrand(data.vehicle.brand);
     } catch (error) {
       setPlateError(error instanceof Error ? error.message : 'Erreur de recherche');
     } finally {
@@ -363,27 +405,71 @@ export default function VehiclePartsSearch({ marques }: Props) {
           <div className="bg-white rounded-2xl border border-[var(--color-primary)]/20 p-6 shadow-sm mb-8">
             <div className="flex items-start gap-4 mb-4">
               <div className="w-14 h-14 shrink-0 rounded-xl bg-[var(--color-primary)]/10 flex items-center justify-center text-2xl">
-                ✅
+                {resultatPlaque.identified ? '🚗' : '✅'}
               </div>
               <div>
-                <h2 className="text-lg font-extrabold text-[var(--color-warm-ink)]">
-                  {resultatPlaque.plate} — format valide
-                </h2>
-                <p className="text-sm text-[var(--color-warm-muted)] mt-1">
-                  {resultatPlaque.countryName} · {resultatPlaque.officialSystem}
-                </p>
-                <p className="text-sm text-[var(--color-warm-muted)] mt-2 leading-relaxed">
-                  {resultatPlaque.message}
-                </p>
+                {resultatPlaque.identified && resultatPlaque.vehicle ? (
+                  <>
+                    <h2 className="text-lg font-extrabold text-[var(--color-warm-ink)]">
+                      {[
+                        resultatPlaque.vehicle.brand,
+                        resultatPlaque.vehicle.model,
+                        resultatPlaque.vehicle.year,
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                    </h2>
+                    <p className="text-sm text-[var(--color-warm-muted)] mt-1">
+                      {resultatPlaque.plate}
+                      {resultatPlaque.vehicle.nickname ? ` · ${resultatPlaque.vehicle.nickname}` : ''}
+                    </p>
+                    {/* Seules les caracteristiques renseignees sont listees : un
+                        champ laisse vide au garage reste vide ici (D61). */}
+                    {caracteristiques(resultatPlaque.vehicle).length > 0 && (
+                      <p className="text-sm text-[var(--color-warm-muted)] mt-1">
+                        {caracteristiques(resultatPlaque.vehicle).join(' · ')}
+                      </p>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <h2 className="text-lg font-extrabold text-[var(--color-warm-ink)]">
+                      {resultatPlaque.plate} — format valide
+                    </h2>
+                    <p className="text-sm text-[var(--color-warm-muted)] mt-1">
+                      {resultatPlaque.countryName} · {resultatPlaque.officialSystem}
+                    </p>
+                    <p className="text-sm text-[var(--color-warm-muted)] mt-2 leading-relaxed">
+                      {resultatPlaque.message}
+                    </p>
+                  </>
+                )}
               </div>
             </div>
             <div className="flex flex-wrap gap-3">
-              <button
-                onClick={() => setSearchMode('model')}
-                className="flex-1 min-w-[200px] py-3 px-4 rounded-xl bg-[var(--color-primary)] text-white font-bold hover:bg-[var(--color-orange-hover)] transition-all cursor-pointer"
-              >
-                🚗 Choisir ma marque
-              </button>
+              {resultatPlaque.identified && resultatPlaque.vehicle ? (
+                <button
+                  onClick={() => ouvrirCatalogue()}
+                  className="flex-1 min-w-[200px] py-3 px-4 rounded-xl bg-[var(--color-primary)] text-white font-bold hover:bg-[var(--color-orange-hover)] transition-all cursor-pointer"
+                >
+                  🔧 Voir les pièces {resultatPlaque.vehicle.brand}
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={() => setSearchMode('model')}
+                    className="flex-1 min-w-[200px] py-3 px-4 rounded-xl bg-[var(--color-primary)] text-white font-bold hover:bg-[var(--color-orange-hover)] transition-all cursor-pointer"
+                  >
+                    🚗 Choisir ma marque
+                  </button>
+                  <Link
+                    href="/dashboard/garage"
+                    className="px-6 py-3 rounded-xl border border-[var(--color-warm-border)] text-[var(--color-warm-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all"
+                  >
+                    Enregistrer ce véhicule
+                  </Link>
+                </>
+              )}
               <button
                 onClick={resetSearch}
                 className="px-6 py-3 rounded-xl border border-[var(--color-warm-border)] text-[var(--color-warm-muted)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-all"

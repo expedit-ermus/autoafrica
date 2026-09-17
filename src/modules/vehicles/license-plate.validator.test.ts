@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import {
   validateLicensePlate,
   checkUsedPartSafetyCompliance,
+  COUNTRY_PLATE_SPECS,
 } from './license-plate.validator'
 
 describe('LicensePlateValidator', () => {
@@ -54,6 +55,29 @@ describe('LicensePlateValidator', () => {
     expect(r.acceptedFormats).toHaveLength(2)
     expect(r.acceptedFormats[0].legacy).toBeUndefined()
     expect(r.acceptedFormats[1].legacy).toBe(true)
+  })
+
+  /**
+   * Chaque format doit etre valide sous sa propre expression reguliere.
+   *
+   * Sans cela, un exemple et un motif peuvent diverger en silence : le
+   * placeholder montre une plaque que le champ refuse, ou la liste d'aide
+   * decrit une norme que le code n'applique plus. Une mutation qui vidait
+   * l'exemple de l'ancienne norme sans toucher a son motif n'etait detectee
+   * par aucun test.
+   */
+  it('chaque exemple declare est valide sous son propre motif', () => {
+    for (const [code, spec] of Object.entries(COUNTRY_PLATE_SPECS)) {
+      for (const format of spec.formats) {
+        expect(
+          format.pattern.test(format.sample.toUpperCase()),
+          `${code} — ${format.norm} — ${format.sample}`,
+        ).toBe(true)
+        // Un exemple doit aussi apparaitre dans la description, qui est ce que
+        // l'utilisateur lit.
+        expect(format.formatDescription, `${code} — ${format.norm}`).toContain(format.sample)
+      }
+    }
   })
 
   it('refuse une plaque qui ne releve d aucune norme connue', () => {

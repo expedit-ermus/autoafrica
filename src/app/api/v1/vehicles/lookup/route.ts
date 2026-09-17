@@ -5,6 +5,8 @@ import {
   isSupportedCountry,
   COUNTRY_PLATE_SPECS,
 } from '@/modules/vehicles/license-plate.validator'
+import { garageService } from '@/modules/vehicles/garage.service'
+import { optionalAuth } from '@/modules/auth/auth.guard'
 
 /**
  * Identification du vehicule a partir d'une plaque ou d'un VIN.
@@ -17,8 +19,14 @@ import {
  * laissait croire a l'existence d'un registre ou le vehicule manquait.
  *
  * Aucun acces au registre national n'existe — ni Quipux/DIGIMMAT en Cote
- * d'Ivoire, ni ses equivalents. Une plaque ne peut donc pas designer un
- * modele. La route valide le format, ce qui est reel et utile, et le dit.
+ * d'Ivoire, ni ses equivalents. Une plaque ne peut donc pas designer un modele
+ * du parc national.
+ *
+ * Elle en designe un du garage de l'utilisateur. Un acheteur connecte qui a
+ * declare sa voiture la retrouve par sa plaque : l'identification est reelle,
+ * et son perimetre est dit — ce que cet utilisateur a enregistre, pas le parc
+ * ivoirien. La recherche est scopee au proprietaire, une plaque saisie par un
+ * tiers ne revelant jamais le vehicule d'autrui.
  *
  * Le format vient de `license-plate.validator.ts`, source unique. Cette route
  * portait sa propre table `PLATE_PATTERNS` qui attendait `AB-123-CD` pour la
@@ -65,7 +73,7 @@ function reponseVin(vin: string) {
   })
 }
 
-function reponsePlaque(plate: string, country: string) {
+async function reponsePlaque(request: NextRequest, plate: string, country: string) {
   if (!isSupportedCountry(country)) {
     return NextResponse.json(
       { error: `Pays non pris en charge : ${country}` },
@@ -93,23 +101,51 @@ function reponsePlaque(plate: string, country: string) {
     )
   }
 
+  const commun = {
+    success: true,
+    type: 'PLATE' as const,
+    plate: validation.normalized,
+    country: validation.countryCode,
+    countryName: validation.countryName,
+    matchedNorm: validation.matchedNorm,
+    isLegacy: validation.isLegacy,
+    officialSystem: validation.officialSystem,
+  }
+
+  // `optionalAuth` et non `requireAuth` : un visiteur non connecte doit
+  // pouvoir verifier un format sans compte.
+  const auth = await optionalAuth(request)
+  if (auth?.userId) {
+    const vehicule = await garageService.findByPlate(auth.userId, validation.normalized)
+    if (vehicule) {
+      return NextResponse.json({
+        ...commun,
+        identified: true,
+        source: 'GARAGE',
+        vehicle: {
+          id: vehicule.id,
+          brand: vehicule.brandName,
+          ...(vehicule.model ? { model: vehicule.model } : {}),
+          ...(vehicule.year ? { year: vehicule.year } : {}),
+          ...(vehicule.fuel ? { fuel: vehicule.fuel } : {}),
+          ...(vehicule.gearbox ? { gearbox: vehicule.gearbox } : {}),
+          ...(vehicule.engine ? { engine: vehicule.engine } : {}),
+          ...(vehicule.nickname ? { nickname: vehicule.nickname } : {}),
+        },
+      })
+    }
+  }
+
   // 200 et non 404 : le format est bon et la demande a abouti. Un 404
   // signifierait que le vehicule est absent d'un registre, et donnerait a
   // penser qu'un tel registre est consulte.
   return NextResponse.json({
-    success: true,
-    type: 'PLATE',
-    plate: validation.normalized,
-    country: validation.countryCode,
-    countryName: validation.countryName,
+    ...commun,
     identified: false,
-    matchedNorm: validation.matchedNorm,
-    isLegacy: validation.isLegacy,
-    message:
-      "Le format est valide. L'identification automatique du véhicule par plaque n'est pas disponible : " +
-      'elle suppose un accès au registre national des immatriculations. ' +
-      'Sélectionnez la marque de votre véhicule pour voir les pièces disponibles.',
-    officialSystem: validation.officialSystem,
+    message: auth?.userId
+      ? "Cette plaque n'est pas dans votre garage. Ajoutez le véhicule une fois, et vous le retrouverez ensuite par sa plaque."
+      : "Le format est valide. Connectez-vous et enregistrez votre véhicule pour le retrouver ensuite par sa plaque. " +
+        "L'identification depuis le registre national des immatriculations n'est pas disponible.",
   })
 }
 
@@ -128,7 +164,7 @@ export async function GET(request: NextRequest) {
     )
   }
 
-  return reponsePlaque(plate, country)
+  return reponsePlaque(request, plate, country)
 }
 
 export async function POST(request: NextRequest) {
@@ -145,7 +181,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    return reponsePlaque(plate, country)
+    return reponsePlaque(request, plate, country)
   } catch {
     return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }

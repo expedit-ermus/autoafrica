@@ -275,3 +275,92 @@ test.describe('Flux critique : CRM', () => {
     await expect(page).not.toHaveURL(/\/dashboard\/crm/);
   });
 });
+
+// ---------------------------------------------------------------------------
+// Garage de l'acheteur : la plaque identifie enfin un vehicule
+// ---------------------------------------------------------------------------
+
+/**
+ * Une plaque ne designe une voiture que par un registre, et celui de Cote
+ * d'Ivoire est concede a un operateur prive dont le projet n'a pas l'acces
+ * (D70, D71). Le garage renverse le probleme : l'acheteur declare sa voiture
+ * une fois, et la retrouve ensuite par sa plaque depuis notre propre base.
+ *
+ * Ce scenario parcourt la boucle entiere, seule preuve que les trois morceaux
+ * — formulaire, API, recherche — se parlent vraiment.
+ */
+test.describe('Flux critique : garage de l acheteur', () => {
+  /**
+   * Compte dedie a chaque scenario. Reutiliser `SEED_BUYER_EMAIL` faisait
+   * echouer le tunnel Mobile Money, qui s'appuie sur le meme compte : les deux
+   * scenarios tournaient en parallele et se marchaient dessus. Les aides du
+   * depot prevoient justement `uniqueEmail` pour cela.
+   */
+  async function creerAcheteur(page: import('@playwright/test').Page): Promise<void> {
+    const email = uniqueEmail('garage');
+    await skipCookieBanner(page);
+    await page.goto('/auth/register');
+    await page.locator('#reg-firstName').fill('Awa');
+    await page.locator('#reg-lastName').fill('Traore');
+    await page.locator('#reg-email').fill(email);
+    await page.locator('#reg-password').fill(SEED_PASSWORD);
+    await page.locator('#reg-confirmPassword').fill(SEED_PASSWORD);
+    await page.getByRole('checkbox').check();
+    await page.getByRole('button', { name: "S'inscrire" }).click();
+    await page.waitForURL(/\/dashboard/, { timeout: 20000 });
+  }
+
+  test('un acheteur enregistre sa voiture puis la retrouve par sa plaque', async ({ page }) => {
+    await creerAcheteur(page);
+
+    // Plaque a la norme en vigueur depuis juin 2023. Le compte etant neuf,
+    // aucun doublon n'est possible.
+    const plaque = 'AB-123-CD';
+
+    await page.goto('/dashboard/garage');
+    await expect(page.getByRole('heading', { name: 'Mon garage' })).toBeVisible();
+
+    await page.locator('#g-plaque').fill(plaque);
+    await page.locator('#g-marque').fill('Toyota');
+    await page.locator('#g-modele').fill('Corolla');
+    await page.locator('#g-annee').fill('2019');
+    await page.getByRole('button', { name: 'Ajouter' }).click();
+
+    await expect(page.getByRole('status')).toContainText('garage');
+    // La plaque s'affiche telle qu'elle a ete saisie : la forme normalisee
+    // « AB123CD » est une cle de recherche, pas un libelle.
+    // `exact` est indispensable : l'aide a la saisie cite le meme exemple
+    // (« 2 lettres + 3 chiffres + 2 lettres (ex: AB-123-CD) »).
+    await expect(page.getByText(plaque, { exact: true })).toBeVisible();
+
+    // La plaque identifie desormais le vehicule depuis la recherche de pieces.
+    await page.goto('/recherche-pieces');
+    await page.getByRole('tab', { name: /immatriculation/i }).click();
+    await page.locator('#vps-plaque').fill(plaque);
+    await page.getByRole('button', { name: /Vérifier le format/i }).click();
+
+    await expect(page.getByRole('heading', { name: /Toyota Corolla 2019/ })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Voir les pièces Toyota/ })).toBeVisible();
+
+    // La meme plaque ecrite autrement designe la meme voiture.
+    await page.locator('#vps-plaque').fill('ab 123 cd');
+    await page.getByRole('button', { name: /Vérifier le format/i }).click();
+    await expect(page.getByRole('heading', { name: /Toyota Corolla 2019/ })).toBeVisible();
+  });
+
+  /**
+   * Cloisonnement : une plaque absente du garage du demandeur ne revele rien,
+   * meme si un autre compte l'a enregistree.
+   */
+  test('une plaque absente du garage n identifie aucun vehicule', async ({ page }) => {
+    await creerAcheteur(page);
+
+    await page.goto('/recherche-pieces');
+    await page.getByRole('tab', { name: /immatriculation/i }).click();
+    // Plaque enregistree par l'autre scenario, sur un autre compte.
+    await page.locator('#vps-plaque').fill('AB-123-CD');
+    await page.getByRole('button', { name: /Vérifier le format/i }).click();
+
+    await expect(page.getByText(/pas dans votre garage/i)).toBeVisible();
+  });
+});

@@ -1832,3 +1832,109 @@ deux normes dans un vrai navigateur.
 elle suppose un acces au registre national, concede a un operateur prive, dont
 le projet n'a ni contrat ni identifiants. Valider un format n'identifie pas un
 vehicule, et la page continue de le dire.
+
+## D72 : La plaque identifie le vehicule, par le garage de l'acheteur
+
+**Le point dur.** Une plaque ne porte aucune information sur le vehicule :
+c'est un numero de registre. Pour remonter a la voiture il faut lire ce
+registre, et celui de Cote d'Ivoire est concede a un operateur prive
+(Quipux / CGI, DIGIMMAT) dont le projet n'a ni contrat ni identifiants. Aucune
+API publique n'existe. D70 en avait tire la seule conclusion honnete possible a
+ce moment : la route valide un format, elle n'identifie pas un vehicule.
+
+**Le renversement.** L'identification ne vient pas d'un registre exterieur mais
+de notre propre base : l'acheteur declare sa voiture une fois, et la retrouve
+ensuite par sa plaque. La promesse devient tenable, et son perimetre est dit —
+ce que cet utilisateur a enregistre, pas le parc national.
+
+**Le modele.** `UserVehicle` porte la plaque, le pays, la marque, et
+facultativement modele, annee, carburant, boite, motorisation et surnom.
+
+*La marque est un texte libre, pas une cle etrangere.* La voiture de l'acheteur
+peut etre d'une marque que le catalogue ne porte pas. Les marques du catalogue
+sont proposees en suggestion (`datalist`), jamais imposees : contraindre la
+saisie obligerait a declarer une marque fausse pour pouvoir enregistrer.
+
+*Deux colonnes pour la plaque.* `plateNumber` conserve la saisie — un
+automobiliste reconnait « AB-123-CD », pas « AB123CD » — et `plateKey` porte la
+forme normalisee, sans espaces ni tirets, qui fait l'unicite et la recherche.
+Le defaut s'est vu au premier parcours E2E : la liste affichait `AB774CD`.
+Confondre la cle et le libelle donnait une interface qui renvoyait a
+l'utilisateur une plaque qu'il n'avait pas ecrite.
+
+**Le cloisonnement est la decision structurante.** Le `@@unique` porte sur le
+couple utilisateur/plaque, et non sur la plaque seule. Deux personnes peuvent
+declarer la meme immatriculation — un vehicule revendu, une faute de frappe —
+sans que l'une voie le vehicule de l'autre. `findByPlate` exige un `userId`, la
+route le prend du jeton et jamais du corps de la requete, et les mises a jour
+comme les suppressions portent la propriete dans leur clause `where` plutot que
+de lire puis comparer. Une plaque saisie par un tiers ne revele rien.
+
+C'est ce qui separe ce garage d'un annuaire d'immatriculations. Une base
+consultable par plaque sans condition serait un fichier du parc automobile.
+
+**Ce que la route renvoie.** Connecte et plaque au garage : `identified: true`,
+`source: 'GARAGE'`, et les seules caracteristiques renseignees — un champ laisse
+vide reste absent (D61). Connecte et plaque inconnue : le message dit qu'elle
+n'est pas au garage et invite a l'ajouter. Non connecte : le message invite a se
+connecter, et redit que l'identification depuis le registre national n'est pas
+disponible. Les trois cas sont distincts ; les confondre aurait laisse croire a
+un echec du service la ou il manque seulement une declaration.
+
+**Le formulaire.** La plaque identifiee arme la recherche : la marque du
+vehicule est preselectionnee, l'acheteur n'a pas a la resaisir apres avoir donne
+sa plaque. Le bouton devient « Voir les pieces Toyota » et mene au catalogue
+filtre. Quand rien n'est identifie, un lien mene au garage.
+
+`/dashboard/garage` entre dans la navigation acheteur. Le garage n'a d'interet
+que pour lui : un vendeur gere ses annonces par `/dashboard/vehicles`, qui est
+un autre objet.
+
+**Verifications.** Douze mutations, dix detections au premier passage. Les deux
+survivantes ont fait corriger les tests, non le code :
+
+*Un identifiant de test trop previsible.* Le test « ne cherche que dans le
+garage du demandeur » utilisait `user-1`. Une mutation remplacant `auth.userId`
+par la constante `'user-1'` passait donc au vert : le test ne prouvait rien.
+L'identifiant est desormais `compte-du-demandeur-9f3a`.
+
+*Un exemple et un motif pouvaient diverger.* Vider l'exemple d'une norme sans
+toucher a son expression reguliere n'etait detecte par rien — le placeholder
+aurait montre une plaque que le champ refuse. Un test verifie maintenant que
+chaque exemple declare est valide sous son propre motif et apparait dans sa
+description. Les trois mutations rejouees apres correction sont detectees.
+
+eslint 0, `tsc --noEmit` 0, 496/496 tests unitaires (470 avant), build reussi,
+budgets respectes (`/dashboard/garage` a 163,7 Ko), 29/29 E2E.
+
+Le parcours entier est couvert de bout en bout : inscription, enregistrement du
+vehicule, identification par la plaque, puis identification de la meme plaque
+ecrite autrement (`ab 123 cd`). Un second scenario, sur un autre compte, verifie
+qu'une plaque enregistree ailleurs n'identifie rien.
+
+Le premier passage a fait echouer le tunnel Mobile Money, qui s'appuie sur le
+compte de seed que mon scenario reutilisait : les deux tournaient en parallele.
+Le garage cree desormais son propre compte, ce que les aides du depot
+prevoyaient deja avec `uniqueEmail`.
+
+**Pour activer en production.** La table `UserVehicle` doit exister sur la base
+Turso. Le schema est applique au demarrage depuis `src/lib/schema.sql`, qui ne
+vise que le fichier SQLite local : la base distante demande un
+`prisma db push` explicite. Sans la table, les routes du garage echouent et la
+recherche par plaque retombe sur la validation de format, sans rien casser
+d'autre.
+
+**Reste ouvert.**
+
+*Le registre national.* Un adaptateur de fournisseur externe reste a ecrire le
+jour ou un acces existe. La forme est connue — celle de CinetPay en D67 : le
+code pret, les identifiants qui l'allument. Il n'a pas ete construit ici : un
+adaptateur sans fournisseur ni reponse reelle a verifier serait du decor.
+
+*La compatibilite piece-modele.* Le garage sait desormais quelle voiture a
+l'acheteur, mais `CarModel` et `ProductCompat` restent vides : le catalogue se
+filtre par marque, pas par modele. C'est la derniere marche avant de pouvoir
+parler de « pieces compatibles » sans mentir (D70).
+
+*Les neuf autres pays.* Leurs formats de plaque n'ont toujours pas ete verifies
+contre une source officielle (D71).

@@ -606,6 +606,7 @@ CREATE TABLE "DeliveryRoute" (
 CREATE TABLE "FleetVehicle" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "plateNumber" TEXT NOT NULL,
+    "plateKey" TEXT NOT NULL,
     "type" TEXT NOT NULL,
     "brand" TEXT,
     "model" TEXT,
@@ -1323,3 +1324,30 @@ ALTER TABLE "SellerProfile" ADD COLUMN "city" TEXT;
 ALTER TABLE "SellerProfile" ADD COLUMN "phoneForOrders" TEXT;
 ALTER TABLE "SellerProfile" ADD COLUMN "payoutMethod" TEXT;
 ALTER TABLE "SellerProfile" ADD COLUMN "payoutNumber" TEXT;
+
+
+-- Garage de l utilisateur : vehicules declares pour retrouver ses pieces (D72)
+CREATE TABLE IF NOT EXISTS "UserVehicle" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "userId" TEXT NOT NULL,
+    "plateNumber" TEXT NOT NULL,
+    "countryCode" TEXT NOT NULL DEFAULT 'CI',
+    "brandName" TEXT NOT NULL,
+    "model" TEXT,
+    "year" INTEGER,
+    "fuel" TEXT,
+    "gearbox" TEXT,
+    "engine" TEXT,
+    "nickname" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "UserVehicle_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS "UserVehicle_userId_plateKey_key" ON "UserVehicle"("userId", "plateKey");
+
+CREATE INDEX IF NOT EXISTS "UserVehicle_userId_idx" ON "UserVehicle"("userId");
+
+ALTER TABLE "UserVehicle" ADD COLUMN "plateKey" TEXT NOT NULL DEFAULT '';
+DROP INDEX IF EXISTS "UserVehicle_userId_plateNumber_key";
+CREATE UNIQUE INDEX IF NOT EXISTS "UserVehicle_userId_plateKey_key" ON "UserVehicle"("userId", "plateKey");

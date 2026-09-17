@@ -1,9 +1,31 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs'
 import path from 'node:path'
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
-import { GET } from './route'
 import { COUNTRY_PLATE_SPECS } from '@/modules/vehicles/license-plate.validator'
+
+const mocks = vi.hoisted(() => ({
+  optionalAuth: vi.fn(),
+  findByPlate: vi.fn(),
+}))
+
+// Par defaut : visiteur non connecte. Les tests d'identification arment
+// explicitement la session, ce qui garde visible la difference entre les deux.
+vi.mock('@/modules/auth/auth.guard', () => ({ optionalAuth: mocks.optionalAuth }))
+vi.mock('@/modules/vehicles/garage.service', () => ({
+  garageService: { findByPlate: mocks.findByPlate },
+}))
+
+import { GET } from './route'
+
+beforeEach(() => {
+  // L'historique d'appels doit etre remis a zero, et pas seulement les valeurs
+  // renvoyees : les assertions « n'a pas ete appele » compteraient sinon les
+  // appels des tests precedents.
+  vi.clearAllMocks()
+  mocks.optionalAuth.mockResolvedValue(null)
+  mocks.findByPlate.mockResolvedValue(null)
+})
 
 const SRC_ROOT = path.resolve(process.cwd(), 'src')
 
@@ -187,5 +209,101 @@ describe('source unique du format de plaque', () => {
 
     expect(composant).toContain("from '@/modules/vehicles/license-plate.validator'")
     expect(composant).not.toMatch(/const COUNTRIES\s*=/)
+  })
+})
+
+/**
+ * Identification reelle par plaque, via le garage de l'utilisateur.
+ *
+ * Le registre national etant inaccessible, c'est l'acheteur qui declare sa
+ * voiture. La route identifie alors depuis notre propre base — et seulement
+ * dans le garage du demandeur.
+ */
+describe('GET /api/v1/vehicles/lookup — identification par le garage', () => {
+  const vehicule = {
+    id: 'g1',
+    brandName: 'Kia',
+    model: 'Sportage',
+    year: 2019,
+    fuel: 'DIESEL',
+    gearbox: 'MANUAL',
+    engine: '2.0 CRDi',
+    nickname: null,
+  }
+
+  it('identifie le vehicule quand la plaque est au garage', async () => {
+    mocks.optionalAuth.mockResolvedValue({ userId: 'user-1' })
+    mocks.findByPlate.mockResolvedValue(vehicule)
+
+    const data = await (await GET(requete('plate=AB-123-CD&country=CI'))).json()
+
+    expect(data.identified).toBe(true)
+    expect(data.source).toBe('GARAGE')
+    expect(data.vehicle).toMatchObject({ brand: 'Kia', model: 'Sportage', year: 2019 })
+  })
+
+  /**
+   * Le cloisonnement tient au service, mais la route doit lui passer le bon
+   * identifiant : c'est ici qu'une confusion ouvrirait le garage d'autrui.
+   *
+   * L'identifiant est volontairement inhabituel. Ecrit `user-1`, il coincidait
+   * avec la valeur qu'un code fautif aurait pu figer, et le test ne prouvait
+   * plus rien — une mutation qui remplacait `auth.userId` par `'user-1'`
+   * passait au vert.
+   */
+  it('ne cherche que dans le garage du demandeur', async () => {
+    mocks.optionalAuth.mockResolvedValue({ userId: 'compte-du-demandeur-9f3a' })
+
+    await GET(requete('plate=AB-123-CD&country=CI'))
+
+    expect(mocks.findByPlate).toHaveBeenCalledWith('compte-du-demandeur-9f3a', 'AB-123-CD')
+  })
+
+  it('n interroge aucun garage pour un visiteur non connecte', async () => {
+    const data = await (await GET(requete('plate=AB-123-CD&country=CI'))).json()
+
+    expect(mocks.findByPlate).not.toHaveBeenCalled()
+    expect(data.identified).toBe(false)
+    // Le visiteur doit savoir quoi faire pour que sa plaque serve.
+    expect(data.message).toMatch(/connectez-vous/i)
+  })
+
+  it('distingue une plaque absente du garage d une absence de session', async () => {
+    mocks.optionalAuth.mockResolvedValue({ userId: 'user-1' })
+
+    const data = await (await GET(requete('plate=AB-123-CD&country=CI'))).json()
+
+    expect(data.identified).toBe(false)
+    expect(data.message).toMatch(/pas dans votre garage/i)
+    expect(data).not.toHaveProperty('vehicle')
+  })
+
+  // Un champ laisse vide au garage ne doit pas ressortir en null ni en valeur
+  // par defaut : il est absent de la reponse (D61).
+  it('omet les caracteristiques non renseignees', async () => {
+    mocks.optionalAuth.mockResolvedValue({ userId: 'user-1' })
+    mocks.findByPlate.mockResolvedValue({
+      id: 'g2',
+      brandName: 'Toyota',
+      model: null,
+      year: null,
+      fuel: null,
+      gearbox: null,
+      engine: null,
+      nickname: null,
+    })
+
+    const data = await (await GET(requete('plate=AB-123-CD&country=CI'))).json()
+
+    expect(data.vehicle).toEqual({ id: 'g2', brand: 'Toyota' })
+  })
+
+  it('n identifie rien sur une plaque au format invalide', async () => {
+    mocks.optionalAuth.mockResolvedValue({ userId: 'user-1' })
+
+    const res = await GET(requete('plate=PASUNEPLAQUE&country=CI'))
+
+    expect(res.status).toBe(400)
+    expect(mocks.findByPlate).not.toHaveBeenCalled()
   })
 })

@@ -65,6 +65,16 @@
 | R057 | `/marketplace/marque/opel` | Public | Page catalogue | Trouver des pièces Opel | Vente | Commerciale | Pièces détachées auto Opel à Abidjan | index | oui | aucun | publique |
 | R058 | `/dashboard/notifications` | App | Notifications | Voir les notifications | Rétention | Navigationnelle | Notifications | noindex | non | aucun | privée |
 | R059 | `/dashboard/parts-search` | App | PartsSearch | Trouver les pièces compatibles de mon véhicule | Vente | Navigationnelle | Trouvez les pièces pour votre véhicule | noindex | non | aucun | privée |
+| R214 | `/dashboard/garage` | App | Garage | Déclarer ses véhicules pour retrouver ses pièces | Rétention | Navigationnelle | Mon garage | noindex | non | aucun | privée |
+
+### Garage de l'acheteur : cloisonnement par compte
+
+R216 et R217 portent toujours le `userId` du jeton, jamais de l'URL ni du corps.
+R215 identifie un véhicule uniquement dans le garage du demandeur : le
+`@@unique` de `UserVehicle` porte sur le couple utilisateur/plaque et non sur la
+plaque seule. Une base consultable par plaque sans condition serait un fichier
+du parc automobile (cf. D72).
+
 
 ## Routes API
 
@@ -106,6 +116,9 @@
 | R133 | `/api/v1/vehicles/[id]` | GET | Public | Détail véhicule |
 | R134 | `/api/v1/vehicles/[id]` | PUT | Required | Modifier annonce véhicule |
 | R135 | `/api/v1/vehicles/[id]` | DELETE | Required | Supprimer annonce véhicule |
+| R215 | `/api/v1/vehicles/lookup` | GET/POST | Optionnelle | Valider une plaque ; identifier le véhicule si la session en a un au garage |
+| R216 | `/api/v1/garage` | GET/POST | Required | Lister et ajouter ses véhicules |
+| R217 | `/api/v1/garage/[id]` | PUT/DELETE | Required | Modifier ou retirer un véhicule du garage |
 | R136 | `/api/v1/suppliers` | GET | Public | Liste fournisseurs |
 | R137 | `/api/v1/suppliers` | POST | Required | Créer fournisseur |
 | R138 | `/api/v1/suppliers/[id]` | GET | Public | Détail fournisseur |
